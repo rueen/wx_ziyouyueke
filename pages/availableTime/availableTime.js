@@ -159,6 +159,18 @@ Page({
       return;
     }
 
+    // 检查时间重叠
+    const currentDaySlots = weekSchedule[selectedDayIndex].timeSlots;
+    const hasOverlap = this.checkTimeOverlap(newStartTime, newEndTime, currentDaySlots);
+    
+    if (hasOverlap) {
+      wx.showToast({
+        title: '时间段重叠，请重新选择',
+        icon: 'none'
+      });
+      return;
+    }
+
     // 生成新的时间段
     const newTimeSlot = {
       id: Date.now(), // 简单的ID生成
@@ -190,6 +202,27 @@ Page({
       title: '添加成功',
       icon: 'success'
     });
+  },
+
+  /**
+   * 检查时间重叠
+   * @param {string} newStart 新时间段开始时间
+   * @param {string} newEnd 新时间段结束时间
+   * @param {Array} existingSlots 已有时间段数组
+   * @returns {boolean} 是否有重叠
+   */
+  checkTimeOverlap(newStart, newEnd, existingSlots) {
+    for (let slot of existingSlots) {
+      const existingStart = slot.startTime;
+      const existingEnd = slot.endTime;
+      
+      // 判断两个时间段是否重叠
+      // 重叠条件：新开始时间 < 已有结束时间 且 已有开始时间 < 新结束时间
+      if (newStart < existingEnd && existingStart < newEnd) {
+        return true; // 有重叠
+      }
+    }
+    return false; // 无重叠
   },
 
   /**
