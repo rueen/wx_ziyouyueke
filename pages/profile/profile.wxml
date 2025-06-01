@@ -1,0 +1,4 @@
+<!--pages/profile/profile.wxml-->
+<navBar />
+<layout class="container">
+</layout>

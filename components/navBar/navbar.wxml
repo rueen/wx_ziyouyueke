@@ -1,0 +1,6 @@
+<!--components/NavBar/navbar.wxml-->
+<view class="layout" style="height: {{navBarHeight}}px;">
+  <view class="logo">
+    <text class="iconfont icon-logo"></text>
+  </view>
+</view>

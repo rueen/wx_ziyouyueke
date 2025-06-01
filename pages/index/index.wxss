@@ -1,0 +1,140 @@
+/**
+ * index.wxss
+ * 首页样式文件
+ */
+@import '/style/iconfont.wxss';
+page {
+  height: 100vh;
+  background-color: #fff;
+}
+
+.container {
+  padding: 40rpx;
+}
+
+/* 用户信息卡片 */
+.user-card {
+  background: #f4f5f6;
+  border-radius: 24rpx;
+  padding: 10rpx;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 24rpx;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #fff;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.greeting {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.username {
+  font-size: 36rpx;
+  color: #000;
+}
+
+/* 统计数据行 */
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 40rpx 0;
+  border-radius: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.stat-arrow{
+  color: #333;
+  font-size: 26rpx;
+  margin-left: 10rpx;
+}
+
+/* 近期课程 */
+.recent-courses {
+  margin-top: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.empty-courses {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 立即约课按钮 */
+.book-button-container {
+  position: fixed;
+  bottom: 100rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+}
+
+.book-button {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-button::after {
+  border: none;
+}

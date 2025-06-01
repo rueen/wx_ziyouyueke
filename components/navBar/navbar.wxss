@@ -1,0 +1,27 @@
+/* components/NavBar/navbar.wxss */
+@import '/style/iconfont.wxss';
+
+.layout{
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
+}
+.logo{
+  width: 36px;
+  height: 36px;
+  background-color: #171819;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 10rpx;
+  left: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo .iconfont{
+  color: #fff;
+  font-size: 24px;
+}

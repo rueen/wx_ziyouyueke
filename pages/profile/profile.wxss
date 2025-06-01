@@ -1,0 +1,6 @@
+/* pages/profile/profile.wxss */
+@import '/style/iconfont.wxss';
+page {
+  height: 100vh;
+  background-color: #fff;
+}
