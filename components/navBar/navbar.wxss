@@ -8,20 +8,54 @@
   top: 0;
   z-index: 1;
   background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Logo样式 */
 .logo{
   width: 34px;
   height: 34px;
   background-color: #171819;
   border-radius: 50%;
   position: absolute;
-  bottom: 10rpx;
+  bottom: 0;
   left: 40rpx;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .logo .iconfont{
   color: #fff;
   font-size: 20px;
+}
+
+/* 返回按钮样式 */
+.back-btn {
+  width: 34px;
+  height: 34px;
+  position: absolute;
+  bottom: 0;
+  left: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-btn .iconfont {
+  color: #171819;
+  font-size: 40rpx;
+}
+
+/* 标题样式 */
+.title {
+  font-size: 32rpx;
+  color: #171819;
+  position: absolute;
+  bottom: 10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 600;
 }

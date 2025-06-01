@@ -13,13 +13,6 @@ page {
   padding: 40rpx;
 }
 
-.page-title {
-  font-size: 36rpx;
-  color: #333;
-  margin-bottom: 40rpx;
-  display: block;
-}
-
 .coming-soon {
   display: flex;
   align-items: center;

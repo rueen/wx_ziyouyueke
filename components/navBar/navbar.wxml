@@ -1,7 +1,15 @@
 <!--components/NavBar/navbar.wxml-->
 <view class="layout" style="height: {{navBarHeight}}px;">
-  <view class="logo">
+  <!-- 返回按钮 -->
+  <view class="back-btn" wx:if="{{canGoBack}}" bindtap="onBack">
+    <text class="iconfont icon-arrow-l"></text>
+  </view>
+  
+  <!-- Logo -->
+  <view class="logo" wx:if="{{!canGoBack}}">
     <text class="iconfont icon-logo"></text>
   </view>
-  <view class="title">{{title}}</view>
+  
+  <!-- 标题 -->
+  <view class="title" wx:if="{{title}}">{{title}}</view>
 </view>
