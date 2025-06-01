@@ -10,8 +10,8 @@
   background-color: #fff;
 }
 .logo{
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   background-color: #171819;
   border-radius: 50%;
   position: absolute;
@@ -23,5 +23,5 @@
 }
 .logo .iconfont{
   color: #fff;
-  font-size: 24px;
+  font-size: 20px;
 }

@@ -1,7 +1,10 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/editProfile/editProfile",
+    "pages/coachList/coachList",
+    "pages/courseList/courseList"
   ],
   "window": {
     "navigationStyle": "custom"

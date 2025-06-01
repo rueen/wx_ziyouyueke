@@ -20,7 +20,7 @@
       </view>
       
       <view class="stat-item" bindtap="onStatClick">
-        <text class="stat-label">我的消息</text>
+        <text class="stat-label">待处理</text>
         <text class="iconfont icon-arrow-r stat-arrow"></text>
       </view>
     </view>

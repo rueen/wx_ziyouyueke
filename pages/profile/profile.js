@@ -1,11 +1,17 @@
-// pages/profile/profile.js
+/**
+ * pages/profile/profile.js
+ * 我的页面逻辑
+ */
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    userInfo: {
+      nickname: '请设置昵称',
+      avatar: '/images/defaultAvatar.png'
+    }
   },
 
   /**
@@ -62,5 +68,32 @@ Page({
    */
   onShareAppMessage() {
 
+  },
+
+  /**
+   * 编辑个人资料
+   */
+  onEditProfile() {
+    wx.navigateTo({
+      url: '/pages/editProfile/editProfile'
+    })
+  },
+
+  /**
+   * 我的教练
+   */
+  onMyCoaches() {
+    wx.navigateTo({
+      url: '/pages/coachList/coachList'
+    })
+  },
+
+  /**
+   * 我的课程
+   */
+  onMyCourses() {
+    wx.navigateTo({
+      url: '/pages/courseList/courseList'
+    })
   }
 })

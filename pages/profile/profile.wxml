@@ -1,4 +1,36 @@
 <!--pages/profile/profile.wxml-->
 <navBar />
 <layout class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-section" bindtap="onEditProfile">
+    <view class="user-info">
+      <view class="user-avatar">
+        <image src="/images/defaultAvatar.png" class="avatar-img"></image>
+      </view>
+      <view class="user-details">
+        <text class="username">请设置昵称</text>
+        <text class="user-desc">点击编辑个人资料</text>
+      </view>
+    </view>
+    <text class="iconfont icon-arrow-r arrow-icon"></text>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="onMyCoaches">
+      <view class="menu-content">
+        <text class="iconfont icon-user menu-icon"></text>
+        <text class="menu-text">我的教练</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+    
+    <view class="menu-item" bindtap="onMyCourses">
+      <view class="menu-content">
+        <text class="iconfont icon-book menu-icon"></text>
+        <text class="menu-text">我的课程</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+  </view>
 </layout>

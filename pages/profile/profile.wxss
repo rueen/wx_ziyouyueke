@@ -1,6 +1,108 @@
-/* pages/profile/profile.wxss */
+/**
+ * pages/profile/profile.wxss
+ * 我的页面样式
+ */
 @import '/style/iconfont.wxss';
+
 page {
   height: 100vh;
   background-color: #fff;
+}
+
+.container {
+  padding: 40rpx;
+}
+
+/* 用户信息区域 */
+.user-section {
+  background-color: #f4f5f6;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 24rpx;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid #fff;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 36rpx;
+  color: #000;
+  margin-bottom: 8rpx;
+}
+
+.user-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.arrow-icon {
+  color: #333;
+  font-size: 26rpx;
+}
+
+/* 功能菜单 */
+.menu-section {
+  background-color: #f4f5f6;
+  border-radius: 24rpx;
+  padding: 20rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 20rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.menu-item:last-child {
+  margin-bottom: 0;
+}
+
+.menu-content {
+  display: flex;
+  align-items: center;
+}
+
+.menu-icon {
+  font-size: 32rpx;
+  color: #333;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  font-size: 30rpx;
+  color: #333;
 }

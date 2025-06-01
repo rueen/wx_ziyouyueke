@@ -3,4 +3,5 @@
   <view class="logo">
     <text class="iconfont icon-logo"></text>
   </view>
+  <view class="title">{{title}}</view>
 </view>
