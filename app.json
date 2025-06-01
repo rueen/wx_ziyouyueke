@@ -4,6 +4,8 @@
     "pages/profile/profile",
     "pages/editProfile/editProfile",
     "pages/coachList/coachList",
+    "pages/coachDetail/coachDetail",
+    "pages/bookCoach/bookCoach",
     "pages/courseList/courseList"
   ],
   "window": {

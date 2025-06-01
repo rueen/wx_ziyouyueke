@@ -1,10 +1,22 @@
 <!--pages/coachList/coachList.wxml-->
 <navBar title="我的教练" />
 <layout class="container">
-  <view class="coach-list">
-    <!-- 待完善内容 -->
-    <view class="coming-soon">
-      <text class="coming-text">功能开发中...</text>
+  <view class="coach-list" wx:if="{{coaches.length > 0}}">
+    <view class="coach-item" wx:for="{{coaches}}" wx:key="id" bindtap="onCoachDetail" data-coach="{{item}}">
+      <view class="coach-avatar">
+        <image src="{{item.avatar}}" class="avatar-img"></image>
+      </view>
+      <view class="coach-info">
+        <text class="coach-name">{{item.name}}</text>
+        <text class="coach-specialty">{{item.specialty}}</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-text">暂无教练</text>
+    <text class="empty-desc">您还没有关联任何教练</text>
   </view>
 </layout> 

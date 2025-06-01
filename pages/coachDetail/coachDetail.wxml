@@ -1,0 +1,35 @@
+<!--pages/coachDetail/coachDetail.wxml-->
+<navBar title="教练详情" />
+<layout class="container">
+  <!-- 教练基础信息 -->
+  <view class="coach-header">
+    <view class="coach-avatar">
+      <image src="{{coachData.avatar}}" class="avatar-img"></image>
+    </view>
+    <view class="coach-info">
+      <text class="coach-name">{{coachData.name}}</text>
+      <text class="coach-specialty">{{coachData.specialty}}</text>
+    </view>
+  </view>
+
+  <!-- 教练简介 -->
+  <view class="coach-section">
+    <text class="section-title">教练简介</text>
+    <text class="introduction-text">{{coachData.introduction}}</text>
+  </view>
+
+  <!-- 可约时间 -->
+  <view class="coach-section">
+    <text class="section-title">可约时间</text>
+    <view class="time-list">
+      <view class="time-item" wx:for="{{coachData.availableTime}}" wx:key="index">
+        <text class="time-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 约课按钮 -->
+  <view class="book-button-container">
+    <button class="book-button" bindtap="onBookCoach">立即约课</button>
+  </view>
+</layout> 
