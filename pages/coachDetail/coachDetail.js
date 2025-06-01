@@ -50,7 +50,7 @@ Page({
   onBookCoach() {
     const { coachData } = this.data;
     wx.navigateTo({
-      url: `/pages/bookCoach/bookCoach?coachId=${coachData.id}&coachName=${coachData.name}`
+      url: `/pages/bookCoach/bookCoach?from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
     });
   }
 }) 

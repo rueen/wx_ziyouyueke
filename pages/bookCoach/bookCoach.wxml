@@ -1,13 +1,104 @@
 <!--pages/bookCoach/bookCoach.wxml-->
 <navBar title="约教练" />
 <layout class="container">
-  <view class="book-coach">
-    <view class="coach-info">
-      <text class="coach-name">{{coachName}}</text>
+  <!-- 选择教练 -->
+  <view class="form-section" wx:if="{{showCoachSelection}}">
+    <text class="section-title">选择教练</text>
+    <view class="coach-list">
+      <view class="coach-option {{selectedCoachId === item.id ? 'selected' : ''}}" 
+            wx:for="{{availableCoaches}}" wx:key="id" 
+            bindtap="onSelectCoach" data-coach="{{item}}">
+        <view class="coach-avatar">
+          <image src="{{item.avatar}}" class="avatar-img"></image>
+        </view>
+        <view class="coach-info">
+          <text class="coach-name">{{item.name}}</text>
+          <text class="coach-specialty">{{item.specialty}}</text>
+        </view>
+        <view class="check-icon" wx:if="{{selectedCoachId === item.id}}">✓</view>
+      </view>
     </view>
-    <!-- 待完善内容 -->
-    <view class="coming-soon">
-      <text class="coming-text">功能开发中...</text>
+  </view>
+
+  <!-- 约课表单 -->
+  <view class="booking-form" wx:if="{{selectedCoach}}">
+    <!-- 已选教练显示 -->
+    <view class="form-section" wx:if="{{!showCoachSelection}}">
+      <text class="section-title">教练</text>
+      <view class="selected-coach">
+        <view class="coach-avatar">
+          <image src="{{selectedCoach.avatar}}" class="avatar-img"></image>
+        </view>
+        <view class="coach-info">
+          <text class="coach-name">{{selectedCoach.name}}</text>
+          <text class="coach-specialty">{{selectedCoach.specialty}}</text>
+        </view>
+        <text class="change-btn" bindtap="onChangeCoach" wx:if="{{availableCoaches.length > 1}}">更换</text>
+      </view>
+    </view>
+
+    <!-- 选择时间 -->
+    <view class="form-section">
+      <text class="section-title">选择时间</text>
+      <view class="time-options">
+        <view class="time-option {{selectedTime === item ? 'selected' : ''}}" 
+              wx:for="{{selectedCoach.availableTime}}" wx:key="index"
+              bindtap="onSelectTime" data-time="{{item}}">
+          <text class="time-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 地点 -->
+    <view class="form-section">
+      <text class="section-title">上课地点</text>
+      <textarea class="location-input" 
+                placeholder="请输入上课地点" 
+                value="{{location}}" 
+                bindinput="onLocationInput"
+                maxlength="100"></textarea>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-section">
+      <text class="section-title">备注</text>
+      <textarea class="remark-input" 
+                placeholder="请输入备注信息（可选）" 
+                value="{{remark}}" 
+                bindinput="onRemarkInput"
+                maxlength="200"></textarea>
+    </view>
+
+    <!-- 确认信息 -->
+    <view class="form-section" wx:if="{{selectedTime && location}}">
+      <text class="section-title">确认信息</text>
+      <view class="confirm-info">
+        <view class="info-item">
+          <text class="info-label">教练：</text>
+          <text class="info-value">{{selectedCoach.name}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">时间：</text>
+          <text class="info-value">{{selectedTime}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">地点：</text>
+          <text class="info-value">{{location}}</text>
+        </view>
+        <view class="info-item" wx:if="{{remark}}">
+          <text class="info-label">备注：</text>
+          <text class="info-value">{{remark}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-button-container">
+      <button class="submit-button {{canSubmit ? 'active' : 'disabled'}}" 
+              bindtap="onSubmitBooking" 
+              disabled="{{!canSubmit}}">
+        确认约课
+      </button>
     </view>
   </view>
 </layout> 

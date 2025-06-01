@@ -66,10 +66,9 @@ Page({
    * 约课按钮点击事件
    */
   onBookCourse: function() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
+    wx.navigateTo({
+      url: '/pages/bookCoach/bookCoach?from=home'
+    });
   },
 
   /**
