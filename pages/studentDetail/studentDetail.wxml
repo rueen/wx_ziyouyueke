@@ -15,10 +15,31 @@
     </view>
   </view>
 
-  <!-- 学员介绍 -->
-  <view class="intro-section">
-    <text class="section-title">学员介绍</text>
-    <text class="intro-text">{{studentData.introduction}}</text>
+  <!-- 可编辑课时数 -->
+  <view class="edit-section">
+    <view class="edit-item">
+      <text class="edit-label">课时数</text>
+      <view class="edit-value-container">
+        <input class="edit-input" 
+               type="number" 
+               value="{{editableLessons}}" 
+               bindinput="onLessonsInput"
+               bindblur="onSaveLessons"
+               placeholder="请输入课时数"></input>
+        <text class="edit-unit">节</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学员备注 -->
+  <view class="remark-section">
+    <text class="section-title">备注</text>
+    <textarea class="remark-textarea" 
+              placeholder="请输入学员备注（可编辑）" 
+              value="{{studentRemark}}" 
+              bindinput="onRemarkInput"
+              bindblur="onSaveRemark"
+              maxlength="200"></textarea>
   </view>
 
   <!-- 约课按钮 -->

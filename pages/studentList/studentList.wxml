@@ -24,4 +24,9 @@
     <text class="empty-text">暂无学员</text>
     <text class="empty-desc">您还没有关联任何学员</text>
   </view>
+
+  <!-- 添加学员按钮 -->
+  <view class="add-button-container">
+    <button class="add-button" bindtap="onAddStudent">添加学员</button>
+  </view>
 </layout> 

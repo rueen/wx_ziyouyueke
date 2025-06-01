@@ -8,7 +8,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    studentData: {}
+    studentData: {},
+    editableLessons: '', // 可编辑的课时数
+    studentRemark: ''    // 学员备注
   },
 
   /**
@@ -19,7 +21,9 @@ Page({
       try {
         const studentData = JSON.parse(decodeURIComponent(options.studentData));
         this.setData({
-          studentData
+          studentData,
+          editableLessons: studentData.remainingLessons.toString(),
+          studentRemark: studentData.remark || ''
         });
       } catch (error) {
         console.error('解析学员数据失败：', error);
@@ -78,6 +82,89 @@ Page({
    */
   onShareAppMessage() {
 
+  },
+
+  /**
+   * 输入课时数
+   */
+  onLessonsInput(e) {
+    this.setData({
+      editableLessons: e.detail.value
+    });
+  },
+
+  /**
+   * 保存课时数
+   */
+  onSaveLessons() {
+    const { editableLessons, studentData } = this.data;
+    const lessonsNum = parseInt(editableLessons);
+    
+    if (!lessonsNum || lessonsNum < 0) {
+      wx.showToast({
+        title: '请输入正确的课时数',
+        icon: 'none'
+      });
+      // 恢复原来的值
+      this.setData({
+        editableLessons: studentData.remainingLessons.toString()
+      });
+      return;
+    }
+
+    // 更新数据
+    const updatedStudentData = {
+      ...studentData,
+      remainingLessons: lessonsNum
+    };
+
+    this.setData({
+      studentData: updatedStudentData
+    });
+
+    // 这里应该调用后端API保存课时数
+    console.log('保存课时数：', lessonsNum);
+    
+    wx.showToast({
+      title: '课时数已更新',
+      icon: 'success',
+      duration: 1500
+    });
+  },
+
+  /**
+   * 输入备注
+   */
+  onRemarkInput(e) {
+    this.setData({
+      studentRemark: e.detail.value
+    });
+  },
+
+  /**
+   * 保存备注
+   */
+  onSaveRemark() {
+    const { studentRemark, studentData } = this.data;
+    
+    // 更新数据
+    const updatedStudentData = {
+      ...studentData,
+      remark: studentRemark.trim()
+    };
+
+    this.setData({
+      studentData: updatedStudentData
+    });
+
+    // 这里应该调用后端API保存备注
+    console.log('保存备注：', studentRemark.trim());
+    
+    wx.showToast({
+      title: '备注已保存',
+      icon: 'success',
+      duration: 1500
+    });
   },
 
   /**

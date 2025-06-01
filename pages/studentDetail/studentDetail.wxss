@@ -52,12 +52,6 @@ page {
   margin-bottom: 12rpx;
 }
 
-.student-level {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 16rpx;
-}
-
 .remaining-lessons {
   display: flex;
   align-items: center;
@@ -83,8 +77,8 @@ page {
 }
 
 /* 信息区块 */
-.intro-section,
-.time-section {
+.edit-section,
+.remark-section {
   background-color: #fff;
   border-radius: 20rpx;
   padding: 40rpx;
@@ -100,32 +94,68 @@ page {
   display: block;
 }
 
-.intro-text {
-  font-size: 28rpx;
-  color: #666;
-  line-height: 1.6;
-}
-
-/* 偏好时间 */
-.time-list {
+/* 可编辑项 */
+.edit-item {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.time-item {
-  background-color: #f8f9fa;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-}
-
-.time-item:last-child {
-  margin-bottom: 0;
-}
-
-.time-text {
+.edit-label {
   font-size: 28rpx;
   color: #333;
+  font-weight: 600;
+}
+
+.edit-value-container {
+  display: flex;
+  align-items: center;
+}
+
+.edit-input {
+  width: 120rpx;
+  height: 60rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+  padding: 0 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  text-align: center;
+  border: 1rpx solid #e9ecef;
+}
+
+.edit-input:focus {
+  border-color: #007aff;
+  background-color: #fff;
+}
+
+.edit-unit {
+  font-size: 26rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+/* 备注输入框 */
+.remark-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  border: 1rpx solid #e9ecef;
+  line-height: 1.5;
+}
+
+.remark-textarea:focus {
+  border-color: #007aff;
+  background-color: #fff;
+}
+
+.remark-textarea::placeholder {
+  color: #999;
 }
 
 /* 约课按钮 */

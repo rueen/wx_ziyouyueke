@@ -10,7 +10,7 @@ page {
 }
 
 .container {
-  padding: 0 20rpx 20rpx;
+  padding: 0 20rpx 160rpx;
 }
 
 /* 学员列表 */
@@ -122,4 +122,35 @@ page {
 .empty-desc {
   font-size: 28rpx;
   color: #ccc;
+}
+
+/* 添加学员按钮 */
+.add-button-container {
+  position: fixed;
+  bottom: 100rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+}
+
+.add-button {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button:active {
+  background-color: #555;
+}
+
+.add-button::after {
+  border: none;
 } 

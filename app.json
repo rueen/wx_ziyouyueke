@@ -9,7 +9,8 @@
     "pages/courseList/courseList",
     "pages/studentList/studentList",
     "pages/studentDetail/studentDetail",
-    "pages/bookStudent/bookStudent"
+    "pages/bookStudent/bookStudent",
+    "pages/addStudent/addStudent"
   ],
   "window": {
     "navigationStyle": "custom",
