@@ -38,5 +38,14 @@
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
+
+    <!-- 教练专用：我的可约时间 -->
+    <view class="menu-item" bindtap="onMyAvailableTime" wx:if="{{userRole === 'coach'}}">
+      <view class="menu-content">
+        <text class="iconfont icon-clock menu-icon"></text>
+        <text class="menu-text">我的可约时间</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
   </view>
 </layout>

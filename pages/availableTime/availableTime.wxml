@@ -1,0 +1,76 @@
+<!--pages/availableTime/availableTime.wxml-->
+<navBar title="我的可约时间" />
+<layout class="container">
+  <!-- 一周时间安排 -->
+  <view class="week-schedule">
+    <view class="day-section" wx:for="{{weekSchedule}}" wx:key="dayEn" wx:for-index="dayIndex">
+      <!-- 日期头部 -->
+      <view class="day-header">
+        <text class="day-name">{{item.day}}</text>
+        <view class="add-time-btn" bindtap="onShowAddForm" data-day="{{item.day}}" data-index="{{dayIndex}}">
+          <text class="iconfont icon-add"></text>
+          <text class="add-text">添加时间</text>
+        </view>
+      </view>
+
+      <!-- 时间段列表 -->
+      <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
+        <view class="time-slot {{slot.status}}" 
+              wx:for="{{item.timeSlots}}" wx:key="id" wx:for-item="slot" wx:for-index="slotIndex">
+          <view class="time-info">
+            <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
+            <view class="status-info">
+              <text class="status-text {{slot.status}}">
+                {{slot.status === 'available' ? '可约' : '已约'}}
+              </text>
+              <text class="booked-by" wx:if="{{slot.status === 'booked'}}">{{slot.bookedBy}}</text>
+            </view>
+          </view>
+          <view class="slot-actions">
+            <text class="delete-btn" 
+                  bindtap="onDeleteTimeSlot" 
+                  data-day-index="{{dayIndex}}" 
+                  data-slot-index="{{slotIndex}}"
+                  wx:if="{{slot.status === 'available'}}">删除</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-slots" wx:else>
+        <text class="empty-text">暂无时间段</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加时间段弹窗 -->
+  <view class="add-form-overlay" wx:if="{{showAddForm}}" bindtap="onHideAddForm">
+    <view class="add-form" catchtap="{{true}}">
+      <view class="form-header">
+        <text class="form-title">添加时间段 - {{selectedDay}}</text>
+        <text class="close-btn" bindtap="onHideAddForm">×</text>
+      </view>
+      
+      <view class="form-content">
+        <view class="time-picker-row">
+          <text class="picker-label">开始时间：</text>
+          <picker mode="time" value="{{newStartTime}}" bindchange="onStartTimeChange">
+            <view class="picker-value">{{newStartTime || '请选择'}}</view>
+          </picker>
+        </view>
+        
+        <view class="time-picker-row">
+          <text class="picker-label">结束时间：</text>
+          <picker mode="time" value="{{newEndTime}}" bindchange="onEndTimeChange">
+            <view class="picker-value">{{newEndTime || '请选择'}}</view>
+          </picker>
+        </view>
+      </view>
+      
+      <view class="form-actions">
+        <button class="cancel-btn" bindtap="onHideAddForm">取消</button>
+        <button class="confirm-btn" bindtap="onConfirmAdd">确认</button>
+      </view>
+    </view>
+  </view>
+</layout> 

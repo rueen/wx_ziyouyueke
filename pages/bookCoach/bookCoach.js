@@ -16,6 +16,19 @@ Page({
     selectedCoachId: '',
     showCoachSelection: false, // 是否显示教练选择界面
     
+    // 统一的可约时间（所有教练共享）
+    coachAvailableTime: [
+      "周一 09:00-12:00",
+      "周一 14:00-17:00",
+      "周二 08:00-12:00",
+      "周三 14:00-17:00",
+      "周三 19:00-21:00",
+      "周四 15:00-18:00",
+      "周五 10:00-15:00",
+      "周六 10:00-16:00",
+      "周日 09:00-11:00"
+    ],
+    
     // 约课表单
     selectedTime: '',     // 选择的时间
     location: '',         // 上课地点
@@ -59,37 +72,21 @@ Page({
         name: "李教练",
         avatar: "/images/defaultAvatar.png",
         specialty: "瑜伽 · 普拉提",
-        remainingLessons: 5, // 剩余课时
-        availableTime: [
-          "周一 09:00-12:00",
-          "周三 14:00-17:00", 
-          "周五 10:00-15:00",
-          "周日 09:00-11:00"
-        ]
+        remainingLessons: 5 // 剩余课时
       },
       {
         id: 2,
         name: "王教练",
         avatar: "/images/defaultAvatar.png", 
         specialty: "力量训练 · 减脂",
-        remainingLessons: 8, // 剩余课时
-        availableTime: [
-          "周二 08:00-12:00",
-          "周四 15:00-18:00",
-          "周六 10:00-16:00"
-        ]
+        remainingLessons: 8 // 剩余课时
       },
       {
         id: 3,
         name: "张教练", 
         avatar: "/images/defaultAvatar.png",
         specialty: "舞蹈 · 体态矫正",
-        remainingLessons: 0, // 剩余课时为0
-        availableTime: [
-          "周一 19:00-21:00",
-          "周三 19:00-21:00",
-          "周五 19:00-21:00"
-        ]
+        remainingLessons: 0 // 剩余课时为0
       }
     ];
     

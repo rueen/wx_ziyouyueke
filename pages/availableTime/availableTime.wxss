@@ -1,0 +1,255 @@
+/**
+ * pages/availableTime/availableTime.wxss
+ * 我的可约时间页面样式
+ */
+@import '/style/iconfont.wxss';
+
+page {
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
+}
+
+/* 一周时间安排 */
+.week-schedule {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 每日时间段 */
+.day-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+/* 日期头部 */
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 40rpx;
+  background-color: #f8f9fa;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.day-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.add-time-btn {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background-color: #007aff;
+  border-radius: 16rpx;
+}
+
+.add-time-btn .iconfont {
+  font-size: 24rpx;
+  color: #fff;
+  margin-right: 8rpx;
+}
+
+.add-text {
+  font-size: 24rpx;
+  color: #fff;
+}
+
+/* 时间段列表 */
+.time-slots {
+  padding: 20rpx 40rpx 40rpx;
+}
+
+.time-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.time-slot:last-child {
+  border-bottom: none;
+}
+
+.time-info {
+  flex: 1;
+}
+
+.time-range {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+}
+
+.status-text {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-right: 12rpx;
+}
+
+.status-text.available {
+  background-color: #e8f5e8;
+  color: #4caf50;
+}
+
+.status-text.booked {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.booked-by {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 操作按钮 */
+.slot-actions {
+  display: flex;
+  align-items: center;
+}
+
+.delete-btn {
+  font-size: 26rpx;
+  color: #ff3b30;
+  padding: 12rpx 20rpx;
+  border: 1rpx solid #ff3b30;
+  border-radius: 16rpx;
+}
+
+.delete-btn:active {
+  background-color: #ff3b30;
+  color: #fff;
+}
+
+/* 空状态 */
+.empty-slots {
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 添加表单弹窗 */
+.add-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.add-form {
+  width: 600rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+/* 表单头部 */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx;
+  background-color: #f8f9fa;
+  border-bottom: 1rpx solid #e9ecef;
+}
+
+.form-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.close-btn {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+/* 表单内容 */
+.form-content {
+  padding: 40rpx;
+}
+
+.time-picker-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.time-picker-row:last-child {
+  margin-bottom: 0;
+}
+
+.picker-label {
+  font-size: 28rpx;
+  color: #333;
+  width: 120rpx;
+  flex-shrink: 0;
+}
+
+.picker-value {
+  flex: 1;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+  text-align: center;
+}
+
+/* 表单操作 */
+.form-actions {
+  display: flex;
+  padding: 20rpx 40rpx 40rpx;
+}
+
+.cancel-btn,
+.confirm-btn {
+  flex: 1;
+  height: 80rpx;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  border: none;
+  margin: 0 10rpx;
+}
+
+.cancel-btn {
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.confirm-btn {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.cancel-btn::after,
+.confirm-btn::after {
+  border: none;
+} 

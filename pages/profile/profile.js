@@ -178,5 +178,14 @@ Page({
     wx.navigateTo({
       url: '/pages/courseList/courseList'
     })
+  },
+
+  /**
+   * 我的可约时间（教练专用）
+   */
+  onMyAvailableTime() {
+    wx.navigateTo({
+      url: '/pages/availableTime/availableTime'
+    });
   }
 })

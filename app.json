@@ -10,7 +10,8 @@
     "pages/studentList/studentList",
     "pages/studentDetail/studentDetail",
     "pages/bookStudent/bookStudent",
-    "pages/addStudent/addStudent"
+    "pages/addStudent/addStudent",
+    "pages/availableTime/availableTime"
   ],
   "window": {
     "navigationStyle": "custom",

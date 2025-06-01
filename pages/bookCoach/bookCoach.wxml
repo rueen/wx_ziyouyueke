@@ -42,7 +42,7 @@
       <text class="section-title">选择时间</text>
       <view class="time-options">
         <view class="time-option {{selectedTime === item ? 'selected' : ''}}" 
-              wx:for="{{selectedCoach.availableTime}}" wx:key="index"
+              wx:for="{{coachAvailableTime}}" wx:key="index"
               bindtap="onSelectTime" data-time="{{item}}">
           <text class="time-text">{{item}}</text>
         </view>
