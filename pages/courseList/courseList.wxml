@@ -1,10 +1,62 @@
 <!--pages/courseList/courseList.wxml-->
 <navBar title="我的课程" />
 <layout class="container">
-  <view class="course-list">
-    <!-- 待完善内容 -->
-    <view class="coming-soon">
-      <text class="coming-text">功能开发中...</text>
+  <!-- Tab切换 -->
+  <view class="tab-container">
+    <view class="tab-list">
+      <view class="tab-item {{currentTab === index ? 'active' : ''}}" 
+            wx:for="{{tabs}}" wx:key="id"
+            bindtap="onTabChange" data-index="{{index}}">
+        <text class="tab-text">{{item.name}}</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list" wx:if="{{filteredCourses.length > 0}}">
+    <view class="course-item" wx:for="{{filteredCourses}}" wx:key="id">
+      <!-- 课程信息 -->
+      <view class="course-content">
+        <!-- 教练信息 -->
+        <view class="coach-info">
+          <view class="coach-avatar">
+            <image src="{{item.coachAvatar}}" class="avatar-img"></image>
+          </view>
+          <text class="coach-name">{{item.coachName}}</text>
+        </view>
+
+        <!-- 课程详情 -->
+        <view class="course-details">
+          <view class="detail-item">
+            <text class="detail-label">时间：</text>
+            <text class="detail-value">{{item.time}}</text>
+          </view>
+          <view class="detail-item">
+            <text class="detail-label">地点：</text>
+            <text class="detail-value">{{item.location}}</text>
+          </view>
+          <view class="detail-item" wx:if="{{item.remark}}">
+            <text class="detail-label">备注：</text>
+            <text class="detail-value">{{item.remark}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="course-actions" wx:if="{{item.status === 'pending'}}">
+        <button class="action-btn cancel-btn" 
+                bindtap="onCancelCourse" 
+                data-id="{{item.id}}">取消</button>
+        <button class="action-btn confirm-btn" 
+                bindtap="onConfirmCourse" 
+                data-id="{{item.id}}">确认</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-text">暂无{{tabs[currentTab].name}}课程</text>
+    <text class="empty-desc">{{currentTab === 0 ? '您还没有待确认的课程' : '暂时没有相关课程记录'}}</text>
   </view>
 </layout> 
