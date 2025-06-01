@@ -19,6 +19,7 @@ Component({
    */
   data: {
     navBarHeight: 0,
+    contentHeight: 0,
     canGoBack: false
   },
 
@@ -41,7 +42,8 @@ Component({
       const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
       const navBarHeight = systemInfo.statusBarHeight + menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
       this.setData({
-        navBarHeight
+        navBarHeight,
+        contentHeight: menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2
       })
     },
 

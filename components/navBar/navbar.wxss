@@ -1,13 +1,20 @@
 /* components/NavBar/navbar.wxss */
 @import '/style/iconfont.wxss';
 
-.layout{
+.container{
   width: 100%;
   position: fixed;
   left: 0;
   top: 0;
   z-index: 1;
   background-color: #fff;
+}
+
+.content{
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,8 +22,6 @@
 
 /* Logo样式 */
 .logo{
-  width: 34px;
-  height: 34px;
   background-color: #171819;
   border-radius: 50%;
   position: absolute;
@@ -34,11 +39,9 @@
 
 /* 返回按钮样式 */
 .back-btn {
-  width: 34px;
-  height: 34px;
   position: absolute;
   bottom: 0;
-  left: 40rpx;
+  left: 20rpx;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,9 +56,5 @@
 .title {
   font-size: 32rpx;
   color: #171819;
-  position: absolute;
-  bottom: 10rpx;
-  left: 50%;
-  transform: translateX(-50%);
   font-weight: 600;
 }
