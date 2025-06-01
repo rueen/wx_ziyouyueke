@@ -30,7 +30,10 @@
   <view class="recent-courses">
     <view class="section-header">
       <text class="section-title">近期课程</text>
-      <text class="view-more" bindtap="onViewMoreCourses" wx:if="{{recentCourses.length > 0}}">查看更多</text>
+      <text class="view-more" bindtap="onViewMoreCourses" wx:if="{{recentCourses.length > 0}}">
+        <text>查看更多</text>
+        <text class="iconfont icon-arrow-r"></text>
+      </text>
     </view>
     
     <!-- 课程列表 -->

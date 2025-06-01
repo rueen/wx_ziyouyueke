@@ -106,7 +106,10 @@ page {
 
 .view-more {
   font-size: 26rpx;
-  color: #007aff;
+  color: #999;
+}
+.view-more .icon-arrow-r{
+  font-size: 26rpx;
 }
 
 /* 课程列表 */
