@@ -1,7 +1,7 @@
 <!--pages/coachDetail/coachDetail.wxml-->
 <navBar title="教练详情" />
 <layout class="container">
-  <!-- 教练基础信息 -->
+  <!-- 教练信息 -->
   <view class="coach-header">
     <view class="coach-avatar">
       <image src="{{coachData.avatar}}" class="avatar-img"></image>
@@ -9,17 +9,21 @@
     <view class="coach-info">
       <text class="coach-name">{{coachData.name}}</text>
       <text class="coach-specialty">{{coachData.specialty}}</text>
+      <view class="remaining-lessons">
+        <text class="lessons-label">剩余课时：</text>
+        <text class="lessons-count {{coachData.remainingLessons > 0 ? 'active' : 'empty'}}">{{coachData.remainingLessons}}节</text>
+      </view>
     </view>
   </view>
 
-  <!-- 教练简介 -->
-  <view class="coach-section">
-    <text class="section-title">教练简介</text>
-    <text class="introduction-text">{{coachData.introduction}}</text>
+  <!-- 教练介绍 -->
+  <view class="intro-section">
+    <text class="section-title">教练介绍</text>
+    <text class="intro-text">{{coachData.introduction}}</text>
   </view>
 
   <!-- 可约时间 -->
-  <view class="coach-section">
+  <view class="time-section">
     <text class="section-title">可约时间</text>
     <view class="time-list">
       <view class="time-item" wx:for="{{coachData.availableTime}}" wx:key="index">

@@ -59,6 +59,7 @@ Page({
         name: "李教练",
         avatar: "/images/defaultAvatar.png",
         specialty: "瑜伽 · 普拉提",
+        remainingLessons: 5, // 剩余课时
         availableTime: [
           "周一 09:00-12:00",
           "周三 14:00-17:00", 
@@ -71,6 +72,7 @@ Page({
         name: "王教练",
         avatar: "/images/defaultAvatar.png", 
         specialty: "力量训练 · 减脂",
+        remainingLessons: 8, // 剩余课时
         availableTime: [
           "周二 08:00-12:00",
           "周四 15:00-18:00",
@@ -82,6 +84,7 @@ Page({
         name: "张教练", 
         avatar: "/images/defaultAvatar.png",
         specialty: "舞蹈 · 体态矫正",
+        remainingLessons: 0, // 剩余课时为0
         availableTime: [
           "周一 19:00-21:00",
           "周三 19:00-21:00",

@@ -7,8 +7,14 @@
         <image src="{{item.avatar}}" class="avatar-img"></image>
       </view>
       <view class="coach-info">
-        <text class="coach-name">{{item.name}}</text>
-        <text class="coach-specialty">{{item.specialty}}</text>
+        <view class="coach-main-info">
+          <text class="coach-name">{{item.name}}</text>
+          <text class="coach-specialty">{{item.specialty}}</text>
+        </view>
+        <view class="remaining-lessons">
+          <text class="lessons-label">剩余课时：</text>
+          <text class="lessons-count {{item.remainingLessons > 0 ? 'active' : 'empty'}}">{{item.remainingLessons}}节</text>
+        </view>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>

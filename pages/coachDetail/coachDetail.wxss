@@ -11,10 +11,10 @@ page {
 
 .container {
   padding: 20rpx;
-  padding-bottom: 160rpx;
+  padding-bottom: 140rpx;
 }
 
-/* 教练头部信息 */
+/* 教练基础信息 */
 .coach-header {
   background-color: #fff;
   border-radius: 20rpx;
@@ -22,6 +22,7 @@ page {
   margin-bottom: 20rpx;
   display: flex;
   align-items: center;
+  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .coach-avatar {
@@ -49,20 +50,47 @@ page {
   font-size: 36rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 16rpx;
+  margin-bottom: 12rpx;
 }
 
 .coach-specialty {
   font-size: 28rpx;
   color: #666;
+  margin-bottom: 16rpx;
+}
+
+.remaining-lessons {
+  display: flex;
+  align-items: center;
+}
+
+.lessons-label {
+  font-size: 26rpx;
+  color: #999;
+  margin-right: 8rpx;
+}
+
+.lessons-count {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.lessons-count.active {
+  color: #007aff;
+}
+
+.lessons-count.empty {
+  color: #ff3b30;
 }
 
 /* 信息区块 */
-.coach-section {
+.intro-section,
+.time-section {
   background-color: #fff;
   border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .section-title {
@@ -73,14 +101,13 @@ page {
   display: block;
 }
 
-/* 简介文本 */
-.introduction-text {
+.intro-text {
   font-size: 28rpx;
   color: #666;
   line-height: 1.6;
 }
 
-/* 时间列表 */
+/* 可约时间 */
 .time-list {
   display: flex;
   flex-direction: column;
@@ -89,7 +116,7 @@ page {
 .time-item {
   background-color: #f8f9fa;
   border-radius: 12rpx;
-  padding: 20rpx 24rpx;
+  padding: 24rpx;
   margin-bottom: 16rpx;
 }
 
@@ -123,6 +150,10 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.book-button:active {
+  background-color: #555;
 }
 
 .book-button::after {

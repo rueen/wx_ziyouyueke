@@ -15,24 +15,22 @@ page {
 
 /* 教练列表 */
 .coach-list {
-  background-color: #fff;
-  border-radius: 20rpx;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .coach-item {
   display: flex;
   align-items: center;
+  background-color: #fff;
+  border-radius: 20rpx;
   padding: 40rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.coach-item:last-child {
-  border-bottom: none;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .coach-item:active {
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
 }
 
 /* 教练头像 */
@@ -58,11 +56,16 @@ page {
   flex-direction: column;
 }
 
+.coach-main-info {
+  margin-bottom: 12rpx;
+}
+
 .coach-name {
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 12rpx;
+  margin-bottom: 8rpx;
+  display: block;
 }
 
 .coach-specialty {
@@ -70,10 +73,34 @@ page {
   color: #666;
 }
 
+.remaining-lessons {
+  display: flex;
+  align-items: center;
+}
+
+.lessons-label {
+  font-size: 26rpx;
+  color: #999;
+  margin-right: 8rpx;
+}
+
+.lessons-count {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.lessons-count.active {
+  color: #007aff;
+}
+
+.lessons-count.empty {
+  color: #ff3b30;
+}
+
 /* 箭头 */
 .arrow-icon {
-  font-size: 24rpx;
-  color: #ccc;
+  color: #999;
+  font-size: 28rpx;
 }
 
 /* 空状态 */
@@ -82,16 +109,16 @@ page {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 400rpx;
+  height: 60vh;
 }
 
 .empty-text {
   font-size: 32rpx;
-  color: #666;
+  color: #999;
   margin-bottom: 16rpx;
 }
 
 .empty-desc {
   font-size: 28rpx;
-  color: #999;
+  color: #ccc;
 } 

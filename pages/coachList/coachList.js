@@ -13,6 +13,7 @@ Page({
         name: "李教练",
         avatar: "/images/defaultAvatar.png",
         specialty: "瑜伽 · 普拉提",
+        remainingLessons: 5, // 剩余课时
         introduction: "资深瑜伽导师，拥有5年教学经验，擅长哈他瑜伽和阴瑜伽，曾获得国际瑜伽联盟200小时认证。",
         availableTime: [
           "周一 09:00-12:00",
@@ -26,6 +27,7 @@ Page({
         name: "王教练",
         avatar: "/images/defaultAvatar.png", 
         specialty: "力量训练 · 减脂",
+        remainingLessons: 8, // 剩余课时
         introduction: "专业健身教练，精通力量训练和减脂塑形，帮助众多学员达成健身目标，拥有ACSM认证。",
         availableTime: [
           "周二 08:00-12:00",
@@ -38,6 +40,7 @@ Page({
         name: "张教练", 
         avatar: "/images/defaultAvatar.png",
         specialty: "舞蹈 · 体态矫正",
+        remainingLessons: 0, // 剩余课时为0
         introduction: "舞蹈专业出身，擅长爵士舞、现代舞教学，同时专注于体态矫正，让学员拥有优美身姿。",
         availableTime: [
           "周一 19:00-21:00",
