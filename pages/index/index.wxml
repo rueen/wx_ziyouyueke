@@ -14,13 +14,13 @@
     </view>
 
     <view class="stats-row">
-      <view class="stat-item" bindtap="onStatClick">
+      <view class="stat-item" bindtap="onMyCoachClick">
         <text class="stat-label">我的教练</text>
         <text class="iconfont icon-arrow-r stat-arrow"></text>
       </view>
       
-      <view class="stat-item" bindtap="onStatClick">
-        <text class="stat-label">待处理</text>
+      <view class="stat-item" bindtap="onPendingCoursesClick">
+        <text class="stat-label">待确认课程</text>
         <text class="iconfont icon-arrow-r stat-arrow"></text>
       </view>
     </view>
@@ -28,8 +28,38 @@
   
   <!-- 近期课程 -->
   <view class="recent-courses">
-    <text class="section-title">近期课程</text>
-    <view class="empty-courses">
+    <view class="section-header">
+      <text class="section-title">近期课程</text>
+      <text class="view-more" bindtap="onViewMoreCourses" wx:if="{{recentCourses.length > 0}}">查看更多</text>
+    </view>
+    
+    <!-- 课程列表 -->
+    <view class="course-list" wx:if="{{recentCourses.length > 0}}">
+      <view class="course-item" wx:for="{{recentCourses}}" wx:key="id">
+        <view class="course-header">
+          <view class="coach-info">
+            <view class="coach-avatar">
+              <image src="{{item.coachAvatar}}" class="avatar-img"></image>
+            </view>
+            <text class="coach-name">{{item.coachName}}</text>
+          </view>
+          <view class="course-status confirmed">已确认</view>
+        </view>
+        <view class="course-details">
+          <view class="detail-row">
+            <text class="detail-label">时间</text>
+            <text class="detail-value">{{item.time}}</text>
+          </view>
+          <view class="detail-row">
+            <text class="detail-label">地点</text>
+            <text class="detail-value">{{item.location}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-courses" wx:else>
       <text class="empty-text">暂无课程</text>
     </view>
   </view>

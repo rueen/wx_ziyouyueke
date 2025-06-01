@@ -33,6 +33,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 从URL参数获取初始tab
+    if (options.tab) {
+      const tabIndex = parseInt(options.tab);
+      if (tabIndex >= 0 && tabIndex < this.data.tabs.length) {
+        this.setData({
+          currentTab: tabIndex
+        });
+      }
+    }
+    
     this.loadCourses();
   },
 
