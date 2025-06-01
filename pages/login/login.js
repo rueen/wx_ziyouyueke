@@ -8,7 +8,8 @@ Page({
    */
   data: {
     canIUse: wx.canIUse('button.open-type.getPhoneNumber'),
-    hasUserInfo: false
+    hasUserInfo: false,
+    agreedToTerms: false // 是否同意用户协议
   },
 
   /**
@@ -42,9 +43,27 @@ Page({
   },
 
   /**
+   * 用户协议复选框变化事件
+   */
+  onAgreementChange(e) {
+    this.setData({
+      agreedToTerms: e.detail.value
+    });
+  },
+
+  /**
    * 微信授权登录
    */
   onWechatLogin(e) {
+    // 检查是否同意用户协议
+    if (!this.data.agreedToTerms) {
+      wx.showToast({
+        title: '请先同意用户协议',
+        icon: 'none'
+      });
+      return;
+    }
+
     if (e.detail.errMsg === 'getPhoneNumber:ok') {
       // 获取手机号成功
       const { code, encryptedData, iv } = e.detail;
