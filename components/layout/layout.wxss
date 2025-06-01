@@ -1,1 +1,9 @@
-/* components/layout/layout.wxss */
+/**
+ * components/layout/layout.wxss
+ * 布局组件样式
+ */
+
+scroll-view {
+  height: 100vh;
+  box-sizing: border-box;
+}

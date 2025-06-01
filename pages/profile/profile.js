@@ -18,7 +18,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.loadUserInfo();
   },
 
   /**
@@ -32,7 +32,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.loadUserInfo();
   },
 
   /**
@@ -68,6 +68,29 @@ Page({
    */
   onShareAppMessage() {
 
+  },
+
+  /**
+   * 加载用户信息
+   */
+  loadUserInfo() {
+    const storedUserInfo = wx.getStorageSync('userInfo');
+    if (storedUserInfo && storedUserInfo.nickName) {
+      this.setData({
+        userInfo: {
+          nickname: storedUserInfo.nickName,
+          avatar: storedUserInfo.avatarUrl || '/images/defaultAvatar.png'
+        }
+      });
+    } else {
+      // 确保有默认值
+      this.setData({
+        userInfo: {
+          nickname: '请设置昵称',
+          avatar: '/images/defaultAvatar.png'
+        }
+      });
+    }
   },
 
   /**

@@ -9,7 +9,7 @@ Page({
   data: {
     userInfo: {
       name: 'rueen',
-      avatar: '/images/profile.png'
+      avatar: '/images/defaultAvatar.png'
     },
     stats: {
       points: 0,
@@ -22,20 +22,43 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-    
+    this.loadUserInfo();
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.loadUserInfo();
+  },
+
+  /**
+   * 加载用户信息
+   */
+  loadUserInfo() {
+    const storedUserInfo = wx.getStorageSync('userInfo');
+    if (storedUserInfo && storedUserInfo.nickName) {
+      this.setData({
+        userInfo: {
+          name: storedUserInfo.nickName,
+          avatar: storedUserInfo.avatarUrl || '/images/defaultAvatar.png'
+        }
+      });
+    } else {
+      // 确保有默认值
+      this.setData({
+        userInfo: {
+          name: 'rueen',
+          avatar: '/images/defaultAvatar.png'
+        }
+      });
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function () {
     
   },
 
@@ -53,9 +76,8 @@ Page({
    * 统计项点击事件
    */
   onStatClick: function(e) {
-    const type = e.currentTarget.dataset.type
     wx.showToast({
-      title: `查看${type}`,
+      title: '功能开发中',
       icon: 'none'
     })
   }

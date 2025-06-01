@@ -38,13 +38,21 @@ Component({
      * 获取导航栏高度
      */
     getNavBarHeight(){
-      const systemInfo = wx.getSystemInfoSync();
-      const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
-      const navBarHeight = systemInfo.statusBarHeight + menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
-      this.setData({
-        navBarHeight,
-        contentHeight: menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2
-      })
+      try {
+        const systemInfo = wx.getSystemInfoSync();
+        const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+        const navBarHeight = systemInfo.statusBarHeight + menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
+        this.setData({
+          navBarHeight,
+          contentHeight: menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2
+        })
+      } catch (error) {
+        console.warn('获取系统信息失败，使用默认高度', error);
+        this.setData({
+          navBarHeight: 88,
+          contentHeight: 44
+        });
+      }
     },
 
     /**

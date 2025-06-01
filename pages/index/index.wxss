@@ -6,9 +6,6 @@
 page {
   height: 100vh;
   background-color: #fff;
-}
-
-.container {
   padding: 40rpx;
 }
 

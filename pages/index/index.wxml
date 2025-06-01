@@ -5,11 +5,11 @@
   <view class="user-card">
     <view class="user-header">
       <view class="user-avatar">
-        <image src="/images/defaultAvatar.png" class="avatar-img"></image>
+        <image src="{{userInfo.avatar}}" class="avatar-img"></image>
       </view>
       <view class="user-info">
         <text class="greeting">HELLO GYM GIRL</text>
-        <text class="username">rueen</text>
+        <text class="username">{{userInfo.name}}</text>
       </view>
     </view>
 
