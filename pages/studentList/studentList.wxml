@@ -1,0 +1,27 @@
+<!--pages/studentList/studentList.wxml-->
+<navBar title="我的学员" />
+<layout class="container">
+  <view class="student-list" wx:if="{{students.length > 0}}">
+    <view class="student-item" wx:for="{{students}}" wx:key="id" bindtap="onStudentDetail" data-student="{{item}}">
+      <view class="student-avatar">
+        <image src="{{item.avatar}}" class="avatar-img"></image>
+      </view>
+      <view class="student-info">
+        <view class="student-main-info">
+          <text class="student-name">{{item.name}}</text>
+        </view>
+        <view class="remaining-lessons">
+          <text class="lessons-label">剩余课时：</text>
+          <text class="lessons-count {{item.remainingLessons > 0 ? 'active' : 'empty'}}">{{item.remainingLessons}}节</text>
+        </view>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <text class="empty-text">暂无学员</text>
+    <text class="empty-desc">您还没有关联任何学员</text>
+  </view>
+</layout> 

@@ -8,14 +8,14 @@
         <image src="{{userInfo.avatar}}" class="avatar-img"></image>
       </view>
       <view class="user-info">
-        <text class="greeting">HELLO GYM GIRL</text>
+        <text class="greeting">{{userRole === 'student' ? 'HELLO GYM GIRL' : 'HELLO COACH'}}</text>
         <text class="username">{{userInfo.name}}</text>
       </view>
     </view>
 
     <view class="stats-row">
-      <view class="stat-item" bindtap="onMyCoachClick">
-        <text class="stat-label">我的教练</text>
+      <view class="stat-item" bindtap="onMyCoachOrStudentClick">
+        <text class="stat-label">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
         <text class="iconfont icon-arrow-r stat-arrow"></text>
       </view>
       
@@ -40,11 +40,11 @@
     <view class="course-list" wx:if="{{recentCourses.length > 0}}">
       <view class="course-item" wx:for="{{recentCourses}}" wx:key="id">
         <view class="course-header">
-          <view class="coach-info">
-            <view class="coach-avatar">
-              <image src="{{item.coachAvatar}}" class="avatar-img"></image>
+          <view class="person-info">
+            <view class="person-avatar">
+              <image src="{{userRole === 'student' ? item.coachAvatar : item.studentAvatar}}" class="avatar-img"></image>
             </view>
-            <text class="coach-name">{{item.coachName}}</text>
+            <text class="person-name">{{userRole === 'student' ? item.coachName : item.studentName}}</text>
           </view>
           <view class="course-status confirmed">已确认</view>
         </view>
@@ -69,6 +69,6 @@
   
   <!-- 立即约课按钮 -->
   <view class="book-button-container">
-    <button class="book-button" bindtap="onBookCourse">立即约课</button>
+    <button class="book-button" bindtap="onBookCourse">{{userRole === 'student' ? '立即约课' : '约学员'}}</button>
   </view>
 </layout>

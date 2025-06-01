@@ -136,12 +136,12 @@ page {
   margin-bottom: 24rpx;
 }
 
-.coach-info {
+.person-info {
   display: flex;
   align-items: center;
 }
 
-.coach-avatar {
+.person-avatar {
   width: 60rpx;
   height: 60rpx;
   border-radius: 50%;
@@ -150,7 +150,7 @@ page {
   background-color: #fff;
 }
 
-.coach-name {
+.person-name {
   font-size: 28rpx;
   color: #333;
   font-weight: 600;

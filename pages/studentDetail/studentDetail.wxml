@@ -1,0 +1,28 @@
+<!--pages/studentDetail/studentDetail.wxml-->
+<navBar title="学员详情" />
+<layout class="container">
+  <!-- 学员信息 -->
+  <view class="student-header">
+    <view class="student-avatar">
+      <image src="{{studentData.avatar}}" class="avatar-img"></image>
+    </view>
+    <view class="student-info">
+      <text class="student-name">{{studentData.name}}</text>
+      <view class="remaining-lessons">
+        <text class="lessons-label">剩余课时：</text>
+        <text class="lessons-count {{studentData.remainingLessons > 0 ? 'active' : 'empty'}}">{{studentData.remainingLessons}}节</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学员介绍 -->
+  <view class="intro-section">
+    <text class="section-title">学员介绍</text>
+    <text class="intro-text">{{studentData.introduction}}</text>
+  </view>
+
+  <!-- 约课按钮 -->
+  <view class="book-button-container">
+    <button class="book-button" bindtap="onBookStudent">立即约课</button>
+  </view>
+</layout>

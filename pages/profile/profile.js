@@ -11,6 +11,12 @@ Page({
     userInfo: {
       nickname: '请设置昵称',
       avatar: '/images/defaultAvatar.png'
+    },
+    // 身份信息
+    userRole: 'student', // 'student' 学员, 'coach' 教练
+    roleNames: {
+      student: '学员',
+      coach: '教练'
     }
   },
 
@@ -19,6 +25,7 @@ Page({
    */
   onLoad(options) {
     this.loadUserInfo();
+    this.loadUserRole();
   },
 
   /**
@@ -33,6 +40,7 @@ Page({
    */
   onShow() {
     this.loadUserInfo();
+    this.loadUserRole();
   },
 
   /**
@@ -94,6 +102,48 @@ Page({
   },
 
   /**
+   * 加载用户身份
+   */
+  loadUserRole() {
+    const storedRole = wx.getStorageSync('userRole') || 'student';
+    this.setData({
+      userRole: storedRole
+    });
+  },
+
+  /**
+   * 切换身份
+   */
+  onSwitchRole() {
+    const { userRole, roleNames } = this.data;
+    const targetRole = userRole === 'student' ? 'coach' : 'student';
+    
+    wx.showModal({
+      title: '切换身份',
+      content: `确定要切换到${roleNames[targetRole]}身份吗？`,
+      success: (res) => {
+        if (res.confirm) {
+          // 保存新身份
+          wx.setStorageSync('userRole', targetRole);
+          this.setData({
+            userRole: targetRole
+          });
+          
+          wx.showToast({
+            title: `已切换到${roleNames[targetRole]}身份`,
+            icon: 'success'
+          });
+
+          // 通知其他页面更新
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
+      }
+    });
+  },
+
+  /**
    * 编辑个人资料
    */
   onEditProfile() {
@@ -103,12 +153,22 @@ Page({
   },
 
   /**
-   * 我的教练
+   * 我的教练/我的学员
    */
-  onMyCoaches() {
-    wx.navigateTo({
-      url: '/pages/coachList/coachList'
-    })
+  onMyCoachesOrStudents() {
+    const { userRole } = this.data;
+    
+    if (userRole === 'student') {
+      // 学员身份：进入我的教练
+      wx.navigateTo({
+        url: '/pages/coachList/coachList'
+      });
+    } else {
+      // 教练身份：进入我的学员
+      wx.navigateTo({
+        url: '/pages/studentList/studentList'
+      });
+    }
   },
 
   /**

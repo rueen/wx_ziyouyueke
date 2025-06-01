@@ -6,16 +6,19 @@
 
 page {
   height: 100vh;
-  background-color: #fff;
-  padding: 40rpx;
+  background-color: #f5f5f5;
+}
+
+.container {
+  padding: 20rpx;
 }
 
 /* 用户信息区域 */
 .user-section {
-  background-color: #f4f5f6;
-  border-radius: 24rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
   padding: 40rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,11 +36,7 @@ page {
   border-radius: 50%;
   overflow: hidden;
   margin-right: 24rpx;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 4rpx solid #fff;
+  background-color: #f5f5f5;
 }
 
 .avatar-img {
@@ -47,45 +46,76 @@ page {
 }
 
 .user-details {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .username {
-  font-size: 36rpx;
-  color: #000;
-  margin-bottom: 8rpx;
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.user-desc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .user-desc {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.role-tag {
+  display: flex;
+  align-items: center;
+  background-color: #f0f9ff;
+  border: 1rpx solid #007aff;
+  border-radius: 16rpx;
+  padding: 8rpx 16rpx;
+  margin-left: 20rpx;
+}
+
+.role-text {
   font-size: 24rpx;
-  color: #666;
+  color: #007aff;
+  margin-right: 8rpx;
+}
+
+.switch-text {
+  font-size: 24rpx;
+  color: #007aff;
 }
 
 .arrow-icon {
-  color: #333;
-  font-size: 26rpx;
+  color: #ccc;
+  font-size: 24rpx;
 }
 
 /* 功能菜单 */
 .menu-section {
-  background-color: #f4f5f6;
-  border-radius: 24rpx;
-  padding: 20rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30rpx 20rpx;
-  background-color: #fff;
-  border-radius: 20rpx;
-  margin-bottom: 20rpx;
+  padding: 40rpx;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
 .menu-item:last-child {
-  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background-color: #f9f9f9;
 }
 
 .menu-content {
@@ -94,12 +124,12 @@ page {
 }
 
 .menu-icon {
-  font-size: 32rpx;
-  color: #333;
-  margin-right: 20rpx;
+  font-size: 40rpx;
+  color: #007aff;
+  margin-right: 24rpx;
 }
 
 .menu-text {
-  font-size: 30rpx;
+  font-size: 32rpx;
   color: #333;
 }

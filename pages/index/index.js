@@ -17,7 +17,9 @@ Page({
       coupons: 1
     },
     // 近期课程
-    recentCourses: []
+    recentCourses: [],
+    // 用户身份
+    userRole: 'student' // 'student' 学员, 'coach' 教练
   },
 
   /**
@@ -25,6 +27,7 @@ Page({
    */
   onLoad: function (options) {
     this.loadUserInfo();
+    this.loadUserRole();
     this.loadRecentCourses();
   },
 
@@ -33,6 +36,7 @@ Page({
    */
   onShow: function () {
     this.loadUserInfo();
+    this.loadUserRole();
     this.loadRecentCourses();
   },
 
@@ -60,42 +64,93 @@ Page({
   },
 
   /**
+   * 加载用户身份
+   */
+  loadUserRole() {
+    const storedRole = wx.getStorageSync('userRole') || 'student';
+    this.setData({
+      userRole: storedRole
+    });
+  },
+
+  /**
    * 加载近期课程
    */
   loadRecentCourses() {
-    // 这里应该从后端API获取已确认的课程，目前使用静态数据
-    const recentCourses = [
-      {
-        id: 2,
-        coachId: 2,
-        coachName: '王教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月12日 15:00-18:00',
-        location: '中心广场健身房',
-        remark: '力量训练课程，请穿运动鞋',
-        status: 'confirmed'
-      },
-      {
-        id: 6,
-        coachId: 1,
-        coachName: '李教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月16日 09:00-12:00',
-        location: '万达广场健身房',
-        remark: '瑜伽课程',
-        status: 'confirmed'
-      },
-      {
-        id: 7,
-        coachId: 3,
-        coachName: '张教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月18日 19:00-21:00',
-        location: '舞蹈工作室',
-        remark: '体态矫正',
-        status: 'confirmed'
-      }
-    ];
+    const { userRole } = this.data;
+    
+    // 根据身份加载不同的课程数据
+    let recentCourses = [];
+    
+    if (userRole === 'student') {
+      // 学员身份：显示已确认的课程（教练信息）
+      recentCourses = [
+        {
+          id: 2,
+          coachId: 2,
+          coachName: '王教练',
+          coachAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月12日 15:00-18:00',
+          location: '中心广场健身房',
+          remark: '力量训练课程，请穿运动鞋',
+          status: 'confirmed'
+        },
+        {
+          id: 6,
+          coachId: 1,
+          coachName: '李教练',
+          coachAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月16日 09:00-12:00',
+          location: '万达广场健身房',
+          remark: '瑜伽课程',
+          status: 'confirmed'
+        },
+        {
+          id: 7,
+          coachId: 3,
+          coachName: '张教练',
+          coachAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月18日 19:00-21:00',
+          location: '舞蹈工作室',
+          remark: '体态矫正',
+          status: 'confirmed'
+        }
+      ];
+    } else {
+      // 教练身份：显示已确认的课程（学员信息）
+      recentCourses = [
+        {
+          id: 2,
+          studentId: 1,
+          studentName: '小李',
+          studentAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月12日 15:00-18:00',
+          location: '中心广场健身房',
+          remark: '力量训练课程',
+          status: 'confirmed'
+        },
+        {
+          id: 6,
+          studentId: 2,
+          studentName: '小王',
+          studentAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月16日 09:00-12:00',
+          location: '万达广场健身房',
+          remark: '瑜伽课程',
+          status: 'confirmed'
+        },
+        {
+          id: 7,
+          studentId: 3,
+          studentName: '小张',
+          studentAvatar: '/images/defaultAvatar.png',
+          time: '2024年1月18日 19:00-21:00',
+          location: '舞蹈工作室',
+          remark: '体态矫正',
+          status: 'confirmed'
+        }
+      ];
+    }
     
     this.setData({
       recentCourses
@@ -113,18 +168,38 @@ Page({
    * 约课按钮点击事件
    */
   onBookCourse: function() {
-    wx.navigateTo({
-      url: '/pages/bookCoach/bookCoach?from=home'
-    });
+    const { userRole } = this.data;
+    
+    if (userRole === 'student') {
+      // 学员身份：约教练
+      wx.navigateTo({
+        url: '/pages/bookCoach/bookCoach?from=home'
+      });
+    } else {
+      // 教练身份：约学员
+      wx.navigateTo({
+        url: '/pages/bookStudent/bookStudent?from=home'
+      });
+    }
   },
 
   /**
-   * 我的教练点击事件
+   * 我的教练/我的学员点击事件
    */
-  onMyCoachClick: function() {
-    wx.navigateTo({
-      url: '/pages/coachList/coachList'
-    });
+  onMyCoachOrStudentClick: function() {
+    const { userRole } = this.data;
+    
+    if (userRole === 'student') {
+      // 学员身份：我的教练
+      wx.navigateTo({
+        url: '/pages/coachList/coachList'
+      });
+    } else {
+      // 教练身份：我的学员
+      wx.navigateTo({
+        url: '/pages/studentList/studentList'
+      });
+    }
   },
 
   /**
