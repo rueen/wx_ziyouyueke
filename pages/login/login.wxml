@@ -1,0 +1,38 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <!-- 顶部Logo区域 -->
+  <view class="logo-section">
+    <view class="logo">
+      <text class="iconfont icon-logo"></text>
+    </view>
+    <text class="slogan">一步约好私教课</text>
+  </view>
+
+  <!-- 登录区域 -->
+  <view class="login-section">
+    <!-- 用户协议 -->
+    <view class="agreement-section">
+      <text class="agreement-text">我已认真阅读并同意</text>
+      <text class="agreement-link" bindtap="onViewAgreement">《用户协议和隐私政策》</text>
+    </view>
+
+    <!-- 一键登录按钮 -->
+    <button class="login-btn" 
+            open-type="getPhoneNumber" 
+            bindgetphonenumber="onWechatLogin"
+            wx:if="{{canIUse}}">
+      <text class="login-text">一键登录</text>
+    </button>
+
+    <!-- 不支持获取手机号的降级处理 -->
+    <button class="login-btn" bindtap="onWechatLogin" wx:else>
+      <text class="iconfont icon-logo login-icon"></text>
+      <text class="login-text">微信登录</text>
+    </button>
+
+    <!-- 游客登录 -->
+    <view class="guest-login" bindtap="onGuestLogin">
+      <text class="guest-text">游客登录</text>
+    </view>
+  </view>
+</view> 

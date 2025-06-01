@@ -39,6 +39,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // 检查登录状态
+    if (!this.checkLoginStatus()) {
+      return;
+    }
+    
     this.loadUserInfo();
     this.loadUserRole();
   },
@@ -186,6 +191,53 @@ Page({
   onMyAvailableTime() {
     wx.navigateTo({
       url: '/pages/availableTime/availableTime'
+    });
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLoginStatus() {
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    if (!isLoggedIn) {
+      // 未登录，跳转到登录页
+      wx.redirectTo({
+        url: '/pages/login/login'
+      });
+      return false;
+    }
+    return true;
+  },
+
+  /**
+   * 退出登录
+   */
+  onLogout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          // 清除登录信息
+          wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('isLoggedIn');
+          wx.removeStorageSync('loginType');
+          wx.removeStorageSync('userRole');
+          
+          wx.showToast({
+            title: '已退出登录',
+            icon: 'success',
+            duration: 2000
+          });
+
+          // 跳转到登录页
+          setTimeout(() => {
+            wx.redirectTo({
+              url: '/pages/login/login'
+            });
+          }, 2000);
+        }
+      }
     });
   }
 })

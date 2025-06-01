@@ -26,6 +26,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // 检查登录状态
+    this.checkLoginStatus();
+    
     this.loadUserInfo();
     this.loadUserRole();
     this.loadRecentCourses();
@@ -35,9 +38,27 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 检查登录状态
+    this.checkLoginStatus();
+    
     this.loadUserInfo();
     this.loadUserRole();
     this.loadRecentCourses();
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLoginStatus() {
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    if (!isLoggedIn) {
+      // 未登录，跳转到登录页
+      wx.redirectTo({
+        url: '/pages/login/login'
+      });
+      return false;
+    }
+    return true;
   },
 
   /**
