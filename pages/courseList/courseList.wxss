@@ -13,8 +13,6 @@ page {
 .tab-container {
   background-color: #fff;
   margin-bottom: 20rpx;
-  border-radius: 20rpx;
-  padding: 8rpx;
 }
 
 .tab-list {
@@ -23,13 +21,15 @@ page {
 
 .tab-item {
   flex: 1;
-  padding: 16rpx 20rpx;
+  padding: 24rpx 20rpx;
   text-align: center;
+  border-radius: 12rpx;
 }
 
 .tab-text {
   font-size: 28rpx;
   color: #999;
+  font-weight: 500;
 }
 
 .tab-item.active .tab-text {
@@ -114,6 +114,10 @@ page {
   word-break: break-all;
 }
 
+.cancel-reason {
+  color: #ff3b30;
+}
+
 /* 操作按钮 */
 .course-actions {
   display: flex;
@@ -152,6 +156,110 @@ page {
 
 .confirm-btn:active {
   background-color: #0056b3;
+}
+
+/* 取消原因模态框 */
+.cancel-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.cancel-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600rpx;
+  background-color: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.modal-close {
+  font-size: 32rpx;
+  color: #999;
+  padding: 8rpx;
+}
+
+.modal-body {
+  padding: 32rpx;
+}
+
+.cancel-reason-input {
+  width: 100%;
+  min-height: 120rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+  border: 1rpx solid #e9ecef;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+.modal-footer {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.modal-btn {
+  border: none;
+  background: none;
+  font-weight: normal;
+}
+
+.modal-btn::after {
+  border: none;
+}
+
+.cancel-modal-btn {
+  color: #666;
+  border-right: 1rpx solid #f0f0f0;
 }
 
 /* 空状态 */

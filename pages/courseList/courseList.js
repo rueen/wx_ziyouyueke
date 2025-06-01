@@ -21,7 +21,12 @@ Page({
     filteredCourses: [], // 当前tab显示的课程
     
     // 操作状态
-    operatingCourseId: null
+    operatingCourseId: null,
+    
+    // 取消原因模态框
+    showCancelModal: false,
+    cancellingCourseId: null,
+    cancelReason: ''
   },
 
   /**
@@ -104,6 +109,7 @@ Page({
         location: '健身中心',
         remark: '减脂训练',
         status: 'cancelled',
+        cancelReason: '临时有事无法参加',
         createTime: '2024-01-03 09:30:00'
       }
     ];
@@ -163,35 +169,75 @@ Page({
   },
 
   /**
-   * 取消课程
+   * 显示取消原因模态框
    */
-  onCancelCourse(e) {
+  onShowCancelModal(e) {
     const courseId = e.currentTarget.dataset.id;
+    this.setData({
+      showCancelModal: true,
+      cancellingCourseId: courseId,
+      cancelReason: ''
+    });
+  },
+
+  /**
+   * 隐藏取消原因模态框
+   */
+  onHideCancelModal() {
+    this.setData({
+      showCancelModal: false,
+      cancellingCourseId: null,
+      cancelReason: ''
+    });
+  },
+
+  /**
+   * 输入取消原因
+   */
+  onCancelReasonInput(e) {
+    this.setData({
+      cancelReason: e.detail.value
+    });
+  },
+
+  /**
+   * 确认取消课程
+   */
+  onConfirmCancel() {
+    const { cancellingCourseId, cancelReason } = this.data;
     
-    wx.showModal({
-      title: '取消课程',
-      content: '确定要取消这节课程吗？取消后不可恢复。',
-      confirmColor: '#ff3b30',
-      success: (res) => {
-        if (res.confirm) {
-          this.updateCourseStatus(courseId, 'cancelled');
-          wx.showToast({
-            title: '课程已取消',
-            icon: 'none'
-          });
-        }
-      }
+    if (!cancelReason.trim()) {
+      wx.showToast({
+        title: '请填写取消原因',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 更新课程状态并保存取消原因
+    this.updateCourseStatus(cancellingCourseId, 'cancelled', cancelReason.trim());
+    
+    // 隐藏模态框
+    this.onHideCancelModal();
+    
+    wx.showToast({
+      title: '课程已取消',
+      icon: 'none'
     });
   },
 
   /**
    * 更新课程状态
    */
-  updateCourseStatus(courseId, newStatus) {
+  updateCourseStatus(courseId, newStatus, cancelReason = '') {
     const { courses } = this.data;
     const updatedCourses = courses.map(course => {
       if (course.id === courseId) {
-        return { ...course, status: newStatus };
+        const updatedCourse = { ...course, status: newStatus };
+        if (newStatus === 'cancelled' && cancelReason) {
+          updatedCourse.cancelReason = cancelReason;
+        }
+        return updatedCourse;
       }
       return course;
     });

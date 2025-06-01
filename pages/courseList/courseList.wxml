@@ -39,13 +39,18 @@
             <text class="detail-label">备注：</text>
             <text class="detail-value">{{item.remark}}</text>
           </view>
+          <!-- 显示取消原因 -->
+          <view class="detail-item" wx:if="{{item.status === 'cancelled' && item.cancelReason}}">
+            <text class="detail-label">原因：</text>
+            <text class="detail-value cancel-reason">{{item.cancelReason}}</text>
+          </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
       <view class="course-actions" wx:if="{{item.status === 'pending'}}">
         <button class="action-btn cancel-btn" 
-                bindtap="onCancelCourse" 
+                bindtap="onShowCancelModal" 
                 data-id="{{item.id}}">取消</button>
         <button class="action-btn confirm-btn" 
                 bindtap="onConfirmCourse" 
@@ -59,4 +64,29 @@
     <text class="empty-text">暂无{{tabs[currentTab].name}}课程</text>
     <text class="empty-desc">{{currentTab === 0 ? '您还没有待确认的课程' : '暂时没有相关课程记录'}}</text>
   </view>
-</layout> 
+</layout>
+
+<!-- 取消原因模态框 -->
+<view class="cancel-modal {{showCancelModal ? 'show' : ''}}" wx:if="{{showCancelModal}}">
+  <view class="modal-overlay" bindtap="onHideCancelModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">取消课程</text>
+      <text class="modal-close" bindtap="onHideCancelModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <textarea class="cancel-reason-input" 
+                placeholder="请输入取消原因..." 
+                value="{{cancelReason}}" 
+                bindinput="onCancelReasonInput"
+                maxlength="200"
+                auto-height></textarea>
+      <view class="char-count">{{cancelReason.length}}/200</view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel-modal-btn" bindtap="onHideCancelModal">取消</button>
+      <button class="modal-btn confirm-modal-btn active" 
+              bindtap="onConfirmCancel">确认取消</button>
+    </view>
+  </view>
+</view> 
