@@ -25,8 +25,9 @@
   background-color: #171819;
   border-radius: 50%;
   position: absolute;
-  bottom: 0;
   left: 40rpx;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
