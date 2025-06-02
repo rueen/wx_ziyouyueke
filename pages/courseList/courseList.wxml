@@ -61,16 +61,24 @@
         
         <!-- 已确认状态的按钮 -->
         <view wx:elif="{{item.status === 'confirmed'}}" class="action-buttons">
-          <!-- 学员视角：查看课程码 -->
-          <button wx:if="{{userRole === 'student'}}" 
-                  class="action-btn primary-btn" 
-                  bindtap="onViewCourseCode" 
-                  data-id="{{item.id}}">查看课程码</button>
+          <!-- 学员视角：查看课程码和取消按钮 -->
+          <view wx:if="{{userRole === 'student'}}" class="button-group">
+            <button class="action-btn cancel-btn" 
+                    bindtap="onShowCancelModal" 
+                    data-id="{{item.id}}">取消</button>
+            <button class="action-btn primary-btn" 
+                    bindtap="onViewCourseCode" 
+                    data-id="{{item.id}}">查看课程码</button>
+          </view>
           
-          <!-- 教练视角：核销按钮 -->
-          <button wx:if="{{userRole === 'coach'}}" 
-                  class="action-btn verify-btn" 
-                  bindtap="onScanVerify">核销</button>
+          <!-- 教练视角：取消和核销按钮 -->
+          <view wx:if="{{userRole === 'coach'}}" class="button-group">
+            <button class="action-btn cancel-btn" 
+                    bindtap="onShowCancelModal" 
+                    data-id="{{item.id}}">取消</button>
+            <button class="action-btn verify-btn" 
+                    bindtap="onScanVerify">核销</button>
+          </view>
         </view>
       </view>
     </view>
