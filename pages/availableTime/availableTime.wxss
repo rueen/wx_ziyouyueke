@@ -1,6 +1,6 @@
 /**
  * pages/availableTime/availableTime.wxss
- * 我的可约时间页面样式
+ * 我的时间页面样式
  */
 @import '/style/iconfont.wxss';
 
@@ -13,123 +13,104 @@ page {
   padding: 20rpx;
 }
 
-/* 一周时间安排 */
-.week-schedule {
+/* 通用样式 */
+.section-header {
   display: flex;
-  flex-direction: column;
-}
-
-/* 每日时间段 */
-.day-section {
-  background-color: #fff;
-  border-radius: 20rpx;
-  margin-bottom: 20rpx;
-  overflow: hidden;
-}
-
-/* 日期头部 */
-.day-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 30rpx 40rpx;
-  background-color: #f8f9fa;
-  border-bottom: 1rpx solid #e9ecef;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
 }
 
-.day-name {
+.section-title {
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
 }
 
-.add-time-btn {
-  display: flex;
-  align-items: center;
-  padding: 12rpx 20rpx;
-  background-color: #007aff;
+.edit-btn,
+.add-btn {
+  font-size: 28rpx;
+  color: #007aff;
+  padding: 8rpx 16rpx;
+  background-color: #f0f9ff;
   border-radius: 16rpx;
 }
 
-.add-time-btn .iconfont {
-  font-size: 24rpx;
-  color: #fff;
-  margin-right: 8rpx;
+/* 预约设置区域 */
+.settings-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
 }
 
-.add-text {
-  font-size: 24rpx;
-  color: #fff;
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
 
-/* 时间段列表 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.setting-value {
+  font-size: 30rpx;
+  color: #666;
+}
+
+/* 时间段模板区域 */
+.template-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+}
+
 .time-slots {
-  padding: 20rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
 .time-slot {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.time-slot:last-child {
-  border-bottom: none;
+  justify-content: space-between;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
 }
 
 .time-info {
   flex: 1;
 }
 
-.time-range {
-  font-size: 28rpx;
+.time-text {
+  font-size: 30rpx;
   color: #333;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.status-info {
-  display: flex;
-  align-items: center;
-}
-
-.status-text {
-  font-size: 24rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  margin-right: 12rpx;
-}
-
-.status-text.available {
-  background-color: #e8f5e8;
-  color: #4caf50;
-}
-
-.status-text.booked {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.booked-by {
-  font-size: 24rpx;
-  color: #666;
-}
-
-/* 操作按钮 */
-.slot-actions {
-  display: flex;
-  align-items: center;
+  font-weight: 500;
 }
 
 .delete-btn {
   font-size: 26rpx;
   color: #ff3b30;
-  padding: 12rpx 20rpx;
+  padding: 8rpx 16rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
   border: 1rpx solid #ff3b30;
-  border-radius: 16rpx;
 }
 
 .delete-btn:active {
@@ -137,10 +118,11 @@ page {
   color: #fff;
 }
 
-/* 空状态 */
 .empty-slots {
-  padding: 60rpx 40rpx;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200rpx;
 }
 
 .empty-text {
@@ -148,105 +130,113 @@ page {
   color: #999;
 }
 
-/* 添加表单弹窗 */
-.add-form-overlay {
+/* 弹窗样式 */
+.modal-mask {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 
-.add-form {
+.modal-container {
   width: 600rpx;
   background-color: #fff;
   border-radius: 20rpx;
   overflow: hidden;
 }
 
-/* 表单头部 */
-.form-header {
+.modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 40rpx;
-  background-color: #f8f9fa;
-  border-bottom: 1rpx solid #e9ecef;
+  justify-content: space-between;
+  padding: 40rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
-.form-title {
+.modal-title {
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
 }
 
-.close-btn {
+.modal-close {
   font-size: 48rpx;
   color: #999;
   line-height: 1;
 }
 
-/* 表单内容 */
-.form-content {
-  padding: 40rpx;
+.modal-content {
+  padding: 30rpx;
 }
 
-.time-picker-row {
+.form-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 30rpx;
 }
 
-.time-picker-row:last-child {
+.form-item:last-child {
   margin-bottom: 0;
 }
 
-.picker-label {
+.form-label {
   font-size: 28rpx;
   color: #333;
-  width: 120rpx;
-  flex-shrink: 0;
+  margin-bottom: 16rpx;
 }
 
-.picker-value {
-  flex: 1;
-  padding: 20rpx;
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
-  font-size: 28rpx;
-  color: #333;
-  text-align: center;
+.form-input {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  background-color: #fafafa;
 }
 
-/* 表单操作 */
-.form-actions {
+.picker-view {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  background-color: #fafafa;
   display: flex;
-  padding: 20rpx 40rpx 40rpx;
+  align-items: center;
+}
+
+.picker-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
 }
 
 .cancel-btn,
 .confirm-btn {
   flex: 1;
-  height: 80rpx;
-  font-size: 28rpx;
-  border-radius: 40rpx;
+  height: 88rpx;
   border: none;
-  margin: 0 10rpx;
+  font-size: 30rpx;
+  background-color: transparent;
 }
 
 .cancel-btn {
-  background-color: #f8f9fa;
-  color: #666;
+  color: #999;
+  border-right: 1rpx solid #f0f0f0;
 }
 
 .confirm-btn {
-  background-color: #007aff;
-  color: #fff;
+  color: #007aff;
+  font-weight: 600;
 }
 
 .cancel-btn::after,

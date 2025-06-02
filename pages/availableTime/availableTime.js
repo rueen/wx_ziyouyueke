@@ -1,80 +1,41 @@
 /**
  * pages/availableTime/availableTime.js
- * 我的可约时间页面
+ * 我的时间页面
  */
 Page({
   /**
    * 页面的初始数据
    */
   data: {
-    // 一周的时间安排
-    weekSchedule: [
-      {
-        day: '周一',
-        dayEn: 'monday',
-        timeSlots: [
-          { id: 1, startTime: '09:00', endTime: '12:00', status: 'available' },
-          { id: 2, startTime: '14:00', endTime: '17:00', status: 'booked', bookedBy: '小李' }
-        ]
-      },
-      {
-        day: '周二', 
-        dayEn: 'tuesday',
-        timeSlots: [
-          { id: 3, startTime: '08:00', endTime: '12:00', status: 'available' }
-        ]
-      },
-      {
-        day: '周三',
-        dayEn: 'wednesday', 
-        timeSlots: [
-          { id: 4, startTime: '14:00', endTime: '17:00', status: 'available' },
-          { id: 5, startTime: '19:00', endTime: '21:00', status: 'booked', bookedBy: '小王' }
-        ]
-      },
-      {
-        day: '周四',
-        dayEn: 'thursday',
-        timeSlots: [
-          { id: 6, startTime: '15:00', endTime: '18:00', status: 'available' }
-        ]
-      },
-      {
-        day: '周五',
-        dayEn: 'friday',
-        timeSlots: [
-          { id: 7, startTime: '10:00', endTime: '15:00', status: 'available' }
-        ]
-      },
-      {
-        day: '周六',
-        dayEn: 'saturday',
-        timeSlots: [
-          { id: 8, startTime: '10:00', endTime: '16:00', status: 'available' }
-        ]
-      },
-      {
-        day: '周日',
-        dayEn: 'sunday',
-        timeSlots: [
-          { id: 9, startTime: '09:00', endTime: '11:00', status: 'available' }
-        ]
-      }
+    // 预约设置
+    bookingSettings: {
+      minAdvanceDays: 1, // 最少需要提前几天预约
+      maxAdvanceDays: 30 // 最多可预约未来几天
+    },
+    
+    // 时间段模板（一天的时间段模板）
+    timeSlotTemplate: [
+      { id: 1, startTime: '09:00', endTime: '12:00' },
+      { id: 2, startTime: '14:00', endTime: '17:00' },
+      { id: 3, startTime: '19:00', endTime: '21:00' }
     ],
     
     // 添加时间段的表单数据
     showAddForm: false,
-    selectedDay: '',
-    selectedDayIndex: -1,
     newStartTime: '',
-    newEndTime: ''
+    newEndTime: '',
+    
+    // 设置表单数据
+    showSettingsForm: false,
+    tempMinAdvanceDays: 1,
+    tempMaxAdvanceDays: 30
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.loadAvailableTime();
+    this.loadTimeSettings();
   },
 
   /**
@@ -85,22 +46,100 @@ Page({
   },
 
   /**
-   * 加载可约时间数据
+   * 加载时间设置数据
    */
-  loadAvailableTime() {
+  loadTimeSettings() {
     // 这里应该从后端API获取数据
-    console.log('加载可约时间数据');
+    console.log('加载时间设置数据');
+  },
+
+  /**
+   * 显示预约设置表单
+   */
+  onShowSettingsForm() {
+    const { bookingSettings } = this.data;
+    this.setData({
+      showSettingsForm: true,
+      tempMinAdvanceDays: bookingSettings.minAdvanceDays,
+      tempMaxAdvanceDays: bookingSettings.maxAdvanceDays
+    });
+  },
+
+  /**
+   * 隐藏预约设置表单
+   */
+  onHideSettingsForm() {
+    this.setData({
+      showSettingsForm: false
+    });
+  },
+
+  /**
+   * 最少提前天数变化
+   */
+  onMinAdvanceDaysChange(e) {
+    this.setData({
+      tempMinAdvanceDays: parseInt(e.detail.value) || 1
+    });
+  },
+
+  /**
+   * 最多提前天数变化
+   */
+  onMaxAdvanceDaysChange(e) {
+    this.setData({
+      tempMaxAdvanceDays: parseInt(e.detail.value) || 30
+    });
+  },
+
+  /**
+   * 保存预约设置
+   */
+  onSaveSettings() {
+    const { tempMinAdvanceDays, tempMaxAdvanceDays } = this.data;
+    
+    if (tempMinAdvanceDays >= tempMaxAdvanceDays) {
+      wx.showToast({
+        title: '最少提前天数不能大于等于最多天数',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    if (tempMinAdvanceDays < 0 || tempMaxAdvanceDays <= 0) {
+      wx.showToast({
+        title: '请输入有效的天数',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({
+      bookingSettings: {
+        minAdvanceDays: tempMinAdvanceDays,
+        maxAdvanceDays: tempMaxAdvanceDays
+      },
+      showSettingsForm: false
+    });
+
+    // 这里应该调用后端API保存
+    console.log('保存预约设置：', {
+      minAdvanceDays: tempMinAdvanceDays,
+      maxAdvanceDays: tempMaxAdvanceDays
+    });
+    
+    wx.showToast({
+      title: '设置保存成功',
+      icon: 'success'
+    });
   },
 
   /**
    * 显示添加时间段表单
    */
-  onShowAddForm(e) {
-    const { day, index } = e.currentTarget.dataset;
+  onShowAddForm() {
     this.setData({
       showAddForm: true,
-      selectedDay: day,
-      selectedDayIndex: index,
       newStartTime: '',
       newEndTime: ''
     });
@@ -112,8 +151,6 @@ Page({
   onHideAddForm() {
     this.setData({
       showAddForm: false,
-      selectedDay: '',
-      selectedDayIndex: -1,
       newStartTime: '',
       newEndTime: ''
     });
@@ -141,7 +178,7 @@ Page({
    * 确认添加时间段
    */
   onConfirmAdd() {
-    const { selectedDayIndex, newStartTime, newEndTime, weekSchedule } = this.data;
+    const { newStartTime, newEndTime, timeSlotTemplate } = this.data;
     
     if (!newStartTime || !newEndTime) {
       wx.showToast({
@@ -160,8 +197,7 @@ Page({
     }
 
     // 检查时间重叠
-    const currentDaySlots = weekSchedule[selectedDayIndex].timeSlots;
-    const hasOverlap = this.checkTimeOverlap(newStartTime, newEndTime, currentDaySlots);
+    const hasOverlap = this.checkTimeOverlap(newStartTime, newEndTime, timeSlotTemplate);
     
     if (hasOverlap) {
       wx.showToast({
@@ -175,22 +211,18 @@ Page({
     const newTimeSlot = {
       id: Date.now(), // 简单的ID生成
       startTime: newStartTime,
-      endTime: newEndTime,
-      status: 'available'
+      endTime: newEndTime
     };
 
-    // 更新对应天的时间段
-    const updatedSchedule = [...weekSchedule];
-    updatedSchedule[selectedDayIndex].timeSlots.push(newTimeSlot);
+    // 更新时间段模板
+    const updatedTemplate = [...timeSlotTemplate, newTimeSlot];
     
     // 按时间排序
-    updatedSchedule[selectedDayIndex].timeSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+    updatedTemplate.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
     this.setData({
-      weekSchedule: updatedSchedule,
+      timeSlotTemplate: updatedTemplate,
       showAddForm: false,
-      selectedDay: '',
-      selectedDayIndex: -1,
       newStartTime: '',
       newEndTime: ''
     });
@@ -229,19 +261,19 @@ Page({
    * 删除时间段
    */
   onDeleteTimeSlot(e) {
-    const { dayIndex, slotIndex } = e.currentTarget.dataset;
+    const { slotIndex } = e.currentTarget.dataset;
     
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个时间段吗？',
       success: (res) => {
         if (res.confirm) {
-          const { weekSchedule } = this.data;
-          const updatedSchedule = [...weekSchedule];
-          updatedSchedule[dayIndex].timeSlots.splice(slotIndex, 1);
+          const { timeSlotTemplate } = this.data;
+          const updatedTemplate = [...timeSlotTemplate];
+          updatedTemplate.splice(slotIndex, 1);
           
           this.setData({
-            weekSchedule: updatedSchedule
+            timeSlotTemplate: updatedTemplate
           });
 
           // 这里应该调用后端API删除

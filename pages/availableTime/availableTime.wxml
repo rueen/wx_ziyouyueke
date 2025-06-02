@@ -1,76 +1,110 @@
 <!--pages/availableTime/availableTime.wxml-->
-<navBar title="我的可约时间" />
+<navBar title="我的时间" />
 <layout class="container">
-  <!-- 一周时间安排 -->
-  <view class="week-schedule">
-    <view class="day-section" wx:for="{{weekSchedule}}" wx:key="dayEn" wx:for-index="dayIndex">
-      <!-- 日期头部 -->
-      <view class="day-header">
-        <text class="day-name">{{item.day}}</text>
-        <view class="add-time-btn" bindtap="onShowAddForm" data-day="{{item.day}}" data-index="{{dayIndex}}">
-          <text class="iconfont icon-add"></text>
-          <text class="add-text">添加时间</text>
-        </view>
+  <!-- 预约设置 -->
+  <view class="settings-section">
+    <view class="section-header">
+      <text class="section-title">预约设置</text>
+      <text class="edit-btn" bindtap="onShowSettingsForm">编辑</text>
+    </view>
+    <view class="settings-content">
+      <view class="setting-item">
+        <text class="setting-label">最少提前天数</text>
+        <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
       </view>
-
-      <!-- 时间段列表 -->
-      <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
-        <view class="time-slot {{slot.status}}" 
-              wx:for="{{item.timeSlots}}" wx:key="id" wx:for-item="slot" wx:for-index="slotIndex">
-          <view class="time-info">
-            <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
-            <view class="status-info">
-              <text class="status-text {{slot.status}}">
-                {{slot.status === 'available' ? '可约' : '已约'}}
-              </text>
-              <text class="booked-by" wx:if="{{slot.status === 'booked'}}">{{slot.bookedBy}}</text>
-            </view>
-          </view>
-          <view class="slot-actions">
-            <text class="delete-btn" 
-                  bindtap="onDeleteTimeSlot" 
-                  data-day-index="{{dayIndex}}" 
-                  data-slot-index="{{slotIndex}}"
-                  wx:if="{{slot.status === 'available'}}">删除</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- 空状态 -->
-      <view class="empty-slots" wx:else>
-        <text class="empty-text">暂无时间段</text>
+      <view class="setting-item">
+        <text class="setting-label">最多可预约天数</text>
+        <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
       </view>
     </view>
   </view>
 
-  <!-- 添加时间段弹窗 -->
-  <view class="add-form-overlay" wx:if="{{showAddForm}}" bindtap="onHideAddForm">
-    <view class="add-form" catchtap="{{true}}">
-      <view class="form-header">
-        <text class="form-title">添加时间段 - {{selectedDay}}</text>
-        <text class="close-btn" bindtap="onHideAddForm">×</text>
-      </view>
-      
-      <view class="form-content">
-        <view class="time-picker-row">
-          <text class="picker-label">开始时间：</text>
-          <picker mode="time" value="{{newStartTime}}" bindchange="onStartTimeChange">
-            <view class="picker-value">{{newStartTime || '请选择'}}</view>
-          </picker>
+  <!-- 时间段模板 -->
+  <view class="template-section">
+    <view class="section-header">
+      <text class="section-title">时间段模板</text>
+      <text class="add-btn" bindtap="onShowAddForm">添加</text>
+    </view>
+    
+    <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
+      <view class="time-slot" wx:for="{{timeSlotTemplate}}" wx:key="id">
+        <view class="time-info">
+          <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
         </view>
-        
-        <view class="time-picker-row">
-          <text class="picker-label">结束时间：</text>
-          <picker mode="time" value="{{newEndTime}}" bindchange="onEndTimeChange">
-            <view class="picker-value">{{newEndTime || '请选择'}}</view>
-          </picker>
-        </view>
-      </view>
-      
-      <view class="form-actions">
-        <button class="cancel-btn" bindtap="onHideAddForm">取消</button>
-        <button class="confirm-btn" bindtap="onConfirmAdd">确认</button>
+        <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
       </view>
     </view>
+    
+    <view class="empty-slots" wx:else>
+      <text class="empty-text">暂无时间段模板</text>
+    </view>
   </view>
-</layout> 
+</layout>
+
+<!-- 预约设置弹窗 -->
+<view class="modal-mask" wx:if="{{showSettingsForm}}" bindtap="onHideSettingsForm">
+  <view class="modal-container" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">预约设置</text>
+      <text class="modal-close" bindtap="onHideSettingsForm">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="form-item">
+        <text class="form-label">最少提前天数</text>
+        <input class="form-input" 
+               type="number" 
+               value="{{tempMinAdvanceDays}}" 
+               bindinput="onMinAdvanceDaysChange" 
+               placeholder="请输入天数" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">最多可预约天数</text>
+        <input class="form-input" 
+               type="number" 
+               value="{{tempMaxAdvanceDays}}" 
+               bindinput="onMaxAdvanceDaysChange" 
+               placeholder="请输入天数" />
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="onHideSettingsForm">取消</button>
+      <button class="confirm-btn" bindtap="onSaveSettings">保存</button>
+    </view>
+  </view>
+</view>
+
+<!-- 添加时间段弹窗 -->
+<view class="modal-mask" wx:if="{{showAddForm}}" bindtap="onHideAddForm">
+  <view class="modal-container" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">添加时间段</text>
+      <text class="modal-close" bindtap="onHideAddForm">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="form-item">
+        <text class="form-label">开始时间</text>
+        <picker mode="time" 
+                value="{{newStartTime}}" 
+                bindchange="onStartTimeChange">
+          <view class="picker-view">
+            <text class="picker-text">{{newStartTime || '选择时间'}}</text>
+          </view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="form-label">结束时间</text>
+        <picker mode="time" 
+                value="{{newEndTime}}" 
+                bindchange="onEndTimeChange">
+          <view class="picker-view">
+            <text class="picker-text">{{newEndTime || '选择时间'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="onHideAddForm">取消</button>
+      <button class="confirm-btn" bindtap="onConfirmAdd">确定</button>
+    </view>
+  </view>
+</view> 

@@ -42,7 +42,7 @@
     <view class="menu-item" bindtap="onMyAvailableTime" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
         <text class="iconfont icon-kechengbiao menu-icon"></text>
-        <text class="menu-text">我的可约时间</text>
+        <text class="menu-text">我的时间</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
