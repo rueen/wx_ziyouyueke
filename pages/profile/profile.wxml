@@ -8,14 +8,13 @@
         <image src="{{userInfo.avatar}}" class="avatar-img"></image>
       </view>
       <view class="user-details">
-        <text class="username">{{userInfo.nickname}}</text>
-        <view class="user-desc-row">
-          <text class="user-desc">点击编辑个人资料</text>
-          <view class="role-tag" bindtap="onSwitchRole" catchtap="onSwitchRole">
+        <view class="username-row">
+          <text class="username">{{userInfo.nickname}}</text>
+          <view class="role-tag">
             <text class="role-text">{{roleNames[userRole]}}</text>
-            <text class="switch-text">切换</text>
           </view>
         </view>
+        <text class="user-desc">点击编辑个人资料</text>
       </view>
     </view>
     <text class="iconfont icon-arrow-r arrow-icon"></text>

@@ -56,6 +56,51 @@ page {
   padding-bottom: 100rpx;
 }
 
+/* 身份选择 */
+.role-section {
+  margin-bottom: 40rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.role-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.role-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.role-option {
+  width: 120rpx;
+  height: 60rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.role-option-selected {
+  border-color: #333;
+  background-color: #333;
+}
+
+.role-option-selected .role-text {
+  color: #fff;
+}
+
+.role-text {
+  font-size: 26rpx;
+  color: #333;
+}
+
 /* 用户协议 */
 .agreement-section {
   display: flex;

@@ -8,7 +8,8 @@ Page({
    */
   data: {
     hasUserInfo: false,
-    agreedToTerms: false // 是否同意用户协议
+    agreedToTerms: false, // 是否同意用户协议
+    selectedRole: 'student' // 选择的身份，默认为学员
   },
 
   /**
@@ -39,6 +40,16 @@ Page({
         url: '/pages/index/index'
       });
     }
+  },
+
+  /**
+   * 身份选择事件
+   */
+  onSelectRole(e) {
+    const role = e.currentTarget.dataset.role;
+    this.setData({
+      selectedRole: role
+    });
   },
 
   /**
@@ -147,10 +158,13 @@ Page({
     wx.setStorageSync('userInfo', userInfo);
     wx.setStorageSync('isLoggedIn', true);
     wx.setStorageSync('loginType', loginType);
+    wx.setStorageSync('userRole', this.data.selectedRole); // 保存选择的身份
 
     // 显示登录成功提示
+    const roleNames = { student: '学员', coach: '教练' };
+    const roleText = roleNames[this.data.selectedRole];
     wx.showToast({
-      title: loginType === 'guest' ? '游客登录成功' : '登录成功',
+      title: loginType === 'guest' ? '游客登录成功' : `${roleText}身份登录成功`,
       icon: 'success',
       duration: 2000
     });

@@ -49,12 +49,32 @@ page {
 
 .greeting {
   font-size: 24rpx;
-  color: #666;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.username-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
 }
 
 .username {
   font-size: 36rpx;
-  color: #000;
+  color: #333;
+  font-weight: 600;
+}
+
+.role-tag {
+  background-color: #f0f9ff;
+  border: 1rpx solid #007aff;
+  border-radius: 12rpx;
+  padding: 4rpx 8rpx;
+}
+
+.role-text {
+  font-size: 20rpx;
+  color: #007aff;
 }
 
 /* 统计数据行 */

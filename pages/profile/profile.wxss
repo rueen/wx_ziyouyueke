@@ -51,17 +51,17 @@ page {
   flex-direction: column;
 }
 
+.username-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
 .username {
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 12rpx;
-}
-
-.user-desc-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  margin-right: 16rpx;
 }
 
 .user-desc {
@@ -75,18 +75,11 @@ page {
   background-color: #f0f9ff;
   border: 1rpx solid #007aff;
   border-radius: 16rpx;
-  padding: 8rpx 16rpx;
-  margin-left: 20rpx;
+  padding: 6rpx 12rpx;
 }
 
 .role-text {
-  font-size: 24rpx;
-  color: #007aff;
-  margin-right: 8rpx;
-}
-
-.switch-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #007aff;
 }
 

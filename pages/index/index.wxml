@@ -9,7 +9,12 @@
       </view>
       <view class="user-info">
         <text class="greeting">{{userRole === 'student' ? 'HELLO GYM GIRL' : 'HELLO COACH'}}</text>
-        <text class="username">{{userInfo.name}}</text>
+        <view class="username-row">
+          <text class="username">{{userInfo.name}}</text>
+          <view class="role-tag">
+            <text class="role-text">{{userRole === 'student' ? '学员' : '教练'}}</text>
+          </view>
+        </view>
       </view>
     </view>
 

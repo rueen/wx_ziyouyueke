@@ -117,38 +117,6 @@ Page({
   },
 
   /**
-   * 切换身份
-   */
-  onSwitchRole() {
-    const { userRole, roleNames } = this.data;
-    const targetRole = userRole === 'student' ? 'coach' : 'student';
-    
-    wx.showModal({
-      title: '切换身份',
-      content: `确定要切换到${roleNames[targetRole]}身份吗？`,
-      success: (res) => {
-        if (res.confirm) {
-          // 保存新身份
-          wx.setStorageSync('userRole', targetRole);
-          this.setData({
-            userRole: targetRole
-          });
-          
-          wx.showToast({
-            title: `已切换到${roleNames[targetRole]}身份`,
-            icon: 'success'
-          });
-
-          // 通知其他页面更新
-          wx.switchTab({
-            url: '/pages/index/index'
-          });
-        }
-      }
-    });
-  },
-
-  /**
    * 编辑个人资料
    */
   onEditProfile() {

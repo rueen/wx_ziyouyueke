@@ -10,6 +10,21 @@
 
   <!-- 登录区域 -->
   <view class="login-section">
+    <!-- 身份选择 -->
+    <view class="role-section">
+      <text class="role-title">选择身份</text>
+      <view class="role-options">
+        <view class="role-option {{selectedRole === 'student' ? 'role-option-selected' : ''}}" 
+              bindtap="onSelectRole" data-role="student">
+          <text class="role-text">学员</text>
+        </view>
+        <view class="role-option {{selectedRole === 'coach' ? 'role-option-selected' : ''}}" 
+              bindtap="onSelectRole" data-role="coach">
+          <text class="role-text">教练</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 用户协议 -->
     <view class="agreement-section">
       <checkbox-group bindchange="onAgreementChange">
