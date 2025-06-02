@@ -1,6 +1,6 @@
 /**
- * pages/availableTime/availableTime.wxss
- * 我的时间页面样式
+ * pages/timeTemplate/timeTemplate.wxss
+ * 时间模板页面样式
  */
 @import '/style/iconfont.wxss';
 

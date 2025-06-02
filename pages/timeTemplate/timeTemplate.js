@@ -1,6 +1,6 @@
 /**
- * pages/availableTime/availableTime.js
- * 我的时间页面
+ * pages/timeTemplate/timeTemplate.js
+ * 时间模板页面
  */
 Page({
   /**

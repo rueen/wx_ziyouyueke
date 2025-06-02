@@ -154,11 +154,11 @@ Page({
   },
 
   /**
-   * 我的可约时间（教练专用）
+   * 时间模板（教练专用）
    */
-  onMyAvailableTime() {
+  onMyTimeTemplate() {
     wx.navigateTo({
-      url: '/pages/availableTime/availableTime'
+      url: '/pages/timeTemplate/timeTemplate'
     });
   },
 

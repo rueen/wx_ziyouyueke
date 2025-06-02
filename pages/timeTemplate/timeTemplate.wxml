@@ -1,5 +1,5 @@
-<!--pages/availableTime/availableTime.wxml-->
-<navBar title="我的时间" />
+<!--pages/timeTemplate/timeTemplate.wxml-->
+<navBar title="时间模板" />
 <layout class="container">
   <!-- 预约设置 -->
   <view class="settings-section">
