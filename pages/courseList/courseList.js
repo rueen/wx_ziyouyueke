@@ -16,6 +16,9 @@ Page({
       { id: 3, name: '已取消', status: 'cancelled' }
     ],
     
+    // 用户身份
+    userRole: 'student', // 'student' 学员, 'coach' 教练
+    
     // 课程数据
     courses: [],
     filteredCourses: [], // 当前tab显示的课程
@@ -26,13 +29,21 @@ Page({
     // 取消原因模态框
     showCancelModal: false,
     cancellingCourseId: null,
-    cancelReason: ''
+    cancelReason: '',
+    
+    // 课程码弹窗
+    showCourseCodeModal: false,
+    currentCourseCode: '',
+    currentCourseInfo: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 加载用户身份
+    this.loadUserRole();
+    
     // 从URL参数获取初始tab
     if (options.tab) {
       const tabIndex = parseInt(options.tab);
@@ -258,5 +269,122 @@ Page({
     
     // 重新过滤课程
     this.filterCourses();
+  },
+
+  /**
+   * 加载用户身份
+   */
+  loadUserRole() {
+    const storedRole = wx.getStorageSync('userRole') || 'student';
+    this.setData({
+      userRole: storedRole
+    });
+  },
+
+  /**
+   * 学员：查看课程码
+   */
+  onViewCourseCode(e) {
+    const courseId = e.currentTarget.dataset.id;
+    const { courses } = this.data;
+    const course = courses.find(c => c.id === courseId);
+    
+    if (!course) {
+      wx.showToast({
+        title: '课程信息不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 生成课程码（实际应用中应该从后端获取）
+    const courseCode = `COURSE_${courseId}_${Date.now()}`;
+    
+    this.setData({
+      showCourseCodeModal: true,
+      currentCourseCode: courseCode,
+      currentCourseInfo: course
+    });
+  },
+
+  /**
+   * 隐藏课程码弹窗
+   */
+  onHideCourseCodeModal() {
+    this.setData({
+      showCourseCodeModal: false,
+      currentCourseCode: '',
+      currentCourseInfo: null
+    });
+  },
+
+  /**
+   * 教练：扫码核销
+   */
+  onScanVerify() {
+    wx.scanCode({
+      success: (res) => {
+        console.log('扫码结果:', res);
+        const scannedCode = res.result;
+        
+        // 这里应该调用后端API验证课程码
+        this.verifyCourseCode(scannedCode);
+      },
+      fail: (err) => {
+        console.error('扫码失败:', err);
+        wx.showToast({
+          title: '扫码失败，请重试',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
+  /**
+   * 验证课程码
+   */
+  verifyCourseCode(courseCode) {
+    // 模拟验证过程
+    console.log('验证课程码:', courseCode);
+    
+    // 这里应该调用后端API验证
+    // 模拟验证成功
+    if (courseCode.startsWith('COURSE_')) {
+      wx.showModal({
+        title: '核销成功',
+        content: '课程已完成核销，状态已更新为已完成',
+        showCancel: false,
+        confirmText: '确定',
+        success: () => {
+          // 更新课程状态为已完成
+          const courseId = this.extractCourseIdFromCode(courseCode);
+          if (courseId) {
+            this.updateCourseStatus(courseId, 'completed');
+            // 重新加载数据
+            this.loadCourses();
+          }
+        }
+      });
+    } else {
+      wx.showToast({
+        title: '无效的课程码',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 从课程码中提取课程ID
+   */
+  extractCourseIdFromCode(courseCode) {
+    try {
+      const parts = courseCode.split('_');
+      if (parts.length >= 2) {
+        return parseInt(parts[1]);
+      }
+    } catch (error) {
+      console.error('解析课程码失败:', error);
+    }
+    return null;
   }
 }) 

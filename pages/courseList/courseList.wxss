@@ -124,19 +124,21 @@ page {
 
 /* 操作按钮 */
 .course-actions {
+  margin-top: 30rpx;
+}
+
+.action-buttons {
   display: flex;
-  padding: 24rpx 32rpx;
-  justify-content: flex-end;
   gap: 20rpx;
 }
 
 .action-btn {
-  padding: 16rpx 32rpx;
-  font-size: 26rpx;
-  border-radius: 20rpx;
+  flex: 1;
+  height: 64rpx;
   border: none;
+  border-radius: 32rpx;
+  font-size: 26rpx;
   font-weight: 500;
-  min-width: 120rpx;
 }
 
 .action-btn::after {
@@ -144,13 +146,8 @@ page {
 }
 
 .cancel-btn {
-  background-color: #fff;
-  color: #999;
-  border: 1rpx solid #e9ecef;
-}
-
-.cancel-btn:active {
   background-color: #f5f5f5;
+  color: #666;
 }
 
 .confirm-btn {
@@ -158,8 +155,19 @@ page {
   color: #fff;
 }
 
-.confirm-btn:active {
-  background-color: #0056b3;
+.primary-btn {
+  background-color: #34c759;
+  color: #fff;
+}
+
+.verify-btn {
+  background-color: #ff9500;
+  color: #fff;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
 }
 
 /* 取消原因模态框 */
@@ -169,7 +177,7 @@ page {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
+  z-index: 9999;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -191,70 +199,74 @@ page {
 
 .modal-content {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600rpx;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: #fff;
-  border-radius: 24rpx;
-  overflow: hidden;
+  border-radius: 24rpx 24rpx 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.cancel-modal.show .modal-content {
+  transform: translateY(0);
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 32rpx;
+  align-items: center;
+  padding: 40rpx 40rpx 20rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
 .modal-title {
   font-size: 32rpx;
-  color: #333;
   font-weight: 600;
+  color: #333;
 }
 
 .modal-close {
-  font-size: 32rpx;
+  font-size: 40rpx;
   color: #999;
-  padding: 8rpx;
+  line-height: 1;
 }
 
 .modal-body {
-  padding: 32rpx;
+  padding: 40rpx;
 }
 
 .cancel-reason-input {
   width: 100%;
-  min-height: 120rpx;
-  background-color: #f8f9fa;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  font-size: 28rpx;
-  color: #333;
-  box-sizing: border-box;
+  min-height: 200rpx;
+  padding: 24rpx;
   border: 1rpx solid #e9ecef;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  background-color: #fafafa;
 }
 
 .char-count {
   text-align: right;
+  margin-top: 16rpx;
   font-size: 24rpx;
   color: #999;
-  margin-top: 12rpx;
 }
 
 .modal-footer {
-  height: 100rpx;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1rpx solid #f0f0f0;
+  padding: 20rpx 40rpx 40rpx;
+  gap: 20rpx;
 }
 
 .modal-btn {
+  flex: 1;
+  height: 80rpx;
   border: none;
-  background: none;
-  font-weight: normal;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
 }
 
 .modal-btn::after {
@@ -262,8 +274,21 @@ page {
 }
 
 .cancel-modal-btn {
+  background-color: #f5f5f5;
   color: #666;
-  border-right: 1rpx solid #f0f0f0;
+}
+
+.confirm-modal-btn {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.confirm-modal-btn.active {
+  background-color: #ff3b30;
+}
+
+.modal-btn:active {
+  opacity: 0.8;
 }
 
 /* 空状态 */
@@ -285,4 +310,118 @@ page {
 .empty-desc {
   font-size: 28rpx;
   color: #ccc;
+}
+
+/* 课程码弹窗样式 */
+.course-code-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.course-code-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.course-code-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 640rpx;
+  max-height: 80vh;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.course-code-modal.show .course-code-content {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.course-code-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.course-info-summary {
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #666;
+  width: 120rpx;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+}
+
+.qr-code-container {
+  text-align: center;
+}
+
+.qr-code-placeholder {
+  margin-bottom: 20rpx;
+}
+
+.qr-code-text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.qr-code-box {
+  width: 300rpx;
+  height: 300rpx;
+  margin: 0 auto;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+}
+
+.code-text {
+  font-size: 20rpx;
+  color: #666;
+  word-break: break-all;
+  padding: 20rpx;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.qr-tips {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+.full-width {
+  width: 100%;
 } 
