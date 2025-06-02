@@ -167,17 +167,11 @@ Page({
     wx.setStorageSync('loginType', loginType);
     wx.setStorageSync('userRole', this.data.selectedRole); // 保存选择的身份
 
-    // 处理邀请码关联
-    this.handleInviteRelation(userInfo);
-
     // 显示登录成功提示
     const roleNames = { student: '学员', coach: '教练' };
     const roleText = roleNames[this.data.selectedRole];
-    const { isInvited } = this.data;
-    
     wx.showToast({
-      title: loginType === 'guest' ? '游客登录成功' : 
-             isInvited ? '登录成功，已关联教练' : `${roleText}身份登录成功`,
+      title: loginType === 'guest' ? '游客登录成功' : `${roleText}身份登录成功`,
       icon: 'success',
       duration: 2000
     });
@@ -188,30 +182,6 @@ Page({
         url: '/pages/index/index'
       });
     }, 2000);
-  },
-
-  /**
-   * 处理邀请码关联
-   */
-  handleInviteRelation(userInfo) {
-    const { isInvited, coachId, inviteCode } = this.data;
-    
-    if (isInvited && coachId && inviteCode) {
-      // 保存学员与教练的关联关系
-      const relation = {
-        studentId: userInfo.wxCode || userInfo.nickName,
-        coachId: coachId,
-        inviteCode: inviteCode,
-        relationTime: new Date().toLocaleString(),
-        status: 'active'
-      };
-      
-      // 实际应用中应该调用后端API建立关联关系
-      console.log('建立师生关联关系：', relation);
-      
-      // 本地保存关联信息
-      wx.setStorageSync('coachRelation', relation);
-    }
   },
 
   /**
