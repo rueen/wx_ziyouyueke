@@ -101,6 +101,11 @@ page {
   border: none;
 }
 
+.login-btn-disabled{
+  opacity: .8;
+  background-color: #333!important;
+}
+
 .login-text {
   font-size: 32rpx;
   color: #fff;

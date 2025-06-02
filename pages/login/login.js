@@ -7,7 +7,6 @@ Page({
    * 页面的初始数据
    */
   data: {
-    canIUse: wx.canIUse('button.open-type.getPhoneNumber'),
     hasUserInfo: false,
     agreedToTerms: false // 是否同意用户协议
   },
@@ -47,7 +46,7 @@ Page({
    */
   onAgreementChange(e) {
     this.setData({
-      agreedToTerms: e.detail.value
+      agreedToTerms: !!e.detail.value[0]
     });
   },
 
@@ -64,24 +63,52 @@ Page({
       return;
     }
 
-    if (e.detail.errMsg === 'getPhoneNumber:ok') {
-      // 获取手机号成功
-      const { code, encryptedData, iv } = e.detail;
-      console.log('获取手机号成功：', { code, encryptedData, iv });
-      
-      // 这里应该调用后端API进行手机号解密和登录验证
-      this.mockLoginSuccess('wechat', {
-        phone: '138****8888', // 模拟解密后的手机号
-        encryptedData,
-        iv
-      });
-    } else {
-      // 用户拒绝授权
-      wx.showToast({
-        title: '授权失败，请重试',
-        icon: 'none'
-      });
-    }
+    // 显示登录中提示
+    wx.showLoading({
+      title: '登录中...'
+    });
+
+    // 获取微信登录凭证
+    wx.login({
+      success: (res) => {
+        console.log('微信登录成功，code:', res.code);
+        
+        // 获取用户信息
+        wx.getUserProfile({
+          desc: '用于完善会员资料',
+          success: (userRes) => {
+            console.log('获取用户信息成功:', userRes);
+            wx.hideLoading();
+            
+            // 这里应该调用后端API进行登录验证
+            this.mockLoginSuccess('wechat', {
+              nickname: userRes.userInfo.nickName,
+              avatar: userRes.userInfo.avatarUrl,
+              code: res.code
+            });
+          },
+          fail: (err) => {
+            console.error('获取用户信息失败:', err);
+            wx.hideLoading();
+            
+            // 用户拒绝授权，使用默认信息登录
+            this.mockLoginSuccess('wechat', {
+              nickname: '微信用户',
+              avatar: '/images/defaultAvatar.png',
+              code: res.code
+            });
+          }
+        });
+      },
+      fail: (err) => {
+        console.error('微信登录失败:', err);
+        wx.hideLoading();
+        wx.showToast({
+          title: '登录失败，请重试',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   /**
@@ -113,8 +140,8 @@ Page({
       loginType,
       nickName: userData.nickname || '微信用户',
       avatarUrl: userData.avatar || '/images/defaultAvatar.png',
-      phone: userData.phone || '',
-      loginTime: new Date().toLocaleString()
+      loginTime: new Date().toLocaleString(),
+      wxCode: userData.code || '' // 保存微信登录凭证
     };
 
     wx.setStorageSync('userInfo', userInfo);

@@ -12,25 +12,16 @@
   <view class="login-section">
     <!-- 用户协议 -->
     <view class="agreement-section">
-      <checkbox class="agreement-checkbox" checked="{{agreedToTerms}}" bindchange="onAgreementChange"></checkbox>
+      <checkbox-group bindchange="onAgreementChange">
+        <checkbox class="agreement-checkbox" value="true" checked="{{agreedToTerms}}"></checkbox>
+      </checkbox-group>
       <text class="agreement-text">我已认真阅读并同意</text>
       <text class="agreement-link" bindtap="onViewAgreement">《用户协议和隐私政策》</text>
     </view>
-
-    <!-- 一键登录按钮 -->
-    <button class="login-btn" 
-            open-type="getPhoneNumber" 
-            bindgetphonenumber="onWechatLogin"
-            wx:if="{{canIUse}}">
-      <text class="login-text">一键登录</text>
-    </button>
-
-    <!-- 不支持获取手机号的降级处理 -->
+    
     <button class="login-btn {{!agreedToTerms ? 'login-btn-disabled' : ''}}" 
             bindtap="onWechatLogin"
-            disabled="{{!agreedToTerms}}"
-            wx:else>
-      <text class="iconfont icon-logo login-icon"></text>
+            disabled="{{!agreedToTerms}}">
       <text class="login-text">微信登录</text>
     </button>
 
