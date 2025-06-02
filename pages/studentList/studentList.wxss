@@ -147,10 +147,213 @@ page {
   justify-content: center;
 }
 
+.add-button::after {
+  border: none;
+}
+
 .add-button:active {
   background-color: #555;
 }
 
-.add-button::after {
+/* 邀请学员弹窗样式 */
+.invite-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.invite-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.invite-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 680rpx;
+  max-height: 85vh;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.invite-modal.show .invite-content {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.invite-body {
+  padding: 30rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* 教练信息卡片 */
+.coach-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.coach-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20rpx;
+  background-color: #fff;
+}
+
+.coach-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.coach-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.invite-tips {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 二维码区域 */
+.qr-section {
+  text-align: center;
+}
+
+.qr-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.qr-code-container {
+  margin-bottom: 24rpx;
+}
+
+.qr-code-placeholder {
+  width: 320rpx;
+  height: 320rpx;
+  margin: 0 auto;
+  border: 2rpx dashed #ddd;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+  position: relative;
+}
+
+.qr-placeholder-text {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.qr-info {
+  position: absolute;
+  bottom: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+}
+
+.invite-code {
+  font-size: 20rpx;
+  color: #666;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 8rpx 12rpx;
+  border-radius: 8rpx;
+  word-break: break-all;
+  line-height: 1.3;
+}
+
+.qr-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+/* 弹窗底部按钮 */
+.invite-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
   border: none;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.save-btn {
+  background-color: #34c759;
+  color: #fff;
+}
+
+.share-btn {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
 } 

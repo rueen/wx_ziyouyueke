@@ -10,8 +10,14 @@
 
   <!-- 登录区域 -->
   <view class="login-section">
+    <!-- 邀请码提示 -->
+    <view class="invite-notice" wx:if="{{isInvited}}">
+      <text class="invite-text">🎉 您已被邀请成为学员</text>
+      <text class="invite-code-text">邀请码：{{inviteCode}}</text>
+    </view>
+
     <!-- 身份选择 -->
-    <view class="role-section">
+    <view class="role-section" wx:if="{{!isInvited}}">
       <text class="role-title">选择身份</text>
       <view class="role-options">
         <view class="role-option {{selectedRole === 'student' ? 'role-option-selected' : ''}}" 
@@ -23,6 +29,11 @@
           <text class="role-text">教练</text>
         </view>
       </view>
+    </view>
+
+    <!-- 已邀请时显示自动选择的身份 -->
+    <view class="auto-role-section" wx:if="{{isInvited}}">
+      <text class="auto-role-text">自动选择身份：学员</text>
     </view>
 
     <!-- 用户协议 -->
