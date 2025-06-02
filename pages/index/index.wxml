@@ -1,79 +1,101 @@
 <!--index.wxml-->
 <navBar />
-<layout class="container">
-  <!-- 用户信息卡片 -->
-  <view class="user-card">
-    <view class="user-header">
-      <view class="user-avatar">
-        <image src="{{userInfo.avatar}}" class="avatar-img"></image>
-      </view>
-      <view class="user-info">
-        <text class="greeting">{{userRole === 'student' ? 'HELLO GYM GIRL' : 'HELLO COACH'}}</text>
-        <view class="username-row">
-          <text class="username">{{userInfo.name}}</text>
-          <view class="role-tag">
-            <text class="role-text">{{userRole === 'student' ? '学员' : '教练'}}</text>
+<layout>
+  <view class="container">
+    <!-- 用户信息卡片 -->
+    <view class="user-card">
+      <view class="user-header">
+        <view class="user-avatar">
+          <image src="{{userInfo.avatar}}" class="avatar-img"></image>
+        </view>
+        <view class="user-info">
+          <text class="greeting">{{userRole === 'student' ? 'HELLO GYM GIRL' : 'HELLO COACH'}}</text>
+          <view class="username-row">
+            <text class="username">{{userInfo.name}}</text>
+            <view class="role-tag">
+              <text class="role-text">{{userRole === 'student' ? '学员' : '教练'}}</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
 
-    <view class="stats-row">
-      <view class="stat-item" bindtap="onMyCoachOrStudentClick">
-        <text class="stat-label">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
-        <text class="iconfont icon-arrow-r stat-arrow"></text>
+      <view class="stats-row">
+        <view class="stat-item" bindtap="onMyCoachOrStudentClick">
+          <text class="stat-label">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
+          <text class="iconfont icon-arrow-r stat-arrow"></text>
+        </view>
+        
+        <view class="stat-item" bindtap="onPendingCoursesClick">
+          <text class="stat-label">我的课程</text>
+          <text class="iconfont icon-arrow-r stat-arrow"></text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 我的课表 -->
+    <view class="my-schedule">
+      <view class="section-header">
+        <text class="section-title">我的课表</text>
+        <text class="schedule-tips">近三天时间安排</text>
       </view>
       
-      <view class="stat-item" bindtap="onPendingCoursesClick">
-        <text class="stat-label">待确认课程</text>
-        <text class="iconfont icon-arrow-r stat-arrow"></text>
-      </view>
-    </view>
-  </view>
-  
-  <!-- 近期课程 -->
-  <view class="recent-courses">
-    <view class="section-header">
-      <text class="section-title">近期课程</text>
-      <text class="view-more" bindtap="onViewMoreCourses" wx:if="{{recentCourses.length > 0}}">
-        <text>查看更多</text>
-        <text class="iconfont icon-arrow-r"></text>
-      </text>
-    </view>
-    
-    <!-- 课程列表 -->
-    <view class="course-list" wx:if="{{recentCourses.length > 0}}">
-      <view class="course-item" wx:for="{{recentCourses}}" wx:key="id">
-        <view class="course-header">
-          <view class="person-info">
-            <view class="person-avatar">
-              <image src="{{userRole === 'student' ? item.coachAvatar : item.studentAvatar}}" class="avatar-img"></image>
+      <!-- 日历式课表 -->
+      <view class="calendar-schedule" wx:if="{{calendarData.length > 0}}">
+        <view class="day-schedule" wx:for="{{calendarData}}" wx:key="date">
+          <!-- 日期标题 -->
+          <view class="day-header">
+            <text class="day-title">{{item.dayTitle}}</text>
+            <text class="day-date">{{item.dateStr}}</text>
+          </view>
+          
+          <!-- 时间段列表 -->
+          <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
+            <view class="time-slot-item {{slot.isBooked ? 'booked' : 'available'}}" 
+                  wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id">
+              <view class="time-info">
+                <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
+              </view>
+              
+              <!-- 已预约显示课程信息 -->
+              <view class="booking-info" wx:if="{{slot.isBooked}}">
+                <view class="person-info">
+                  <view class="person-avatar">
+                    <image src="{{userRole === 'student' ? slot.coachAvatar : slot.studentAvatar}}" class="avatar-img"></image>
+                  </view>
+                  <view class="person-details">
+                    <text class="person-name">{{userRole === 'student' ? slot.coachName : slot.studentName}}</text>
+                    <text class="booking-status {{slot.statusClass}}">{{slot.statusText}}</text>
+                  </view>
+                </view>
+                <view class="course-details" wx:if="{{slot.location || slot.remark}}">
+                  <text class="course-location" wx:if="{{slot.location}}">📍 {{slot.location}}</text>
+                  <text class="course-remark" wx:if="{{slot.remark}}">💬 {{slot.remark}}</text>
+                </view>
+              </view>
+              
+              <!-- 未预约显示空状态 -->
+              <view class="empty-booking" wx:else>
+                <text class="empty-text">空闲时间</text>
+              </view>
             </view>
-            <text class="person-name">{{userRole === 'student' ? item.coachName : item.studentName}}</text>
           </view>
-          <view class="course-status confirmed">已确认</view>
-        </view>
-        <view class="course-details">
-          <view class="detail-row">
-            <text class="detail-label">时间</text>
-            <text class="detail-value">{{item.time}}</text>
-          </view>
-          <view class="detail-row">
-            <text class="detail-label">地点</text>
-            <text class="detail-value">{{item.location}}</text>
+          
+          <!-- 该日无时间段 -->
+          <view class="no-time-slots" wx:else>
+            <text class="no-slots-text">今日无可用时间段</text>
           </view>
         </view>
       </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-schedule" wx:else>
+        <text class="empty-text">{{userRole === 'student' ? '近三天暂无课程安排' : '近三天暂无时间安排'}}</text>
+      </view>
     </view>
     
-    <!-- 空状态 -->
-    <view class="empty-courses" wx:else>
-      <text class="empty-text">暂无课程</text>
+    <!-- 立即约课按钮 -->
+    <view class="book-button-container">
+      <button class="book-button" bindtap="onBookCourse">{{userRole === 'student' ? '立即约课' : '约学员'}}</button>
     </view>
-  </view>
-  
-  <!-- 立即约课按钮 -->
-  <view class="book-button-container">
-    <button class="book-button" bindtap="onBookCourse">{{userRole === 'student' ? '立即约课' : '约学员'}}</button>
   </view>
 </layout>

@@ -4,8 +4,11 @@
  */
 @import '/style/iconfont.wxss';
 page {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #fff;
+}
+
+.container{
   padding: 40rpx;
 }
 
@@ -105,8 +108,8 @@ page {
   margin-left: 10rpx;
 }
 
-/* 近期课程 */
-.recent-courses {
+/* 我的课表 */
+.my-schedule {
   margin-top: 40rpx;
   margin-bottom: 160rpx;
 }
@@ -124,107 +127,191 @@ page {
   font-weight: 600;
 }
 
-.view-more {
-  font-size: 26rpx;
+.schedule-tips {
+  font-size: 24rpx;
   color: #999;
 }
-.view-more .icon-arrow-r{
-  font-size: 26rpx;
-}
 
-/* 课程列表 */
-.course-list {
+/* 日历式课表 */
+.calendar-schedule {
   display: flex;
   flex-direction: column;
 }
 
-.course-item {
-  background-color: #f4f5f6;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 20rpx;
+.day-schedule {
+  margin-bottom: 32rpx;
 }
 
-.course-item:last-child {
+.day-schedule:last-child {
   margin-bottom: 0;
 }
 
-.course-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24rpx;
-}
-
-.person-info {
+/* 日期标题 */
+.day-header {
   display: flex;
   align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
 }
 
-.person-avatar {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 16rpx;
+.day-title {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.day-date {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 时间段列表 */
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.time-slot-item {
   background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 2rpx solid transparent;
 }
 
-.person-name {
+.time-slot-item.available {
+  border-color: #e9ecef;
+  background-color: #fafafa;
+}
+
+.time-slot-item.booked {
+  border-color: #007aff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.1);
+}
+
+/* 时间信息 */
+.time-info {
+  margin-bottom: 16rpx;
+}
+
+.time-range {
   font-size: 28rpx;
   color: #333;
   font-weight: 600;
 }
 
-.course-status {
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-  font-size: 24rpx;
+/* 预约信息 */
+.booking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.person-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.person-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.person-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.person-name {
+  font-size: 26rpx;
+  color: #333;
   font-weight: 500;
 }
 
-.course-status.confirmed {
+.booking-status {
+  font-size: 22rpx;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+  align-self: flex-start;
+}
+
+.booking-status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.booking-status.confirmed {
   background-color: #e8f5e8;
   color: #4caf50;
 }
 
+.booking-status.completed {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.booking-status.cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* 课程详情 */
 .course-details {
   display: flex;
   flex-direction: column;
+  gap: 8rpx;
+  padding-left: 60rpx;
 }
 
-.detail-row {
+.course-location,
+.course-remark {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 空闲时间 */
+.empty-booking {
   display: flex;
-  margin-bottom: 12rpx;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
 }
 
-.detail-row:last-child {
-  margin-bottom: 0;
+.empty-text {
+  font-size: 24rpx;
+  color: #999;
 }
 
-.detail-label {
+/* 无时间段 */
+.no-time-slots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.no-slots-text {
   font-size: 26rpx;
   color: #999;
-  width: 80rpx;
-  flex-shrink: 0;
 }
 
-.detail-value {
-  font-size: 26rpx;
-  color: #333;
-  flex: 1;
-}
-
-.empty-courses {
+/* 空状态 */
+.empty-schedule {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 200rpx;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #999;
 }
 
 /* 立即约课按钮 */

@@ -16,8 +16,8 @@ Page({
       energy: 0,
       coupons: 1
     },
-    // 近期课程
-    recentCourses: [],
+    // 日历式课表数据
+    calendarData: [],
     // 用户身份
     userRole: 'student' // 'student' 学员, 'coach' 教练
   },
@@ -31,7 +31,7 @@ Page({
     
     this.loadUserInfo();
     this.loadUserRole();
-    this.loadRecentCourses();
+    this.loadCalendarData();
   },
 
   /**
@@ -43,7 +43,7 @@ Page({
     
     this.loadUserInfo();
     this.loadUserRole();
-    this.loadRecentCourses();
+    this.loadCalendarData();
   },
 
   /**
@@ -95,87 +95,229 @@ Page({
   },
 
   /**
-   * 加载近期课程
+   * 加载日历式课表数据
    */
-  loadRecentCourses() {
+  loadCalendarData() {
     const { userRole } = this.data;
     
-    // 根据身份加载不同的课程数据
-    let recentCourses = [];
+    // 获取近三天的日期
+    const today = new Date();
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+    const dayAfterTomorrow = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
     
     if (userRole === 'student') {
-      // 学员身份：显示已确认的课程（教练信息）
-      recentCourses = [
+      // 学员视角：只显示已预约的课程，不显示空闲时间
+      const bookedCourses = [
         {
-          id: 2,
-          coachId: 2,
-          coachName: '王教练',
-          coachAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月12日 15:00-18:00',
-          location: '中心广场健身房',
-          remark: '力量训练课程，请穿运动鞋',
-          status: 'confirmed'
-        },
-        {
-          id: 6,
-          coachId: 1,
+          date: this.formatDateKey(today),
+          startTime: '09:00',
+          endTime: '12:00',
           coachName: '李教练',
           coachAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月16日 09:00-12:00',
           location: '万达广场健身房',
-          remark: '瑜伽课程',
+          remark: '瑜伽课程，请提前10分钟到达',
           status: 'confirmed'
         },
         {
-          id: 7,
-          coachId: 3,
+          date: this.formatDateKey(tomorrow),
+          startTime: '14:00',
+          endTime: '17:00',
+          coachName: '王教练',
+          coachAvatar: '/images/defaultAvatar.png',
+          location: '中心广场健身房',
+          remark: '力量训练课程，请穿运动鞋',
+          status: 'pending'
+        },
+        {
+          date: this.formatDateKey(dayAfterTomorrow),
+          startTime: '19:00',
+          endTime: '21:00',
           coachName: '张教练',
           coachAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月18日 19:00-21:00',
           location: '舞蹈工作室',
-          remark: '体态矫正',
+          remark: '体态矫正课程',
           status: 'confirmed'
         }
       ];
+      
+      // 生成学员的日历数据（只显示已预约课程）
+      const calendarData = this.generateStudentCalendarData([today, tomorrow, dayAfterTomorrow], bookedCourses);
+      
+      this.setData({
+        calendarData
+      });
+      
     } else {
-      // 教练身份：显示已确认的课程（学员信息）
-      recentCourses = [
+      // 教练视角：显示时间模板中的所有时间段
+      const timeTemplate = [
+        { id: 1, startTime: '09:00', endTime: '12:00' },
+        { id: 2, startTime: '14:00', endTime: '17:00' },
+        { id: 3, startTime: '19:00', endTime: '21:00' }
+      ];
+      
+      const bookedCourses = [
         {
-          id: 2,
-          studentId: 1,
+          date: this.formatDateKey(today),
+          timeSlotId: 1,
           studentName: '小李',
           studentAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月12日 15:00-18:00',
-          location: '中心广场健身房',
-          remark: '力量训练课程',
-          status: 'confirmed'
-        },
-        {
-          id: 6,
-          studentId: 2,
-          studentName: '小王',
-          studentAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月16日 09:00-12:00',
           location: '万达广场健身房',
           remark: '瑜伽课程',
           status: 'confirmed'
         },
         {
-          id: 7,
-          studentId: 3,
-          studentName: '小张',
+          date: this.formatDateKey(tomorrow),
+          timeSlotId: 2,
+          studentName: '小王',
           studentAvatar: '/images/defaultAvatar.png',
-          time: '2024年1月18日 19:00-21:00',
-          location: '舞蹈工作室',
-          remark: '体态矫正',
-          status: 'confirmed'
+          location: '中心广场健身房',
+          remark: '力量训练课程',
+          status: 'pending'
         }
       ];
+      
+      // 生成教练的日历数据（显示所有时间段）
+      const calendarData = [
+        {
+          date: this.formatDateKey(today),
+          dayTitle: '今天',
+          dateStr: this.formatDate(today),
+          timeSlots: this.generateDayTimeSlots(today, timeTemplate, bookedCourses)
+        },
+        {
+          date: this.formatDateKey(tomorrow),
+          dayTitle: '明天',
+          dateStr: this.formatDate(tomorrow),
+          timeSlots: this.generateDayTimeSlots(tomorrow, timeTemplate, bookedCourses)
+        },
+        {
+          date: this.formatDateKey(dayAfterTomorrow),
+          dayTitle: '后天',
+          dateStr: this.formatDate(dayAfterTomorrow),
+          timeSlots: this.generateDayTimeSlots(dayAfterTomorrow, timeTemplate, bookedCourses)
+        }
+      ];
+      
+      this.setData({
+        calendarData
+      });
     }
+  },
+
+  /**
+   * 生成学员的日历数据（只显示已预约课程）
+   */
+  generateStudentCalendarData(dates, bookedCourses) {
+    return dates.map(date => {
+      const dateKey = this.formatDateKey(date);
+      const dayTitle = this.getDayTitle(date);
+      
+      // 过滤出该日期的预约课程
+      const dayBookings = bookedCourses
+        .filter(course => course.date === dateKey)
+        .map(course => ({
+          id: `${course.date}_${course.startTime}`,
+          startTime: course.startTime,
+          endTime: course.endTime,
+          isBooked: true,
+          coachName: course.coachName,
+          coachAvatar: course.coachAvatar,
+          location: course.location,
+          remark: course.remark,
+          status: course.status,
+          statusText: this.getStatusText(course.status),
+          statusClass: course.status
+        }))
+        .sort((a, b) => a.startTime.localeCompare(b.startTime)); // 按时间排序
+      
+      return {
+        date: dateKey,
+        dayTitle: dayTitle,
+        dateStr: this.formatDate(date),
+        timeSlots: dayBookings
+      };
+    }).filter(day => day.timeSlots.length > 0); // 只保留有课程的日期
+  },
+
+  /**
+   * 获取日期标题
+   */
+  getDayTitle(date) {
+    const today = new Date();
+    const diffTime = date.getTime() - today.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
-    this.setData({
-      recentCourses
+    if (diffDays === 0) return '今天';
+    if (diffDays === 1) return '明天';
+    if (diffDays === 2) return '后天';
+    return this.formatDate(date);
+  },
+
+  /**
+   * 生成某一天的时间段数据
+   */
+  generateDayTimeSlots(date, timeTemplate, bookedCourses) {
+    const dateKey = this.formatDateKey(date);
+    
+    return timeTemplate.map(slot => {
+      // 查找该时间段是否有预约
+      const booking = bookedCourses.find(course => 
+        course.date === dateKey && course.timeSlotId === slot.id
+      );
+      
+      if (booking) {
+        // 有预约，返回预约信息
+        return {
+          id: slot.id,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isBooked: true,
+          ...booking,
+          statusText: this.getStatusText(booking.status),
+          statusClass: booking.status
+        };
+      } else {
+        // 无预约，返回空闲时间段
+        return {
+          id: slot.id,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isBooked: false
+        };
+      }
     });
+  },
+
+  /**
+   * 获取状态文本
+   */
+  getStatusText(status) {
+    const statusMap = {
+      'pending': '待确认',
+      'confirmed': '已确认',
+      'completed': '已完成',
+      'cancelled': '已取消'
+    };
+    return statusMap[status] || '未知';
+  },
+
+  /**
+   * 格式化日期为键值（YYYY-MM-DD）
+   */
+  formatDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+
+  /**
+   * 格式化日期
+   */
+  formatDate(date) {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}月${day}日`;
   },
 
   /**
@@ -224,20 +366,11 @@ Page({
   },
 
   /**
-   * 待确认课程点击事件
+   * 我的课程点击事件
    */
   onPendingCoursesClick: function() {
     wx.navigateTo({
       url: '/pages/courseList/courseList?tab=0'
-    });
-  },
-
-  /**
-   * 查看更多课程
-   */
-  onViewMoreCourses: function() {
-    wx.navigateTo({
-      url: '/pages/courseList/courseList?tab=1'
     });
   },
 

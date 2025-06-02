@@ -1,4 +1,4 @@
 <!--components/layout/layout.wxml-->
-<scroll-view style="width: 100%;padding-top: {{navBarHeight}}px;">
+<view class="layout" style="padding-top: {{navBarHeight}}px;">
   <slot></slot>
-</scroll-view>
+</view>

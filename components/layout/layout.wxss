@@ -3,7 +3,7 @@
  * 布局组件样式
  */
 
-scroll-view {
-  height: 100vh;
+.layout {
+  width: 100%;
   box-sizing: border-box;
 }
