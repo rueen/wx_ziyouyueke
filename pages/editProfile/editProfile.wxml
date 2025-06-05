@@ -12,11 +12,10 @@
     </view>
 
     <!-- 我的昵称 -->
-    <view class="form-item" bindtap="onChooseNickname">
+    <view class="form-item">
       <text class="label">我的昵称</text>
       <view class="value-container">
-        <text class="value">{{userInfo.nickName || '未设置'}}</text>
-        <text class="iconfont icon-arrow-r arrow"></text>
+        <input class="input-value" placeholder="请输入昵称" value="{{userInfo.nickName}}" bindinput="onNicknameInput" />
       </view>
     </view>
 
@@ -37,6 +36,19 @@
         <text class="iconfont icon-arrow-r arrow"></text>
       </view>
     </view>
+
+    <!-- 个人介绍 -->
+    <view class="form-item intro-item">
+      <text class="label">个人介绍</text>
+      <view class="value-container">
+        <textarea class="intro-textarea" placeholder="请输入个人介绍" value="{{userInfo.intro}}" bindinput="onIntroInput" maxlength="200"></textarea>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-container">
+    <button class="save-btn" bindtap="onSave">保存修改</button>
   </view>
 
   <!-- 性别选择弹窗 -->

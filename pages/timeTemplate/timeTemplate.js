@@ -2,6 +2,10 @@
  * pages/timeTemplate/timeTemplate.js
  * 时间模板页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -48,9 +52,58 @@ Page({
   /**
    * 加载时间设置数据
    */
-  loadTimeSettings() {
-    // 这里应该从后端API获取数据
-    console.log('加载时间设置数据');
+  async loadTimeSettings() {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+      
+      // 从API获取时间模板数据
+      const result = await api.timeTemplate.getList();
+      
+      wx.hideLoading();
+      
+      if (result && result.data && result.data.length > 0) {
+        const template = result.data[0]; // 使用第一个模板
+        
+        // 解析时间段数据
+        let timeSlots = [];
+        try {
+          timeSlots = JSON.parse(template.time_slots);
+        } catch (e) {
+          console.error('解析时间段数据失败:', e);
+          timeSlots = [];
+        }
+        
+        // 为每个时间段添加ID
+        timeSlots = timeSlots.map((slot, index) => ({
+          id: index + 1,
+          startTime: slot.startTime,
+          endTime: slot.endTime
+        }));
+        
+        this.setData({
+          bookingSettings: {
+            minAdvanceDays: template.min_advance_days,
+            maxAdvanceDays: template.max_advance_days
+          },
+          timeSlotTemplate: timeSlots,
+          templateId: template.id // 保存模板ID用于更新
+        });
+        
+        console.log('加载时间设置成功:', template);
+      } else {
+        console.log('暂无时间模板数据');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载时间设置失败:', error);
+      
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**
@@ -103,8 +156,8 @@ Page({
   /**
    * 保存预约设置
    */
-  onSaveSettings() {
-    const { tempMinAdvanceDays, tempMaxAdvanceDays } = this.data;
+  async onSaveSettings() {
+    const { tempMinAdvanceDays, tempMaxAdvanceDays, timeSlotTemplate, templateId } = this.data;
     
     if (tempMinAdvanceDays >= tempMaxAdvanceDays) {
       wx.showToast({
@@ -122,24 +175,62 @@ Page({
       return;
     }
 
-    this.setData({
-      bookingSettings: {
-        minAdvanceDays: tempMinAdvanceDays,
-        maxAdvanceDays: tempMaxAdvanceDays
-      },
-      showSettingsForm: false
-    });
+    try {
+      wx.showLoading({
+        title: '保存中...'
+      });
 
-    // 这里应该调用后端API保存
-    console.log('保存预约设置：', {
-      minAdvanceDays: tempMinAdvanceDays,
-      maxAdvanceDays: tempMaxAdvanceDays
-    });
-    
-    wx.showToast({
-      title: '设置保存成功',
-      icon: 'success'
-    });
+      // 准备时间段数据
+      const timeSlots = timeSlotTemplate.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      }));
+
+      const templateData = {
+        min_advance_days: tempMinAdvanceDays,
+        max_advance_days: tempMaxAdvanceDays,
+        time_slots: timeSlots,
+        is_active: 1
+      };
+
+      // 调用API保存
+      if (templateId) {
+        // 更新现有模板
+        await api.timeTemplate.update(templateId, templateData);
+      } else {
+        // 创建新模板
+        const result = await api.timeTemplate.create(templateData);
+        this.setData({
+          templateId: result.data.id
+        });
+      }
+
+      wx.hideLoading();
+
+      this.setData({
+        bookingSettings: {
+          minAdvanceDays: tempMinAdvanceDays,
+          maxAdvanceDays: tempMaxAdvanceDays
+        },
+        showSettingsForm: false
+      });
+      
+      wx.showToast({
+        title: '设置保存成功',
+        icon: 'success'
+      });
+
+      console.log('保存预约设置成功:', templateData);
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('保存预约设置失败:', error);
+      
+      wx.showToast({
+        title: '保存失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**

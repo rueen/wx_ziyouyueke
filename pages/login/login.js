@@ -2,6 +2,10 @@
  * pages/login/login.js
  * 登录页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -96,24 +100,22 @@ Page({
           desc: '用于完善会员资料',
           success: (userRes) => {
             console.log('获取用户信息成功:', userRes);
-            wx.hideLoading();
             
-            // 这里应该调用后端API进行登录验证
-            this.mockLoginSuccess('wechat', {
+            // 调用后端API进行登录验证
+            this.performLogin(res.code, {
               nickname: userRes.userInfo.nickName,
-              avatar: userRes.userInfo.avatarUrl,
-              code: res.code
+              avatarUrl: userRes.userInfo.avatarUrl,
+              gender: userRes.userInfo.gender
             });
           },
           fail: (err) => {
             console.error('获取用户信息失败:', err);
-            wx.hideLoading();
             
             // 用户拒绝授权，使用默认信息登录
-            this.mockLoginSuccess('wechat', {
+            this.performLogin(res.code, {
               nickname: '微信用户',
-              avatar: '/images/defaultAvatar.png',
-              code: res.code
+              avatarUrl: '/images/defaultAvatar.png',
+              gender: 0
             });
           }
         });
@@ -150,7 +152,88 @@ Page({
   },
 
   /**
-   * 模拟登录成功
+   * 执行真实登录
+   */
+  async performLogin(code, userInfo) {
+    try {
+      // 构建登录参数
+      const loginParams = {
+        code,
+        userInfo
+      };
+      
+      // 如果有邀请的教练ID，加入参数
+      if (this.data.isInvited && this.data.coachId) {
+        loginParams.coach_id = parseInt(this.data.coachId);
+      }
+      
+      console.log('开始登录，参数:', loginParams);
+      
+      // 调用登录API
+      const result = await api.auth.login(loginParams);
+      
+      wx.hideLoading();
+      
+      console.log('登录成功:', result);
+      
+      // 保存用户信息和Token
+      const { token, user, isNewUser, autoBindCoach } = result.data;
+      
+      wx.setStorageSync('token', token);
+      wx.setStorageSync('userInfo', user);
+      wx.setStorageSync('isLoggedIn', true);
+      wx.setStorageSync('loginType', 'wechat');
+      wx.setStorageSync('userRole', this.data.selectedRole);
+      
+      // 显示登录成功提示
+      let successMessage = '登录成功';
+      
+      if (isNewUser) {
+        successMessage = '注册并登录成功';
+      }
+      
+      if (autoBindCoach) {
+        successMessage += '，已自动绑定教练';
+      }
+      
+      wx.showToast({
+        title: successMessage,
+        icon: 'success',
+        duration: 2000
+      });
+      
+      // 延迟跳转到首页
+      setTimeout(() => {
+        wx.switchTab({
+          url: '/pages/index/index'
+        });
+      }, 2000);
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('登录失败:', error);
+      
+      let errorMessage = '登录失败，请重试';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.code === 2001) {
+        errorMessage = '微信登录验证失败';
+      } else if (error.code === -1) {
+        errorMessage = '网络连接失败，请检查网络';
+      }
+      
+      wx.showModal({
+        title: '登录失败',
+        content: errorMessage,
+        showCancel: false,
+        confirmText: '重试'
+      });
+    }
+  },
+
+  /**
+   * 游客登录（保留模拟方式）
    */
   mockLoginSuccess(loginType, userData) {
     // 保存用户信息

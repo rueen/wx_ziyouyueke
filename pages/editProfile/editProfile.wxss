@@ -7,14 +7,15 @@
 page {
   height: 100vh;
   background-color: #f7f7f7;
-  padding: 40rpx;
+  padding: 40rpx 40rpx 140rpx 40rpx; /* 底部留更多空间给保存按钮 */
 }
 
 /* 表单容器 */
 .profile-form {
   background-color: #fff;
   border-radius: 24rpx;
-  padding: 10rpx 30rpx;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 /* 表单项 */
@@ -22,15 +23,20 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30rpx 0;
-  border-bottom: 1rpx solid #ededed;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
   width: 100%;
   box-sizing: border-box;
   text-align: left;
+  transition: background-color 0.2s ease;
 }
 
 .form-item:last-child {
   border-bottom: none;
+}
+
+.form-item:active {
+  background-color: #f8f8f8;
 }
 
 /* 手机号按钮特殊样式 */
@@ -76,6 +82,91 @@ page {
 .arrow {
   font-size: 24rpx;
   color: #ccc;
+}
+
+/* 输入框样式 */
+.input-value {
+  font-size: 32rpx;
+  color: #333;
+  text-align: right;
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.input-value::placeholder {
+  color: #999;
+}
+
+/* 个人介绍项目特殊样式 */
+.intro-item {
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+}
+
+.intro-item .label {
+  margin-bottom: 20rpx;
+  align-self: flex-start;
+}
+
+.intro-item .value-container {
+  width: 100%;
+}
+
+/* 个人介绍文本域 */
+.intro-textarea {
+  font-size: 32rpx;
+  color: #333;
+  width: 100%;
+  min-height: 140rpx;
+  padding: 16rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  background-color: #fafafa;
+  box-sizing: border-box;
+  line-height: 1.6;
+  font-family: inherit;
+}
+
+.intro-textarea::placeholder {
+  color: #999;
+}
+
+/* 保存按钮容器 */
+.save-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 40rpx;
+  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+  background-color: #f7f7f7;
+  border-top: 1rpx solid #e0e0e0;
+}
+
+/* 保存按钮 */
+.save-btn {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.save-btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.4);
 }
 
 /* 性别选择弹窗 */

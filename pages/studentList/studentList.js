@@ -2,6 +2,10 @@
  * pages/studentList/studentList.js
  * 学员列表页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -67,10 +71,54 @@ Page({
   /**
    * 加载学员列表
    */
-  loadStudents() {
-    // 这里可以从后端API获取学员数据
-    // 目前使用静态数据
-    console.log('学员列表加载完成');
+  async loadStudents() {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      // 调用API获取我的学员列表
+      const result = await api.relation.getMyStudents();
+      
+      wx.hideLoading();
+
+      if (result && result.data && result.data.length > 0) {
+        // 格式化数据
+        const students = result.data.map(item => ({
+          id: item.id,
+          name: (item.student && item.student.nickname) || '未知学员',
+          avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
+          level: '初级', // 暂时写死，后续可以从用户信息中获取
+          remainingLessons: item.remaining_lessons || 0,
+          introduction: (item.student && item.student.intro) || '暂无介绍',
+          remark: item.coach_remark || '无备注',
+          phone: (item.student && item.student.phone) || ''
+        }));
+
+        this.setData({
+          students
+        });
+
+        console.log('加载学员数据成功:', students);
+      } else {
+        // 没有学员数据时，使用空数组
+        this.setData({
+          students: []
+        });
+        console.log('暂无学员数据');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载学员数据失败:', error);
+      
+      // API调用失败时，使用原有的静态数据作为后备
+      console.log('使用静态数据作为后备');
+      
+      wx.showToast({
+        title: '加载失败，显示缓存数据',
+        icon: 'none'
+      });
+    }
   },
 
   /**

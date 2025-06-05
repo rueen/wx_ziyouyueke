@@ -2,6 +2,10 @@
  * pages/courseList/courseList.js
  * 课程列表页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据

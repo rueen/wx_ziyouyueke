@@ -2,6 +2,10 @@
  * index.js
  * 首页逻辑
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -27,7 +31,9 @@ Page({
    */
   onLoad: function (options) {
     // 检查登录状态
-    this.checkLoginStatus();
+    if (!this.checkLoginStatus()) {
+      return;
+    }
     
     this.loadUserInfo();
     this.loadUserRole();
@@ -39,11 +45,16 @@ Page({
    */
   onShow: function () {
     // 检查登录状态
-    this.checkLoginStatus();
+    if (!this.checkLoginStatus()) {
+      return;
+    }
     
-    this.loadUserInfo();
-    this.loadUserRole();
-    this.loadCalendarData();
+    // 检查是否需要刷新用户信息（从个人信息编辑页面返回时）
+    const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
+    if (userInfoUpdated) {
+      wx.removeStorageSync('userInfoUpdated');
+      this.loadUserInfo();
+    }
   },
 
   /**
@@ -64,23 +75,77 @@ Page({
   /**
    * 加载用户信息
    */
-  loadUserInfo() {
-    const storedUserInfo = wx.getStorageSync('userInfo');
-    if (storedUserInfo && storedUserInfo.nickName) {
-      this.setData({
-        userInfo: {
-          name: storedUserInfo.nickName,
-          avatar: storedUserInfo.avatarUrl || '/images/defaultAvatar.png'
+  async loadUserInfo() {
+    try {
+      // 从API获取用户信息和统计数据
+      const [profileResult, statsResult] = await Promise.all([
+        api.user.getProfile(),
+        api.user.getStats()
+      ]);
+
+      // 更新用户基本信息
+      if (profileResult && profileResult.data) {
+        const user = profileResult.data;
+        this.setData({
+          userInfo: {
+            name: user.nickname || '用户',
+            avatar: user.avatar_url || '/images/defaultAvatar.png'
+          }
+        });
+        
+        // 更新本地缓存
+        wx.setStorageSync('userInfo', user);
+      }
+
+      // 更新统计信息
+      if (statsResult && statsResult.data) {
+        const stats = statsResult.data;
+        // 根据用户角色设置不同的统计数据
+        let displayStats = {
+          points: 0,
+          energy: 0,
+          coupons: 0
+        };
+
+        if (stats.roles && stats.roles.isCoach && stats.coachStats) {
+          displayStats = {
+            points: stats.coachStats.totalStudents || 0,
+            energy: stats.coachStats.totalCourses || 0,
+            coupons: stats.coachStats.completedCourses || 0
+          };
+        } else if (stats.roles && stats.roles.isStudent && stats.studentStats) {
+          displayStats = {
+            points: stats.studentStats.remainingLessons || 0,
+            energy: stats.studentStats.totalCourses || 0,
+            coupons: stats.studentStats.completedCourses || 0
+          };
         }
-      });
-    } else {
-      // 确保有默认值
-      this.setData({
-        userInfo: {
-          name: 'rueen',
-          avatar: '/images/defaultAvatar.png'
-        }
-      });
+
+        this.setData({
+          stats: displayStats
+        });
+      }
+
+    } catch (error) {
+      console.error('加载用户信息失败:', error);
+      // API调用失败时使用本地缓存
+      const storedUserInfo = wx.getStorageSync('userInfo');
+      if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
+        this.setData({
+          userInfo: {
+            name: storedUserInfo.nickName || storedUserInfo.nickname || '用户',
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+          }
+        });
+      } else {
+        // 确保有默认值
+        this.setData({
+          userInfo: {
+            name: '用户',
+            avatar: '/images/defaultAvatar.png'
+          }
+        });
+      }
     }
   },
 

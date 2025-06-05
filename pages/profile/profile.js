@@ -2,6 +2,10 @@
  * pages/profile/profile.js
  * 我的页面逻辑
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
 
   /**
@@ -44,8 +48,12 @@ Page({
       return;
     }
     
-    this.loadUserInfo();
-    this.loadUserRole();
+    // 检查是否需要刷新用户信息（从编辑页面返回时）
+    const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
+    if (userInfoUpdated) {
+      wx.removeStorageSync('userInfoUpdated');
+      this.loadUserInfo();
+    }
   },
 
   /**
@@ -86,23 +94,53 @@ Page({
   /**
    * 加载用户信息
    */
-  loadUserInfo() {
-    const storedUserInfo = wx.getStorageSync('userInfo');
-    if (storedUserInfo && storedUserInfo.nickName) {
-      this.setData({
-        userInfo: {
-          nickname: storedUserInfo.nickName,
-          avatar: storedUserInfo.avatarUrl || '/images/defaultAvatar.png'
-        }
-      });
-    } else {
-      // 确保有默认值
-      this.setData({
-        userInfo: {
-          nickname: '请设置昵称',
-          avatar: '/images/defaultAvatar.png'
-        }
-      });
+  async loadUserInfo() {
+    try {
+      // 先从缓存获取
+      const storedUserInfo = wx.getStorageSync('userInfo');
+      if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
+        this.setData({
+          userInfo: {
+            nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+          }
+        });
+      }
+
+      // 从API获取最新的用户信息
+      const result = await api.user.getProfile();
+      if (result && result.data) {
+        const user = result.data;
+        this.setData({
+          userInfo: {
+            nickname: user.nickname || '请设置昵称',
+            avatar: user.avatar_url || '/images/defaultAvatar.png'
+          }
+        });
+        
+        // 更新本地缓存
+        wx.setStorageSync('userInfo', user);
+      }
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+      // API调用失败时使用缓存数据
+      const storedUserInfo = wx.getStorageSync('userInfo');
+      if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
+        this.setData({
+          userInfo: {
+            nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+          }
+        });
+      } else {
+        // 确保有默认值
+        this.setData({
+          userInfo: {
+            nickname: '请设置昵称',
+            avatar: '/images/defaultAvatar.png'
+          }
+        });
+      }
     }
   },
 
@@ -180,13 +218,22 @@ Page({
   /**
    * 退出登录
    */
-  onLogout() {
+  async onLogout() {
     wx.showModal({
       title: '退出登录',
       content: '确定要退出登录吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
+          try {
+            // 调用API登出
+            await api.auth.logout();
+          } catch (error) {
+            console.error('API登出失败:', error);
+            // 即使API调用失败，也要清除本地信息
+          }
+          
           // 清除登录信息
+          wx.removeStorageSync('token');
           wx.removeStorageSync('userInfo');
           wx.removeStorageSync('isLoggedIn');
           wx.removeStorageSync('loginType');
