@@ -2,6 +2,10 @@
  * pages/coachDetail/coachDetail.js
  * 教练详情页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -27,6 +31,51 @@ Page({
           icon: 'none'
         });
       }
+    } else if (options.coachId) {
+      // 如果只有教练ID，从API获取详情
+      this.loadCoachDetail(options.coachId);
+    }
+  },
+
+  /**
+   * 从API加载教练详情
+   */
+  async loadCoachDetail(coachId) {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      const result = await api.coach.getDetail(coachId);
+      
+      wx.hideLoading();
+
+      if (result && result.data) {
+        const coach = result.data;
+        const coachData = {
+          id: coach.id,
+          name: coach.nickname || '未知教练',
+          avatar: coach.avatar_url || '/images/defaultAvatar.png',
+          specialty: coach.intro || '暂无专业介绍',
+          introduction: coach.intro || '暂无介绍',
+          stats: coach.stats || {},
+          phone: coach.phone || ''
+        };
+
+        this.setData({
+          coachData
+        });
+
+        console.log('加载教练详情成功:', coachData);
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载教练详情失败:', error);
+      
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
     }
   },
 

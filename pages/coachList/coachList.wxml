@@ -22,7 +22,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:else>
-    <text class="empty-text">暂无教练</text>
-    <text class="empty-desc">您还没有关联任何教练</text>
+    <text class="empty-text">暂无绑定教练</text>
+    <text class="empty-desc">您还没有绑定任何教练，请联系教练建立师生关系</text>
   </view>
 </layout> 

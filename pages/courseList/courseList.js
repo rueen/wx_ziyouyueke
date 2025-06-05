@@ -78,8 +78,83 @@ Page({
   /**
    * 加载课程数据
    */
-  loadCourses() {
-    // 这里应该从后端API获取，目前使用静态数据
+  async loadCourses() {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      // 根据用户角色获取课程列表
+      const userRole = wx.getStorageSync('userRole') || 'student';
+      const result = await api.course.getList({ 
+        page: 1, 
+        limit: 50,
+        role: userRole 
+      });
+      
+      wx.hideLoading();
+
+      if (result && result.data && result.data.courses) {
+        // 格式化API数据为前端需要的格式
+        const courses = result.data.courses.map(course => ({
+          id: course.id,
+          coachId: course.coach ? course.coach.id : 0,
+          coachName: course.coach ? course.coach.nickname : '未知教练',
+          coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+          studentName: course.student ? course.student.nickname : '未知学员',
+          studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+          time: `${course.booking_date} ${course.start_time}-${course.end_time}`,
+          location: '待定', // API暂无地点字段
+          remark: course.notes || '',
+          status: this.getStatusFromApi(course.booking_status),
+          createTime: course.created_at || '',
+          cancelReason: course.cancel_reason || ''
+        }));
+
+        this.setData({
+          courses
+        });
+
+        console.log('API加载课程数据成功:', courses);
+      } else {
+        // 没有课程数据时使用空数组
+        this.setData({
+          courses: []
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载课程数据失败:', error);
+      
+      // API调用失败时使用静态数据
+      console.log('使用静态数据作为后备');
+      this.loadStaticCourses();
+      
+      wx.showToast({
+        title: '加载失败，显示缓存数据',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 将API状态码转换为前端状态
+   */
+  getStatusFromApi(apiStatus) {
+    const statusMap = {
+      1: 'pending',      // 待确认
+      2: 'confirmed',    // 已确认  
+      3: 'confirmed',    // 进行中（显示为已确认）
+      4: 'completed',    // 已完成
+      5: 'cancelled'     // 已取消
+    };
+    return statusMap[apiStatus] || 'pending';
+  },
+
+  /**
+   * 加载静态课程数据（后备方案）
+   */
+  loadStaticCourses() {
     const courses = [
       {
         id: 1,
@@ -175,19 +250,38 @@ Page({
   /**
    * 确认课程
    */
-  onConfirmCourse(e) {
+  async onConfirmCourse(e) {
     const courseId = e.currentTarget.dataset.id;
     
     wx.showModal({
       title: '确认课程',
       content: '确定要确认这节课程吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          this.updateCourseStatus(courseId, 'confirmed');
-          wx.showToast({
-            title: '课程已确认',
-            icon: 'success'
-          });
+          try {
+            wx.showLoading({
+              title: '确认中...'
+            });
+
+            await api.course.confirm(courseId);
+            
+            wx.hideLoading();
+            wx.showToast({
+              title: '课程已确认',
+              icon: 'success'
+            });
+
+            // 重新加载课程列表
+            this.loadCourses();
+          } catch (error) {
+            wx.hideLoading();
+            console.error('确认课程失败:', error);
+            
+            wx.showToast({
+              title: '确认失败，请重试',
+              icon: 'none'
+            });
+          }
         }
       }
     });
@@ -228,7 +322,7 @@ Page({
   /**
    * 确认取消课程
    */
-  onConfirmCancel() {
+  async onConfirmCancel() {
     const { cancellingCourseId, cancelReason } = this.data;
     
     if (!cancelReason.trim()) {
@@ -239,16 +333,36 @@ Page({
       return;
     }
 
-    // 更新课程状态并保存取消原因
-    this.updateCourseStatus(cancellingCourseId, 'cancelled', cancelReason.trim());
-    
-    // 隐藏模态框
-    this.onHideCancelModal();
-    
-    wx.showToast({
-      title: '课程已取消',
-      icon: 'none'
-    });
+    try {
+      wx.showLoading({
+        title: '取消中...'
+      });
+
+      await api.course.cancel(cancellingCourseId, {
+        cancel_reason: cancelReason.trim()
+      });
+      
+      wx.hideLoading();
+      
+      // 隐藏模态框
+      this.onHideCancelModal();
+      
+      wx.showToast({
+        title: '课程已取消',
+        icon: 'none'
+      });
+
+      // 重新加载课程列表
+      this.loadCourses();
+    } catch (error) {
+      wx.hideLoading();
+      console.error('取消课程失败:', error);
+      
+      wx.showToast({
+        title: '取消失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**

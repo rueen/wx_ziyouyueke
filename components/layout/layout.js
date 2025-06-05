@@ -33,7 +33,7 @@ Component({
      */
     getNavBarHeight(){
       try {
-        const systemInfo = wx.getSystemInfoSync();
+        const systemInfo = wx.getSystemInfoSync(); // TODO: 升级到 wx.getSystemInfo
         const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
         const navBarHeight = systemInfo.statusBarHeight + menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
         this.setData({

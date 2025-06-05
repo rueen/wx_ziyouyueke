@@ -2,6 +2,10 @@
  * pages/bookCoach/bookCoach.js
  * 约教练页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -218,7 +222,7 @@ Page({
   /**
    * 提交约课
    */
-  onSubmitBooking() {
+  async onSubmitBooking() {
     const { selectedCoach, selectedTime, location, remark } = this.data;
     
     if (!selectedCoach || !selectedTime || !location.trim()) {
@@ -229,32 +233,67 @@ Page({
       return;
     }
 
-    // 构造约课数据
-    const bookingData = {
-      coachId: selectedCoach.id,
-      coachName: selectedCoach.name,
-      time: selectedTime,
-      location: location.trim(),
-      remark: remark.trim(),
-      createTime: new Date().toLocaleString()
-    };
-
-    // 这里应该调用后端API提交约课
-    console.log('约课数据：', bookingData);
-    
-    // 模拟提交成功
-    wx.showToast({
-      title: '约课成功',
-      icon: 'success',
-      duration: 2000
-    });
-
-    // 延迟跳转回首页
-    setTimeout(() => {
-      wx.switchTab({
-        url: '/pages/index/index'
+    try {
+      wx.showLoading({
+        title: '提交中...'
       });
-    }, 2000);
+
+      // 解析时间格式：周一 09:00-12:00
+      const timeMatch = selectedTime.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})-(\d{2}:\d{2})/);
+      let bookingDate, startTime, endTime;
+      
+      if (timeMatch) {
+        bookingDate = timeMatch[1];
+        startTime = timeMatch[2];
+        endTime = timeMatch[3];
+      } else {
+        // 如果时间格式不匹配，使用明天的时间作为示例
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        bookingDate = tomorrow.toISOString().split('T')[0];
+        startTime = '09:00';
+        endTime = '10:00';
+      }
+
+      // 调用API提交约课
+      const result = await api.course.book({
+        coach_id: selectedCoach.id,
+        booking_date: bookingDate,
+        start_time: startTime,
+        end_time: endTime,
+        notes: `地点：${location.trim()}${remark.trim() ? `，备注：${remark.trim()}` : ''}`
+      });
+      
+      wx.hideLoading();
+      
+      if (result && result.data) {
+        wx.showToast({
+          title: '约课成功',
+          icon: 'success',
+          duration: 2000
+        });
+
+        // 延迟跳转回首页
+        setTimeout(() => {
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }, 2000);
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('提交约课失败:', error);
+      
+      let errorMessage = '约课失败，请重试';
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      wx.showToast({
+        title: errorMessage,
+        icon: 'none'
+      });
+    }
   },
 
   /**

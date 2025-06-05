@@ -293,17 +293,6 @@ function createRelation(relation) {
 }
 
 /**
- * 获取我的教练列表
- * @returns {Promise}
- */
-function getMyCoaches() {
-  return request({
-    url: '/api/h5/relations/my-coaches',
-    method: 'GET'
-  });
-}
-
-/**
  * 获取我的学员列表
  * @returns {Promise}
  */
@@ -422,6 +411,62 @@ function getCourseDetail(courseId) {
   });
 }
 
+// ========== 教练模块 ==========
+
+/**
+ * 获取我的教练列表（当前学员绑定的教练列表）
+ * @param {Object} params 查询参数
+ * @param {number} params.page 页码，默认1
+ * @param {number} params.limit 每页数量，默认20
+ * @returns {Promise}
+ */
+function getMyCoachList(params = {}) {
+  return request({
+    url: '/api/h5/relations/my-coaches',
+    method: 'GET',
+    data: params
+  });
+}
+
+/**
+ * 获取教练列表（系统所有教练）
+ * @param {Object} params 查询参数
+ * @returns {Promise}
+ */
+function getCoachList(params = {}) {
+  return request({
+    url: '/api/h5/coach/list',
+    method: 'GET',
+    data: params
+  });
+}
+
+/**
+ * 获取教练详情
+ * @param {number} coachId 教练ID
+ * @returns {Promise}
+ */
+function getCoachDetail(coachId) {
+  return request({
+    url: `/api/h5/coach/${coachId}`,
+    method: 'GET'
+  });
+}
+
+/**
+ * 获取教练课程安排
+ * @param {number} coachId 教练ID
+ * @param {Object} params 查询参数
+ * @returns {Promise}
+ */
+function getCoachSchedule(coachId, params = {}) {
+  return request({
+    url: `/api/h5/coach/${coachId}/schedule`,
+    method: 'GET',
+    data: params
+  });
+}
+
 // ========== 健康检查 ==========
 
 /**
@@ -469,7 +514,6 @@ module.exports = {
   relation: {
     getList: getRelations,
     create: createRelation,
-    getMyCoaches,
     getMyStudents,
     update: updateRelation,
     delete: deleteRelation
@@ -483,6 +527,14 @@ module.exports = {
     cancel: cancelCourse,
     complete: completeCourse,
     getDetail: getCourseDetail
+  },
+
+  // 教练模块
+  coach: {
+    getMyList: getMyCoachList,
+    getList: getCoachList,
+    getDetail: getCoachDetail,
+    getSchedule: getCoachSchedule
   },
   
   // 其他
