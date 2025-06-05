@@ -1,6 +1,6 @@
 /**
  * pages/timeTemplate/timeTemplate.js
- * 时间模板页面
+ * 时间模板页面 - 支持添加/删除时间段并实时同步到后端API
  */
 
 // 引入API工具类
@@ -276,7 +276,7 @@ Page({
   /**
    * 确认添加时间段
    */
-  onConfirmAdd() {
+  async onConfirmAdd() {
     const { newStartTime, newEndTime, timeSlotTemplate } = this.data;
     
     if (!newStartTime || !newEndTime) {
@@ -306,33 +306,52 @@ Page({
       return;
     }
 
-    // 生成新的时间段
-    const newTimeSlot = {
-      id: Date.now(), // 简单的ID生成
-      startTime: newStartTime,
-      endTime: newEndTime
-    };
+    try {
+      wx.showLoading({
+        title: '添加中...'
+      });
 
-    // 更新时间段模板
-    const updatedTemplate = [...timeSlotTemplate, newTimeSlot];
-    
-    // 按时间排序
-    updatedTemplate.sort((a, b) => a.startTime.localeCompare(b.startTime));
+      // 生成新的时间段
+      const newTimeSlot = {
+        id: Date.now(), // 简单的ID生成
+        startTime: newStartTime,
+        endTime: newEndTime
+      };
 
-    this.setData({
-      timeSlotTemplate: updatedTemplate,
-      showAddForm: false,
-      newStartTime: '',
-      newEndTime: ''
-    });
+      // 更新时间段模板
+      const updatedTemplate = [...timeSlotTemplate, newTimeSlot];
+      
+      // 按时间排序
+      updatedTemplate.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-    // 这里应该调用后端API保存
-    console.log('添加时间段：', newTimeSlot);
-    
-    wx.showToast({
-      title: '添加成功',
-      icon: 'success'
-    });
+      // 调用API保存到后端
+      await this.saveTimeTemplate(updatedTemplate);
+
+      this.setData({
+        timeSlotTemplate: updatedTemplate,
+        showAddForm: false,
+        newStartTime: '',
+        newEndTime: ''
+      });
+
+      wx.hideLoading();
+      
+      wx.showToast({
+        title: '添加成功',
+        icon: 'success'
+      });
+
+      console.log('添加时间段成功：', newTimeSlot);
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('添加时间段失败:', error);
+      
+      wx.showToast({
+        title: '添加失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**
@@ -365,25 +384,79 @@ Page({
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个时间段吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          const { timeSlotTemplate } = this.data;
-          const updatedTemplate = [...timeSlotTemplate];
-          updatedTemplate.splice(slotIndex, 1);
-          
-          this.setData({
-            timeSlotTemplate: updatedTemplate
-          });
+          try {
+            wx.showLoading({
+              title: '删除中...'
+            });
 
-          // 这里应该调用后端API删除
-          console.log('删除时间段');
-          
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success'
-          });
+            const { timeSlotTemplate } = this.data;
+            const updatedTemplate = [...timeSlotTemplate];
+            const deletedSlot = updatedTemplate.splice(slotIndex, 1)[0];
+            
+            // 调用API保存到后端
+            await this.saveTimeTemplate(updatedTemplate);
+            
+            this.setData({
+              timeSlotTemplate: updatedTemplate
+            });
+
+            wx.hideLoading();
+            
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success'
+            });
+
+            console.log('删除时间段成功:', deletedSlot);
+            
+          } catch (error) {
+            wx.hideLoading();
+            console.error('删除时间段失败:', error);
+            
+            wx.showToast({
+              title: '删除失败，请重试',
+              icon: 'none'
+            });
+          }
         }
       }
     });
+  },
+
+  /**
+   * 保存时间模板到后端
+   * @param {Array} timeSlots 时间段数组
+   */
+  async saveTimeTemplate(timeSlots) {
+    const { bookingSettings, templateId } = this.data;
+    
+    // 准备时间段数据（移除ID字段，只保留时间）
+    const timeSlotData = timeSlots.map(slot => ({
+      startTime: slot.startTime,
+      endTime: slot.endTime
+    }));
+
+    const templateData = {
+      min_advance_days: bookingSettings.minAdvanceDays,
+      max_advance_days: bookingSettings.maxAdvanceDays,
+      time_slots: timeSlotData,
+      is_active: 1
+    };
+
+    // 调用API保存
+    if (templateId) {
+      // 更新现有模板
+      await api.timeTemplate.update(templateId, templateData);
+    } else {
+      // 创建新模板
+      const result = await api.timeTemplate.create(templateData);
+      this.setData({
+        templateId: result.data.id
+      });
+    }
+
+    console.log('保存时间模板成功:', templateData);
   }
 }) 
