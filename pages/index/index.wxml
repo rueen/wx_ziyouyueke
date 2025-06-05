@@ -35,8 +35,7 @@
     <!-- 我的课表 -->
     <view class="my-schedule">
       <view class="section-header">
-        <text class="section-title">我的课表</text>
-        <text class="schedule-tips">近三天时间安排</text>
+        <text class="section-title">近三天课程安排</text>
       </view>
       
       <!-- 日历式课表 -->
