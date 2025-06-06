@@ -485,9 +485,10 @@ function getCoachSchedule(coachId, params = {}) {
 /**
  * 上传图片
  * @param {string} filePath 本地文件路径
+ * @param {string} directory 上传目录，支持：images、avatar、documents、temp，默认为images
  * @returns {Promise}
  */
-function uploadImage(filePath) {
+function uploadImage(filePath, directory = 'images') {
   return new Promise((resolve, reject) => {
     const token = wx.getStorageSync('token');
     
@@ -495,11 +496,14 @@ function uploadImage(filePath) {
       url: `${API_CONFIG.baseUrl}/api/upload/image`,
       filePath: filePath,
       name: 'file',
+      formData: {
+        directory: directory
+      },
       header: {
         'Authorization': `Bearer ${token}`
       },
       success: (res) => {
-        console.log(`[API Upload] /api/upload/image`, res.data);
+        console.log(`[API Upload] /api/upload/image (directory: ${directory})`, res.data);
         
         try {
           const data = JSON.parse(res.data);
@@ -521,7 +525,7 @@ function uploadImage(filePath) {
         }
       },
       fail: (error) => {
-        console.error(`[API Upload Error] /api/upload/image`, error);
+        console.error(`[API Upload Error] /api/upload/image (directory: ${directory})`, error);
         reject({
           code: -1,
           message: '上传失败',
@@ -607,7 +611,10 @@ module.exports = {
 
   // 文件上传模块
   upload: {
-    image: uploadImage
+    image: uploadImage,
+    avatar: (filePath) => uploadImage(filePath, 'avatar'),
+    document: (filePath) => uploadImage(filePath, 'documents'),
+    temp: (filePath) => uploadImage(filePath, 'temp')
   },
   
   // 其他

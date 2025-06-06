@@ -256,7 +256,7 @@ Page({
    */
   async uploadAvatar(filePath) {
     try {
-      const result = await api.upload.image(filePath);
+      const result = await api.upload.avatar(filePath);
       return result.data;
     } catch (error) {
       throw new Error(error.message || '上传失败');
