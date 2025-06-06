@@ -109,20 +109,39 @@ Page({
         updateData.phone = userInfo.phoneNumber;
       }
 
-      // 如果头像是本地路径（新选择的），需要先上传
-      if (userInfo.avatarUrl && userInfo.avatarUrl.startsWith('http://tmp/') || userInfo.avatarUrl.startsWith('wxfile://')) {
-        try {
-          // 上传头像文件
-          const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
-          if (uploadResult && uploadResult.avatar_url) {
-            updateData.avatar_url = uploadResult.avatar_url;
+      // 处理头像逻辑
+      if (userInfo.avatarUrl) {
+        // 判断是否为本地临时文件（新选择的头像）
+        const isLocalFile = userInfo.avatarUrl.includes('tmp') || 
+                           userInfo.avatarUrl.startsWith('wxfile://') || 
+                           userInfo.avatarUrl.startsWith('http://tmp/') ||
+                           userInfo.avatarUrl.startsWith('store://');
+        
+        if (isLocalFile) {
+          try {
+            console.log('检测到本地头像文件，开始上传:', userInfo.avatarUrl);
+            // 上传头像文件
+            const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
+            if (uploadResult && uploadResult.url) {
+              updateData.avatar_url = uploadResult.url;
+              console.log('头像上传成功:', uploadResult.url);
+            }
+          } catch (uploadError) {
+            console.error('头像上传失败:', uploadError);
+            // 头像上传失败但不阻止其他信息保存
+            wx.showToast({
+              title: '头像上传失败，其他信息已保存',
+              icon: 'none',
+              duration: 2000
+            });
           }
-        } catch (uploadError) {
-          console.error('头像上传失败:', uploadError);
-          // 头像上传失败但不阻止其他信息保存
+        } else {
+          // 如果是网络URL（现有头像），直接传递
+          updateData.avatar_url = userInfo.avatarUrl;
+          console.log('使用现有头像URL:', userInfo.avatarUrl);
         }
       }
-      
+      console.log('updateData------', updateData);
       // 调用API更新用户信息
       const result = await api.user.updateProfile(updateData);
       
