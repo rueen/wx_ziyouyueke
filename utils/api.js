@@ -197,6 +197,19 @@ function getUserStats() {
   });
 }
 
+/**
+ * 解密微信手机号
+ * @param {string} code 微信手机号加密数据
+ * @returns {Promise}
+ */
+function decryptPhoneNumber(code) {
+  return request({
+    url: '/api/h5/user/decrypt-phone',
+    method: 'POST',
+    data: { code }
+  });
+}
+
 // ========== 时间模板模块 ==========
 
 /**
@@ -467,6 +480,60 @@ function getCoachSchedule(coachId, params = {}) {
   });
 }
 
+// ========== 文件上传模块 ==========
+
+/**
+ * 上传图片
+ * @param {string} filePath 本地文件路径
+ * @returns {Promise}
+ */
+function uploadImage(filePath) {
+  return new Promise((resolve, reject) => {
+    const token = wx.getStorageSync('token');
+    
+    wx.uploadFile({
+      url: `${API_CONFIG.baseUrl}/api/upload/image`,
+      filePath: filePath,
+      name: 'file',
+      header: {
+        'Authorization': `Bearer ${token}`
+      },
+      success: (res) => {
+        console.log(`[API Upload] /api/upload/image`, res.data);
+        
+        try {
+          const data = JSON.parse(res.data);
+          if (data.success) {
+            resolve(data);
+          } else {
+            // Token过期处理
+            if (data.code === 1002 || data.code === 2002) {
+              handleTokenExpired();
+            }
+            reject(data);
+          }
+        } catch (e) {
+          reject({
+            code: -1,
+            message: '响应解析失败',
+            error: e
+          });
+        }
+      },
+      fail: (error) => {
+        console.error(`[API Upload Error] /api/upload/image`, error);
+        reject({
+          code: -1,
+          message: '上传失败',
+          error: error
+        });
+      }
+    });
+  });
+}
+
+
+
 // ========== 健康检查 ==========
 
 /**
@@ -498,7 +565,8 @@ module.exports = {
   user: {
     getProfile: getUserProfile,
     updateProfile: updateUserProfile,
-    getStats: getUserStats
+    getStats: getUserStats,
+    decryptPhone: decryptPhoneNumber
   },
   
   // 时间模板模块
@@ -535,6 +603,11 @@ module.exports = {
     getList: getCoachList,
     getDetail: getCoachDetail,
     getSchedule: getCoachSchedule
+  },
+
+  // 文件上传模块
+  upload: {
+    image: uploadImage
   },
   
   // 其他

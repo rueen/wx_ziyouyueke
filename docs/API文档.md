@@ -355,7 +355,53 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 4. 上传头像
+#### 4. 解密微信手机号
+
+**接口地址**: `POST /api/h5/user/decrypt-phone`
+
+**接口描述**: 解密微信小程序获取的加密手机号数据
+
+**认证**: 需要
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| code | string | 是 | 微信小程序 getPhoneNumber 返回的加密code |
+
+**请求示例**:
+```json
+{
+  "code": "wx_encrypted_phone_code_from_getPhoneNumber"
+}
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "手机号解密成功",
+  "data": {
+    "phone": "13800138000",
+    "countryCode": "86",
+    "purePhoneNumber": "13800138000"
+  },
+  "timestamp": 1638360000000
+}
+```
+
+**错误响应示例**:
+```json
+{
+  "success": false,
+  "code": 2001,
+  "message": "微信接口调用失败：code无效或已过期",
+  "timestamp": 1638360000000
+}
+```
+
+#### 5. 上传头像
 
 **接口地址**: `POST /api/h5/user/avatar`
 
@@ -830,6 +876,66 @@ GET /api/h5/coach/123/schedule?start_date=2025-06-01&end_date=2025-06-07
   "timestamp": 1638360000000
 }
 ```
+
+### 文件上传模块 (`/api/upload`)
+
+#### 1. 上传图片
+
+**接口地址**: `POST /api/upload/image`
+
+**接口描述**: 上传图片文件，支持头像、封面图等各种图片上传需求
+
+**认证**: 需要
+
+**图片处理**: 客户端会自动进行图片压缩优化
+- 文件大小 < 200KB：不压缩，直接上传
+- 文件大小 200KB-512KB：压缩质量70%
+- 文件大小 512KB-1MB：压缩质量60%
+- 文件大小 > 1MB：压缩质量50%
+
+**请求参数**:
+
+- Content-Type: `multipart/form-data`
+- 字段名: `file`
+- 文件类型: 图片格式（jpg, jpeg, png, gif, webp）
+- 文件大小: 最大2MB（压缩前）
+
+**请求示例**:
+```
+POST /api/upload/image
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+
+file: <image_file>
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "图片上传成功",
+  "data": {
+    "url": "https://example.com/uploads/images/1638360000_user123.jpg",
+    "filename": "1638360000_user123.jpg",
+    "size": 1024000,
+    "mimetype": "image/jpeg"
+  },
+  "timestamp": 1638360000000
+}
+```
+
+**错误示例**:
+```json
+{
+  "success": false,
+  "code": 4000,
+  "message": "文件格式不支持，请上传图片文件",
+  "timestamp": 1638360000000
+}
+```
+
+
 
 ### 学员相关模块 (`/api/h5/student`)
 
@@ -1499,6 +1605,12 @@ curl -X GET http://localhost:3000/api/h5/auth/verify \
 curl -X GET http://localhost:3000/api/h5/user/profile \
   -H "Authorization: Bearer <your_token>"
 
+# 测试手机号解密接口（需要真实的微信getPhoneNumber返回的code）
+curl -X POST http://localhost:3000/api/h5/user/decrypt-phone \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your_token>" \
+  -d '{"code":"wx_encrypted_phone_code"}'
+
 # 测试时间模板接口
 curl -X GET http://localhost:3000/api/h5/time-templates \
   -H "Authorization: Bearer <your_token>"
@@ -1529,6 +1641,11 @@ curl -X POST http://localhost:3000/api/h5/courses \
 # 测试课程列表
 curl -X GET "http://localhost:3000/api/h5/courses?role=student&status=2" \
   -H "Authorization: Bearer <your_token>"
+
+# 测试上传图片（需要有效token和图片文件）
+curl -X POST http://localhost:3000/api/upload/image \
+  -H "Authorization: Bearer <your_token>" \
+  -F "file=@/path/to/your/image.jpg"
 ```
 
 ### 常见问题

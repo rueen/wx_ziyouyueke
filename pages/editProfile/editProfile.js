@@ -17,8 +17,7 @@ Page({
       phoneNumber: '',
       gender: 0 // 0:未知 1:男 2:女
     },
-    genderText: '未设置',
-    showGenderModal: false
+    genderText: '未设置'
   },
 
   /**
@@ -50,9 +49,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 编辑页面每次显示时都需要加载最新数据，不做优化
-    // 因为用户可能在其他地方修改了信息
-    this.loadUserInfo();
+
   },
 
   /**
@@ -100,14 +97,33 @@ Page({
 
       const { userInfo } = this.data;
       
-      // 调用API更新用户信息
+      // 准备更新数据
       const updateData = {
         nickname: userInfo.nickName,
-        phone: userInfo.phoneNumber,
         gender: userInfo.gender,
         intro: userInfo.intro || ''
       };
+
+      // 如果有手机号，添加到更新数据中
+      if (userInfo.phoneNumber) {
+        updateData.phone = userInfo.phoneNumber;
+      }
+
+      // 如果头像是本地路径（新选择的），需要先上传
+      if (userInfo.avatarUrl && userInfo.avatarUrl.startsWith('http://tmp/') || userInfo.avatarUrl.startsWith('wxfile://')) {
+        try {
+          // 上传头像文件
+          const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
+          if (uploadResult && uploadResult.avatar_url) {
+            updateData.avatar_url = uploadResult.avatar_url;
+          }
+        } catch (uploadError) {
+          console.error('头像上传失败:', uploadError);
+          // 头像上传失败但不阻止其他信息保存
+        }
+      }
       
+      // 调用API更新用户信息
       const result = await api.user.updateProfile(updateData);
       
       wx.hideLoading();
@@ -122,6 +138,11 @@ Page({
           title: '保存成功',
           icon: 'success'
         });
+
+        // 保存成功后返回上一页
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
       }
     } catch (error) {
       wx.hideLoading();
@@ -140,38 +161,142 @@ Page({
   },
 
   /**
-   * 选择头像
+   * 压缩图片
+   * @param {string} filePath 图片文件路径
+   * @returns {Promise} 压缩结果
    */
-  onChooseAvatar() {
-    const self = this;
-    wx.getUserProfile({
-      desc: '用于完善个人资料',
-      success: (res) => {
-        const userInfo = {
-          ...self.data.userInfo,
-          avatarUrl: res.userInfo.avatarUrl,
-          nickName: res.userInfo.nickName,
-          gender: res.userInfo.gender || self.data.userInfo.gender
-        };
-        const genderText = self.getGenderText(userInfo.gender);
-        self.setData({
-          userInfo,
-          genderText
-        });
-        self.saveUserInfo();
+  async compressImage(filePath) {
+    return new Promise((resolve, reject) => {
+      // 先获取文件信息
+      wx.getFileInfo({
+        filePath: filePath,
+        success: (fileInfo) => {
+          const fileSizeKB = Math.round(fileInfo.size / 1024);
+          console.log(`原图大小: ${fileSizeKB}KB`);
+          
+          // 如果文件小于200KB，不进行压缩
+          if (fileInfo.size < 200 * 1024) {
+            console.log('文件较小，无需压缩');
+            resolve({ tempFilePath: filePath });
+            return;
+          }
+          
+          // 根据文件大小动态调整压缩质量
+          let quality = 70;
+          if (fileInfo.size > 1024 * 1024) { // 大于1MB
+            quality = 50;
+          } else if (fileInfo.size > 512 * 1024) { // 大于512KB
+            quality = 60;
+          }
+          
+          console.log(`开始压缩，质量设置为: ${quality}`);
+          
+          wx.compressImage({
+            src: filePath,
+            quality: quality,
+            success: (res) => {
+              // 获取压缩后文件信息
+              wx.getFileInfo({
+                filePath: res.tempFilePath,
+                success: (compressedInfo) => {
+                  const compressedSizeKB = Math.round(compressedInfo.size / 1024);
+                  const compressionRatio = ((fileInfo.size - compressedInfo.size) / fileInfo.size * 100).toFixed(1);
+                  
+                  console.log('图片压缩成功:', {
+                    原图大小: `${fileSizeKB}KB`,
+                    压缩后大小: `${compressedSizeKB}KB`,
+                    压缩率: `${compressionRatio}%`,
+                    压缩质量: quality
+                  });
+                  
+                  resolve(res);
+                },
+                fail: () => {
+                  // 获取压缩后文件信息失败，但压缩成功
+                  console.log('图片压缩成功（未获取到压缩后文件信息）');
+                  resolve(res);
+                }
+              });
+            },
+            fail: (error) => {
+              console.error('图片压缩失败:', error);
+              reject(error);
+            }
+          });
+        },
+        fail: (error) => {
+          console.error('获取文件信息失败:', error);
+          reject(error);
+        }
+      });
+    });
+  },
+
+  /**
+   * 上传头像
+   */
+  async uploadAvatar(filePath) {
+    try {
+      const result = await api.upload.image(filePath);
+      return result.data;
+    } catch (error) {
+      throw new Error(error.message || '上传失败');
+    }
+  },
+
+  /**
+   * 选择头像（使用新的chooseAvatar方式）
+   */
+  async onChooseAvatar(e) {
+    const { avatarUrl } = e.detail;
+    
+    try {
+      // 显示处理提示
+      wx.showLoading({
+        title: '处理图片中...'
+      });
+      
+      // 压缩图片
+      const compressedResult = await this.compressImage(avatarUrl);
+      
+      wx.hideLoading();
+      
+      const userInfo = {
+        ...this.data.userInfo,
+        avatarUrl: compressedResult.tempFilePath
+      };
+      this.setData({
+        userInfo
+      });
+      
+      // 只有真正压缩了才显示压缩成功提示
+      if (compressedResult.tempFilePath !== avatarUrl) {
         wx.showToast({
-          title: '头像更新成功',
-          icon: 'success'
-        });
-      },
-      fail: (err) => {
-        console.log('获取用户信息失败：', err);
-        wx.showToast({
-          title: '获取失败',
-          icon: 'none'
+          title: '图片已压缩',
+          icon: 'success',
+          duration: 1000
         });
       }
-    });
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('图片处理失败:', error);
+      
+      // 处理失败时使用原图
+      const userInfo = {
+        ...this.data.userInfo,
+        avatarUrl: avatarUrl
+      };
+      this.setData({
+        userInfo
+      });
+      
+      wx.showToast({
+        title: '图片处理失败，使用原图',
+        icon: 'none',
+        duration: 2000
+      });
+    }
   },
 
   /**
@@ -219,23 +344,45 @@ Page({
   /**
    * 获取手机号
    */
-  onGetPhoneNumber(e) {
+  async onGetPhoneNumber(e) {
     console.log('获取手机号结果：', e.detail);
     if (e.detail.code) {
-      // 这里需要发送到后端解密获取真实手机号
-      // 暂时使用模拟数据
-      const userInfo = {
-        ...this.data.userInfo,
-        phoneNumber: '138****8888' // 实际应从后端解密获取
-      };
-      this.setData({
-        userInfo
-      });
-      this.saveUserInfo();
-      wx.showToast({
-        title: '手机号获取成功',
-        icon: 'success'
-      });
+      try {
+        wx.showLoading({
+          title: '解密手机号中...'
+        });
+
+        // 调用后端API解密手机号
+        const result = await api.user.decryptPhone(e.detail.code);
+        
+        wx.hideLoading();
+
+        if (result && result.success && result.data && result.data.phone) {
+          const userInfo = {
+            ...this.data.userInfo,
+            phoneNumber: result.data.phone,
+            phoneCode: e.detail.code // 保存加密的手机号code备用
+          };
+          this.setData({
+            userInfo
+          });
+        } else {
+          throw new Error(result.message || '手机号解密失败');
+        }
+      } catch (error) {
+        wx.hideLoading();
+        console.error('解密手机号失败:', error);
+        
+        let errorMessage = '获取手机号失败，请重试';
+        if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        wx.showToast({
+          title: errorMessage,
+          icon: 'none'
+        });
+      }
     } else {
       wx.showToast({
         title: '获取手机号失败',
@@ -248,41 +395,30 @@ Page({
    * 选择性别
    */
   onChooseGender() {
-    this.setData({
-      showGenderModal: true
+    const self = this;
+    wx.showActionSheet({
+      itemList: ['男', '女'],
+      success: function (res) {
+        let gender;
+        if (res.tapIndex === 0) {
+          gender = 1; // 男
+        } else if (res.tapIndex === 1) {
+          gender = 2; // 女
+        }
+        
+        const userInfo = {
+          ...self.data.userInfo,
+          gender
+        };
+        const genderText = self.getGenderText(gender);
+        self.setData({
+          userInfo,
+          genderText
+        });
+      },
+      fail: function (res) {
+        console.log('用户取消选择');
+      }
     });
-  },
-
-  /**
-   * 关闭性别选择弹窗
-   */
-  onCloseGenderModal() {
-    this.setData({
-      showGenderModal: false
-    });
-  },
-
-  /**
-   * 选择性别选项
-   */
-  onSelectGender(e) {
-    const gender = parseInt(e.currentTarget.dataset.gender);
-    const userInfo = {
-      ...this.data.userInfo,
-      gender
-    };
-    const genderText = this.getGenderText(gender);
-    this.setData({
-      userInfo,
-      genderText,
-      showGenderModal: false
-    });
-  },
-
-  /**
-   * 阻止事件冒泡
-   */
-  stopPropagation() {
-    // 阻止点击模态框内容时关闭弹窗
   }
 }) 

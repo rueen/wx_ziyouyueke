@@ -3,19 +3,19 @@
 <layout class="container">
   <view class="profile-form">
     <!-- 我的头像 -->
-    <view class="form-item" bindtap="onChooseAvatar">
+    <button class="form-item avatar-button" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
       <text class="label">我的头像</text>
       <view class="value-container">
         <image src="{{userInfo.avatarUrl || '/images/defaultAvatar.png'}}" class="avatar"></image>
         <text class="iconfont icon-arrow-r arrow"></text>
       </view>
-    </view>
+    </button>
 
     <!-- 我的昵称 -->
     <view class="form-item">
       <text class="label">我的昵称</text>
       <view class="value-container">
-        <input class="input-value" placeholder="请输入昵称" value="{{userInfo.nickName}}" bindinput="onNicknameInput" />
+        <input type="nickname" class="input-value" placeholder="请输入昵称" value="{{userInfo.nickName}}" bindinput="onNicknameInput"/>
       </view>
     </view>
 
@@ -49,22 +49,5 @@
   <!-- 保存按钮 -->
   <view class="save-container">
     <button class="save-btn" bindtap="onSave">保存修改</button>
-  </view>
-
-  <!-- 性别选择弹窗 -->
-  <view class="gender-modal" wx:if="{{showGenderModal}}" bindtap="onCloseGenderModal">
-    <view class="modal-content" catchtap="stopPropagation">
-      <view class="modal-header">
-        <text class="modal-title">选择性别</text>
-      </view>
-      <view class="gender-options">
-        <view class="gender-option {{userInfo.gender === 1 ? 'selected' : ''}}" bindtap="onSelectGender" data-gender="1">
-          <text>男</text>
-        </view>
-        <view class="gender-option {{userInfo.gender === 2 ? 'selected' : ''}}" bindtap="onSelectGender" data-gender="2">
-          <text>女</text>
-        </view>
-      </view>
-    </view>
   </view>
 </layout> 

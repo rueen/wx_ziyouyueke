@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "个人信息",
+          "pathName": "pages/editProfile/editProfile",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "绑定教练",
           "pathName": "pages/bindCoach/bindCoach",
           "query": "coach_id=2",
