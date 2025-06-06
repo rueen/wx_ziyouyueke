@@ -1,0 +1,61 @@
+<!--pages/bindCoach/bindCoach.wxml-->
+<navBar title="绑定教练" showBack="{{true}}" bindback="onGoBack" />
+<layout class="container">
+  
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{isLoading}}">
+    <view class="loading-content">
+      <text class="loading-text">加载教练信息中...</text>
+    </view>
+  </view>
+
+  <!-- 教练信息展示 -->
+  <view class="coach-info-container" wx:else>
+    
+    <!-- 教练头像和基本信息 -->
+    <view class="coach-header">
+      <view class="coach-avatar">
+        <image src="{{coachData.avatar}}" class="avatar-img" mode="aspectFill"></image>
+      </view>
+      <view class="coach-basic-info">
+        <text class="coach-name">{{coachData.name}}</text>
+        <text class="coach-specialty">{{coachData.specialty}}</text>
+      </view>
+    </view>
+
+    <!-- 教练简介 -->
+    <view class="coach-intro-section">
+      <view class="section-title">
+        <text class="title-text">教练简介</text>
+      </view>
+      <view class="intro-content">
+        <text class="intro-text">{{coachData.intro}}</text>
+      </view>
+    </view>
+
+    <!-- 绑定提示 -->
+    <view class="bind-tips">
+      <view class="tips-icon">
+        <text class="iconfont icon-info"></text>
+      </view>
+      <view class="tips-content">
+        <text class="tips-title">绑定说明</text>
+        <text class="tips-desc">绑定后您可以预约该教练的课程，享受专业的教学服务</text>
+      </view>
+    </view>
+
+    <!-- 绑定按钮 -->
+    <view class="bind-button-container">
+      <button 
+        class="bind-button {{isBinding ? 'loading' : ''}}" 
+        bindtap="onBindCoach"
+        disabled="{{isBinding}}"
+      >
+        <text wx:if="{{!isBinding}}">{{isLoggedIn ? '绑定教练' : '登录并绑定'}}</text>
+        <text wx:else>绑定中...</text>
+      </button>
+    </view>
+
+  </view>
+
+</layout> 

@@ -17,7 +17,8 @@ Page({
     // 邀请相关参数
     inviteCode: '',
     coachId: '',
-    isInvited: false
+    isInvited: false,
+    fromBindCoach: false // 是否从绑定教练页面跳转过来
   },
 
   /**
@@ -202,11 +203,19 @@ Page({
         duration: 2000
       });
       
-      // 延迟跳转到首页
+      // 延迟跳转
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/index/index'
-        });
+        if (this.data.fromBindCoach && this.data.coachId) {
+          // 从绑定教练页面来的，返回绑定教练页面
+          wx.redirectTo({
+            url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
+          });
+        } else {
+          // 正常登录，跳转到首页
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
       }, 2000);
       
     } catch (error) {
@@ -259,11 +268,19 @@ Page({
       duration: 2000
     });
 
-    // 延迟跳转到首页
+    // 延迟跳转
     setTimeout(() => {
-      wx.switchTab({
-        url: '/pages/index/index'
-      });
+      if (this.data.fromBindCoach && this.data.coachId) {
+        // 从绑定教练页面来的，返回绑定教练页面
+        wx.redirectTo({
+          url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
+        });
+      } else {
+        // 正常登录，跳转到首页
+        wx.switchTab({
+          url: '/pages/index/index'
+        });
+      }
     }, 2000);
   },
 
@@ -280,10 +297,10 @@ Page({
   },
 
   /**
-   * 处理邀请码参数
+   * 处理邀请码参数和绑定教练回调
    */
   handleInviteParams(options) {
-    const { coach, invite } = options;
+    const { coach, invite, from, coach_id } = options;
     
     if (coach && invite) {
       // 有邀请码，自动设置为学员身份
@@ -296,6 +313,20 @@ Page({
       
       wx.showToast({
         title: '检测到教练邀请',
+        icon: 'none',
+        duration: 2000
+      });
+    } else if (from === 'bindCoach' && coach_id) {
+      // 从绑定教练页面跳转过来，保存回调信息
+      this.setData({
+        selectedRole: 'student',
+        coachId: coach_id,
+        isInvited: false,
+        fromBindCoach: true
+      });
+      
+      wx.showToast({
+        title: '请登录后绑定教练',
         icon: 'none',
         duration: 2000
       });

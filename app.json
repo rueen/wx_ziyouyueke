@@ -11,7 +11,8 @@
     "pages/studentList/studentList",
     "pages/studentDetail/studentDetail",
     "pages/bookStudent/bookStudent",
-    "pages/timeTemplate/timeTemplate"
+    "pages/timeTemplate/timeTemplate",
+    "pages/bindCoach/bindCoach"
   ],
   "window": {
     "navigationStyle": "custom",
