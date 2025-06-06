@@ -80,7 +80,6 @@ Page({
       // 从API获取用户信息和统计数据
       const [profileResult, statsResult] = await Promise.all([
         api.user.getProfile(),
-        api.user.getStats()
       ]);
 
       // 更新用户基本信息

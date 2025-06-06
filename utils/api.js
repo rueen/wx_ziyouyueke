@@ -187,17 +187,6 @@ function updateUserProfile(userInfo) {
 }
 
 /**
- * 获取用户统计信息
- * @returns {Promise}
- */
-function getUserStats() {
-  return request({
-    url: '/api/h5/user/stats',
-    method: 'GET'
-  });
-}
-
-/**
  * 解密微信手机号
  * @param {string} code 微信手机号加密数据
  * @returns {Promise}
@@ -569,7 +558,6 @@ module.exports = {
   user: {
     getProfile: getUserProfile,
     updateProfile: updateUserProfile,
-    getStats: getUserStats,
     decryptPhone: decryptPhoneNumber
   },
   
