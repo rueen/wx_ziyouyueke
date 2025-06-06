@@ -124,11 +124,7 @@ Authorization: Bearer <token>
       "gender": 1,
       "intro": null,
       "register_time": "2025-06-02T07:30:00.000Z",
-      "last_login_time": "2025-06-02T07:32:00.000Z",
-      "roles": {
-        "isCoach": false,
-        "isStudent": true
-      }
+      "last_login_time": "2025-06-02T07:32:00.000Z"
     },
     "isNewUser": true,
     "autoBindCoach": true
@@ -214,11 +210,7 @@ Authorization: Bearer <token>
       "avatar_url": "https://example.com/avatar.jpg",
       "phone": "13800138000",
       "gender": 1,
-      "intro": "我是一名学员",
-      "roles": {
-        "isCoach": false,
-        "isStudent": true
-      }
+      "intro": "我是一名学员"
     }
   },
   "timestamp": 1638360000000
@@ -253,11 +245,7 @@ Authorization: Bearer <token>
     "intro": "我是一名学员",
     "register_time": "2025-06-02T07:30:00.000Z",
     "last_login_time": "2025-06-02T07:32:00.000Z",
-    "status": 1,
-    "roles": {
-      "isCoach": false,
-      "isStudent": true
-    }
+    "status": 1
   },
   "timestamp": 1638360000000
 }
@@ -279,6 +267,7 @@ Authorization: Bearer <token>
 | phone | string | 否 | 手机号（中国大陆格式） |
 | gender | number | 否 | 性别：0-未知，1-男，2-女 |
 | intro | string | 否 | 个人介绍（最大500字符） |
+| avatar_url | string | 否 | 头像URL（最大500字符，必须是有效URL格式） |
 
 **请求示例**:
 ```json
@@ -286,7 +275,8 @@ Authorization: Bearer <token>
   "nickname": "张三丰",
   "phone": "13800138000",
   "gender": 1,
-  "intro": "专业健身教练"
+  "intro": "专业健身教练",
+  "avatar_url": "http://localhost:3000/uploads/images/1749211777985_1_1wmcb6.jpeg"
 }
 ```
 
@@ -306,56 +296,13 @@ Authorization: Bearer <token>
     "intro": "专业健身教练",
     "register_time": "2025-06-02T07:30:00.000Z",
     "last_login_time": "2025-06-02T07:32:00.000Z",
-    "status": 1,
-    "roles": {
-      "isCoach": true,
-      "isStudent": true
-    }
+    "status": 1
   },
   "timestamp": 1638360000000
 }
 ```
 
-#### 3. 获取用户统计信息
-
-**接口地址**: `GET /api/h5/user/stats`
-
-**接口描述**: 获取用户的统计数据
-
-**认证**: 需要
-
-**请求参数**: 无
-
-**响应示例**:
-```json
-{
-  "success": true,
-  "code": 200,
-  "message": "获取用户统计信息成功",
-  "data": {
-    "roles": {
-      "isCoach": true,
-      "isStudent": true
-    },
-    "coachStats": {
-      "totalStudents": 5,
-      "totalCourses": 20,
-      "completedCourses": 18,
-      "pendingCourses": 2
-    },
-    "studentStats": {
-      "totalCoaches": 2,
-      "totalCourses": 15,
-      "completedCourses": 12,
-      "remainingLessons": 8,
-      "pendingCourses": 3
-    }
-  },
-  "timestamp": 1638360000000
-}
-```
-
-#### 4. 解密微信手机号
+#### 3. 解密微信手机号
 
 **接口地址**: `POST /api/h5/user/decrypt-phone`
 
@@ -401,7 +348,7 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 5. 上传头像
+#### 4. 上传头像
 
 **接口地址**: `POST /api/h5/user/avatar`
 
@@ -887,18 +834,12 @@ GET /api/h5/coach/123/schedule?start_date=2025-06-01&end_date=2025-06-07
 
 **认证**: 需要
 
-**图片处理**: 客户端会自动进行图片压缩优化
-- 文件大小 < 200KB：不压缩，直接上传
-- 文件大小 200KB-512KB：压缩质量70%
-- 文件大小 512KB-1MB：压缩质量60%
-- 文件大小 > 1MB：压缩质量50%
-
 **请求参数**:
 
 - Content-Type: `multipart/form-data`
 - 字段名: `file`
 - 文件类型: 图片格式（jpg, jpeg, png, gif, webp）
-- 文件大小: 最大2MB（压缩前）
+- 文件大小: 最大2MB
 
 **请求示例**:
 ```
@@ -916,8 +857,8 @@ file: <image_file>
   "code": 200,
   "message": "图片上传成功",
   "data": {
-    "url": "https://example.com/uploads/images/1638360000_user123.jpg",
-    "filename": "1638360000_user123.jpg",
+    "url": "http://localhost:3000/uploads/images/1638360000_123_a1b2c3.jpg",
+    "filename": "1638360000_123_a1b2c3.jpg",
     "size": 1024000,
     "mimetype": "image/jpeg"
   },
@@ -934,6 +875,134 @@ file: <image_file>
   "timestamp": 1638360000000
 }
 ```
+
+#### 2. 删除图片
+
+**接口地址**: `DELETE /api/upload/image/:filename`
+
+**接口描述**: 删除指定的图片文件
+
+**认证**: 需要
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| filename | string | 是 | 图片文件名（路径参数） |
+
+**请求示例**:
+```
+DELETE /api/upload/image/1638360000_123_a1b2c3.jpg
+Authorization: Bearer <token>
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "图片删除成功",
+  "data": null,
+  "timestamp": 1638360000000
+}
+```
+
+**错误示例**:
+```json
+{
+  "success": false,
+  "code": 1004,
+  "message": "文件不存在",
+  "timestamp": 1638360000000
+}
+```
+
+#### 3. 获取图片信息
+
+**接口地址**: `GET /api/upload/image/:filename/info`
+
+**接口描述**: 获取指定图片文件的详细信息
+
+**认证**: 不需要
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| filename | string | 是 | 图片文件名（路径参数） |
+
+**请求示例**:
+```
+GET /api/upload/image/1638360000_123_a1b2c3.jpg/info
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "获取图片信息成功",
+  "data": {
+    "filename": "1638360000_123_a1b2c3.jpg",
+    "size": 1024000,
+    "createdAt": "2025-06-02T10:00:00.000Z",
+    "modifiedAt": "2025-06-02T10:00:00.000Z",
+    "url": "http://localhost:3000/uploads/images/1638360000_123_a1b2c3.jpg"
+  },
+  "timestamp": 1638360000000
+}
+```
+
+#### 4. 上传用户头像
+
+**接口地址**: `POST /api/h5/user/avatar`
+
+**接口描述**: 上传用户头像并自动更新用户信息
+
+**认证**: 需要
+
+**请求参数**:
+
+- Content-Type: `multipart/form-data`
+- 字段名: `file`
+- 文件类型: 图片格式（jpg, jpeg, png, gif, webp）
+- 文件大小: 最大2MB
+
+**请求示例**:
+```
+POST /api/h5/user/avatar
+Content-Type: multipart/form-data
+Authorization: Bearer <token>
+
+file: <avatar_image_file>
+```
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "头像上传成功",
+  "data": {
+    "url": "http://localhost:3000/uploads/images/1638360000_123_a1b2c3.jpg",
+    "filename": "1638360000_123_a1b2c3.jpg",
+    "size": 1024000,
+    "mimetype": "image/jpeg"
+  },
+  "timestamp": 1638360000000
+}
+```
+
+**注意事项**:
+
+1. **文件命名规则**: 上传的文件会自动重命名为 `时间戳_用户ID_随机字符串.扩展名` 的格式
+2. **权限控制**: 用户只能删除自己上传的文件（通过文件名中的用户ID判断）
+3. **自动清理**: 上传新头像时会自动删除用户之前的头像文件
+4. **静态访问**: 上传的文件可通过 `/uploads/images/filename` 路径直接访问
+5. **错误处理**: 
+   - 4000: 文件相关错误（格式、大小等）
+   - 1003: 权限不足（删除他人文件）
+   - 1004: 文件不存在
 
 
 
@@ -1399,10 +1468,6 @@ interface User {
   register_time: string;        // 注册时间
   last_login_time?: string;     // 最后登录时间
   status: number;               // 账户状态：0-禁用，1-正常
-  roles: {                      // 用户角色
-    isCoach: boolean;           // 是否为教练
-    isStudent: boolean;         // 是否为学员
-  };
 }
 ```
 
