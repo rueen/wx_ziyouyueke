@@ -6,7 +6,7 @@
     <button class="form-item avatar-button" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
       <text class="label">我的头像</text>
       <view class="value-container">
-        <image src="{{userInfo.avatarUrl || '/images/defaultAvatar.png'}}" class="avatar"></image>
+        <image src="{{userInfo.avatarUrl}}" class="avatar"></image>
         <text class="iconfont icon-arrow-r arrow"></text>
       </view>
     </button>

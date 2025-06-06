@@ -66,32 +66,7 @@ Page({
    */
   loadAvailableStudents() {
     // 这里应该从后端API获取，目前使用静态数据
-    const students = [
-      {
-        id: 1,
-        name: "小李",
-        avatar: "/images/defaultAvatar.png",
-        level: "初级",
-        remainingLessons: 3,
-        introduction: "热爱健身的新手，主要目标是减脂塑形，希望通过专业指导建立良好的运动习惯。"
-      },
-      {
-        id: 2,
-        name: "小王",
-        avatar: "/images/defaultAvatar.png", 
-        level: "中级",
-        remainingLessons: 5,
-        introduction: "有一定运动基础，希望提升力量训练水平，目标是增肌和提高身体素质。"
-      },
-      {
-        id: 3,
-        name: "小张", 
-        avatar: "/images/defaultAvatar.png",
-        level: "高级",
-        remainingLessons: 0,
-        introduction: "资深健身爱好者，希望通过专业指导优化训练计划，提升训练效果。"
-      }
-    ];
+    const students = [];
     
     this.setData({
       availableStudents: students

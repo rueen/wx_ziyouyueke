@@ -70,29 +70,7 @@ Page({
    */
   loadAvailableCoaches() {
     // 这里应该从后端API获取，目前使用静态数据
-    const coaches = [
-      {
-        id: 1,
-        name: "李教练",
-        avatar: "/images/defaultAvatar.png",
-        specialty: "瑜伽 · 普拉提",
-        remainingLessons: 5 // 剩余课时
-      },
-      {
-        id: 2,
-        name: "王教练",
-        avatar: "/images/defaultAvatar.png", 
-        specialty: "力量训练 · 减脂",
-        remainingLessons: 8 // 剩余课时
-      },
-      {
-        id: 3,
-        name: "张教练", 
-        avatar: "/images/defaultAvatar.png",
-        specialty: "舞蹈 · 体态矫正",
-        remainingLessons: 0 // 剩余课时为0
-      }
-    ];
+    const coaches = [];
     
     this.setData({
       availableCoaches: coaches
