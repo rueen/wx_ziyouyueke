@@ -31,28 +31,4 @@
   </view>
 </layout>
 
-<!-- 邀请学员弹窗 -->
-<view class="invite-modal {{showInviteModal ? 'show' : ''}}" wx:if="{{showInviteModal}}">
-  <view class="modal-overlay" bindtap="onHideInviteModal"></view>
-  <view class="modal-content invite-content">
-    <view class="modal-header">
-      <text class="modal-title">邀请学员</text>
-      <text class="modal-close" bindtap="onHideInviteModal">×</text>
-    </view>
-    <view class="modal-body invite-body">
-      <!-- 二维码区域 -->
-      <view class="qr-section">
-        <view class="qr-code-container">
-          <view class="qr-code-placeholder">
-            
-          </view>
-        </view>
-        <text class="qr-desc">学员扫码后会自动关联到您的学员列表</text>
-      </view>
-    </view>
-    <view class="modal-footer invite-footer">
-      <button class="action-btn save-btn" bindtap="onSaveQRCode">保存到相册</button>
-      <button class="action-btn share-btn" bindtap="onShareToFriend">分享给好友</button>
-    </view>
-  </view>
-</view> 
+ 

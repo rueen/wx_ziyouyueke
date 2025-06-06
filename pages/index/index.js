@@ -11,15 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userInfo: {
-      name: 'rueen',
-      avatar: '/images/defaultAvatar.png'
-    },
-    stats: {
-      points: 0,
-      energy: 0,
-      coupons: 1
-    },
+    userInfo: {},
     // 日历式课表数据
     calendarData: [],
     // 用户身份
@@ -78,7 +70,7 @@ Page({
   async loadUserInfo() {
     try {
       // 从API获取用户信息和统计数据
-      const [profileResult, statsResult] = await Promise.all([
+      const [profileResult] = await Promise.all([
         api.user.getProfile(),
       ]);
 
@@ -94,35 +86,6 @@ Page({
         
         // 更新本地缓存
         wx.setStorageSync('userInfo', user);
-      }
-
-      // 更新统计信息
-      if (statsResult && statsResult.data) {
-        const stats = statsResult.data;
-        // 根据用户角色设置不同的统计数据
-        let displayStats = {
-          points: 0,
-          energy: 0,
-          coupons: 0
-        };
-
-        if (stats.roles && stats.roles.isCoach && stats.coachStats) {
-          displayStats = {
-            points: stats.coachStats.totalStudents || 0,
-            energy: stats.coachStats.totalCourses || 0,
-            coupons: stats.coachStats.completedCourses || 0
-          };
-        } else if (stats.roles && stats.roles.isStudent && stats.studentStats) {
-          displayStats = {
-            points: stats.studentStats.remainingLessons || 0,
-            energy: stats.studentStats.totalCourses || 0,
-            coupons: stats.studentStats.completedCourses || 0
-          };
-        }
-
-        this.setData({
-          stats: displayStats
-        });
       }
 
     } catch (error) {
