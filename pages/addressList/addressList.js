@@ -12,7 +12,12 @@ Page({
     isLoading: false, // 加载状态
     hasMore: true, // 是否还有更多数据
     page: 1, // 当前页码
-    limit: 20 // 每页数量
+    limit: 20, // 每页数量
+    // 左滑相关
+    touchStartX: 0, // 触摸开始X坐标
+    touchStartY: 0, // 触摸开始Y坐标
+    swipeThreshold: 60, // 左滑阈值
+    actionWidth: 240 // 操作按钮总宽度 (2个按钮 * 120rpx)
   },
 
   /**
@@ -109,6 +114,8 @@ Page({
       });
 
       console.log('加载地址列表成功:', mockAddresses);
+      console.log('页面数据状态:', this.data);
+      console.log('地址数量:', mockAddresses.length);
 
     } catch (error) {
       console.error('加载地址列表失败:', error);
@@ -154,6 +161,10 @@ Page({
   async onSetDefault(e) {
     const { id } = e.currentTarget.dataset;
     const { addresses } = this.data;
+    console.log('设置默认地址被点击:', id);
+
+    // 先收起所有滑动项
+    this.resetAllItems();
 
     try {
       wx.showLoading({
@@ -194,13 +205,125 @@ Page({
   },
 
   /**
+   * 触摸开始事件
+   */
+  onTouchStart(e) {
+    const touch = e.touches[0];
+    this.setData({
+      touchStartX: touch.pageX,
+      touchStartY: touch.pageY
+    });
+  },
+
+  /**
+   * 触摸移动事件
+   */
+  onTouchMove(e) {
+    const touch = e.touches[0];
+    const { touchStartX, touchStartY, addresses, actionWidth } = this.data;
+    const { index } = e.currentTarget.dataset;
+    
+    // 检查数据有效性
+    if (!touch || touchStartX === undefined || touchStartY === undefined || !addresses || index === undefined) {
+      return;
+    }
+    
+    // 在微信小程序中使用pageX/pageY而不是clientX/clientY
+    const deltaX = touch.pageX - touchStartX;
+    const deltaY = touch.pageY - touchStartY;
+    
+    // 如果垂直滑动距离大于水平滑动距离，不处理左滑
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      return;
+    }
+    
+    // 只处理向左滑动
+    if (deltaX >= 0) {
+      this.resetAllItems();
+      return;
+    }
+    
+    // 计算滑动距离，限制最大滑动距离
+    // deltaX是负值（向左滑），我们需要限制滑动距离不超过按钮宽度
+    const currentItem = addresses[index];
+    const maxSlide = -240;
+    let translateX = Math.max(deltaX, maxSlide);
+    
+    // 更新当前项的位置
+    const updatedAddresses = [...addresses];
+    if (updatedAddresses[index]) {
+      updatedAddresses[index] = {
+        ...updatedAddresses[index],
+        translateX: translateX
+      };
+      
+      this.setData({
+        addresses: updatedAddresses
+      });
+    }
+  },
+
+  /**
+   * 触摸结束事件
+   */
+  onTouchEnd(e) {
+    const { index } = e.currentTarget.dataset;
+    const { addresses, swipeThreshold, actionWidth } = this.data;
+    
+    // 检查数据有效性
+    if (!addresses || index === undefined || !addresses[index]) {
+      return;
+    }
+    
+    const currentItem = addresses[index];
+    
+    if (!currentItem.translateX) {
+      return;
+    }
+    
+    // 判断是否需要显示操作按钮
+    let targetX = 0;
+    if (Math.abs(currentItem.translateX) > swipeThreshold) {
+      targetX = -240;
+    }
+    
+    // 先收起其他所有项，然后设置当前项的最终位置
+    const updatedAddresses = addresses.map((item, idx) => ({
+      ...item,
+      translateX: idx === index ? targetX : 0
+    }));
+    
+    this.setData({
+      addresses: updatedAddresses
+    });
+  },
+
+  /**
    * 编辑地址
    */
   onEditAddress(e) {
     const { address } = e.currentTarget.dataset;
     
+    // 先收起所有滑动的项
+    this.resetAllItems();
+    
     wx.navigateTo({
       url: `/pages/addressEdit/addressEdit?addressData=${encodeURIComponent(JSON.stringify(address))}`
+    });
+  },
+
+  /**
+   * 重置所有项的滑动状态
+   */
+  resetAllItems() {
+    const { addresses } = this.data;
+    const updatedAddresses = addresses.map(item => ({
+      ...item,
+      translateX: 0
+    }));
+
+    this.setData({
+      addresses: updatedAddresses
     });
   },
 
@@ -209,10 +332,17 @@ Page({
    */
   onDeleteAddress(e) {
     const { id, name } = e.currentTarget.dataset;
+    console.log('删除地址被点击:', id, name);
+
+    // 先收起所有滑动项
+    this.resetAllItems();
 
     wx.showModal({
       title: '删除地址',
-      content: `确定要删除"${name}"吗？`,
+      content: `确定要删除"${name}"吗？删除后无法恢复。`,
+      confirmText: '删除',
+      confirmColor: '#ff3b30',
+      cancelText: '取消',
       success: async (res) => {
         if (res.confirm) {
           try {
