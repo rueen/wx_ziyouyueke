@@ -46,6 +46,15 @@
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
+
+    <!-- 常用地址 -->
+    <view class="menu-item" bindtap="onMyAddresses">
+      <view class="menu-content">
+        <text class="iconfont icon-location menu-icon"></text>
+        <text class="menu-text">常用地址</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
   </view>
   <!-- 退出登录 -->
   <view class="logout-btn" bindtap="onLogout">

@@ -201,6 +201,15 @@ Page({
   },
 
   /**
+   * 常用地址
+   */
+  onMyAddresses() {
+    wx.navigateTo({
+      url: '/pages/addressList/addressList'
+    });
+  },
+
+  /**
    * 检查登录状态
    */
   checkLoginStatus() {
