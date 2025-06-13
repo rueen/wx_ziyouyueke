@@ -51,25 +51,30 @@ Page({
       });
       
       wx.hideLoading();
+      
+      console.log('API返回的完整数据:', result);
+      console.log('result.data:', result.data);
+      console.log('result.data.coaches:', result.data && result.data.coaches);
 
-      if (result && result.success && result.data && result.data.length > 0) {
+      if (result && result.success && result.data && result.data.coaches && result.data.coaches.length > 0) {
         // 格式化API数据 - 新接口返回的是师生关系数据，包含教练信息和课程统计
-        const coaches = result.data.map(relation => {
+        const coaches = result.data.coaches.map(relation => {
           const coach = relation.coach || {};
+          const lessonStats = relation.lesson_stats || {};
           return {
             id: coach.id,
             relationId: relation.id, // 师生关系ID
             name: coach.nickname || '未知教练',
             avatar: coach.avatar_url || '/images/defaultAvatar.png',
             specialty: coach.intro || '暂无专业介绍',
-            remainingLessons: relation.remaining_sessions || 0, // 剩余课时
-            totalLessons: relation.total_sessions || 0, // 总课时
+            remainingLessons: relation.remaining_lessons || 0, // 剩余课时
+            totalLessons: lessonStats.total_lessons || 0, // 总课时
             introduction: coach.intro || '暂无介绍',
-            relationStatus: relation.status || 'active',
+            relationStatus: relation.relation_status || 1,
             stats: {
-              totalCourses: relation.total_courses || 0,
-              completedCourses: relation.completed_courses || 0,
-              pendingCourses: relation.pending_courses || 0
+              totalCourses: lessonStats.total_lessons || 0,
+              completedCourses: lessonStats.completed_lessons || 0,
+              pendingCourses: lessonStats.upcoming_lessons || 0
             },
             availableTime: [
               '详细时间请查看教练详情'
@@ -83,13 +88,8 @@ Page({
 
         console.log('API加载我的教练数据成功:', coaches);
         
-        if (coaches.length === 0) {
-          wx.showToast({
-            title: '还没有绑定教练',
-            icon: 'none'
-          });
-        }
       } else {
+        // 没有教练数据
         this.setData({
           coaches: []
         });
