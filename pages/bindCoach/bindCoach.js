@@ -214,15 +214,7 @@ Page({
       });
 
       // 处理特定错误
-      let errorMessage = '绑定失败，请重试';
-      
-      if (error.code === 2003) {
-        errorMessage = '您已经绑定过该教练了';
-      } else if (error.code === 1001) {
-        errorMessage = '教练信息不存在';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
+      let errorMessage = error.message;
       
       wx.showToast({
         title: errorMessage,

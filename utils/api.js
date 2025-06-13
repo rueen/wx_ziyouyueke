@@ -53,9 +53,18 @@ function request(options) {
             handleTokenExpired();
             return; // 直接返回，不再reject，因为已经处理跳转
           }
+          
+          // 尝试从响应数据中获取具体错误信息
+          let errorMessage = `HTTP ${res.statusCode}`;
+          if (res.data && res.data.message) {
+            errorMessage = res.data.message;
+          } else if (res.data && typeof res.data === 'string') {
+            errorMessage = res.data;
+          }
+          
           reject({
-            code: res.statusCode,
-            message: `HTTP ${res.statusCode}`,
+            code: res.data && res.data.code ? res.data.code : res.statusCode,
+            message: errorMessage,
             data: res.data
           });
           return;
