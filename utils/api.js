@@ -13,6 +13,24 @@ const API_CONFIG = {
 const requestCache = new Map();
 
 /**
+ * 检查用户登录状态
+ * @returns {boolean} 是否已登录
+ */
+function checkLoginStatus() {
+  const token = wx.getStorageSync('token');
+  const isLoggedIn = wx.getStorageSync('isLoggedIn');
+  
+  if (!token || !isLoggedIn) {
+    console.log('[API] 用户未登录，准备跳转到登录页');
+    wx.reLaunch({
+      url: '/pages/login/login'
+    });
+    return false;
+  }
+  return true;
+}
+
+/**
  * 发起HTTP请求的通用方法
  * @param {Object} options 请求配置
  * @returns {Promise} 请求结果
@@ -51,6 +69,11 @@ function request(options) {
         
         // 检查HTTP状态码
         if (res.statusCode !== 200) {
+          // 处理HTTP层面的认证失败
+          if (res.statusCode === 401 || res.statusCode === 403) {
+            handleTokenExpired();
+            return; // 直接返回，不再reject，因为已经处理跳转
+          }
           reject({
             code: res.statusCode,
             message: `HTTP ${res.statusCode}`,
@@ -61,9 +84,14 @@ function request(options) {
         
         // 检查业务状态码
         if (res.data && res.data.success === false) {
-          // Token过期处理
-          if (res.data.code === 1002 || res.data.code === 2002) {
+          // Token过期处理 - 扩展处理更多token过期相关的错误码
+          if (res.data.code === 1002 || res.data.code === 2002 || 
+              res.data.code === 401 || res.data.code === 403 || 
+              res.data.message === 'Token已过期' || 
+              res.data.message === 'Token无效' ||
+              res.data.message === '未授权访问') {
             handleTokenExpired();
+            return; // 直接返回，不再reject，因为已经处理跳转
           }
           reject(res.data);
           return;
@@ -83,24 +111,46 @@ function request(options) {
   });
 }
 
+// 防止重复处理token过期
+let isHandlingTokenExpired = false;
+
 /**
  * 处理Token过期
  */
 function handleTokenExpired() {
+  // 防止重复处理
+  if (isHandlingTokenExpired) {
+    return;
+  }
+  isHandlingTokenExpired = true;
+  
+  console.log('[API] Token已过期，正在处理...');
+  
   // 清除本地存储
   wx.removeStorageSync('token');
   wx.removeStorageSync('userInfo');
   wx.removeStorageSync('isLoggedIn');
   
-  // 提示用户重新登录
-  wx.showModal({
+  // 显示提示并跳转
+  wx.showToast({
     title: '登录已过期',
-    content: '请重新登录',
-    showCancel: false,
+    icon: 'none',
+    duration: 2000,
     success() {
-      wx.reLaunch({
-        url: '/pages/login/login'
-      });
+      // 延迟跳转，让用户看到提示
+      setTimeout(() => {
+        wx.reLaunch({
+          url: '/pages/login/login',
+          success() {
+            console.log('[API] 已跳转到登录页');
+            isHandlingTokenExpired = false;
+          },
+          fail() {
+            console.error('[API] 跳转登录页失败');
+            isHandlingTokenExpired = false;
+          }
+        });
+      }, 1500);
     }
   });
 }
