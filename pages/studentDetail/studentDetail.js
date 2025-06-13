@@ -2,6 +2,10 @@
  * pages/studentDetail/studentDetail.js
  * 学员详情页面
  */
+
+// 引入API工具类
+const api = require('../../utils/api.js');
+
 Page({
 
   /**
@@ -10,7 +14,9 @@ Page({
   data: {
     studentData: {},
     editableLessons: '', // 可编辑的课时数
-    studentRemark: ''    // 学员备注
+    studentRemark: '',   // 学员备注
+    isEditing: false,    // 是否处于编辑状态
+    isSaving: false      // 是否正在保存
   },
 
   /**
@@ -25,6 +31,7 @@ Page({
           editableLessons: studentData.remainingLessons.toString(),
           studentRemark: studentData.remark || ''
         });
+        console.log('加载学员数据:', studentData);
       } catch (error) {
         console.error('解析学员数据失败：', error);
         wx.showToast({
@@ -85,50 +92,32 @@ Page({
   },
 
   /**
+   * 开始编辑
+   */
+  onStartEdit() {
+    this.setData({
+      isEditing: true
+    });
+  },
+
+  /**
+   * 取消编辑
+   */
+  onCancelEdit() {
+    const { studentData } = this.data;
+    this.setData({
+      isEditing: false,
+      editableLessons: studentData.remainingLessons.toString(),
+      studentRemark: studentData.remark || ''
+    });
+  },
+
+  /**
    * 输入课时数
    */
   onLessonsInput(e) {
     this.setData({
       editableLessons: e.detail.value
-    });
-  },
-
-  /**
-   * 保存课时数
-   */
-  onSaveLessons() {
-    const { editableLessons, studentData } = this.data;
-    const lessonsNum = parseInt(editableLessons);
-    
-    if (!lessonsNum || lessonsNum < 0) {
-      wx.showToast({
-        title: '请输入正确的课时数',
-        icon: 'none'
-      });
-      // 恢复原来的值
-      this.setData({
-        editableLessons: studentData.remainingLessons.toString()
-      });
-      return;
-    }
-
-    // 更新数据
-    const updatedStudentData = {
-      ...studentData,
-      remainingLessons: lessonsNum
-    };
-
-    this.setData({
-      studentData: updatedStudentData
-    });
-
-    // 这里应该调用后端API保存课时数
-    console.log('保存课时数：', lessonsNum);
-    
-    wx.showToast({
-      title: '课时数已更新',
-      icon: 'success',
-      duration: 1500
     });
   },
 
@@ -142,29 +131,88 @@ Page({
   },
 
   /**
-   * 保存备注
+   * 保存修改
    */
-  onSaveRemark() {
-    const { studentRemark, studentData } = this.data;
+  async onSave() {
+    const { editableLessons, studentRemark, studentData, isSaving } = this.data;
     
-    // 更新数据
-    const updatedStudentData = {
-      ...studentData,
-      remark: studentRemark.trim()
-    };
-
-    this.setData({
-      studentData: updatedStudentData
-    });
-
-    // 这里应该调用后端API保存备注
-    console.log('保存备注：', studentRemark.trim());
+    if (isSaving) {
+      return; // 防止重复提交
+    }
     
-    wx.showToast({
-      title: '备注已保存',
-      icon: 'success',
-      duration: 1500
-    });
+    const lessonsNum = parseInt(editableLessons);
+    
+    if (isNaN(lessonsNum) || lessonsNum < 0) {
+      wx.showToast({
+        title: '请输入正确的课时数',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      this.setData({
+        isSaving: true
+      });
+
+      wx.showLoading({
+        title: '保存中...'
+      });
+
+      // 调用API更新师生关系
+      const updateData = {
+        remaining_lessons: lessonsNum,
+        coach_remark: studentRemark.trim()
+      };
+
+      console.log('更新师生关系数据:', updateData);
+      console.log('师生关系ID:', studentData.id);
+
+      const result = await api.relation.update(studentData.id, updateData);
+      
+      wx.hideLoading();
+
+      if (result && result.success) {
+        // 更新本地数据
+        const updatedStudentData = {
+          ...studentData,
+          remainingLessons: lessonsNum,
+          remark: studentRemark.trim()
+        };
+
+        this.setData({
+          studentData: updatedStudentData,
+          isEditing: false,
+          isSaving: false
+        });
+
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 1500
+        });
+
+        console.log('师生关系更新成功:', result.data);
+      } else {
+        throw new Error(result.message || '保存失败');
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('保存师生关系失败:', error);
+      
+      this.setData({
+        isSaving: false
+      });
+
+      const errorMessage = error.message || '保存失败，请重试';
+      
+      wx.showToast({
+        title: errorMessage,
+        icon: 'none',
+        duration: 3000
+      });
+    }
   },
 
   /**

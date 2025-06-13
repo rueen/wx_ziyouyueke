@@ -247,6 +247,7 @@ Authorization: Bearer <token>
     "id": 1,
     "nickname": "布兰达",
     "avatar_url": "https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png",
+    "phone": "13800138000",
     "gender": 2,
     "intro": "我是自由教练",
     "register_time": "2025-06-02T07:30:00.000Z",
@@ -258,7 +259,7 @@ Authorization: Bearer <token>
 
 **说明**:
 - 该接口为公开接口，无需认证即可访问
-- 只返回用户的基本公开信息，隐私字段（如openid、phone）不会返回
+- 返回用户的基本信息，包含手机号，但不包含 openid 等敏感字段
 
 #### 2. 获取用户信息
 
@@ -647,9 +648,40 @@ GET /api/h5/relations/my-coaches?page=1&limit=10
 
 **接口地址**: `GET /api/h5/relations/my-students`
 
-**接口描述**: 获取当前教练的学员列表
+**接口描述**: 获取当前教练的学员列表，包含师生关系ID
 
 **认证**: 需要
+
+**请求参数**: 无
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "code": 200,
+  "message": "获取我的学员列表成功",
+  "data": [
+    {
+      "id": 1,
+      "student_id": 123,
+      "coach_id": 456,
+      "remaining_lessons": 8,
+      "student_remark": "学员备注",
+      "coach_remark": "教练备注",
+      "relation_status": 1,
+      "createdAt": "2025-06-01T10:00:00.000Z",
+      "updatedAt": "2025-06-02T10:00:00.000Z",
+      "student": {
+        "id": 123,
+        "nickname": "张三",
+        "avatar_url": "https://example.com/avatar.jpg",
+        "phone": "13800138000"
+      }
+    }
+  ],
+  "timestamp": 1638360000000
+}
+```
 
 #### 5. 更新师生关系
 

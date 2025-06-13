@@ -8,42 +8,62 @@
     </view>
     <view class="student-info">
       <text class="student-name">{{studentData.name}}</text>
-      <view class="remaining-lessons">
-        <text class="lessons-label">剩余课时：</text>
-        <text class="lessons-count {{studentData.remainingLessons > 0 ? 'active' : 'empty'}}">{{studentData.remainingLessons}}节</text>
-      </view>
+      <view class="student-intro">{{studentData.introduction}}</view>
     </view>
   </view>
 
-  <!-- 可编辑课时数 -->
-  <view class="edit-section">
-    <view class="edit-item">
-      <text class="edit-label">课时数</text>
-      <view class="edit-value-container">
+  <!-- 课时信息 -->
+  <view class="info-section">
+    <view class="section-header">
+      <text class="section-title">课时信息</text>
+      <button wx:if="{{!isEditing}}" class="edit-btn" bindtap="onStartEdit">编辑</button>
+    </view>
+    
+    <view class="info-item">
+      <text class="info-label">剩余课时：</text>
+      <view wx:if="{{!isEditing}}" class="info-value">
+        <text class="lessons-count {{studentData.remainingLessons > 0 ? 'active' : 'empty'}}">{{studentData.remainingLessons}}节</text>
+      </view>
+      <view wx:else class="edit-value-container">
         <input class="edit-input" 
                type="number" 
                value="{{editableLessons}}" 
                bindinput="onLessonsInput"
-               bindblur="onSaveLessons"
                placeholder="请输入课时数"></input>
         <text class="edit-unit">节</text>
       </view>
     </view>
   </view>
 
-  <!-- 学员备注 -->
-  <view class="remark-section">
-    <text class="section-title">备注</text>
-    <textarea class="remark-textarea" 
-              placeholder="请输入学员备注（可编辑）" 
-              value="{{studentRemark}}" 
-              bindinput="onRemarkInput"
-              bindblur="onSaveRemark"
-              maxlength="200"></textarea>
+  <!-- 备注信息 -->
+  <view class="info-section">
+    <view class="section-header">
+      <text class="section-title">教练备注</text>
+    </view>
+    
+    <view class="remark-container">
+      <view wx:if="{{!isEditing}}" class="remark-display">
+        <text class="remark-text">{{studentData.remark || '暂无备注'}}</text>
+      </view>
+      <textarea wx:else 
+                class="remark-textarea" 
+                placeholder="请输入学员备注" 
+                value="{{studentRemark}}" 
+                bindinput="onRemarkInput"
+                maxlength="200"></textarea>
+    </view>
+  </view>
+
+  <!-- 编辑状态的操作按钮 -->
+  <view wx:if="{{isEditing}}" class="edit-actions">
+    <button class="cancel-btn" bindtap="onCancelEdit">取消</button>
+    <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
+      {{isSaving ? '保存中...' : '保存'}}
+    </button>
   </view>
 
   <!-- 约课按钮 -->
-  <view class="book-button-container">
+  <view wx:if="{{!isEditing}}" class="book-button-container">
     <button class="book-button" bindtap="onBookStudent">立即约课</button>
   </view>
 </layout>

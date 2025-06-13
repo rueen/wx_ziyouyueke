@@ -52,19 +52,68 @@ page {
   margin-bottom: 12rpx;
 }
 
-.remaining-lessons {
+.student-intro {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+/* 信息区块 */
+.info-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.edit-btn {
+  background-color: #007aff;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  border: none;
+  line-height: 1;
+}
+
+.edit-btn::after {
+  border: none;
+}
+
+/* 信息项 */
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.info-value {
   display: flex;
   align-items: center;
 }
 
-.lessons-label {
-  font-size: 26rpx;
-  color: #999;
-  margin-right: 8rpx;
-}
-
 .lessons-count {
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: 600;
 }
 
@@ -76,37 +125,7 @@ page {
   color: #ff3b30;
 }
 
-/* 信息区块 */
-.edit-section,
-.remark-section {
-  background-color: #fff;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-  font-size: 32rpx;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 24rpx;
-  display: block;
-}
-
-/* 可编辑项 */
-.edit-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.edit-label {
-  font-size: 28rpx;
-  color: #333;
-  font-weight: 600;
-}
-
+/* 编辑状态 */
 .edit-value-container {
   display: flex;
   align-items: center;
@@ -135,7 +154,26 @@ page {
   margin-left: 8rpx;
 }
 
-/* 备注输入框 */
+/* 备注区域 */
+.remark-container {
+  width: 100%;
+}
+
+.remark-display {
+  min-height: 80rpx;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.remark-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
 .remark-textarea {
   width: 100%;
   min-height: 120rpx;
@@ -156,6 +194,50 @@ page {
 
 .remark-textarea::placeholder {
   color: #999;
+}
+
+/* 编辑操作按钮 */
+.edit-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.cancel-btn,
+.save-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background-color: #f8f9fa;
+  color: #666;
+  border: 1rpx solid #e9ecef;
+}
+
+.cancel-btn:active {
+  background-color: #e9ecef;
+}
+
+.save-btn {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.save-btn:active {
+  background-color: #0056cc;
+}
+
+.cancel-btn::after,
+.save-btn::after {
+  border: none;
 }
 
 /* 约课按钮 */
