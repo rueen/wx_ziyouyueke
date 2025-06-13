@@ -9,27 +9,6 @@ const API_CONFIG = {
   timeout: 10000
 };
 
-// 防重复请求缓存
-const requestCache = new Map();
-
-/**
- * 检查用户登录状态
- * @returns {boolean} 是否已登录
- */
-function checkLoginStatus() {
-  const token = wx.getStorageSync('token');
-  const isLoggedIn = wx.getStorageSync('isLoggedIn');
-  
-  if (!token || !isLoggedIn) {
-    console.log('[API] 用户未登录，准备跳转到登录页');
-    wx.reLaunch({
-      url: '/pages/login/login'
-    });
-    return false;
-  }
-  return true;
-}
-
 /**
  * 发起HTTP请求的通用方法
  * @param {Object} options 请求配置
@@ -481,41 +460,15 @@ function getMyCoachList(params = {}) {
 }
 
 /**
- * 获取教练列表（系统所有教练）
- * @param {Object} params 查询参数
+ * 获取用户详情（通用接口，可用于获取教练或学员详情）
+ * @param {number} userId 用户ID
  * @returns {Promise}
  */
-function getCoachList(params = {}) {
+function getUserDetail(userId) {
   return request({
-    url: '/api/h5/coach/list',
+    url: `/api/h5/user/${userId}`,
     method: 'GET',
-    data: params
-  });
-}
-
-/**
- * 获取教练详情
- * @param {number} coachId 教练ID
- * @returns {Promise}
- */
-function getCoachDetail(coachId) {
-  return request({
-    url: `/api/h5/coach/${coachId}`,
-    method: 'GET'
-  });
-}
-
-/**
- * 获取教练课程安排
- * @param {number} coachId 教练ID
- * @param {Object} params 查询参数
- * @returns {Promise}
- */
-function getCoachSchedule(coachId, params = {}) {
-  return request({
-    url: `/api/h5/coach/${coachId}/schedule`,
-    method: 'GET',
-    data: params
+    auth: false // 该接口为公开接口，无需认证
   });
 }
 
@@ -608,7 +561,8 @@ module.exports = {
   user: {
     getProfile: getUserProfile,
     updateProfile: updateUserProfile,
-    decryptPhone: decryptPhoneNumber
+    decryptPhone: decryptPhoneNumber,
+    getDetail: getUserDetail
   },
   
   // 时间模板模块
@@ -641,10 +595,7 @@ module.exports = {
 
   // 教练模块
   coach: {
-    getMyList: getMyCoachList,
-    getList: getCoachList,
-    getDetail: getCoachDetail,
-    getSchedule: getCoachSchedule
+    getMyList: getMyCoachList
   },
 
   // 文件上传模块

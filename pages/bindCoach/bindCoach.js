@@ -71,8 +71,8 @@ Page({
         title: '加载教练信息...'
       });
 
-      // 调用获取教练详情接口（无需认证）
-      const result = await api.coach.getDetail(coachId);
+      // 调用获取用户详情接口（无需认证）
+      const result = await api.user.getDetail(coachId);
       
       wx.hideLoading();
       

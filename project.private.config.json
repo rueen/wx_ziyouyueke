@@ -10,7 +10,7 @@
       "list": [
         {
           "name": "绑定教练",
-          "pathName": "pages/bindCoach/bindCoach",
+          "pathName": "/pages/bindCoach/bindCoach",
           "query": "coach_id=1",
           "launchMode": "default",
           "scene": null

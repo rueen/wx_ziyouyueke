@@ -46,7 +46,7 @@ Page({
         title: '加载中...'
       });
 
-      const result = await api.coach.getDetail(coachId);
+      const result = await api.user.getDetail(coachId);
       
       wx.hideLoading();
 
