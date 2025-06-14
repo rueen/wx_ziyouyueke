@@ -201,6 +201,15 @@ Page({
   },
 
   /**
+   * 我的时间（教练专用）
+   */
+  onMySchedule() {
+    wx.navigateTo({
+      url: '/pages/mySchedule/mySchedule'
+    });
+  },
+
+  /**
    * 常用地址
    */
   onMyAddresses() {

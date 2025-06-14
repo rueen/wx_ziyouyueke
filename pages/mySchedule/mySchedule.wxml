@@ -1,0 +1,80 @@
+<!--pages/mySchedule/mySchedule.wxml-->
+<navBar title="我的时间" />
+<layout class="container">
+  <!-- 日期选择器 -->
+  <view class="date-selector">
+    <scroll-view class="date-scroll" 
+                 scroll-x="true" 
+                 scroll-left="{{scrollLeft}}"
+                 show-scrollbar="false">
+      <view class="date-list">
+        <view class="date-item {{item.date === currentDate ? 'active' : ''}}" 
+              wx:for="{{dateList}}" 
+              wx:key="date"
+              bindtap="onSelectDate"
+              data-date="{{item.date}}">
+          <view class="date-content">
+            <text class="week-day">{{item.weekDay}}</text>
+            <text class="month-day">{{item.monthDay}}</text>
+            <view class="date-status">
+              <text class="status-text {{item.status}}">
+                {{item.status === 'loading' ? '...' : (item.status === 'full' ? '已满' : '可约')}}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 时间段列表 -->
+  <view class="time-slots-container">
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{isLoading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 时间段列表 -->
+    <view class="time-slots" wx:elif="{{timeSlots.length > 0}}">
+      <view class="time-slot {{item.status}}" 
+            wx:for="{{timeSlots}}" 
+            wx:key="id"
+            bindtap="onTimeSlotTap"
+            data-slot="{{item}}">
+        
+        <!-- 时间信息 -->
+        <view class="time-info">
+          <text class="time-range">{{item.startTime}} - {{item.endTime}}</text>
+        </view>
+
+        <!-- 预约信息 -->
+        <view class="booking-info" wx:if="{{item.status === 'booked'}}">
+          <view class="student-info">
+            <text class="student-name">{{item.studentName}}</text>
+            <view class="booking-status">
+              <text class="status-tag">{{item.bookingStatus}}</text>
+            </view>
+          </view>
+          <text class="location">{{item.location}}</text>
+        </view>
+
+        <!-- 空闲状态 -->
+        <view class="free-info" wx:else>
+          <text class="free-text">空闲</text>
+        </view>
+
+        <!-- 右箭头 -->
+        <text class="iconfont icon-right arrow-icon" wx:if="{{item.status === 'booked'}}"></text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <view class="empty-icon">
+        <text class="iconfont icon-time"></text>
+      </view>
+      <text class="empty-text">该日期暂无时间安排</text>
+      <text class="empty-desc">请先配置时间模板</text>
+    </view>
+  </view>
+</layout> 

@@ -14,7 +14,8 @@
     "pages/timeTemplate/timeTemplate",
     "pages/bindCoach/bindCoach",
     "pages/addressList/addressList",
-    "pages/addressEdit/addressEdit"
+    "pages/addressEdit/addressEdit",
+    "pages/mySchedule/mySchedule"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",
