@@ -15,6 +15,15 @@
     "pages/bindCoach/bindCoach",
     "pages/addressList/addressList"
   ],
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于选择常用地址"
+    }
+  },
   "window": {
     "navigationStyle": "custom",
     "navigationBarTextStyle": "black"

@@ -389,36 +389,124 @@ Page({
    */
   async onAddAddress() {
     try {
-      // 调用微信小程序地点选择API
-      const result = await wx.chooseLocation({
-        latitude: 39.9042, // 默认位置（北京）
-        longitude: 116.4074
-      });
-
-      console.log('选择的地点:', result);
-
-      // 跳转到地址编辑页面，传递选择的地点信息
-      const locationData = {
-        name: result.name || '',
-        address: result.address || '',
-        latitude: result.latitude,
-        longitude: result.longitude
-      };
-
-      wx.navigateTo({
-        url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
-      });
-
-    } catch (error) {
-      console.error('选择地点失败:', error);
+      // 首先检查位置权限
+      const authResult = await wx.getSetting();
       
-      if (error.errMsg && error.errMsg.includes('cancel')) {
-        // 用户取消选择
-        return;
+      if (!authResult.authSetting['scope.userLocation']) {
+        // 如果没有位置权限，先申请权限
+        try {
+          await wx.authorize({
+            scope: 'scope.userLocation'
+          });
+        } catch (authError) {
+          // 用户拒绝授权，引导用户手动开启
+          wx.showModal({
+            title: '位置权限',
+            content: '需要获取您的位置信息来选择地址，请在设置中开启位置权限',
+            confirmText: '去设置',
+            success: (res) => {
+              if (res.confirm) {
+                wx.openSetting();
+              }
+            }
+          });
+          return;
+        }
       }
 
+      // 显示加载提示
+      wx.showLoading({
+        title: '获取位置中...'
+      });
+
+      // 获取用户当前位置作为默认位置
+      wx.getLocation({
+        type: 'wgs84',
+        success: (locationRes) => {
+          wx.hideLoading();
+          console.log('获取当前位置成功:', locationRes);
+          
+          // 使用用户当前位置调用选择位置API
+          wx.chooseLocation({
+            latitude: locationRes.latitude,
+            longitude: locationRes.longitude,
+            success: (result) => {
+          console.log('选择的地点:', result);
+
+          // 跳转到地址编辑页面，传递选择的地点信息
+          const locationData = {
+            name: result.name || '',
+            address: result.address || '',
+            latitude: result.latitude,
+            longitude: result.longitude
+          };
+
+          wx.navigateTo({
+            url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
+          });
+        },
+        fail: (error) => {
+          console.error('选择地点失败:', error);
+          
+          if (error.errMsg && error.errMsg.includes('cancel')) {
+            // 用户取消选择，不显示错误提示
+            return;
+          }
+          
+          let errorMsg = '获取位置失败';
+          if (error.errMsg && error.errMsg.includes('auth')) {
+            errorMsg = '位置权限被拒绝，请在设置中开启';
+          }
+          
+          wx.showToast({
+            title: errorMsg,
+            icon: 'none'
+          });
+        }
+      });
+    },
+    fail: (locationError) => {
+      wx.hideLoading();
+      console.error('获取当前位置失败:', locationError);
+      
+      // 如果获取当前位置失败，使用杭州市作为默认位置
+      wx.chooseLocation({
+        latitude: 30.2741,
+        longitude: 120.1551,
+        success: (result) => {
+          console.log('选择的地点:', result);
+
+          const locationData = {
+            name: result.name || '',
+            address: result.address || '',
+            latitude: result.latitude,
+            longitude: result.longitude
+          };
+
+          wx.navigateTo({
+            url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
+          });
+        },
+        fail: (error) => {
+          console.error('选择地点失败:', error);
+          
+          if (error.errMsg && error.errMsg.includes('cancel')) {
+            return;
+          }
+          
+          wx.showToast({
+            title: '获取位置失败',
+            icon: 'none'
+          });
+        }
+      });
+    }
+  });
+      
+    } catch (error) {
+      console.error('新增地址失败:', error);
       wx.showToast({
-        title: '获取位置失败',
+        title: '操作失败，请重试',
         icon: 'none'
       });
     }
