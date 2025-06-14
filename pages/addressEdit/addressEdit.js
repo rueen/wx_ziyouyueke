@@ -306,5 +306,70 @@ Page({
         isSubmitting: false
       });
     }
+  },
+
+  /**
+   * 删除地址
+   */
+  async onDelete() {
+    const { addressData, isSubmitting } = this.data;
+
+    if (isSubmitting || !addressData.id) return;
+
+    wx.showModal({
+      title: '删除地址',
+      content: `确定要删除"${addressData.name}"吗？删除后无法恢复。`,
+      confirmText: '删除',
+      confirmColor: '#ff3b30',
+      cancelText: '取消',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            this.setData({
+              isSubmitting: true
+            });
+
+            wx.showLoading({
+              title: '删除中...'
+            });
+
+            // 调用API删除地址
+            await API.request({
+              url: `/api/h5/addresses/${addressData.id}`,
+              method: 'DELETE'
+            });
+
+            wx.hideLoading();
+
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success'
+            });
+
+            // 设置刷新标记
+            wx.setStorageSync('addressListNeedRefresh', true);
+
+            // 延迟返回上一页
+            setTimeout(() => {
+              wx.navigateBack();
+            }, 1500);
+
+          } catch (error) {
+            wx.hideLoading();
+            console.error('删除地址失败:', error);
+
+            const errorMsg = error.message || '删除失败，请重试';
+            wx.showToast({
+              title: errorMsg,
+              icon: 'none'
+            });
+          } finally {
+            this.setData({
+              isSubmitting: false
+            });
+          }
+        }
+      }
+    });
   }
 }); 

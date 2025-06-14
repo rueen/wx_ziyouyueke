@@ -3,48 +3,25 @@
 <layout class="container">
     <!-- 地址列表 -->
   <view class="address-list" wx:if="{{addresses.length > 0}}">
-    <view class="address-item" wx:for="{{addresses}}" wx:key="id">
-      <view class="swipe-container">
-        <!-- 地址内容 -->
-        <view class="address-card" 
-              style="transform: translateX({{item.translateX || 0}}rpx)"
-              bindtouchstart="onTouchStart"
-              catchtouchmove="onTouchMove" 
-              bindtouchend="onTouchEnd"
-              data-index="{{index}}">
-          <view class="address-content" bindtap="onEditAddress" data-address="{{item}}">
-            <view class="address-header">
-              <view class="address-name-row">
-                <text class="address-name">{{item.name}}</text>
-                <view class="default-tag" wx:if="{{item.isDefault}}">
-                  <text class="default-text">默认</text>
-                </view>
-              </view>
-            </view>
-            <view class="address-detail">
-              <text class="address-text">{{item.address}}</text>
+    <view class="address-item" 
+          wx:for="{{addresses}}" 
+          wx:key="id"
+          bindtap="onEditAddress" 
+          data-address="{{item}}">
+      <view class="address-content">
+        <view class="address-header">
+          <view class="address-name-row">
+            <text class="address-name">{{item.name}}</text>
+            <view class="default-tag" wx:if="{{item.isDefault}}">
+              <text class="default-text">默认</text>
             </view>
           </view>
         </view>
-        
-        <!-- 左滑操作按钮 -->
-        <view class="swipe-actions">
-          <button class="swipe-btn set-default-btn" 
-                  wx:if="{{!item.isDefault}}"
-                  catchtap="onSetDefault" 
-                  data-id="{{item.id}}">
-            <text class="iconfont icon-check"></text>
-            <text class="btn-text">设为默认</text>
-          </button>
-          <button class="swipe-btn delete-btn" 
-                  catchtap="onDeleteAddress" 
-                  data-id="{{item.id}}" 
-                  data-name="{{item.name}}">
-            <text class="iconfont icon-delete"></text>
-            <text class="btn-text">删除</text>
-          </button>
+        <view class="address-detail">
+          <text class="address-text">{{item.address}}</text>
         </view>
       </view>
+      <text class="iconfont icon-right address-arrow"></text>
     </view>
   </view>
 

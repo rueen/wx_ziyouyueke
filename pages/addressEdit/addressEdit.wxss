@@ -152,10 +152,13 @@
   flex: 1;
 }
 
-/* 保存按钮容器 */
-.save-button-container {
+/* 按钮容器 */
+.button-container {
   padding: 40rpx 20rpx;
   padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
 
 /* 保存按钮 */
@@ -190,6 +193,38 @@
 
 .save-button[disabled] .save-text {
   color: #999999;
+}
+
+/* 删除按钮 */
+.delete-button {
+  width: 100%;
+  height: 88rpx;
+  background: transparent;
+  border: 2rpx solid #ff3b30;
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.delete-button:not([disabled]):active {
+  background: rgba(255, 59, 48, 0.1);
+  transform: translateY(1rpx);
+}
+
+.delete-button[disabled] {
+  border-color: #cccccc;
+}
+
+.delete-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #ff3b30;
+}
+
+.delete-button[disabled] .delete-text {
+  color: #cccccc;
 }
 
 /* 响应式适配 */

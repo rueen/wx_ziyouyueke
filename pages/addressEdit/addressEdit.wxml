@@ -58,12 +58,21 @@
     </view>
   </view>
 
-  <!-- 保存按钮 -->
-  <view class="save-button-container">
+  <!-- 操作按钮 -->
+  <view class="button-container">
+    <!-- 保存按钮 -->
     <button class="save-button" 
             bindtap="onSave"
             disabled="{{isSubmitting}}">
       <text class="save-text">{{isEdit ? '更新地址' : '保存地址'}}</text>
+    </button>
+    
+    <!-- 删除按钮（仅编辑模式显示） -->
+    <button class="delete-button" 
+            wx:if="{{isEdit}}"
+            bindtap="onDelete"
+            disabled="{{isSubmitting}}">
+      <text class="delete-text">删除地址</text>
     </button>
   </view>
 </layout> 
