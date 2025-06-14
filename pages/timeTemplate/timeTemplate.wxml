@@ -9,6 +9,15 @@
     </view>
     <view class="settings-content">
       <view class="setting-item">
+        <text class="setting-label">是否启用</text>
+        <switch 
+          class="setting-switch" 
+          checked="{{templateEnabled}}" 
+          bindchange="onTemplateToggle"
+          color="#007aff"
+        />
+      </view>
+      <view class="setting-item">
         <text class="setting-label">最少提前天数</text>
         <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
       </view>
@@ -26,8 +35,13 @@
       <text class="add-btn" bindtap="onShowAddForm">添加</text>
     </view>
     
+    <!-- 模板状态提示 -->
+    <view class="template-status" wx:if="{{!templateEnabled && timeSlotTemplate.length > 0}}">
+      <text class="status-text">⚠️ 当前模板已禁用，学员无法预约</text>
+    </view>
+    
     <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
-      <view class="time-slot" wx:for="{{timeSlotTemplate}}" wx:key="id">
+      <view class="time-slot {{!templateEnabled ? 'disabled' : ''}}" wx:for="{{timeSlotTemplate}}" wx:key="id">
         <view class="time-info">
           <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
         </view>

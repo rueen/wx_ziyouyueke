@@ -17,6 +17,10 @@ Page({
       maxAdvanceDays: 30 // 最多可预约未来几天
     },
     
+    // 模板启用状态
+    templateEnabled: true, // 默认启用
+    templateId: null, // 模板ID
+    
     // 时间段模板（一天的时间段模板）
     timeSlotTemplate: [
       { id: 1, startTime: '09:00', endTime: '12:00' },
@@ -88,7 +92,8 @@ Page({
             maxAdvanceDays: template.max_advance_days
           },
           timeSlotTemplate: timeSlots,
-          templateId: template.id // 保存模板ID用于更新
+          templateId: template.id, // 保存模板ID用于更新
+          templateEnabled: template.is_active === 1 // 设置启用状态
         });
         
         console.log('加载时间设置成功:', template);
@@ -151,6 +156,58 @@ Page({
     this.setData({
       tempMaxAdvanceDays: parseInt(e.detail.value) || 30
     });
+  },
+
+  /**
+   * 切换模板启用状态
+   */
+  async onTemplateToggle(e) {
+    const { templateId } = this.data;
+    const enabled = e.detail.value;
+    
+    if (!templateId) {
+      wx.showToast({
+        title: '请先保存时间模板',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({
+        title: enabled ? '启用中...' : '禁用中...'
+      });
+
+      // 调用切换API
+      await api.timeTemplate.toggle(templateId);
+      
+      wx.hideLoading();
+      
+      this.setData({
+        templateEnabled: enabled
+      });
+      
+      wx.showToast({
+        title: enabled ? '已启用' : '已禁用',
+        icon: 'success'
+      });
+      
+      console.log('模板状态切换成功:', enabled);
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('切换模板状态失败:', error);
+      
+      // 恢复开关状态
+      this.setData({
+        templateEnabled: !enabled
+      });
+      
+      wx.showToast({
+        title: '操作失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**
