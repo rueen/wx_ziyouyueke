@@ -1,6 +1,7 @@
 <!--pages/studentList/studentList.wxml-->
 <navBar title="我的学员" />
 <layout class="container">
+  <!-- 学员列表 -->
   <view class="student-list" wx:if="{{students.length > 0}}">
     <view class="student-item" wx:for="{{students}}" wx:key="id" bindtap="onStudentDetail" data-student="{{item}}">
       <view class="student-avatar">
@@ -19,10 +20,16 @@
     </view>
   </view>
 
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:elif="{{isLoading && students.length === 0}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
   <!-- 空状态 -->
   <view class="empty-state" wx:else>
     <text class="empty-text">暂无学员</text>
     <text class="empty-desc">您还没有关联任何学员</text>
+    <text class="refresh-hint">下拉可刷新</text>
   </view>
 
   <!-- 添加学员按钮 -->

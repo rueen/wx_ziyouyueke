@@ -62,8 +62,36 @@
     </button>
   </view>
 
-  <!-- 约课按钮 -->
-  <view wx:if="{{!isEditing}}" class="book-button-container">
-    <button class="book-button" bindtap="onBookStudent">立即约课</button>
+  <!-- 操作按钮 -->
+  <view wx:if="{{!isEditing}}" class="action-buttons">
+    <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}">立即约课</button>
+    <button class="unbind-button" bindtap="onShowUnbindConfirm" disabled="{{isUnbinding}}">
+      {{isUnbinding ? '解除中...' : '解除绑定'}}
+    </button>
   </view>
 </layout>
+
+<!-- 解除绑定确认弹窗 -->
+<view class="modal-mask" wx:if="{{showUnbindModal}}" bindtap="onHideUnbindModal">
+  <view class="modal-container" catchtap="onPreventClose">
+    <view class="modal-header">
+      <text class="modal-title">解除绑定</text>
+      <text class="modal-close" bindtap="onHideUnbindModal">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="confirm-text">
+        <text class="warning-icon">⚠️</text>
+        <text class="confirm-message">确定要解除与"{{studentData.name}}"的师生关系吗？</text>
+      </view>
+      <view class="confirm-tips">
+        <text class="tips-text">解除后将无法查看该学员信息，且无法恢复</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="cancel-btn" bindtap="onHideUnbindModal">取消</button>
+      <button class="confirm-btn" bindtap="onConfirmUnbind" loading="{{isUnbinding}}">
+        {{isUnbinding ? '解除中...' : '确认解除'}}
+      </button>
+    </view>
+  </view>
+</view>

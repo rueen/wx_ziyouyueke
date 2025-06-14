@@ -16,7 +16,9 @@ Page({
     editableLessons: '', // 可编辑的课时数
     studentRemark: '',   // 学员备注
     isEditing: false,    // 是否处于编辑状态
-    isSaving: false      // 是否正在保存
+    isSaving: false,     // 是否正在保存
+    showUnbindModal: false, // 是否显示解除绑定确认弹窗
+    isUnbinding: false   // 是否正在解除绑定
   },
 
   /**
@@ -223,5 +225,108 @@ Page({
     wx.navigateTo({
       url: `/pages/bookStudent/bookStudent?from=studentDetail&studentId=${studentData.id}&studentName=${encodeURIComponent(studentData.name)}`
     });
+  },
+
+  /**
+   * 阻止弹窗关闭（用于阻止点击弹窗内容区域时关闭弹窗）
+   */
+  onPreventClose(e) {
+    // 阻止事件冒泡，防止触发遮罩层的点击事件
+  },
+
+  /**
+   * 显示解除绑定确认弹窗
+   */
+  onShowUnbindConfirm() {
+    this.setData({
+      showUnbindModal: true
+    });
+  },
+
+  /**
+   * 隐藏解除绑定确认弹窗
+   */
+  onHideUnbindModal() {
+    this.setData({
+      showUnbindModal: false
+    });
+  },
+
+  /**
+   * 确认解除绑定
+   */
+  async onConfirmUnbind() {
+    const { studentData, isUnbinding } = this.data;
+    
+    if (isUnbinding) {
+      return; // 防止重复提交
+    }
+
+    try {
+      this.setData({
+        isUnbinding: true
+      });
+
+      wx.showLoading({
+        title: '解除中...'
+      });
+
+      console.log('解除师生关系，关系ID:', studentData.id);
+
+      // 调用API解除师生关系
+      const result = await api.relation.delete(studentData.id);
+      
+      wx.hideLoading();
+
+      if (result && result.success) {
+        this.setData({
+          showUnbindModal: false,
+          isUnbinding: false
+        });
+
+        wx.showToast({
+          title: '解除绑定成功',
+          icon: 'success',
+          duration: 1500,
+          success: () => {
+            // 延迟返回上一页
+            setTimeout(() => {
+              // 通知学员列表页面刷新数据
+              const pages = getCurrentPages();
+              if (pages.length >= 2) {
+                const prevPage = pages[pages.length - 2];
+                if (prevPage.route === 'pages/studentList/studentList' && prevPage.refreshStudentList) {
+                  prevPage.refreshStudentList();
+                }
+              }
+              
+              wx.navigateBack({
+                delta: 1
+              });
+            }, 1500);
+          }
+        });
+
+        console.log('师生关系解除成功:', result.data);
+      } else {
+        throw new Error(result.message || '解除绑定失败');
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('解除师生关系失败:', error);
+      
+      this.setData({
+        isUnbinding: false
+      });
+
+      const errorMessage = error.message || '解除绑定失败，请重试';
+      
+      wx.showToast({
+        title: errorMessage,
+        icon: 'none',
+        duration: 3000
+      });
+    }
   }
 })

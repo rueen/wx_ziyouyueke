@@ -12,7 +12,9 @@ Page({
    */
   data: {
     students: [],
-    coachInfo: {}
+    coachInfo: {},
+    isFirstLoad: true, // 标记是否首次加载
+    isLoading: false // 加载状态
   },
 
   /**
@@ -21,28 +23,57 @@ Page({
   onLoad(options) {
     this.loadStudents();
     this.loadCoachInfo();
+    this.setData({
+      isFirstLoad: false
+    });
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    
+    // 只有非首次加载时才刷新数据（从其他页面返回时）
+    if (!this.data.isFirstLoad) {
+      console.log('从其他页面返回，刷新学员列表');
+      this.loadStudents(false);
+    }
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+    console.log('用户下拉刷新');
+    this.loadStudents().finally(() => {
+      wx.stopPullDownRefresh();
+    });
   },
 
   /**
    * 加载学员列表
    */
-  async loadStudents() {
+  async loadStudents(showLoading = true) {
+    if (this.data.isLoading) {
+      return; // 防止重复加载
+    }
+
     try {
-      wx.showLoading({
-        title: '加载中...'
+      this.setData({
+        isLoading: true
       });
+
+      if (showLoading) {
+        wx.showLoading({
+          title: '加载中...'
+        });
+      }
 
       // 调用API获取我的学员列表
       const result = await api.relation.getMyStudents();
       
-      wx.hideLoading();
+      if (showLoading) {
+        wx.hideLoading();
+      }
 
       if (result && result.data && result.data.length > 0) {
         // 格式化数据
@@ -58,29 +89,43 @@ Page({
         }));
 
         this.setData({
-          students
+          students,
+          isLoading: false
         });
 
         console.log('加载学员数据成功:', students);
       } else {
         // 没有学员数据时，使用空数组
         this.setData({
-          students: []
+          students: [],
+          isLoading: false
         });
         console.log('暂无学员数据');
       }
     } catch (error) {
-      wx.hideLoading();
+      if (showLoading) {
+        wx.hideLoading();
+      }
+      
+      this.setData({
+        isLoading: false
+      });
+      
       console.error('加载学员数据失败:', error);
       
-      // API调用失败时，使用原有的静态数据作为后备
-      console.log('使用静态数据作为后备');
-      
       wx.showToast({
-        title: '加载失败，显示缓存数据',
+        title: '加载失败，请重试',
         icon: 'none'
       });
     }
+  },
+
+  /**
+   * 刷新学员列表（供其他页面调用）
+   */
+  refreshStudentList() {
+    console.log('刷新学员列表');
+    this.loadStudents(false);
   },
 
   /**
