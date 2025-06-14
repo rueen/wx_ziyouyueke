@@ -1,0 +1,75 @@
+<!--components/timeSelector/timeSelector.wxml-->
+<view class="time-selector">
+  <!-- 日期选择器 -->
+  <view class="date-selector">
+    <scroll-view class="date-scroll" scroll-x="true" scroll-left="{{scrollLeft}}" show-scrollbar="{{false}}">
+      <view class="date-list">
+        <view 
+          class="date-item {{item.date === currentDate ? 'active' : ''}} {{item.status === 'full' ? 'full' : ''}}"
+          wx:for="{{dateList}}" 
+          wx:key="date"
+          data-date="{{item.date}}"
+          bindtap="onSelectDate"
+        >
+          <view class="date-weekday">{{item.weekDay}}</view>
+          <view class="date-monthday">{{item.monthDay}}</view>
+          <view class="date-status">
+            <text wx:if="{{item.status === 'available'}}">可约</text>
+            <text wx:if="{{item.status === 'full'}}">已满</text>
+          </view>
+          <view wx:if="{{item.isToday}}" class="today-indicator">今天</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 时间段列表 -->
+  <view class="time-slots-container">
+    <!-- 加载状态 -->
+    <view wx:if="{{isLoading}}" class="loading-container">
+      <view class="loading-text">加载中...</view>
+    </view>
+
+    <!-- 时间段列表 -->
+    <view wx:else class="time-slots">
+      <view wx:if="{{timeSlots.length === 0}}" class="empty-state">
+        <text>暂无时间安排</text>
+      </view>
+      
+      <view wx:else>
+        <view 
+          class="time-slot {{slot.status === 'booked' ? 'booked' : 'free'}} {{mode === 'select' && slot.status === 'free' ? 'selectable' : ''}}"
+          wx:for="{{timeSlots}}" 
+          wx:for-item="slot"
+          wx:key="id"
+          data-slot="{{slot}}"
+          bindtap="onTimeSlotTap"
+        >
+          <view class="time-slot-time">
+            {{slot.startTime}} - {{slot.endTime}}
+          </view>
+          
+          <!-- 已预约状态 -->
+          <view wx:if="{{slot.status === 'booked' && showBookingDetails}}" class="time-slot-content booked-content">
+            <view class="student-info">
+              <text class="student-name">{{slot.studentName}}</text>
+              <text class="booking-status">{{slot.bookingStatus}}</text>
+            </view>
+            <view class="location-info">{{slot.location}}</view>
+          </view>
+          
+          <!-- 空闲状态 -->
+          <view wx:elif="{{slot.status === 'free'}}" class="time-slot-content free-content">
+            <text class="free-text">空闲</text>
+            <view wx:if="{{mode === 'select'}}" class="select-hint">点击选择</view>
+          </view>
+          
+          <!-- 简化的已预约状态（不显示详细信息） -->
+          <view wx:else class="time-slot-content booked-simple">
+            <text class="booked-text">已预约</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

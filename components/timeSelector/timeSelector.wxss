@@ -1,0 +1,265 @@
+/* components/timeSelector/timeSelector.wxss */
+
+.time-selector {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 日期选择器样式 */
+.date-selector {
+  background-color: #fff;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.date-scroll {
+  width: 100%;
+}
+
+.date-list {
+  display: flex;
+  padding: 0 20rpx;
+  white-space: nowrap;
+}
+
+.date-item {
+  flex-shrink: 0;
+  width: 120rpx;
+  height: 140rpx;
+  margin-right: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.date-item.active {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.date-item.full {
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+.date-item.active.full {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+.date-weekday {
+  font-size: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.date-monthday {
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.date-status {
+  font-size: 20rpx;
+}
+
+.today-indicator {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  background-color: #ff4757;
+  color: #fff;
+  font-size: 18rpx;
+  padding: 2rpx 6rpx;
+  border-radius: 8rpx;
+}
+
+.date-item.active .today-indicator {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 时间段容器样式 */
+.time-slots-container {
+  flex: 1;
+  padding: 20rpx;
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200rpx;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 空状态样式 */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 时间段列表样式 */
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.time-slot {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.time-slot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6rpx;
+  border-radius: 3rpx 0 0 3rpx;
+}
+
+.time-slot.booked::before {
+  background-color: #007aff;
+}
+
+.time-slot.free::before {
+  background-color: #ddd;
+}
+
+.time-slot.selectable {
+  cursor: pointer;
+}
+
+.time-slot.selectable:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.time-slot-time {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  min-width: 200rpx;
+}
+
+.time-slot-content {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+/* 已预约状态样式 */
+.booked-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.student-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.booking-status {
+  font-size: 24rpx;
+  color: #007aff;
+  background-color: #e6f3ff;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.location-info {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 空闲状态样式 */
+.free-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.free-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.select-hint {
+  font-size: 24rpx;
+  color: #007aff;
+  background-color: #e6f3ff;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+}
+
+/* 简化的已预约状态样式 */
+.booked-simple {
+  display: flex;
+  align-items: center;
+}
+
+.booked-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .date-item {
+    width: 100rpx;
+    height: 120rpx;
+  }
+  
+  .date-weekday {
+    font-size: 22rpx;
+  }
+  
+  .date-monthday {
+    font-size: 26rpx;
+  }
+  
+  .date-status {
+    font-size: 18rpx;
+  }
+  
+  .time-slot-time {
+    font-size: 30rpx;
+    min-width: 180rpx;
+  }
+  
+  .student-name {
+    font-size: 26rpx;
+  }
+  
+  .free-text {
+    font-size: 26rpx;
+  }
+} 
