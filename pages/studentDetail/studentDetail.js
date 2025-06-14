@@ -238,6 +238,20 @@ Page({
    * 显示解除绑定确认弹窗
    */
   onShowUnbindConfirm() {
+    const { studentData } = this.data;
+    
+    // 检查剩余课时数，如果大于0则不允许解除绑定
+    if (studentData.remainingLessons > 0) {
+      wx.showModal({
+        title: '无法解除绑定',
+        content: `该学员还有 ${studentData.remainingLessons} 节剩余课时，请先消耗完课时或将课时数修改为0后再解除绑定。`,
+        showCancel: false,
+        confirmText: '我知道了',
+        confirmColor: '#007aff'
+      });
+      return;
+    }
+    
     this.setData({
       showUnbindModal: true
     });
