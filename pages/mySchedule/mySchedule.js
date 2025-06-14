@@ -118,70 +118,55 @@ Page({
         weekDay: weekDay,
         monthDay: monthDay,
         isToday: i === 0,
-        status: 'loading' // 初始状态为加载中
+        status: 'available' // 默认状态为可约，只有当前选中日期才会加载真实状态
       });
     }
     
     this.setData({
       dateList: dateList
     });
-    
-    // 异步加载每个日期的状态
-    this.loadDateStatuses();
-  },
-
-  /**
-   * 加载所有日期的状态
-   */
-  async loadDateStatuses() {
-    const { dateList } = this.data;
-    const updatedDateList = [...dateList];
-    
-    for (let i = 0; i < updatedDateList.length; i++) {
-      try {
-        const status = await this.getDateStatus(updatedDateList[i].date);
-        updatedDateList[i].status = status;
-      } catch (error) {
-        console.error(`获取日期${updatedDateList[i].date}状态失败:`, error);
-        updatedDateList[i].status = 'available';
-      }
-    }
-    
-    this.setData({
-      dateList: updatedDateList
-    });
   },
 
   /**
    * 获取指定日期的状态
    */
-  async getDateStatus(date) {
+  async getDateStatus(date, timeSlots) {
     try {
-      // 这里应该调用API获取指定日期的预约情况
-      // 暂时使用模拟数据
-      const result = await API.request({
-        url: '/api/h5/courses',
-        method: 'GET',
-        data: {
-          role: 'coach',
-          start_date: date,
-          end_date: date
-        }
-      });
-
-      // 根据预约情况判断状态
-      if (result.data && result.data.courses) {
-        const courses = result.data.courses;
-        // 这里需要根据时间模板的时间段数量来判断是否已满
-        // 简化处理：如果有预约就显示已满，没有预约就显示可约
-        return courses.length > 0 ? 'full' : 'available';
+      // 根据时间段数据计算日期状态
+      if (!timeSlots || timeSlots.length === 0) {
+        return 'available';
       }
       
-      return 'available';
+      // 检查是否所有时间段都已被预约
+      const bookedSlots = timeSlots.filter(slot => slot.status === 'booked');
+      const totalSlots = timeSlots.length;
+      
+      if (bookedSlots.length === totalSlots) {
+        return 'full';
+      } else {
+        return 'available';
+      }
     } catch (error) {
-      console.error('获取日期状态失败:', error);
+      console.error('计算日期状态失败:', error);
       return 'available';
     }
+  },
+
+  /**
+   * 更新指定日期的状态
+   */
+  updateDateStatus(date, status) {
+    const { dateList } = this.data;
+    const updatedDateList = dateList.map(item => {
+      if (item.date === date) {
+        return { ...item, status: status };
+      }
+      return item;
+    });
+    
+    this.setData({
+      dateList: updatedDateList
+    });
   },
 
   /**
@@ -249,12 +234,19 @@ Page({
         isLoading: false
       });
 
+      // 根据时间段数据更新当前日期的状态
+      const dateStatus = await this.getDateStatus(date, timeSlots);
+      this.updateDateStatus(date, dateStatus);
+
     } catch (error) {
       console.error('加载时间段失败:', error);
       this.setData({
         isLoading: false,
         timeSlots: []
       });
+      
+      // 更新日期状态为可约（出错时的默认状态）
+      this.updateDateStatus(date, 'available');
       
       wx.showToast({
         title: '加载失败，请重试',
@@ -289,6 +281,7 @@ Page({
       currentDate: date
     });
     
+    // 加载选中日期的时间段数据
     this.loadTimeSlots(date);
   },
 

@@ -18,7 +18,7 @@
             <text class="month-day">{{item.monthDay}}</text>
             <view class="date-status">
               <text class="status-text {{item.status}}">
-                {{item.status === 'loading' ? '...' : (item.status === 'full' ? '已满' : '可约')}}
+                {{item.status === 'full' ? '已满' : '可约'}}
               </text>
             </view>
           </view>

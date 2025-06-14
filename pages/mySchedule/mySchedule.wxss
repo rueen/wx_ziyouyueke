@@ -94,10 +94,6 @@ page {
   line-height: 1;
 }
 
-.status-text.loading {
-  color: #999999;
-}
-
 .status-text.available {
   background-color: rgba(52, 199, 89, 0.1);
   color: #34c759;
