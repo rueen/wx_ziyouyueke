@@ -1,0 +1,69 @@
+<!--pages/addressEdit/addressEdit.wxml-->
+<navBar title="{{isEdit ? '编辑地址' : '新增地址'}}" />
+<layout class="container">
+  <view class="form-section">
+    <!-- 地址名称 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">地址名称</text>
+        <text class="required">*</text>
+      </view>
+      <input class="form-input" 
+             placeholder="请输入地址名称，如：万达广场健身房" 
+             value="{{addressData.name}}"
+             bindinput="onNameInput"
+             maxlength="100" />
+    </view>
+
+    <!-- 详细地址 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-text">详细地址</text>
+        <text class="required">*</text>
+      </view>
+      <textarea class="form-textarea" 
+                placeholder="请输入详细地址" 
+                value="{{addressData.address}}"
+                bindinput="onAddressInput"
+                maxlength="500"
+                auto-height />
+    </view>
+
+    <!-- 位置选择 -->
+    <view class="form-item location-item" bindtap="onChooseLocation">
+      <view class="form-label">
+        <text class="label-text">位置信息</text>
+        <text class="required">*</text>
+      </view>
+      <view class="location-content">
+        <view class="location-info" wx:if="{{addressData.latitude && addressData.longitude}}">
+          <text class="location-text">经度: {{addressData.longitude}}</text>
+          <text class="location-text">纬度: {{addressData.latitude}}</text>
+        </view>
+        <view class="location-placeholder" wx:else>
+          <text class="placeholder-text">点击选择位置</text>
+        </view>
+        <text class="iconfont icon-location location-icon"></text>
+      </view>
+    </view>
+
+    <!-- 设为默认地址 -->
+    <view class="form-item switch-item">
+      <view class="form-label">
+        <text class="label-text">设为默认地址</text>
+      </view>
+      <switch checked="{{addressData.is_default}}" 
+             bindchange="onDefaultToggle"
+             color="#007aff" />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-button-container">
+    <button class="save-button" 
+            bindtap="onSave"
+            disabled="{{isSubmitting}}">
+      <text class="save-text">{{isEdit ? '更新地址' : '保存地址'}}</text>
+    </button>
+  </view>
+</layout> 

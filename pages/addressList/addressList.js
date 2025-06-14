@@ -3,6 +3,8 @@
  * 常用地址列表页面
  */
 
+const API = require('../../utils/api.js');
+
 Page({
   /**
    * 页面的初始数据
@@ -64,58 +66,34 @@ Page({
         isLoading: true
       });
 
-      // 暂时使用假数据，等API开发完成后替换
-      const mockAddresses = [
-        {
-          id: 1,
-          name: '万达广场健身房',
-          address: '北京市朝阳区建国路93号万达广场B1层',
-          latitude: 39.9042,
-          longitude: 116.4074,
-          isDefault: true,
-          createTime: '2024-01-15 10:30:00'
-        },
-        {
-          id: 2,
-          name: '中心广场健身房',
-          address: '北京市海淀区中关村大街1号中心广场3层',
-          latitude: 39.9826,
-          longitude: 116.3066,
-          isDefault: false,
-          createTime: '2024-01-10 14:20:00'
-        },
-        {
-          id: 3,
-          name: '舞蹈工作室',
-          address: '北京市西城区西单北大街120号舞蹈工作室',
-          latitude: 39.9139,
-          longitude: 116.3831,
-          isDefault: false,
-          createTime: '2024-01-08 16:45:00'
-        },
-        {
-          id: 4,
-          name: '体育馆',
-          address: '北京市东城区体育馆路9号国家体育馆',
-          latitude: 39.9289,
-          longitude: 116.3883,
-          isDefault: false,
-          createTime: '2024-01-05 09:15:00'
+      // 调用API获取地址列表
+      const result = await API.request({
+        url: '/api/h5/addresses',
+        method: 'GET',
+        data: {
+          page: this.data.page,
+          limit: this.data.limit
         }
-      ];
-
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      this.setData({
-        addresses: mockAddresses,
-        isLoading: false,
-        hasMore: false // 假数据没有更多页
       });
 
-      console.log('加载地址列表成功:', mockAddresses);
-      console.log('页面数据状态:', this.data);
-      console.log('地址数量:', mockAddresses.length);
+      // 处理API返回的数据格式
+      const addresses = result.data.addresses.map(item => ({
+        id: item.id,
+        name: item.name,
+        address: item.address,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        isDefault: item.is_default,
+        createTime: item.created_at
+      }));
+
+      this.setData({
+        addresses: this.data.page === 1 ? addresses : [...this.data.addresses, ...addresses],
+        isLoading: false,
+        hasMore: result.data.pagination.current_page < result.data.pagination.total_pages
+      });
+
+      console.log('加载地址列表成功:', addresses);
 
     } catch (error) {
       console.error('加载地址列表失败:', error);
@@ -124,8 +102,10 @@ Page({
         isLoading: false
       });
 
+      // 显示具体的错误信息
+      const errorMsg = error.message || '加载失败，请重试';
       wx.showToast({
-        title: '加载失败，请重试',
+        title: errorMsg,
         icon: 'none'
       });
     }
@@ -151,8 +131,11 @@ Page({
   async loadMoreAddresses() {
     if (!this.data.hasMore || this.data.isLoading) return;
 
-    // 暂时不实现分页，等API开发完成后添加
-    console.log('暂无更多数据');
+    this.setData({
+      page: this.data.page + 1
+    });
+
+    await this.loadAddresses();
   },
 
   /**
@@ -171,8 +154,11 @@ Page({
         title: '设置中...'
       });
 
-      // 模拟API调用
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // 调用API设置默认地址
+      await API.request({
+        url: `/api/h5/addresses/${id}/default`,
+        method: 'PUT'
+      });
 
       // 更新本地数据
       const updatedAddresses = addresses.map(addr => ({
@@ -197,15 +183,16 @@ Page({
       wx.hideLoading();
       console.error('设置默认地址失败:', error);
 
+      const errorMsg = error.message || '设置失败，请重试';
       wx.showToast({
-        title: '设置失败，请重试',
+        title: errorMsg,
         icon: 'none'
       });
     }
   },
 
   /**
-   * 触摸开始事件
+   * 触摸开始
    */
   onTouchStart(e) {
     const touch = e.touches[0];
@@ -216,81 +203,54 @@ Page({
   },
 
   /**
-   * 触摸移动事件
+   * 触摸移动
    */
   onTouchMove(e) {
     const touch = e.touches[0];
-    const { touchStartX, touchStartY, addresses, actionWidth } = this.data;
-    const { index } = e.currentTarget.dataset;
+    const { touchStartX, touchStartY, swipeThreshold, actionWidth } = this.data;
     
-    // 检查数据有效性
-    if (!touch || touchStartX === undefined || touchStartY === undefined || !addresses || index === undefined) {
-      return;
+    const deltaX = touchStartX - touch.pageX;
+    const deltaY = Math.abs(touch.pageY - touchStartY);
+    
+    // 如果垂直滑动距离太大，不处理左滑
+    if (deltaY > 50) return;
+    
+    const { id } = e.currentTarget.dataset;
+    const { addresses } = this.data;
+    
+    // 计算滑动距离，限制在0到actionWidth之间
+    let translateX = 0;
+    if (deltaX > swipeThreshold) {
+      translateX = Math.min(deltaX - swipeThreshold, actionWidth);
     }
     
-    // 在微信小程序中使用pageX/pageY而不是clientX/clientY
-    const deltaX = touch.pageX - touchStartX;
-    const deltaY = touch.pageY - touchStartY;
+    // 更新当前项的位移，重置其他项
+    const updatedAddresses = addresses.map(item => ({
+      ...item,
+      translateX: item.id === id ? translateX : 0
+    }));
     
-    // 如果垂直滑动距离大于水平滑动距离，不处理左滑
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      return;
-    }
-    
-    // 只处理向左滑动
-    if (deltaX >= 0) {
-      this.resetAllItems();
-      return;
-    }
-    
-    // 计算滑动距离，限制最大滑动距离
-    // deltaX是负值（向左滑），我们需要限制滑动距离不超过按钮宽度
-    const currentItem = addresses[index];
-    const maxSlide = -240;
-    let translateX = Math.max(deltaX, maxSlide);
-    
-    // 更新当前项的位置
-    const updatedAddresses = [...addresses];
-    if (updatedAddresses[index]) {
-      updatedAddresses[index] = {
-        ...updatedAddresses[index],
-        translateX: translateX
-      };
-      
-      this.setData({
-        addresses: updatedAddresses
-      });
-    }
+    this.setData({
+      addresses: updatedAddresses
+    });
   },
 
   /**
-   * 触摸结束事件
+   * 触摸结束
    */
   onTouchEnd(e) {
-    const { index } = e.currentTarget.dataset;
-    const { addresses, swipeThreshold, actionWidth } = this.data;
+    const { id } = e.currentTarget.dataset;
+    const { addresses, actionWidth } = this.data;
     
-    // 检查数据有效性
-    if (!addresses || index === undefined || !addresses[index]) {
-      return;
-    }
+    const currentItem = addresses.find(item => item.id === id);
+    if (!currentItem) return;
     
-    const currentItem = addresses[index];
+    // 根据滑动距离决定最终状态
+    const finalTranslateX = currentItem.translateX > actionWidth / 2 ? actionWidth : 0;
     
-    if (!currentItem.translateX) {
-      return;
-    }
-    
-    // 判断是否需要显示操作按钮
-    let targetX = 0;
-    if (Math.abs(currentItem.translateX) > swipeThreshold) {
-      targetX = -240;
-    }
-    
-    // 先收起其他所有项，然后设置当前项的最终位置
-    const updatedAddresses = addresses.map((item, idx) => ({
+    const updatedAddresses = addresses.map(item => ({
       ...item,
-      translateX: idx === index ? targetX : 0
+      translateX: item.id === id ? finalTranslateX : 0
     }));
     
     this.setData({
@@ -350,8 +310,11 @@ Page({
               title: '删除中...'
             });
 
-            // 模拟API调用
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // 调用API删除地址
+            await API.request({
+              url: `/api/h5/addresses/${id}`,
+              method: 'DELETE'
+            });
 
             // 更新本地数据
             const { addresses } = this.data;
@@ -374,8 +337,9 @@ Page({
             wx.hideLoading();
             console.error('删除地址失败:', error);
 
+            const errorMsg = error.message || '删除失败，请重试';
             wx.showToast({
-              title: '删除失败，请重试',
+              title: errorMsg,
               icon: 'none'
             });
           }
@@ -431,77 +395,77 @@ Page({
             latitude: locationRes.latitude,
             longitude: locationRes.longitude,
             success: (result) => {
-          console.log('选择的地点:', result);
+              console.log('选择的地点:', result);
 
-          // 跳转到地址编辑页面，传递选择的地点信息
-          const locationData = {
-            name: result.name || '',
-            address: result.address || '',
-            latitude: result.latitude,
-            longitude: result.longitude
-          };
+              // 跳转到地址编辑页面，传递选择的地点信息
+              const locationData = {
+                name: result.name || '',
+                address: result.address || '',
+                latitude: result.latitude,
+                longitude: result.longitude
+              };
 
-          wx.navigateTo({
-            url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
+              wx.navigateTo({
+                url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
+              });
+            },
+            fail: (error) => {
+              console.error('选择地点失败:', error);
+              
+              if (error.errMsg && error.errMsg.includes('cancel')) {
+                // 用户取消选择，不显示错误提示
+                return;
+              }
+              
+              let errorMsg = '获取位置失败';
+              if (error.errMsg && error.errMsg.includes('auth')) {
+                errorMsg = '位置权限被拒绝，请在设置中开启';
+              }
+              
+              wx.showToast({
+                title: errorMsg,
+                icon: 'none'
+              });
+            }
           });
         },
-        fail: (error) => {
-          console.error('选择地点失败:', error);
+        fail: (locationError) => {
+          wx.hideLoading();
+          console.error('获取当前位置失败:', locationError);
           
-          if (error.errMsg && error.errMsg.includes('cancel')) {
-            // 用户取消选择，不显示错误提示
-            return;
-          }
-          
-          let errorMsg = '获取位置失败';
-          if (error.errMsg && error.errMsg.includes('auth')) {
-            errorMsg = '位置权限被拒绝，请在设置中开启';
-          }
-          
-          wx.showToast({
-            title: errorMsg,
-            icon: 'none'
+          // 如果获取当前位置失败，使用杭州市作为默认位置
+          wx.chooseLocation({
+            latitude: 30.2741,
+            longitude: 120.1551,
+            success: (result) => {
+              console.log('选择的地点:', result);
+
+              const locationData = {
+                name: result.name || '',
+                address: result.address || '',
+                latitude: result.latitude,
+                longitude: result.longitude
+              };
+
+              wx.navigateTo({
+                url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
+              });
+            },
+            fail: (error) => {
+              console.error('选择地点失败:', error);
+              
+              if (error.errMsg && error.errMsg.includes('cancel')) {
+                return;
+              }
+              
+              wx.showToast({
+                title: '获取位置失败',
+                icon: 'none'
+              });
+            }
           });
         }
       });
-    },
-    fail: (locationError) => {
-      wx.hideLoading();
-      console.error('获取当前位置失败:', locationError);
-      
-      // 如果获取当前位置失败，使用杭州市作为默认位置
-      wx.chooseLocation({
-        latitude: 30.2741,
-        longitude: 120.1551,
-        success: (result) => {
-          console.log('选择的地点:', result);
-
-          const locationData = {
-            name: result.name || '',
-            address: result.address || '',
-            latitude: result.latitude,
-            longitude: result.longitude
-          };
-
-          wx.navigateTo({
-            url: `/pages/addressEdit/addressEdit?locationData=${encodeURIComponent(JSON.stringify(locationData))}`
-          });
-        },
-        fail: (error) => {
-          console.error('选择地点失败:', error);
-          
-          if (error.errMsg && error.errMsg.includes('cancel')) {
-            return;
-          }
-          
-          wx.showToast({
-            title: '获取位置失败',
-            icon: 'none'
-          });
-        }
-      });
-    }
-  });
       
     } catch (error) {
       console.error('新增地址失败:', error);

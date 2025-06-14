@@ -1,0 +1,214 @@
+/* pages/addressEdit/addressEdit.wxss */
+
+.container {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 表单区域 */
+.form-section {
+  background-color: #ffffff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  padding: 40rpx 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 表单标签 */
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.label-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333333;
+}
+
+.required {
+  color: #ff4757;
+  font-size: 32rpx;
+  margin-left: 8rpx;
+}
+
+/* 输入框 */
+.form-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  font-size: 30rpx;
+  color: #333333;
+  background-color: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #007aff;
+  background-color: #ffffff;
+}
+
+.form-input::placeholder {
+  color: #999999;
+}
+
+/* 文本域 */
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+  color: #333333;
+  background-color: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-textarea:focus {
+  border-color: #007aff;
+  background-color: #ffffff;
+}
+
+.form-textarea::placeholder {
+  color: #999999;
+}
+
+/* 位置选择项 */
+.location-item {
+  cursor: pointer;
+}
+
+.location-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.location-item:active .location-content {
+  background-color: #e9ecef;
+}
+
+.location-info {
+  flex: 1;
+}
+
+.location-text {
+  display: block;
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.location-text:first-child {
+  margin-bottom: 8rpx;
+}
+
+.location-placeholder {
+  flex: 1;
+}
+
+.placeholder-text {
+  font-size: 30rpx;
+  color: #999999;
+}
+
+.location-icon {
+  font-size: 36rpx;
+  color: #007aff;
+  margin-left: 20rpx;
+}
+
+/* 开关项 */
+.switch-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}
+
+.switch-item .form-label {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+/* 保存按钮容器 */
+.save-button-container {
+  padding: 40rpx 20rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+/* 保存按钮 */
+.save-button {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #007aff 0%, #0056d6 100%);
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.save-button:not([disabled]):active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.4);
+}
+
+.save-button[disabled] {
+  background: #cccccc;
+  box-shadow: none;
+}
+
+.save-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.save-button[disabled] .save-text {
+  color: #999999;
+}
+
+/* 响应式适配 */
+@media (max-width: 375px) {
+  .form-section {
+    margin: 16rpx;
+    padding: 32rpx 24rpx;
+  }
+  
+  .label-text {
+    font-size: 30rpx;
+  }
+  
+  .form-input,
+  .form-textarea {
+    font-size: 28rpx;
+  }
+  
+  .save-text {
+    font-size: 30rpx;
+  }
+} 

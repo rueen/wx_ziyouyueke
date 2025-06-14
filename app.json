@@ -13,7 +13,8 @@
     "pages/bookStudent/bookStudent",
     "pages/timeTemplate/timeTemplate",
     "pages/bindCoach/bindCoach",
-    "pages/addressList/addressList"
+    "pages/addressList/addressList",
+    "pages/addressEdit/addressEdit"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",
