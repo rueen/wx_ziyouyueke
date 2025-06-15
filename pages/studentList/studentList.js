@@ -75,9 +75,9 @@ Page({
         wx.hideLoading();
       }
 
-      if (result && result.data && result.data.length > 0) {
+      if (result && result.data && result.data.list && result.data.list.length > 0) {
         // 格式化数据
-        const students = result.data.map(item => ({
+        const students = result.data.list.map(item => ({
           id: item.id,
           name: (item.student && item.student.nickname) || '未知学员',
           avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',

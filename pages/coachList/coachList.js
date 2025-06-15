@@ -54,11 +54,11 @@ Page({
       
       console.log('API返回的完整数据:', result);
       console.log('result.data:', result.data);
-      console.log('result.data.coaches:', result.data && result.data.coaches);
+      console.log('result.data.list:', result.data && result.data.list);
 
-      if (result && result.success && result.data && result.data.coaches && result.data.coaches.length > 0) {
+      if (result && result.success && result.data && result.data.list && result.data.list.length > 0) {
         // 格式化API数据 - 新接口返回的是师生关系数据，包含教练信息和课程统计
-        const coaches = result.data.coaches.map(relation => {
+        const coaches = result.data.list.map(relation => {
           const coach = relation.coach || {};
           const lessonStats = relation.lesson_stats || {};
           return {

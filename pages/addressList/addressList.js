@@ -68,7 +68,7 @@ Page({
       });
 
       // 处理API返回的数据格式
-      const addresses = result.data.addresses.map(item => ({
+      const addresses = result.data.list.map(item => ({
         id: item.id,
         name: item.name,
         address: item.address,

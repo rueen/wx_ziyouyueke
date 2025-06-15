@@ -131,9 +131,9 @@ Page({
       if (bookingType === 'coach-book-student') {
         // 教练约学员：获取我的学员列表（排除剩余课时为0的）
         result = await api.relation.getMyStudents();
-        if (result && result.data && result.data.students) {
-          // API返回的数据在result.data.students中
-          const dataArray = Array.isArray(result.data.students) ? result.data.students : [];
+        if (result && result.data && result.data.list) {
+          // API返回的数据在result.data.list中
+          const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
           const students = dataArray
             .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的学员
             .map(item => ({
@@ -154,9 +154,9 @@ Page({
       } else {
         // 学员约教练：获取可约教练列表（排除剩余课时为0的）
         result = await api.relation.getMyCoaches();
-        if (result && result.data && result.data.coaches) {
-          // API返回的数据在result.data.coaches中
-          const dataArray = Array.isArray(result.data.coaches) ? result.data.coaches : [];
+        if (result && result.data && result.data.list) {
+          // API返回的数据在result.data.list中
+          const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
           const coaches = dataArray
             .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的教练
             .map(item => ({
@@ -195,9 +195,9 @@ Page({
       }
       
       const result = await api.address.getList(params);
-      if (result && result.data && result.data.addresses) {
-        // API返回的数据在result.data.addresses中
-        const addresses = Array.isArray(result.data.addresses) ? result.data.addresses : [];
+      if (result && result.data && result.data.list) {
+        // API返回的数据在result.data.list中
+        const addresses = Array.isArray(result.data.list) ? result.data.list : [];
         this.setData({
           addresses: addresses
         });

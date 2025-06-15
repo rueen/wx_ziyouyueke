@@ -187,8 +187,8 @@ Page({
       
       wx.hideLoading();
       
-      if (result && result.data && result.data.courses) {
-        const courses = result.data.courses;
+      if (result && result.data && result.data.list) {
+        const courses = result.data.list;
         
         if (userRole === 'student') {
           // 学员视角：只显示已预约的课程

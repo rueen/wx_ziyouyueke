@@ -258,7 +258,7 @@ Component({
         
         const result = await api.course.getList(queryParams);
 
-        const bookedCourses = result.data ? result.data.courses : [];
+        const bookedCourses = result.data ? result.data.list : [];
         
         // 生成时间段列表
         const timeSlots = templateSlots.map(slot => {

@@ -118,11 +118,11 @@ Page({
       
       console.log('API返回的原始数据:', result);
       
-      if (result && result.data && result.data.courses) {
-        console.log('课程原始数据:', result.data.courses);
+      if (result && result.data && result.data.list) {
+        console.log('课程原始数据:', result.data.list);
         
         // 格式化API数据为前端需要的格式
-        const newCourses = result.data.courses.map((course, index) => {
+        const newCourses = result.data.list.map((course, index) => {
           console.log(`处理第${index + 1}条课程数据:`, course);
           
           // 根据用户角色决定显示的头像和昵称
@@ -191,7 +191,7 @@ Page({
         
       } else {
         // 没有课程数据
-        console.log('API返回了数据但没有courses字段，设置空数组');
+        console.log('API返回了数据但没有list字段，设置空数组');
         this.setData({
           courses: isRefresh ? [] : this.data.courses,
           hasMore: false,
