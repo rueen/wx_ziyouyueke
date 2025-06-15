@@ -221,42 +221,49 @@ Page({
     }
   },
 
-  /**
-   * 加载教练视角的日历数据
-   */
-  async loadCoachCalendarData(dates, bookedCourses) {
-    try {
-      // 获取时间模板
-      const templateResult = await api.timeTemplate.getList();
-      const timeTemplate = templateResult && templateResult.data ? templateResult.data : [];
-      
-      if (timeTemplate.length === 0) {
-        // 没有时间模板，显示空状态
-        this.setData({
-          calendarData: []
-        });
-        return;
-      }
-      
-      // 生成教练的日历数据（显示所有时间段）
-      const calendarData = dates.map(date => ({
-        date: this.formatDateKey(date),
-        dayTitle: this.getDayTitle(date),
-        dateStr: this.formatDate(date),
-        timeSlots: this.generateDayTimeSlots(date, timeTemplate, bookedCourses)
-      }));
-      
-      this.setData({
-        calendarData
-      });
-      
-    } catch (error) {
-      console.error('加载教练日历数据失败:', error);
-      this.setData({
-        calendarData: []
-      });
-    }
-  },
+     /**
+    * 加载教练视角的日历数据
+    */
+   async loadCoachCalendarData(dates, bookedCourses) {
+     try {
+       console.log('开始加载教练日历数据, 课程数据:', bookedCourses);
+       
+       // 获取时间模板
+       const templateResult = await api.timeTemplate.getList();
+       const timeTemplate = templateResult && templateResult.data ? templateResult.data : [];
+       
+       console.log('获取到时间模板:', timeTemplate);
+       
+       if (timeTemplate.length === 0) {
+         console.log('没有时间模板，显示空状态');
+         // 没有时间模板，显示空状态
+         this.setData({
+           calendarData: []
+         });
+         return;
+       }
+       
+       // 生成教练的日历数据（显示所有时间段）
+       const calendarData = dates.map(date => ({
+         date: this.formatDateKey(date),
+         dayTitle: this.getDayTitle(date),
+         dateStr: this.formatDate(date),
+         timeSlots: this.generateDayTimeSlots(date, timeTemplate, bookedCourses)
+       }));
+       
+       console.log('生成的日历数据:', calendarData);
+       
+       this.setData({
+         calendarData
+       });
+       
+     } catch (error) {
+       console.error('加载教练日历数据失败:', error);
+       this.setData({
+         calendarData: []
+       });
+     }
+   },
 
   /**
    * 生成学员的日历数据（只显示已预约课程）
@@ -269,23 +276,28 @@ Page({
       // 过滤出该日期的预约课程
       const dayBookings = courses
         .filter(course => {
-          const courseDate = course.start_time ? course.start_time.split(' ')[0] : '';
-          return courseDate === dateKey;
+          const parsedStart = this.safeParseDateTime(course.start_time);
+          return parsedStart.date === dateKey;
         })
-        .map(course => ({
-          id: course.id,
-          startTime: course.start_time ? course.start_time.split(' ')[1].substring(0, 5) : '',
-          endTime: course.end_time ? course.end_time.split(' ')[1].substring(0, 5) : '',
-          isBooked: true,
-          coachName: course.coach ? course.coach.nickname : '未知教练',
-          coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
-          location: course.notes || '未指定地点',
-          remark: course.notes || '',
-          status: this.getStatusFromApi(course.booking_status),
-          statusText: this.getStatusText(this.getStatusFromApi(course.booking_status)),
-          statusClass: this.getStatusFromApi(course.booking_status),
-          courseId: course.id
-        }))
+        .map(course => {
+          const parsedStart = this.safeParseDateTime(course.start_time);
+          const parsedEnd = this.safeParseDateTime(course.end_time);
+          
+          return {
+            id: course.id,
+            startTime: parsedStart.time,
+            endTime: parsedEnd.time,
+            isBooked: true,
+            coachName: course.coach ? course.coach.nickname : '未知教练',
+            coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            location: course.notes || '未指定地点',
+            remark: course.notes || '',
+            status: this.getStatusFromApi(course.booking_status),
+            statusText: this.getStatusText(this.getStatusFromApi(course.booking_status)),
+            statusClass: this.getStatusFromApi(course.booking_status),
+            courseId: course.id
+          };
+        })
         .sort((a, b) => a.startTime.localeCompare(b.startTime)); // 按时间排序
       
       return {
@@ -317,24 +329,33 @@ Page({
   generateDayTimeSlots(date, timeTemplate, courses) {
     const dateKey = this.formatDateKey(date);
     
+    console.log('生成时间段数据:', {
+      dateKey,
+      timeTemplate,
+      courses: courses.slice(0, 2) // 只打印前两个课程，避免日志过长
+    });
+    
     return timeTemplate.map(slot => {
       // 查找该时间段是否有预约
       const booking = courses.find(course => {
-        const courseDate = course.start_time ? course.start_time.split(' ')[0] : '';
-        const courseStartTime = course.start_time ? course.start_time.split(' ')[1].substring(0, 5) : '';
-        const courseEndTime = course.end_time ? course.end_time.split(' ')[1].substring(0, 5) : '';
+        const parsedStart = this.safeParseDateTime(course.start_time);
+        const parsedEnd = this.safeParseDateTime(course.end_time);
         
-        return courseDate === dateKey && 
-               courseStartTime === slot.start_time && 
-               courseEndTime === slot.end_time;
+        // 获取slot的时间，兼容不同的属性名
+        const slotStartTime = slot.start_time || slot.startTime || '';
+        const slotEndTime = slot.end_time || slot.endTime || '';
+        
+        return parsedStart.date === dateKey && 
+               parsedStart.time === slotStartTime && 
+               parsedEnd.time === slotEndTime;
       });
       
       if (booking) {
         // 有预约，返回预约信息
         return {
           id: slot.id,
-          startTime: slot.start_time,
-          endTime: slot.end_time,
+          startTime: slot.start_time || slot.startTime || '',
+          endTime: slot.end_time || slot.endTime || '',
           isBooked: true,
           studentName: booking.student ? booking.student.nickname : '未知学员',
           studentAvatar: booking.student ? (booking.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
@@ -349,12 +370,32 @@ Page({
         // 无预约，返回空闲时间段
         return {
           id: slot.id,
-          startTime: slot.start_time,
-          endTime: slot.end_time,
+          startTime: slot.start_time || slot.startTime || '',
+          endTime: slot.end_time || slot.endTime || '',
           isBooked: false
         };
       }
     });
+  },
+
+  /**
+   * 安全解析时间字符串
+   */
+  safeParseDateTime(dateTimeStr) {
+    try {
+      if (!dateTimeStr) {
+        return { date: '', time: '' };
+      }
+      
+      const parts = dateTimeStr.split(' ');
+      return {
+        date: parts[0] || '',
+        time: parts.length > 1 ? parts[1].substring(0, 5) : ''
+      };
+    } catch (error) {
+      console.error('解析时间字符串失败:', error, dateTimeStr);
+      return { date: '', time: '' };
+    }
   },
 
   /**
