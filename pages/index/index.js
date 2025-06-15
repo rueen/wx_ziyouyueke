@@ -122,6 +122,9 @@ Page({
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
       
+      console.log('加载用户角色:', userRole);
+      console.log('加载用户信息:', userInfo);
+      
       if (userRole && userInfo) {
         this.setData({
           userRole: userRole
@@ -171,8 +174,15 @@ Page({
         throw new Error('用户信息未找到');
       }
 
+      console.log('=== 首页加载课程数据开始 ===');
+      console.log('用户角色:', userRole);
+      console.log('用户信息:', userInfo);
+
       const today = new Date();
       const startDate = this.formatDateTime(today);
+      
+      console.log('当前时间:', today);
+      console.log('查询开始时间:', startDate);
       
       // 构建请求参数
       const baseParams = {
@@ -182,43 +192,74 @@ Page({
         [userRole === 'coach' ? 'coach_id' : 'student_id']: userInfo.id
       };
       
+      const pendingParams = { ...baseParams, status: 1 };
+      const confirmedParams = { ...baseParams, status: 2 };
+      
+      console.log('待确认课程请求参数:', pendingParams);
+      console.log('已确认课程请求参数:', confirmedParams);
+      
       // 分别获取待确认和已确认的课程
       const [pendingResult, confirmedResult] = await Promise.all([
         // 获取待确认课程 (status = 1)
-        api.course.getList({ ...baseParams, status: 1 }),
+        api.course.getList(pendingParams),
         // 获取已确认课程 (status = 2)
-        api.course.getList({ ...baseParams, status: 2 })
+        api.course.getList(confirmedParams)
       ]);
       
       wx.hideLoading();
       
+      console.log('待确认课程API响应:', pendingResult);
+      console.log('已确认课程API响应:', confirmedResult);
+      
       // 合并所有课程数据
       const allCourses = [];
       if (pendingResult && pendingResult.data && pendingResult.data.list) {
+        console.log('待确认课程数据:', pendingResult.data.list);
         allCourses.push(...pendingResult.data.list);
+      } else {
+        console.log('待确认课程无数据');
       }
+      
       if (confirmedResult && confirmedResult.data && confirmedResult.data.list) {
+        console.log('已确认课程数据:', confirmedResult.data.list);
         allCourses.push(...confirmedResult.data.list);
+      } else {
+        console.log('已确认课程无数据');
       }
+      
+      console.log('合并后的所有课程数据:', allCourses);
+      console.log('课程总数:', allCourses.length);
       
       if (allCourses.length > 0) {
         // 查找最近的一次课程
         const nextCourse = this.findNextCourse(allCourses);
-        this.setData({ 
+        console.log('找到的最近课程:', nextCourse);
+        
+        const finalData = {
           calendarData: nextCourse ? [nextCourse] : [],
           hasNextCourse: !!nextCourse
-        });
+        };
+        
+        console.log('准备设置的页面数据:', finalData);
+        
+        this.setData(finalData);
+        
+        console.log('页面数据设置完成，当前calendarData:', this.data.calendarData);
       } else {
         // 没有数据时显示空状态
+        console.log('没有课程数据，设置空状态');
         this.setData({
           calendarData: [],
           hasNextCourse: false
         });
       }
       
+      console.log('=== 首页加载课程数据结束 ===');
+      
     } catch (error) {
       wx.hideLoading();
-      console.error('加载课程数据失败:', error);
+      console.error('=== 加载课程数据失败 ===');
+      console.error('错误详情:', error);
       
       // 显示空状态
       this.setData({
@@ -376,30 +417,69 @@ Page({
    * 查找最近的一次课程
    */
   findNextCourse(courses) {
-    if (!courses || courses.length === 0) return null;
+    console.log('=== findNextCourse 开始 ===');
+    console.log('输入课程数组:', courses);
+    console.log('课程数量:', courses ? courses.length : 0);
+    
+    if (!courses || courses.length === 0) {
+      console.log('课程数组为空，返回null');
+      return null;
+    }
     
     const now = new Date();
     const { userRole } = this.data;
     
+    console.log('当前时间:', now);
+    console.log('用户角色:', userRole);
+    
     // 过滤出未来的课程，并按时间排序
     const futureCourses = courses
       .filter(course => {
+        console.log(`\n--- 处理课程 ${course.id} ---`);
+        console.log('课程详情:', course);
+        console.log('课程日期:', course.course_date);
+        console.log('课程开始时间:', course.start_time);
+        
         // 构建课程日期时间
         const courseDateTime = new Date(`${course.course_date} ${course.start_time}`);
-        return courseDateTime > now;
+        console.log('构建的课程时间对象:', courseDateTime);
+        console.log('课程时间是否有效:', !isNaN(courseDateTime.getTime()));
+        
+        const isFuture = courseDateTime > now;
+        const timeDiff = courseDateTime.getTime() - now.getTime();
+        
+        console.log(`课程时间: ${courseDateTime}`);
+        console.log(`当前时间: ${now}`);
+        console.log(`时间差: ${timeDiff}ms (${Math.round(timeDiff / 1000 / 60)}分钟)`);
+        console.log(`是否未来时间: ${isFuture}`);
+        
+        return isFuture;
       })
       .sort((a, b) => {
         const aDateTime = new Date(`${a.course_date} ${a.start_time}`);
         const bDateTime = new Date(`${b.course_date} ${b.start_time}`);
-        return aDateTime - bDateTime;
+        const diff = aDateTime - bDateTime;
+        console.log(`排序比较: ${aDateTime} vs ${bDateTime}, 差值: ${diff}`);
+        return diff;
       });
     
-    if (futureCourses.length === 0) return null;
+    console.log('\n--- 筛选结果 ---');
+    console.log('未来课程数量:', futureCourses.length);
+    console.log('未来课程列表:', futureCourses);
+    
+    if (futureCourses.length === 0) {
+      console.log('没有找到未来的课程，返回null');
+      return null;
+    }
     
     const nextCourse = futureCourses[0];
-    const courseDate = new Date(`${nextCourse.course_date} 00:00:00`);
+    console.log('\n--- 最近课程 ---');
+    console.log('选中的最近课程:', nextCourse);
     
-    return {
+    const courseDate = new Date(`${nextCourse.course_date} 00:00:00`);
+    console.log('课程日期对象:', courseDate);
+    
+    const result = {
       date: nextCourse.course_date,
       dayTitle: this.formatDate(courseDate),
       timeSlots: [{
@@ -421,6 +501,12 @@ Page({
         courseId: nextCourse.id
       }]
     };
+    
+    console.log('\n--- 构建的返回数据 ---');
+    console.log('返回结果:', result);
+    console.log('=== findNextCourse 结束 ===\n');
+    
+    return result;
   },
 
   /**

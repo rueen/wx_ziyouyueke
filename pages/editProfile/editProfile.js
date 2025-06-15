@@ -119,10 +119,12 @@ Page({
         
         if (isLocalFile) {
           try {
+            console.log('检测到本地头像文件，开始上传:', userInfo.avatarUrl);
             // 上传头像文件
             const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
             if (uploadResult && uploadResult.url) {
               updateData.avatar_url = uploadResult.url;
+              console.log('头像上传成功:', uploadResult.url);
             }
           } catch (uploadError) {
             console.error('头像上传失败:', uploadError);
@@ -136,8 +138,10 @@ Page({
         } else {
           // 如果是网络URL（现有头像），直接传递
           updateData.avatar_url = userInfo.avatarUrl;
+          console.log('使用现有头像URL:', userInfo.avatarUrl);
         }
       }
+      console.log('updateData------', updateData);
       // 调用API更新用户信息
       const result = await api.user.updateProfile(updateData);
       
@@ -187,9 +191,11 @@ Page({
         filePath: filePath,
         success: (fileInfo) => {
           const fileSizeKB = Math.round(fileInfo.size / 1024);
+          console.log(`原图大小: ${fileSizeKB}KB`);
           
           // 如果文件小于200KB，不进行压缩
           if (fileInfo.size < 200 * 1024) {
+            console.log('文件较小，无需压缩');
             resolve({ tempFilePath: filePath });
             return;
           }
@@ -202,6 +208,8 @@ Page({
             quality = 60;
           }
           
+          console.log(`开始压缩，质量设置为: ${quality}`);
+          
           wx.compressImage({
             src: filePath,
             quality: quality,
@@ -210,10 +218,21 @@ Page({
               wx.getFileInfo({
                 filePath: res.tempFilePath,
                 success: (compressedInfo) => {
+                  const compressedSizeKB = Math.round(compressedInfo.size / 1024);
+                  const compressionRatio = ((fileInfo.size - compressedInfo.size) / fileInfo.size * 100).toFixed(1);
+                  
+                  console.log('图片压缩成功:', {
+                    原图大小: `${fileSizeKB}KB`,
+                    压缩后大小: `${compressedSizeKB}KB`,
+                    压缩率: `${compressionRatio}%`,
+                    压缩质量: quality
+                  });
+                  
                   resolve(res);
                 },
                 fail: () => {
                   // 获取压缩后文件信息失败，但压缩成功
+                  console.log('图片压缩成功（未获取到压缩后文件信息）');
                   resolve(res);
                 }
               });
@@ -250,14 +269,51 @@ Page({
   async onChooseAvatar(e) {
     const { avatarUrl } = e.detail;
     
-    if (avatarUrl) {
-      this.setData({
-        'userInfo.avatarUrl': avatarUrl
+    try {
+      // 显示处理提示
+      wx.showLoading({
+        title: '处理图片中...'
       });
-    } else {
+      
+      // 压缩图片
+      const compressedResult = await this.compressImage(avatarUrl);
+      
+      wx.hideLoading();
+      
+      const userInfo = {
+        ...this.data.userInfo,
+        avatarUrl: compressedResult.tempFilePath
+      };
+      this.setData({
+        userInfo
+      });
+      
+      // 只有真正压缩了才显示压缩成功提示
+      if (compressedResult.tempFilePath !== avatarUrl) {
+        wx.showToast({
+          title: '图片已压缩',
+          icon: 'success',
+          duration: 1000
+        });
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('图片处理失败:', error);
+      
+      // 处理失败时使用原图
+      const userInfo = {
+        ...this.data.userInfo,
+        avatarUrl: avatarUrl
+      };
+      this.setData({
+        userInfo
+      });
+      
       wx.showToast({
-        title: '选择头像失败',
-        icon: 'none'
+        title: '图片处理失败，使用原图',
+        icon: 'none',
+        duration: 2000
       });
     }
   },
@@ -307,13 +363,48 @@ Page({
   /**
    * 获取手机号
    */
-  onGetPhoneNumber(e) {
+  async onGetPhoneNumber(e) {
+    console.log('获取手机号结果：', e.detail);
     if (e.detail.code) {
-      // 用户同意授权，获取手机号
-      this.decryptPhoneNumber(e.detail.code);
+      try {
+        wx.showLoading({
+          title: '解密手机号中...'
+        });
+
+        // 调用后端API解密手机号
+        const result = await api.user.decryptPhone(e.detail.code);
+        
+        wx.hideLoading();
+
+        if (result && result.success && result.data && result.data.phone) {
+          const userInfo = {
+            ...this.data.userInfo,
+            phoneNumber: result.data.phone,
+            phoneCode: e.detail.code // 保存加密的手机号code备用
+          };
+          this.setData({
+            userInfo
+          });
+        } else {
+          throw new Error(result.message || '手机号解密失败');
+        }
+      } catch (error) {
+        wx.hideLoading();
+        console.error('解密手机号失败:', error);
+        
+        let errorMessage = '获取手机号失败，请重试';
+        if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        wx.showToast({
+          title: errorMessage,
+          icon: 'none'
+        });
+      }
     } else {
       wx.showToast({
-        title: '用户取消授权',
+        title: '获取手机号失败',
         icon: 'none'
       });
     }
@@ -345,7 +436,7 @@ Page({
         });
       },
       fail: function (res) {
-        // 用户取消选择
+        console.log('用户取消选择');
       }
     });
   }

@@ -44,40 +44,75 @@ Page({
         title: '加载中...'
       });
 
-      const result = await api.relation.getMyCoaches();
+      // 调用API获取我的教练列表（学员绑定的教练）
+      const result = await api.coach.getMyList({
+        page: 1,
+        limit: 20
+      });
       
       wx.hideLoading();
       
-      if (result && result.data && result.data.list) {
-        const coaches = result.data.list.map(relation => ({
-          id: relation.id,
-          coachId: relation.coach.id,
-          coachName: relation.coach.nickname || '未知教练',
-          coachAvatar: relation.coach.avatar_url || '/images/defaultAvatar.png',
-          coachPhone: relation.coach.phone || '',
-          totalSessions: relation.total_sessions || 0,
-          remainingSessions: relation.remaining_sessions || 0,
-          status: relation.status,
-          createTime: relation.created_at,
-          notes: relation.notes || ''
-        }));
+      console.log('API返回的完整数据:', result);
+      console.log('result.data:', result.data);
+      console.log('result.data.list:', result.data && result.data.list);
+
+      if (result && result.success && result.data && result.data.list && result.data.list.length > 0) {
+        // 格式化API数据 - 新接口返回的是师生关系数据，包含教练信息和课程统计
+        const coaches = result.data.list.map(relation => {
+          const coach = relation.coach || {};
+          const lessonStats = relation.lesson_stats || {};
+          return {
+            id: coach.id,
+            relationId: relation.id, // 师生关系ID
+            name: coach.nickname || '未知教练',
+            avatar: coach.avatar_url || '/images/defaultAvatar.png',
+            specialty: coach.intro || '暂无专业介绍',
+            remainingLessons: relation.remaining_lessons || 0, // 剩余课时
+            totalLessons: lessonStats.total_lessons || 0, // 总课时
+            introduction: coach.intro || '暂无介绍',
+            relationStatus: relation.relation_status || 1,
+            stats: {
+              totalCourses: lessonStats.total_lessons || 0,
+              completedCourses: lessonStats.completed_lessons || 0,
+              pendingCourses: lessonStats.upcoming_lessons || 0
+            },
+            availableTime: [
+              '详细时间请查看教练详情'
+            ]
+          };
+        });
 
         this.setData({
-          coaches: coaches,
-          isEmpty: coaches.length === 0
+          coaches
         });
+
+        console.log('API加载我的教练数据成功:', coaches);
+        
       } else {
+        // 没有教练数据
         this.setData({
-          coaches: [],
-          isEmpty: true
+          coaches: []
+        });
+        console.log('暂无绑定的教练');
+        
+        wx.showToast({
+          title: '还没有绑定教练',
+          icon: 'none'
         });
       }
     } catch (error) {
       wx.hideLoading();
       console.error('加载我的教练数据失败:', error);
+      
+      // 显示错误信息
       wx.showToast({
-        title: '加载失败',
+        title: error.message || '加载失败',
         icon: 'none'
+      });
+      
+      // 设置空数据
+      this.setData({
+        coaches: []
       });
     }
   },

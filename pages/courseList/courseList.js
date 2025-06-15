@@ -112,11 +112,18 @@ Page({
         params.student_id = currentUserId;
       }
 
+      console.log('加载课程数据，请求参数:', params);
+
       const result = await api.course.getList(params);
       
+      console.log('API返回的原始数据:', result);
+      
       if (result && result.data && result.data.list) {
+        console.log('课程原始数据:', result.data.list);
+        
         // 格式化API数据为前端需要的格式
         const newCourses = result.data.list.map((course, index) => {
+          console.log(`处理第${index + 1}条课程数据:`, course);
           
           // 根据用户角色决定显示的头像和昵称
           let displayName, displayAvatar;
@@ -149,6 +156,7 @@ Page({
             cancelReason: course.cancel_reason || ''
           };
           
+          console.log(`映射后的课程数据:`, mappedCourse);
           return mappedCourse;
         });
 
@@ -171,8 +179,19 @@ Page({
           isRefreshing: false
         });
 
+        console.log('API加载课程数据成功:', {
+          newCoursesCount: newCourses.length,
+          totalCoursesCount: courses.length,
+          hasMore,
+          currentPage: currentPage + 1,
+          finalCourses: courses
+        });
+        
+        console.log('当前页面数据状态:', this.data);
+        
       } else {
         // 没有课程数据
+        console.log('API返回了数据但没有list字段，设置空数组');
         this.setData({
           courses: isRefresh ? [] : this.data.courses,
           hasMore: false,
@@ -189,6 +208,7 @@ Page({
       });
       
       // 显示加载失败状态，不使用静态数据
+      console.log('加载课程数据失败，显示空状态');
       
       wx.showToast({
         title: '加载失败，请重试',
@@ -208,6 +228,7 @@ Page({
       4: 'cancelled'     // 已取消
     };
     const mappedStatus = statusMap[apiStatus] || 'pending';
+    console.log(`状态映射: API状态码 ${apiStatus} -> 前端状态 ${mappedStatus}`);
     return mappedStatus;
   },
 
@@ -235,6 +256,7 @@ Page({
    * 下拉刷新
    */
   onPullDownRefresh() {
+    console.log('下拉刷新触发');
     this.loadCourses(true).finally(() => {
       wx.stopPullDownRefresh();
     });
@@ -244,6 +266,7 @@ Page({
    * 上拉加载更多
    */
   onReachBottom() {
+    console.log('上拉加载更多触发');
     if (!this.data.isLoading && this.data.hasMore) {
       this.loadCourses(false);
     }
@@ -254,6 +277,7 @@ Page({
    */
   onCourseItemTap(e) {
     const courseId = e.currentTarget.dataset.id;
+    console.log('点击课程项，ID：', courseId);
     
     if (courseId) {
       wx.navigateTo({
@@ -270,7 +294,8 @@ Page({
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
       
-
+      console.log('加载用户角色:', userRole);
+      console.log('加载用户信息:', userInfo);
       
       if (userRole && userInfo) {
         this.setData({

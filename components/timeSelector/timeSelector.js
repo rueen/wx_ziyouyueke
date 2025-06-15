@@ -50,11 +50,11 @@ Component({
    */
   lifetimes: {
     attached() {
-      // 组件实例被放入页面节点树后执行
-      this.initializeComponent();
+      console.log('timeSelector组件已附加到页面');
     },
     ready() {
-      // 组件在视图层布局完成后执行
+      console.log('timeSelector组件已准备就绪，开始初始化');
+      // 在ready阶段初始化，确保组件完全准备好
       this.initializeComponent();
     }
   },
@@ -77,17 +77,36 @@ Component({
     /**
      * 初始化组件
      */
-    initializeComponent() {
-      const today = new Date();
-      const currentDate = this.formatDate(today);
-      
-      this.setData({
-        currentDate: currentDate,
-        selectedDate: currentDate
-      });
-      
-      // 初始化日期列表
-      this.generateDateList();
+    async initializeComponent() {
+      try {
+        console.log('开始初始化时间选择器组件');
+        
+        // 先生成基本的日期列表
+        this.generateBasicDateList();
+        
+        // 设置默认选中今天
+        const today = this.formatDate(new Date());
+        this.setData({
+          currentDate: today
+        });
+        
+        console.log('时间选择器组件基础初始化完成，当前日期:', today);
+        
+        // 异步加载时间模板和时间段数据
+        this.loadTimeTemplate().then(() => {
+          this.generateDateList(); // 重新生成日期列表
+          this.loadTimeSlots(today); // 加载时间段
+        }).catch(error => {
+          console.error('加载时间模板失败:', error);
+          // 即使失败也显示基本的日期选择器
+        });
+        
+      } catch (error) {
+        console.error('初始化时间选择器失败:', error);
+        this.triggerEvent('error', {
+          message: '加载失败，请重试'
+        });
+      }
     },
 
     /**

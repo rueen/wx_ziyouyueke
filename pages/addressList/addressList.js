@@ -54,40 +54,49 @@ Page({
    * 加载地址列表
    */
   async loadAddresses() {
+    if (this.data.isLoading) return;
+
     try {
-      wx.showLoading({
-        title: '加载中...'
+      this.setData({
+        isLoading: true
       });
 
-      const result = await api.address.getList();
-      
-      wx.hideLoading();
-      
-      if (result && result.data && result.data.list) {
-        const addresses = result.data.list.map(addr => ({
-          id: addr.id,
-          name: addr.name,
-          address: addr.address,
-          latitude: addr.latitude,
-          longitude: addr.longitude,
-          isDefault: addr.is_default || false
-        }));
+      // 调用API获取地址列表
+      const result = await api.address.getList({
+        page: this.data.page,
+        limit: this.data.limit
+      });
 
-        this.setData({
-          addresses: addresses,
-          isEmpty: addresses.length === 0
-        });
-      } else {
-        this.setData({
-          addresses: [],
-          isEmpty: true
-        });
-      }
+      // 处理API返回的数据格式
+      const addresses = result.data.list.map(item => ({
+        id: item.id,
+        name: item.name,
+        address: item.address,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        isDefault: item.is_default,
+        createTime: item.created_at
+      }));
+
+      this.setData({
+        addresses: this.data.page === 1 ? addresses : [...this.data.addresses, ...addresses],
+        isLoading: false,
+        hasMore: result.data.pagination.current_page < result.data.pagination.total_pages
+      });
+
+      console.log('加载地址列表成功:', addresses);
+
     } catch (error) {
-      wx.hideLoading();
       console.error('加载地址列表失败:', error);
+      
+      this.setData({
+        isLoading: false
+      });
+
+      // 显示具体的错误信息
+      const errorMsg = error.message || '加载失败，请重试';
       wx.showToast({
-        title: '加载失败',
+        title: errorMsg,
         icon: 'none'
       });
     }
@@ -171,11 +180,14 @@ Page({
         type: 'wgs84',
         success: (locationRes) => {
           wx.hideLoading();
-                  // 使用用户当前位置调用选择位置API
-        wx.chooseLocation({
-          latitude: locationRes.latitude,
-          longitude: locationRes.longitude,
-          success: (result) => {
+          console.log('获取当前位置成功:', locationRes);
+          
+          // 使用用户当前位置调用选择位置API
+          wx.chooseLocation({
+            latitude: locationRes.latitude,
+            longitude: locationRes.longitude,
+            success: (result) => {
+              console.log('选择的地点:', result);
 
               // 跳转到地址编辑页面，传递选择的地点信息
               const locationData = {
@@ -218,6 +230,8 @@ Page({
             latitude: 30.2741,
             longitude: 120.1551,
             success: (result) => {
+              console.log('选择的地点:', result);
+
               const locationData = {
                 name: result.name || '',
                 address: result.address || '',
@@ -252,50 +266,5 @@ Page({
         icon: 'none'
       });
     }
-  },
-
-  onChooseLocation() {
-    wx.chooseLocation({
-      success: (locationRes) => {
-        // 跳转到地址编辑页面，传递位置信息
-        wx.navigateTo({
-          url: `/pages/addressEdit/addressEdit?latitude=${locationRes.latitude}&longitude=${locationRes.longitude}&name=${encodeURIComponent(locationRes.name)}&address=${encodeURIComponent(locationRes.address)}`
-        });
-      },
-      fail: (error) => {
-        if (error.errMsg.includes('cancel')) {
-          return; // 用户取消选择
-        }
-        
-        wx.showToast({
-          title: '获取位置失败',
-          icon: 'none'
-        });
-      }
-    });
-  },
-
-  /**
-   * 选择地图位置
-   */
-  onMapLocation() {
-    wx.chooseLocation({
-      success: (result) => {
-        // 跳转到地址编辑页面
-        wx.navigateTo({
-          url: `/pages/addressEdit/addressEdit?latitude=${result.latitude}&longitude=${result.longitude}&name=${encodeURIComponent(result.name || '')}&address=${encodeURIComponent(result.address || '')}`
-        });
-      },
-      fail: (error) => {
-        if (error.errMsg.includes('cancel')) {
-          return;
-        }
-        
-        wx.showToast({
-          title: '选择位置失败',
-          icon: 'none'
-        });
-      }
-    });
   }
 }); 

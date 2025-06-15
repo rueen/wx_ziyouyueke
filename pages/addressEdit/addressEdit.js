@@ -19,41 +19,73 @@ Page({
       longitude: null,
       is_default: false
     },
-    isSubmitting: false, // 是否正在提交
-    addressId: null, // 地址ID
-    formData: {
-      latitude: null,
-      longitude: null,
-      name: '',
-      address: '',
-      is_default: false
-    }
+    isSubmitting: false // 是否正在提交
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 获取页面参数
-    const { id, latitude, longitude, name, address } = options;
-    
-    if (id) {
-      // 编辑模式
-      this.setData({
-        isEdit: true,
-        addressId: parseInt(id)
-      });
-      this.loadAddressDetail();
-    } else if (latitude && longitude) {
-      // 新增模式，从地图选择位置
-      this.setData({
-        formData: {
-          ...this.data.formData,
-          latitude: parseFloat(latitude),
-          longitude: parseFloat(longitude),
-          name: decodeURIComponent(name || ''),
-          address: decodeURIComponent(address || '')
-        }
+    console.log('页面参数:', options);
+
+    // 检查是否为编辑模式
+    if (options.addressData) {
+      try {
+        const addressData = JSON.parse(decodeURIComponent(options.addressData));
+        this.setData({
+          isEdit: true,
+          addressData: {
+            id: addressData.id,
+            name: addressData.name,
+            address: addressData.address,
+            latitude: addressData.latitude,
+            longitude: addressData.longitude,
+            is_default: addressData.isDefault
+          }
+        });
+        
+        // 设置导航栏标题
+        wx.setNavigationBarTitle({
+          title: '编辑地址'
+        });
+      } catch (error) {
+        console.error('解析地址数据失败:', error);
+        wx.showToast({
+          title: '数据解析失败',
+          icon: 'none'
+        });
+      }
+    } else if (options.locationData) {
+      // 新增模式，从位置选择器传来的数据
+      try {
+        const locationData = JSON.parse(decodeURIComponent(options.locationData));
+        this.setData({
+          isEdit: false,
+          addressData: {
+            id: null,
+            name: locationData.name,
+            address: locationData.address,
+            latitude: locationData.latitude,
+            longitude: locationData.longitude,
+            is_default: false
+          }
+        });
+        
+        // 设置导航栏标题
+        wx.setNavigationBarTitle({
+          title: '新增地址'
+        });
+      } catch (error) {
+        console.error('解析位置数据失败:', error);
+        wx.showToast({
+          title: '数据解析失败',
+          icon: 'none'
+        });
+      }
+    } else {
+      // 新增模式，无预设数据
+      wx.setNavigationBarTitle({
+        title: '新增地址'
       });
     }
   },
@@ -88,53 +120,91 @@ Page({
   /**
    * 重新选择位置
    */
-  onChooseLocation() {
-    wx.chooseLocation({
-      success: (locationRes) => {
-        this.setData({
-          'formData.latitude': locationRes.latitude,
-          'formData.longitude': locationRes.longitude,
-          'formData.name': locationRes.name,
-          'formData.address': locationRes.address
-        });
-      },
-      fail: (error) => {
-        if (error.errMsg.includes('cancel')) {
-          return; // 用户取消选择
-        }
-        
-        wx.showToast({
-          title: '获取位置失败',
-          icon: 'none'
-        });
-      }
-    });
-  },
+  async onChooseLocation() {
+    try {
+      // 显示加载提示
+      wx.showLoading({
+        title: '获取位置中...'
+      });
 
-  /**
-   * 选择地图位置
-   */
-  onMapLocation() {
-    wx.chooseLocation({
-      success: (result) => {
-        this.setData({
-          'formData.latitude': result.latitude,
-          'formData.longitude': result.longitude,
-          'formData.name': result.name || '',
-          'formData.address': result.address || ''
-        });
-      },
-      fail: (error) => {
-        if (error.errMsg.includes('cancel')) {
-          return;
+      // 获取用户当前位置作为默认位置
+      wx.getLocation({
+        type: 'wgs84',
+        success: (locationRes) => {
+          wx.hideLoading();
+          console.log('获取当前位置成功:', locationRes);
+          
+          // 使用用户当前位置调用选择位置API
+          wx.chooseLocation({
+            latitude: locationRes.latitude,
+            longitude: locationRes.longitude,
+            success: (result) => {
+              console.log('选择的地点:', result);
+
+              // 更新地址信息
+              this.setData({
+                'addressData.name': result.name || this.data.addressData.name,
+                'addressData.address': result.address,
+                'addressData.latitude': result.latitude,
+                'addressData.longitude': result.longitude
+              });
+            },
+            fail: (error) => {
+              console.error('选择地点失败:', error);
+              
+              if (error.errMsg && error.errMsg.includes('cancel')) {
+                return;
+              }
+              
+              wx.showToast({
+                title: '选择位置失败',
+                icon: 'none'
+              });
+            }
+          });
+        },
+        fail: (locationError) => {
+          wx.hideLoading();
+          console.error('获取当前位置失败:', locationError);
+          
+          // 如果获取当前位置失败，使用杭州市作为默认位置
+          wx.chooseLocation({
+            latitude: 30.2741,
+            longitude: 120.1551,
+            success: (result) => {
+              console.log('选择的地点:', result);
+
+              this.setData({
+                'addressData.name': result.name || this.data.addressData.name,
+                'addressData.address': result.address,
+                'addressData.latitude': result.latitude,
+                'addressData.longitude': result.longitude
+              });
+            },
+            fail: (error) => {
+              console.error('选择地点失败:', error);
+              
+              if (error.errMsg && error.errMsg.includes('cancel')) {
+                return;
+              }
+              
+              wx.showToast({
+                title: '选择位置失败',
+                icon: 'none'
+              });
+            }
+          });
         }
-        
-        wx.showToast({
-          title: '选择位置失败',
-          icon: 'none'
-        });
-      }
-    });
+      });
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('选择位置失败:', error);
+      wx.showToast({
+        title: '操作失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**
@@ -290,9 +360,5 @@ Page({
         }
       }
     });
-  },
-
-  loadAddressDetail() {
-    // Implementation of loadAddressDetail method
   }
 }); 

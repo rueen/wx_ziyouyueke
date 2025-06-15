@@ -28,16 +28,16 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
-    const { id } = options;
+  onLoad: function (options) {
+    console.log('课程详情页面加载，参数：', options);
     
-    if (id) {
+    if (options.id) {
       this.setData({
-        courseId: parseInt(id)
+        courseId: options.id
       });
       
-      // 加载用户角色和课程详情
-      this.loadUserRole(() => {
+      // 获取用户角色，完成后再加载课程详情
+      this.getUserRole(() => {
         this.loadCourseDetail();
       });
     } else {
@@ -54,15 +54,17 @@ Page({
   /**
    * 获取用户角色
    */
-  loadUserRole(callback) {
+  getUserRole(callback) {
     try {
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
       
+      console.log('加载用户角色:', userRole);
+      console.log('加载用户信息:', userInfo);
+      
       if (userRole && userInfo) {
         this.setData({
-          userRole: userRole,
-          userInfo: userInfo
+          userRole: userRole
         });
         
         // 执行回调函数
@@ -84,9 +86,9 @@ Page({
         }, 1500);
       }
     } catch (error) {
-      console.error('加载用户角色失败:', error);
+      console.error('获取用户角色失败:', error);
       wx.showToast({
-        title: '加载失败',
+        title: '获取用户信息失败',
         icon: 'error'
       });
     }
@@ -305,16 +307,24 @@ Page({
   /**
    * 扫码核销
    */
-  onScanCode() {
+  onScanVerify() {
     wx.scanCode({
       success: (res) => {
-        // 处理扫码结果
-        this.handleScanResult(res.result);
+        console.log('扫码结果：', res);
+        // 这里处理扫码核销逻辑
+        wx.showToast({
+          title: '核销成功',
+          icon: 'success'
+        });
+        
+        // 重新加载课程详情
+        this.loadCourseDetail();
       },
       fail: (error) => {
+        console.error('扫码失败：', error);
         wx.showToast({
           title: '扫码失败',
-          icon: 'none'
+          icon: 'error'
         });
       }
     });

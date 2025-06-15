@@ -94,34 +94,38 @@ Page({
     // 获取微信登录凭证
     wx.login({
       success: (res) => {
-        if (res.code) {
-          // 获取用户信息
-          wx.getUserProfile({
-            desc: '用于完善用户资料',
-            success: (userRes) => {
-              // 调用后端登录接口
-              this.performLogin(res.code, userRes.userInfo);
-            },
-            fail: () => {
-              wx.hideLoading();
-              wx.showToast({
-                title: '获取用户信息失败',
-                icon: 'none'
-              });
-            }
-          });
-        } else {
-          wx.hideLoading();
-          wx.showToast({
-            title: '微信登录失败',
-            icon: 'none'
-          });
-        }
+        console.log('微信登录成功，code:', res.code);
+        
+        // 获取用户信息
+        wx.getUserProfile({
+          desc: '用于完善会员资料',
+          success: (userRes) => {
+            console.log('获取用户信息成功:', userRes);
+            
+            // 调用后端API进行登录验证
+            this.performLogin(res.code, {
+              nickname: userRes.userInfo.nickName,
+              avatarUrl: userRes.userInfo.avatarUrl,
+              gender: userRes.userInfo.gender
+            });
+          },
+          fail: (err) => {
+            console.error('获取用户信息失败:', err);
+            
+            // 用户拒绝授权，使用默认信息登录
+            this.performLogin(res.code, {
+              nickname: '微信用户',
+              avatarUrl: '/images/defaultAvatar.png',
+              gender: 0
+            });
+          }
+        });
       },
-      fail: () => {
+      fail: (err) => {
+        console.error('微信登录失败:', err);
         wx.hideLoading();
         wx.showToast({
-          title: '微信登录失败',
+          title: '登录失败，请重试',
           icon: 'none'
         });
       }
@@ -153,56 +157,67 @@ Page({
    */
   async performLogin(code, userInfo) {
     try {
+      // 构建登录参数
       const loginParams = {
-        code: code,
-        nickname: userInfo.nickName,
-        avatar_url: userInfo.avatarUrl
+        code,
+        userInfo
       };
-
+      
+      // 如果有邀请的教练ID，加入参数
+      if (this.data.isInvited && this.data.coachId) {
+        loginParams.coach_id = parseInt(this.data.coachId);
+      }
+      
+      console.log('开始登录，参数:', loginParams);
+      
+      // 调用登录API
       const result = await api.auth.login(loginParams);
       
-      if (result && result.data) {
-        // 保存用户信息和Token
-        const { token, user, isNewUser, autoBindCoach } = result.data;
-        
-        wx.setStorageSync('token', token);
-        wx.setStorageSync('userInfo', user);
-        wx.setStorageSync('isLoggedIn', true);
-        wx.setStorageSync('loginType', 'wechat');
-        wx.setStorageSync('userRole', this.data.selectedRole);
-        
-        // 显示登录成功提示
-        let successMessage = '登录成功';
-        
-        if (isNewUser) {
-          successMessage = '注册并登录成功';
-        }
-        
-        if (autoBindCoach) {
-          successMessage += '，已自动绑定教练';
-        }
-        
-        wx.showToast({
-          title: successMessage,
-          icon: 'success',
-          duration: 2000
-        });
-        
-        // 延迟跳转
-        setTimeout(() => {
-          if (this.data.fromBindCoach && this.data.coachId) {
-            // 从绑定教练页面来的，返回绑定教练页面
-            wx.redirectTo({
-              url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
-            });
-          } else {
-            // 正常登录，跳转到首页
-            wx.switchTab({
-              url: '/pages/index/index'
-            });
-          }
-        }, 2000);
+      wx.hideLoading();
+      
+      console.log('登录成功:', result);
+      
+      // 保存用户信息和Token
+      const { token, user, isNewUser, autoBindCoach } = result.data;
+      
+      wx.setStorageSync('token', token);
+      wx.setStorageSync('userInfo', user);
+      wx.setStorageSync('isLoggedIn', true);
+      wx.setStorageSync('loginType', 'wechat');
+      wx.setStorageSync('userRole', this.data.selectedRole);
+      
+      // 显示登录成功提示
+      let successMessage = '登录成功';
+      
+      if (isNewUser) {
+        successMessage = '注册并登录成功';
       }
+      
+      if (autoBindCoach) {
+        successMessage += '，已自动绑定教练';
+      }
+      
+      wx.showToast({
+        title: successMessage,
+        icon: 'success',
+        duration: 2000
+      });
+      
+      // 延迟跳转
+      setTimeout(() => {
+        if (this.data.fromBindCoach && this.data.coachId) {
+          // 从绑定教练页面来的，返回绑定教练页面
+          wx.redirectTo({
+            url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
+          });
+        } else {
+          // 正常登录，跳转到首页
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
+      }, 2000);
+      
     } catch (error) {
       wx.hideLoading();
       console.error('登录失败:', error);

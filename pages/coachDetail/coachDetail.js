@@ -65,6 +65,8 @@ Page({
         this.setData({
           coachData
         });
+
+        console.log('加载教练详情成功:', coachData);
       }
     } catch (error) {
       wx.hideLoading();
@@ -99,41 +101,5 @@ Page({
     wx.navigateTo({
       url: `/pages/bookCourse/bookCourse?type=student-book-coach&from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
     });
-  },
-
-  async loadCoachData() {
-    try {
-      wx.showLoading({
-        title: '加载中...'
-      });
-
-      const result = await api.coach.getDetail(this.data.coachId);
-      
-      wx.hideLoading();
-      
-      if (result && result.data) {
-        const coachData = result.data;
-        
-        this.setData({
-          coachInfo: {
-            id: coachData.id,
-            nickname: coachData.nickname || '未知教练',
-            avatar_url: coachData.avatar_url || '/images/defaultAvatar.png',
-            phone: coachData.phone || '',
-            description: coachData.description || '暂无介绍',
-            specialty: coachData.specialty || '',
-            experience: coachData.experience || '',
-            rating: coachData.rating || 0
-          }
-        });
-      }
-    } catch (error) {
-      wx.hideLoading();
-      console.error('加载教练详情失败:', error);
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      });
-    }
   }
 }) 

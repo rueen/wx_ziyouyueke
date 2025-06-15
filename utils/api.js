@@ -35,6 +35,8 @@ function request(options) {
       ? options.url 
       : `${API_CONFIG.baseUrl}${options.url}`;
     
+    console.log(`[API] ${options.method || 'GET'} ${url}`, options.data);
+    
     wx.request({
       url,
       method: options.method || 'GET',
@@ -42,6 +44,7 @@ function request(options) {
       header,
       timeout: options.timeout || API_CONFIG.timeout,
       success(res) {
+        console.log(`[API Response] ${url}`, res.data);
         
         // 检查HTTP状态码
         if (res.statusCode !== 200) {
@@ -85,6 +88,7 @@ function request(options) {
         resolve(res.data);
       },
       fail(err) {
+        console.error(`[API Error] ${url}`, err);
         reject({
           code: -1,
           message: '网络请求失败',
@@ -108,7 +112,7 @@ function handleTokenExpired() {
   }
   isHandlingTokenExpired = true;
   
-
+  console.log('[API] Token已过期，正在处理...');
   
   // 清除本地存储
   wx.removeStorageSync('token');
@@ -126,9 +130,11 @@ function handleTokenExpired() {
         wx.reLaunch({
           url: '/pages/login/login',
           success() {
+            console.log('[API] 已跳转到登录页');
             isHandlingTokenExpired = false;
           },
           fail() {
+            console.error('[API] 跳转登录页失败');
             isHandlingTokenExpired = false;
           }
         });
@@ -563,7 +569,7 @@ function uploadImage(filePath, directory = 'images') {
         'Authorization': `Bearer ${token}`
       },
       success: (res) => {
-  ;
+        console.log(`[API Upload] /api/upload/image (directory: ${directory})`, res.data);
         
         try {
           const data = JSON.parse(res.data);
@@ -595,6 +601,8 @@ function uploadImage(filePath, directory = 'images') {
     });
   });
 }
+
+
 
 // ========== 健康检查 ==========
 
