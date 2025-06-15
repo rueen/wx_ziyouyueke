@@ -13,8 +13,8 @@
   </view>
 
   <!-- 课程列表 -->
-  <view class="course-list" wx:if="{{filteredCourses.length > 0}}">
-    <view class="course-item" wx:for="{{filteredCourses}}" wx:key="id">
+  <view class="course-list" wx:if="{{courses.length > 0}}">
+    <view class="course-item" wx:for="{{courses}}" wx:key="id">
       <!-- 课程信息 -->
       <view class="course-content">
         <!-- 教练信息 -->
@@ -80,6 +80,16 @@
                     bindtap="onScanVerify">核销</button>
           </view>
         </view>
+      </view>
+    </view>
+    
+    <!-- 加载更多提示 -->
+    <view class="load-more-container">
+      <view wx:if="{{isLoading && !isRefreshing}}" class="load-more-loading">
+        <text class="loading-text">加载中...</text>
+      </view>
+      <view wx:elif="{{!hasMore}}" class="load-more-end">
+        <text class="end-text">没有更多数据了</text>
       </view>
     </view>
   </view>

@@ -3,5 +3,9 @@
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
     "emptyState": "/components/emptyState/emptyState"
-  }
+  },
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#f5f5f5",
+  "backgroundTextStyle": "dark",
+  "onReachBottomDistance": 50
 } 

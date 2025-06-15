@@ -14,18 +14,25 @@ Page({
     // tab相关
     currentTab: 0,
     tabs: [
-      { id: 0, name: '待确认', status: 'pending' },
-      { id: 1, name: '已确认', status: 'confirmed' },
-      { id: 2, name: '已完成', status: 'completed' },
-      { id: 3, name: '已取消', status: 'cancelled' }
+      { id: 0, name: '待确认', status: 'pending', apiStatus: 1 },
+      { id: 1, name: '已确认', status: 'confirmed', apiStatus: 2 },
+      { id: 2, name: '已完成', status: 'completed', apiStatus: 3 },
+      { id: 3, name: '已取消', status: 'cancelled', apiStatus: 4 }
     ],
     
     // 用户身份
     userRole: 'student', // 'student' 学员, 'coach' 教练
+    currentUserId: null, // 当前用户ID
     
     // 课程数据
     courses: [],
-    filteredCourses: [], // 当前tab显示的课程
+    
+    // 分页相关
+    currentPage: 1,
+    pageSize: 10,
+    hasMore: true,
+    isLoading: false,
+    isRefreshing: false,
     
     // 操作状态
     operatingCourseId: null,
@@ -45,8 +52,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 加载用户身份
-    this.loadUserRole();
+    // 加载用户身份和用户ID
+    this.loadUserInfo();
     
     // 从URL参数获取初始tab
     if (options.tab) {
@@ -58,7 +65,7 @@ Page({
       }
     }
     
-    this.loadCourses();
+    this.loadCourses(true);
   },
 
   /**
@@ -72,74 +79,136 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadCourses();
+    this.loadCourses(true);
   },
 
   /**
    * 加载课程数据
+   * @param {boolean} isRefresh 是否是刷新操作
    */
-  async loadCourses() {
+  async loadCourses(isRefresh = false) {
+    if (this.data.isLoading) return;
+    
     try {
-      wx.showLoading({
-        title: '加载中...'
-      });
-
-      // 根据用户角色获取课程列表
-      const userRole = wx.getStorageSync('userRole') || 'student';
-      const result = await api.course.getList({ 
-        page: 1, 
-        limit: 50,
-        role: userRole 
-      });
+      this.setData({ isLoading: true });
       
-      wx.hideLoading();
+      if (isRefresh) {
+        this.setData({ 
+          currentPage: 1,
+          hasMore: true,
+          isRefreshing: true
+        });
+      }
 
+      if (!isRefresh && !this.data.hasMore) {
+        this.setData({ isLoading: false });
+        return;
+      }
+
+      // 构建请求参数
+      const { currentTab, tabs, userRole, currentUserId, currentPage, pageSize } = this.data;
+      const currentTabData = tabs[currentTab];
+      
+      const params = {
+        page: currentPage,
+        limit: pageSize,
+        status: currentTabData.apiStatus
+      };
+
+      // 根据用户角色添加对应的用户ID
+      if (userRole === 'coach' && currentUserId) {
+        params.coach_id = currentUserId;
+      } else if (userRole === 'student' && currentUserId) {
+        params.student_id = currentUserId;
+      }
+
+      console.log('加载课程数据，请求参数:', params);
+
+      const result = await api.course.getList(params);
+      
       console.log('API返回的原始数据:', result);
       
       if (result && result.data && result.data.courses) {
         console.log('课程原始数据:', result.data.courses);
+        
         // 格式化API数据为前端需要的格式
-        const courses = result.data.courses.map(course => ({
-          id: course.id,
-          coachId: course.coach ? course.coach.id : 0,
-          coachName: course.coach ? course.coach.nickname : '未知教练',
-          coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
-          studentName: course.student ? course.student.nickname : '未知学员',
-          studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
-          time: `${course.course_date} ${course.start_time}-${course.end_time}`,
-          location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
-          remark: course.student_remark || course.coach_remark || '',
-          status: this.getStatusFromApi(course.booking_status),
-          createTime: course.created_at || '',
-          cancelReason: course.cancel_reason || ''
-        }));
-
-        this.setData({
-          courses
+        const newCourses = result.data.courses.map((course, index) => {
+          console.log(`处理第${index + 1}条课程数据:`, course);
+          
+          const mappedCourse = {
+            id: course.id,
+            coachId: course.coach ? course.coach.id : 0,
+            coachName: course.coach ? course.coach.nickname : '未知教练',
+            coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            studentName: course.student ? course.student.nickname : '未知学员',
+            studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            time: `${course.course_date} ${course.start_time}-${course.end_time}`,
+            location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
+            remark: course.student_remark || course.coach_remark || '',
+            status: this.getStatusFromApi(course.booking_status),
+            createTime: course.created_at || '',
+            cancelReason: course.cancel_reason || ''
+          };
+          
+          console.log(`映射后的课程数据:`, mappedCourse);
+          return mappedCourse;
         });
 
-        console.log('API加载课程数据成功:', courses);
+        // 处理分页数据
+        const { pagination } = result.data;
+        const hasMore = pagination ? pagination.current_page < pagination.total_pages : false;
         
-        // 过滤当前tab的课程数据
-        this.filterCourses();
+        let courses;
+        if (isRefresh || currentPage === 1) {
+          courses = newCourses;
+        } else {
+          courses = [...this.data.courses, ...newCourses];
+        }
+
+        this.setData({
+          courses,
+          currentPage: currentPage + 1,
+          hasMore,
+          isLoading: false,
+          isRefreshing: false
+        });
+
+        console.log('API加载课程数据成功:', {
+          newCoursesCount: newCourses.length,
+          totalCoursesCount: courses.length,
+          hasMore,
+          currentPage: currentPage + 1,
+          finalCourses: courses
+        });
+        
+        console.log('当前页面数据状态:', this.data);
+        
       } else {
-        // 没有课程数据时使用空数组
+        // 没有课程数据
         console.log('API返回了数据但没有courses字段，设置空数组');
         this.setData({
-          courses: []
+          courses: isRefresh ? [] : this.data.courses,
+          hasMore: false,
+          isLoading: false,
+          isRefreshing: false
         });
-        this.filterCourses();
       }
     } catch (error) {
-      wx.hideLoading();
       console.error('加载课程数据失败:', error);
       
-      // API调用失败时使用静态数据
-      console.log('使用静态数据作为后备');
-      this.loadStaticCourses();
+      this.setData({
+        isLoading: false,
+        isRefreshing: false
+      });
+      
+      // 如果是首次加载失败，使用静态数据
+      if (isRefresh || this.data.courses.length === 0) {
+        console.log('使用静态数据作为后备');
+        this.loadStaticCourses();
+      }
       
       wx.showToast({
-        title: '加载失败，显示缓存数据',
+        title: '加载失败，请重试',
         icon: 'none'
       });
     }
@@ -155,7 +224,9 @@ Page({
       3: 'completed',    // 已完成
       4: 'cancelled'     // 已取消
     };
-    return statusMap[apiStatus] || 'pending';
+    const mappedStatus = statusMap[apiStatus] || 'pending';
+    console.log(`状态映射: API状态码 ${apiStatus} -> 前端状态 ${mappedStatus}`);
+    return mappedStatus;
   },
 
   /**
@@ -224,9 +295,6 @@ Page({
     this.setData({
       courses
     });
-    
-    // 过滤当前tab的课程
-    this.filterCourses();
   },
 
   /**
@@ -234,36 +302,37 @@ Page({
    */
   onTabChange(e) {
     const tabIndex = e.currentTarget.dataset.index;
+    if (tabIndex === this.data.currentTab) return;
+    
     this.setData({
-      currentTab: tabIndex
+      currentTab: tabIndex,
+      courses: [], // 清空当前数据
+      currentPage: 1,
+      hasMore: true
     });
-    this.filterCourses();
+    
+    // 重新加载对应状态的课程数据
+    this.loadCourses(true);
   },
 
   /**
-   * 过滤课程数据
+   * 下拉刷新
    */
-  filterCourses() {
-    const { currentTab, tabs, courses } = this.data;
-    const currentStatus = tabs[currentTab].status;
-    
-    console.log('过滤课程数据:', {
-      currentTab,
-      currentStatus,
-      totalCourses: courses.length,
-      courses
+  onPullDownRefresh() {
+    console.log('下拉刷新触发');
+    this.loadCourses(true).finally(() => {
+      wx.stopPullDownRefresh();
     });
-    
-    const filteredCourses = courses.filter(course => course.status === currentStatus);
-    
-    console.log('过滤后的课程数据:', {
-      filteredCount: filteredCourses.length,
-      filteredCourses
-    });
-    
-    this.setData({
-      filteredCourses
-    });
+  },
+
+  /**
+   * 上拉加载更多
+   */
+  onReachBottom() {
+    console.log('上拉加载更多触发');
+    if (!this.data.isLoading && this.data.hasMore) {
+      this.loadCourses(false);
+    }
   },
 
   /**
@@ -291,7 +360,7 @@ Page({
             });
 
             // 重新加载课程列表
-            this.loadCourses();
+            this.loadCourses(true);
           } catch (error) {
             wx.hideLoading();
             console.error('确认课程失败:', error);
@@ -372,7 +441,7 @@ Page({
       });
 
       // 重新加载课程列表
-      this.loadCourses();
+      this.loadCourses(true);
     } catch (error) {
       wx.hideLoading();
       console.error('取消课程失败:', error);
@@ -385,36 +454,30 @@ Page({
   },
 
   /**
-   * 更新课程状态
+   * 更新课程状态（本地更新，已废弃，现在直接重新加载数据）
    */
   updateCourseStatus(courseId, newStatus, cancelReason = '') {
-    const { courses } = this.data;
-    const updatedCourses = courses.map(course => {
-      if (course.id === courseId) {
-        const updatedCourse = { ...course, status: newStatus };
-        if (newStatus === 'cancelled' && cancelReason) {
-          updatedCourse.cancelReason = cancelReason;
-        }
-        return updatedCourse;
-      }
-      return course;
-    });
-    
-    this.setData({
-      courses: updatedCourses
-    });
-    
-    // 重新过滤课程
-    this.filterCourses();
+    console.log('更新课程状态:', { courseId, newStatus, cancelReason });
+    // 该方法已废弃，现在直接通过重新加载数据来更新状态
   },
 
   /**
-   * 加载用户身份
+   * 加载用户信息
    */
-  loadUserRole() {
+  loadUserInfo() {
     const storedRole = wx.getStorageSync('userRole') || 'student';
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    const currentUserId = userInfo.id || null;
+    
+    console.log('加载用户信息:', {
+      userRole: storedRole,
+      currentUserId,
+      userInfo
+    });
+    
     this.setData({
-      userRole: storedRole
+      userRole: storedRole,
+      currentUserId
     });
   },
 
@@ -498,7 +561,7 @@ Page({
           if (courseId) {
             this.updateCourseStatus(courseId, 'completed');
             // 重新加载数据
-            this.loadCourses();
+            this.loadCourses(true);
           }
         }
       });

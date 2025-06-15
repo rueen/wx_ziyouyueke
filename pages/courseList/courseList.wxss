@@ -412,4 +412,32 @@ page {
 
 .full-width {
   width: 100%;
+}
+
+/* 加载更多提示样式 */
+.load-more-container {
+  padding: 40rpx 0;
+  text-align: center;
+}
+
+.load-more-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.load-more-end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.end-text {
+  font-size: 26rpx;
+  color: #ccc;
 } 
