@@ -2,7 +2,6 @@
 
 .time-selector {
   background-color: #f5f5f5;
-  min-height: 100vh;
 }
 
 /* 日期选择器样式 */

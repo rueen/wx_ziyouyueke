@@ -297,10 +297,10 @@ Page({
    * 时间选择器事件 - 时间段被点击
    */
   onTimeSlotTap(e) {
-    const { date, timeSlot } = e.detail;
+    const { date, slot } = e.detail;
     this.setData({
-      selectedDate: date,
-      selectedTimeSlot: timeSlot
+      selectedDate: date || '',
+      selectedTimeSlot: slot || ''
     });
     this.checkCanSubmit();
   },
@@ -361,9 +361,9 @@ Page({
    */
   checkCanSubmit() {
     const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress } = this.data;
-    const canSubmit = selectedOption && selectedDate && selectedTimeSlot && selectedAddress;
+    const canSubmit = !!(selectedOption && selectedDate && selectedTimeSlot && selectedAddress);
     this.setData({
-      canSubmit
+      canSubmit: canSubmit
     });
   },
 

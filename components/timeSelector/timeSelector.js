@@ -404,6 +404,12 @@ Component({
     onTimeSlotTap(e) {
       const { slot } = e.currentTarget.dataset;
       
+      // 确保参数不为 undefined
+      if (!slot || !this.data.currentDate) {
+        console.warn('时间段点击事件参数不完整:', { slot, currentDate: this.data.currentDate });
+        return;
+      }
+      
       // 触发时间段点击事件
       this.triggerEvent('timeSlotTap', {
         slot: slot,

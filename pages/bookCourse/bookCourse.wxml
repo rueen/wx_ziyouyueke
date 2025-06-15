@@ -65,7 +65,6 @@
         coachId="{{bookingType === 'student-book-coach' ? selectedOption.id : ''}}"
         mode="select"
         showBookingDetails="{{false}}"
-        maxAdvanceDays="{{30}}"
         bind:timeSlotTap="onTimeSlotTap"
         bind:error="onTimeSelectorError">
       </timeSelector>
