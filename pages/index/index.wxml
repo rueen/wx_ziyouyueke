@@ -44,19 +44,19 @@
           <!-- 日期标题 -->
           <view class="day-header">
             <text class="day-title">{{item.dayTitle}}</text>
-            <text class="day-date">{{item.dateStr}}</text>
           </view>
           
           <!-- 时间段列表 -->
           <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
             <view class="time-slot-item {{slot.isBooked ? 'booked' : 'available'}}" 
-                  wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id">
+                  wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id"
+                  bindtap="onCourseClick" data-courseid="{{slot.courseId}}" wx:if="{{slot.isBooked}}">
               <view class="time-info">
                 <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
               </view>
               
               <!-- 已预约显示课程信息 -->
-              <view class="booking-info" wx:if="{{slot.isBooked}}">
+              <view class="booking-info">
                 <view class="person-info">
                   <view class="person-avatar">
                     <image src="{{userRole === 'student' ? slot.coachAvatar : slot.studentAvatar}}" class="avatar-img"></image>
@@ -71,9 +71,18 @@
                   <text class="course-remark" wx:if="{{slot.remark}}">💬 {{slot.remark}}</text>
                 </view>
               </view>
+            </view>
+            
+            <!-- 未预约的时间段 -->
+            <view class="time-slot-item available" 
+                  wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id"
+                  wx:if="{{!slot.isBooked}}">
+              <view class="time-info">
+                <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
+              </view>
               
               <!-- 未预约显示空状态 -->
-              <view class="empty-booking" wx:else>
+              <view class="empty-booking">
                 <text class="empty-text">空闲时间</text>
               </view>
             </view>

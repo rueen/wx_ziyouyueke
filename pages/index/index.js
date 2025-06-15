@@ -401,8 +401,7 @@ Page({
     
     return {
       date: nextCourse.course_date,
-      dayTitle: this.getDayTitle(courseDate),
-      dateStr: this.formatDate(courseDate),
+      dayTitle: this.formatDate(courseDate),
       timeSlots: [{
         id: nextCourse.id,
         startTime: nextCourse.start_time,
@@ -424,5 +423,16 @@ Page({
     };
   },
 
-
+  /**
+   * 课程点击事件 - 跳转到课程详情
+   */
+  onCourseClick(e) {
+    const { courseid } = e.currentTarget.dataset;
+    
+    if (courseid) {
+      wx.navigateTo({
+        url: `/pages/courseDetail/courseDetail?id=${courseid}`
+      });
+    }
+  }
 })
