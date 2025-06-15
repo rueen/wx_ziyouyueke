@@ -359,16 +359,16 @@ Page({
    */
   onBookCourse: function() {
     const { userRole } = this.data;
-    
+
     if (userRole === 'student') {
       // 学员身份：约教练
       wx.navigateTo({
-        url: '/pages/bookCoach/bookCoach?from=home'
+        url: '/pages/bookCourse/bookCourse?type=student-book-coach&from=home'
       });
     } else {
       // 教练身份：约学员
       wx.navigateTo({
-        url: '/pages/bookStudent/bookStudent?from=home'
+        url: '/pages/bookCourse/bookCourse?type=coach-book-student&from=home'
       });
     }
   },

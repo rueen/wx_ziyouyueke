@@ -1,0 +1,160 @@
+<!--pages/bookCourse/bookCourse.wxml-->
+<navBar title="{{bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课'}}" />
+<layout class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{isLoading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view wx:else>
+    <!-- 选择对象区域 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">
+          {{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}
+        </text>
+      </view>
+      
+      <!-- 已选择的对象 -->
+      <view class="selected-option" wx:if="{{selectedOption && !showSelection}}" bindtap="onChangeSelection">
+        <view class="option-avatar">
+          <image src="{{selectedOption.avatar}}" class="avatar-img"></image>
+        </view>
+        <view class="option-info">
+          <text class="option-name">{{selectedOption.name}}</text>
+          <text class="option-lessons">剩余课时：{{selectedOption.remainingLessons}}节</text>
+        </view>
+        <text class="iconfont icon-arrow-r change-icon"></text>
+      </view>
+      
+      <!-- 选择界面 -->
+      <view class="selection-list" wx:if="{{showSelection}}">
+        <view class="option-item" 
+              wx:for="{{availableOptions}}" 
+              wx:key="id" 
+              bindtap="onSelectOption" 
+              data-option="{{item}}">
+          <view class="option-avatar">
+            <image src="{{item.avatar}}" class="avatar-img"></image>
+          </view>
+          <view class="option-info">
+            <text class="option-name">{{item.name}}</text>
+            <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
+          </view>
+          <text class="iconfont icon-check select-icon"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-options" wx:if="{{availableOptions.length === 0}}">
+          <text class="empty-text">
+            {{bookingType === 'coach-book-student' ? '暂无可约学员' : '暂无可约教练'}}
+          </text>
+          <text class="empty-desc">需要有剩余课时才能约课</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间选择区域 -->
+    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+      <view class="section-header">
+        <text class="section-title">选择时间</text>
+      </view>
+      
+      <!-- 时间选择器组件 -->
+      <timeSelector 
+        coachId="{{bookingType === 'student-book-coach' ? selectedOption.id : ''}}"
+        mode="select"
+        showBookingDetails="{{false}}"
+        maxAdvanceDays="{{30}}"
+        bind:timeSlotTap="onTimeSlotTap"
+        bind:error="onTimeSelectorError">
+      </timeSelector>
+      
+      <!-- 选中的时间显示 -->
+      <view class="selected-time" wx:if="{{selectedDate && selectedTimeSlot}}">
+        <text class="time-label">已选择：</text>
+        <text class="time-value">{{selectedDate}} {{selectedTimeSlot}}</text>
+      </view>
+    </view>
+
+    <!-- 地址选择区域 -->
+    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+      <view class="section-header">
+        <text class="section-title">选择地点</text>
+      </view>
+      
+      <!-- 已选择的地址 -->
+      <view class="selected-address" wx:if="{{selectedAddress}}" bindtap="onShowAddressSelection">
+        <view class="address-info">
+          <text class="address-name">{{selectedAddress.name}}</text>
+          <text class="address-detail">{{selectedAddress.address}}</text>
+        </view>
+        <text class="iconfont icon-arrow-r change-icon"></text>
+      </view>
+      
+      <!-- 选择地址按钮 -->
+      <view class="select-address-btn" wx:else bindtap="onShowAddressSelection">
+        <text class="btn-text">选择上课地点</text>
+        <text class="iconfont icon-arrow-r"></text>
+      </view>
+    </view>
+
+    <!-- 备注区域 -->
+    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+      <view class="section-header">
+        <text class="section-title">
+          {{bookingType === 'coach-book-student' ? '教练备注' : '学员备注'}}
+        </text>
+      </view>
+      
+      <textarea 
+        class="remark-textarea" 
+        placeholder="{{bookingType === 'coach-book-student' ? '请输入教练备注（选填）' : '请输入学员备注（选填）'}}" 
+        value="{{remark}}" 
+        bindinput="onRemarkInput"
+        maxlength="200">
+      </textarea>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-container" wx:if="{{selectedOption && !showSelection}}">
+      <button class="submit-btn {{canSubmit ? 'active' : 'disabled'}}" 
+              bindtap="onSubmitBooking" 
+              disabled="{{!canSubmit || isSubmitting}}">
+        {{isSubmitting ? '提交中...' : '确认约课'}}
+      </button>
+    </view>
+  </view>
+</layout>
+
+<!-- 地址选择弹窗 -->
+<view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">
+  <view class="modal-container" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">选择上课地点</text>
+      <text class="modal-close" bindtap="onHideAddressSelection">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="address-list">
+        <view class="address-item" 
+              wx:for="{{addresses}}" 
+              wx:key="id" 
+              bindtap="onSelectAddress" 
+              data-address="{{item}}">
+          <view class="address-info">
+            <text class="address-name">{{item.name}}</text>
+            <text class="address-detail">{{item.address}}</text>
+          </view>
+          <text class="iconfont icon-check select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-addresses" wx:if="{{addresses.length === 0}}">
+          <text class="empty-text">暂无地址</text>
+          <text class="empty-desc">请先添加上课地址</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

@@ -223,7 +223,7 @@ Page({
   onBookStudent() {
     const { studentData } = this.data;
     wx.navigateTo({
-      url: `/pages/bookStudent/bookStudent?from=studentDetail&studentId=${studentData.id}&studentName=${encodeURIComponent(studentData.name)}`
+      url: `/pages/bookCourse/bookCourse?type=coach-book-student&from=studentDetail&studentId=${studentData.id}&studentName=${encodeURIComponent(studentData.name)}`
     });
   },
 

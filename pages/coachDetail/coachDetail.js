@@ -99,7 +99,7 @@ Page({
   onBookCoach() {
     const { coachData } = this.data;
     wx.navigateTo({
-      url: `/pages/bookCoach/bookCoach?from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
+      url: `/pages/bookCourse/bookCourse?type=student-book-coach&from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
     });
   }
 }) 
