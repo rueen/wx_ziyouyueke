@@ -46,7 +46,10 @@
         </view>
         
         <!-- 空状态 -->
-        <view class="empty-options" wx:if="{{availableOptions.length === 0}}">
+        <view class="empty-options" wx:if="{{showEmptyState && availableOptions.length === 0}}">
+          <view class="empty-icon">
+            <text class="iconfont icon-empty"></text>
+          </view>
           <text class="empty-text">
             {{bookingType === 'coach-book-student' ? '暂无可约学员' : '暂无可约教练'}}
           </text>

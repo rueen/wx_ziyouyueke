@@ -25,6 +25,7 @@ Page({
     availableOptions: [], // 可选择的教练或学员列表
     selectedOption: null, // 已选择的教练或学员
     showSelection: false, // 是否显示选择界面
+    showEmptyState: false, // 是否显示空状态
     
     // 时间选择相关
     selectedCoachId: '', // 用于时间选择器的教练ID
@@ -96,11 +97,14 @@ Page({
     this.setData({ isLoading: true });
     
     try {
-      // 并行加载数据
-      await Promise.all([
-        this.loadAvailableOptions(),
-        this.loadAddresses()
-      ]);
+      // 先加载可选择的教练或学员
+      await this.loadAvailableOptions();
+      
+      // 如果是教练约学员，直接加载地址
+      // 如果是学员约教练，等选择教练后再加载对应教练的地址
+      if (this.data.bookingType === 'coach-book-student') {
+        await this.loadAddresses();
+      }
       
       // 处理预设选择
       this.handlePresetSelection();
@@ -127,8 +131,10 @@ Page({
       if (bookingType === 'coach-book-student') {
         // 教练约学员：获取我的学员列表（排除剩余课时为0的）
         result = await api.relation.getMyStudents();
-        if (result && result.data) {
-          const students = result.data
+        if (result && result.data && result.data.students) {
+          // API返回的数据在result.data.students中
+          const dataArray = Array.isArray(result.data.students) ? result.data.students : [];
+          const students = dataArray
             .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的学员
             .map(item => ({
               id: item.id,
@@ -145,8 +151,10 @@ Page({
       } else {
         // 学员约教练：获取可约教练列表（排除剩余课时为0的）
         result = await api.relation.getMyCoaches();
-        if (result && result.data) {
-          const coaches = result.data
+        if (result && result.data && result.data.coaches) {
+          // API返回的数据在result.data.coaches中
+          const dataArray = Array.isArray(result.data.coaches) ? result.data.coaches : [];
+          const coaches = dataArray
             .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的教练
             .map(item => ({
               id: item.id,
@@ -171,13 +179,21 @@ Page({
 
   /**
    * 加载地址列表
+   * @param {number} coachId 教练ID（可选，用于获取指定教练的地址）
    */
-  async loadAddresses() {
+  async loadAddresses(coachId = null) {
     try {
-      const result = await api.address.getList();
-      if (result && result.data) {
+      const params = {};
+      if (coachId) {
+        params.coach_id = coachId;
+      }
+      
+      const result = await api.address.getList(params);
+      if (result && result.data && result.data.addresses) {
+        // API返回的数据在result.data.addresses中
+        const addresses = Array.isArray(result.data.addresses) ? result.data.addresses : [];
         this.setData({
-          addresses: result.data
+          addresses: addresses
         });
       }
     } catch (error) {
@@ -205,13 +221,10 @@ Page({
     
     // 没有预设或找不到预设，根据可选项数量决定
     if (availableOptions.length === 0) {
-      const { bookingType } = this.data;
-      const message = bookingType === 'coach-book-student' 
-        ? '暂无可约学员（需要有剩余课时）' 
-        : '暂无可约教练（需要有剩余课时）';
-      wx.showToast({
-        title: message,
-        icon: 'none'
+      // 没有可选项，显示空状态（不使用toast）
+      this.setData({
+        showSelection: true,
+        showEmptyState: true
       });
     } else if (availableOptions.length === 1) {
       // 只有一个选项，直接选中
@@ -219,7 +232,8 @@ Page({
     } else {
       // 多个选项，显示选择界面
       this.setData({
-        showSelection: true
+        showSelection: true,
+        showEmptyState: false
       });
     }
   },
@@ -227,7 +241,7 @@ Page({
   /**
    * 选择教练或学员
    */
-  selectOption(option) {
+  async selectOption(option) {
     const { bookingType } = this.data;
     
     // 获取当前用户信息，用于教练约学员时的时间选择器
@@ -237,12 +251,18 @@ Page({
     this.setData({
       selectedOption: option,
       showSelection: false,
+      showEmptyState: false,
       selectedCoachId: coachId,
       selectedDate: '',
       selectedTimeSlot: '',
       selectedAddress: null,
       remark: ''
     });
+    
+    // 如果是学员约教练，选择教练后加载该教练的地址
+    if (bookingType === 'student-book-coach') {
+      await this.loadAddresses(option.id);
+    }
     
     this.checkCanSubmit();
   },
@@ -259,12 +279,16 @@ Page({
    * 更换选择
    */
   onChangeSelection() {
+    const { availableOptions } = this.data;
+    
     this.setData({
       showSelection: true,
+      showEmptyState: availableOptions.length === 0,
       selectedDate: '',
       selectedTimeSlot: '',
       selectedAddress: null,
-      remark: ''
+      remark: '',
+      addresses: [] // 清空地址列表，重新选择后再加载
     });
     this.checkCanSubmit();
   },
