@@ -3,7 +3,7 @@
  * 时间选择器组件
  */
 
-const API = require('../../utils/api.js');
+const api = require('../../utils/api.js');
 
 Component({
   /**
@@ -146,14 +146,8 @@ Component({
       try {
         // 安全地获取coachId属性
         const coachId = this.properties && this.properties.coachId ? this.properties.coachId : null;
-        const url = coachId 
-          ? `/api/h5/time-templates?coach_id=${coachId}`
-          : '/api/h5/time-templates';
           
-        const result = await API.request({
-          url: url,
-          method: 'GET'
-        });
+        const result = await api.timeTemplate.getList(coachId);
 
         if (result.data && result.data.length > 0) {
           const template = result.data[0]; // 使用第一个激活的模板
@@ -262,11 +256,7 @@ Component({
           queryParams.coach_id = coachId;
         }
         
-        const result = await API.request({
-          url: '/api/h5/courses',
-          method: 'GET',
-          data: queryParams
-        });
+        const result = await api.course.getList(queryParams);
 
         const bookedCourses = result.data ? result.data.courses : [];
         

@@ -3,7 +3,7 @@
  * 地址编辑页面
  */
 
-const API = require('../../utils/api.js');
+const api = require('../../utils/api.js');
 
 Page({
   /**
@@ -251,29 +251,21 @@ Page({
 
       if (isEdit) {
         // 更新地址
-        await API.request({
-          url: `/api/h5/addresses/${addressData.id}`,
-          method: 'PUT',
-          data: {
-            name: addressData.name.trim(),
-            address: addressData.address.trim(),
-            latitude: addressData.latitude,
-            longitude: addressData.longitude,
-            is_default: addressData.is_default
-          }
+        await api.address.update(addressData.id, {
+          name: addressData.name.trim(),
+          address: addressData.address.trim(),
+          latitude: addressData.latitude,
+          longitude: addressData.longitude,
+          is_default: addressData.is_default
         });
       } else {
         // 新增地址
-        await API.request({
-          url: '/api/h5/addresses',
-          method: 'POST',
-          data: {
-            name: addressData.name.trim(),
-            address: addressData.address.trim(),
-            latitude: addressData.latitude,
-            longitude: addressData.longitude,
-            is_default: addressData.is_default
-          }
+        await api.address.create({
+          name: addressData.name.trim(),
+          address: addressData.address.trim(),
+          latitude: addressData.latitude,
+          longitude: addressData.longitude,
+          is_default: addressData.is_default
         });
       }
 
@@ -334,10 +326,7 @@ Page({
             });
 
             // 调用API删除地址
-            await API.request({
-              url: `/api/h5/addresses/${addressData.id}`,
-              method: 'DELETE'
-            });
+            await api.address.delete(addressData.id);
 
             wx.hideLoading();
 

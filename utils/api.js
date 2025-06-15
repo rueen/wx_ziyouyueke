@@ -344,6 +344,17 @@ function getMyStudents() {
 }
 
 /**
+ * 获取我的教练列表（简化版本）
+ * @returns {Promise}
+ */
+function getMyCoaches() {
+  return request({
+    url: '/api/h5/relations/my-coaches',
+    method: 'GET'
+  });
+}
+
+/**
  * 更新师生关系
  * @param {number} id 关系ID
  * @param {Object} relation 师生关系数据
@@ -481,6 +492,60 @@ function getUserDetail(userId) {
   });
 }
 
+// ========== 地址管理模块 ==========
+
+/**
+ * 获取地址列表
+ * @param {Object} params 查询参数
+ * @returns {Promise}
+ */
+function getAddressList(params = {}) {
+  return request({
+    url: '/api/h5/addresses',
+    method: 'GET',
+    data: params
+  });
+}
+
+/**
+ * 创建地址
+ * @param {Object} address 地址信息
+ * @returns {Promise}
+ */
+function createAddress(address) {
+  return request({
+    url: '/api/h5/addresses',
+    method: 'POST',
+    data: address
+  });
+}
+
+/**
+ * 更新地址
+ * @param {number} id 地址ID
+ * @param {Object} address 地址信息
+ * @returns {Promise}
+ */
+function updateAddress(id, address) {
+  return request({
+    url: `/api/h5/addresses/${id}`,
+    method: 'PUT',
+    data: address
+  });
+}
+
+/**
+ * 删除地址
+ * @param {number} id 地址ID
+ * @returns {Promise}
+ */
+function deleteAddress(id) {
+  return request({
+    url: `/api/h5/addresses/${id}`,
+    method: 'DELETE'
+  });
+}
+
 // ========== 文件上传模块 ==========
 
 /**
@@ -588,6 +653,7 @@ module.exports = {
     getList: getRelations,
     create: createRelation,
     getMyStudents,
+    getMyCoaches,
     update: updateRelation,
     delete: deleteRelation
   },
@@ -595,6 +661,7 @@ module.exports = {
   // 课程管理模块
   course: {
     getList: getCourses,
+    create: bookCourse, // 创建课程的别名
     book: bookCourse,
     confirm: confirmCourse,
     cancel: cancelCourse,
@@ -605,6 +672,14 @@ module.exports = {
   // 教练模块
   coach: {
     getMyList: getMyCoachList
+  },
+
+  // 地址管理模块
+  address: {
+    getList: getAddressList,
+    create: createAddress,
+    update: updateAddress,
+    delete: deleteAddress
   },
 
   // 文件上传模块

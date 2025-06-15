@@ -13,7 +13,8 @@
     "pages/bindCoach/bindCoach",
     "pages/addressList/addressList",
     "pages/addressEdit/addressEdit",
-    "pages/mySchedule/mySchedule"
+    "pages/mySchedule/mySchedule",
+    "pages/bookCourse/bookCourse"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

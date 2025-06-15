@@ -3,7 +3,7 @@
  * 常用地址列表页面
  */
 
-const API = require('../../utils/api.js');
+const api = require('../../utils/api.js');
 
 Page({
   /**
@@ -62,13 +62,9 @@ Page({
       });
 
       // 调用API获取地址列表
-      const result = await API.request({
-        url: '/api/h5/addresses',
-        method: 'GET',
-        data: {
-          page: this.data.page,
-          limit: this.data.limit
-        }
+      const result = await api.address.getList({
+        page: this.data.page,
+        limit: this.data.limit
       });
 
       // 处理API返回的数据格式
