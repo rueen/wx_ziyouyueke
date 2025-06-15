@@ -52,6 +52,12 @@ page {
   border-radius: 20rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.course-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .course-content {
@@ -133,60 +139,7 @@ page {
   color: #ff3b30;
 }
 
-/* 操作按钮 */
-.course-actions {
-  margin-top: 30rpx;
-}
 
-.action-buttons {
-  display: flex;
-  gap: 20rpx;
-}
-
-/* 按钮组布局 */
-.button-group {
-  display: flex;
-  gap: 20rpx;
-  width: 100%;
-}
-
-.action-btn {
-  flex: 1;
-  height: 64rpx;
-  border: none;
-  border-radius: 32rpx;
-  font-size: 26rpx;
-  font-weight: 500;
-}
-
-.action-btn::after {
-  border: none;
-}
-
-.cancel-btn {
-  background-color: #f5f5f5;
-  color: #666;
-}
-
-.confirm-btn {
-  background-color: #007aff;
-  color: #fff;
-}
-
-.primary-btn {
-  background-color: #34c759;
-  color: #fff;
-}
-
-.verify-btn {
-  background-color: #ff9500;
-  color: #fff;
-}
-
-.action-btn:active {
-  opacity: 0.8;
-  transform: scale(0.98);
-}
 
 /* 取消原因模态框 */
 .cancel-modal {

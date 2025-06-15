@@ -21,7 +21,7 @@ Page({
     ],
     
     // 用户身份
-    userRole: 'student', // 'student' 学员, 'coach' 教练
+    userRole: '', // 'student' 学员, 'coach' 教练
     currentUserId: null, // 当前用户ID
     
     // 课程数据
@@ -32,29 +32,13 @@ Page({
     pageSize: 10,
     hasMore: true,
     isLoading: false,
-    isRefreshing: false,
-    
-    // 操作状态
-    operatingCourseId: null,
-    
-    // 取消原因模态框
-    showCancelModal: false,
-    cancellingCourseId: null,
-    cancelReason: '',
-    
-    // 课程码弹窗
-    showCourseCodeModal: false,
-    currentCourseCode: '',
-    currentCourseInfo: null
+    isRefreshing: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 加载用户身份和用户ID
-    this.loadUserInfo();
-    
     // 从URL参数获取初始tab
     if (options.tab) {
       const tabIndex = parseInt(options.tab);
@@ -65,7 +49,10 @@ Page({
       }
     }
     
-    this.loadCourses(true);
+    // 加载用户身份和用户ID，完成后再加载课程数据
+    this.loadUserInfo(() => {
+      this.loadCourses(true);
+    });
   },
 
   /**
@@ -79,7 +66,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadCourses(true);
+    // 只有在有userRole的情况下才重新加载数据
+    if (this.data.userRole) {
+      this.loadCourses(true);
+    }
   },
 
   /**
@@ -255,6 +245,9 @@ Page({
         coachId: 1,
         coachName: '李教练',
         coachAvatar: '/images/defaultAvatar.png',
+        displayName: '李教练',
+        displayAvatar: '/images/defaultAvatar.png',
+        displayRole: '教练',
         time: '2024年1月15日 09:00-12:00',
         location: '万达广场健身房',
         remark: '第一次瑜伽课，请提前10分钟到达',
@@ -266,45 +259,14 @@ Page({
         coachId: 2,
         coachName: '王教练',
         coachAvatar: '/images/defaultAvatar.png',
+        displayName: '王教练',
+        displayAvatar: '/images/defaultAvatar.png',
+        displayRole: '教练',
         time: '2024年1月12日 15:00-18:00',
         location: '中心广场健身房',
         remark: '力量训练课程，请穿运动鞋',
         status: 'confirmed',
         createTime: '2024-01-08 10:20:00'
-      },
-      {
-        id: 3,
-        coachId: 1,
-        coachName: '李教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月08日 10:00-15:00',
-        location: '社区健身房',
-        remark: '',
-        status: 'completed',
-        createTime: '2024-01-05 16:45:00'
-      },
-      {
-        id: 4,
-        coachId: 3,
-        coachName: '张教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月14日 19:00-21:00',
-        location: '舞蹈工作室',
-        remark: '体态矫正课程',
-        status: 'pending',
-        createTime: '2024-01-09 11:15:00'
-      },
-      {
-        id: 5,
-        coachId: 2,
-        coachName: '王教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        time: '2024年1月06日 08:00-12:00',
-        location: '健身中心',
-        remark: '减脂训练',
-        status: 'cancelled',
-        cancelReason: '临时有事无法参加',
-        createTime: '2024-01-03 09:30:00'
       }
     ];
     
@@ -352,255 +314,81 @@ Page({
   },
 
   /**
-   * 确认课程
+   * 点击课程项跳转到详情页
    */
-  async onConfirmCourse(e) {
+  onCourseItemTap(e) {
     const courseId = e.currentTarget.dataset.id;
+    console.log('点击课程项，ID：', courseId);
     
-    wx.showModal({
-      title: '确认课程',
-      content: '确定要确认这节课程吗？',
-      success: async (res) => {
-        if (res.confirm) {
-          try {
-            wx.showLoading({
-              title: '确认中...'
-            });
-
-            await api.course.confirm(courseId);
-            
-            wx.hideLoading();
-            wx.showToast({
-              title: '课程已确认',
-              icon: 'success'
-            });
-
-            // 重新加载课程列表
-            this.loadCourses(true);
-          } catch (error) {
-            wx.hideLoading();
-            console.error('确认课程失败:', error);
-            
-            wx.showToast({
-              title: '确认失败，请重试',
-              icon: 'none'
-            });
-          }
-        }
-      }
-    });
-  },
-
-  /**
-   * 显示取消原因模态框
-   */
-  onShowCancelModal(e) {
-    const courseId = e.currentTarget.dataset.id;
-    this.setData({
-      showCancelModal: true,
-      cancellingCourseId: courseId,
-      cancelReason: ''
-    });
-  },
-
-  /**
-   * 隐藏取消原因模态框
-   */
-  onHideCancelModal() {
-    this.setData({
-      showCancelModal: false,
-      cancellingCourseId: null,
-      cancelReason: ''
-    });
-  },
-
-  /**
-   * 输入取消原因
-   */
-  onCancelReasonInput(e) {
-    this.setData({
-      cancelReason: e.detail.value
-    });
-  },
-
-  /**
-   * 确认取消课程
-   */
-  async onConfirmCancel() {
-    const { cancellingCourseId, cancelReason } = this.data;
-    
-    if (!cancelReason.trim()) {
-      wx.showToast({
-        title: '请填写取消原因',
-        icon: 'none'
-      });
-      return;
-    }
-
-    try {
-      wx.showLoading({
-        title: '取消中...'
-      });
-
-      await api.course.cancel(cancellingCourseId, {
-        cancel_reason: cancelReason.trim()
-      });
-      
-      wx.hideLoading();
-      
-      // 隐藏模态框
-      this.onHideCancelModal();
-      
-      wx.showToast({
-        title: '课程已取消',
-        icon: 'none'
-      });
-
-      // 重新加载课程列表
-      this.loadCourses(true);
-    } catch (error) {
-      wx.hideLoading();
-      console.error('取消课程失败:', error);
-      
-      wx.showToast({
-        title: '取消失败，请重试',
-        icon: 'none'
+    if (courseId) {
+      wx.navigateTo({
+        url: `/pages/courseDetail/courseDetail?id=${courseId}`
       });
     }
-  },
-
-  /**
-   * 更新课程状态（本地更新，已废弃，现在直接重新加载数据）
-   */
-  updateCourseStatus(courseId, newStatus, cancelReason = '') {
-    console.log('更新课程状态:', { courseId, newStatus, cancelReason });
-    // 该方法已废弃，现在直接通过重新加载数据来更新状态
   },
 
   /**
    * 加载用户信息
    */
-  loadUserInfo() {
-    const storedRole = wx.getStorageSync('userRole') || 'student';
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    const currentUserId = userInfo.id || null;
-    
-    console.log('加载用户信息:', {
-      userRole: storedRole,
-      currentUserId,
-      userInfo
-    });
-    
-    this.setData({
-      userRole: storedRole,
-      currentUserId
-    });
-  },
-
-  /**
-   * 学员：查看课程码
-   */
-  onViewCourseCode(e) {
-    const courseId = e.currentTarget.dataset.id;
-    const { courses } = this.data;
-    const course = courses.find(c => c.id === courseId);
-    
-    if (!course) {
-      wx.showToast({
-        title: '课程信息不存在',
-        icon: 'none'
-      });
-      return;
-    }
-
-    // 生成课程码（实际应用中应该从后端获取）
-    const courseCode = `COURSE_${courseId}_${Date.now()}`;
-    
-    this.setData({
-      showCourseCodeModal: true,
-      currentCourseCode: courseCode,
-      currentCourseInfo: course
-    });
-  },
-
-  /**
-   * 隐藏课程码弹窗
-   */
-  onHideCourseCodeModal() {
-    this.setData({
-      showCourseCodeModal: false,
-      currentCourseCode: '',
-      currentCourseInfo: null
-    });
-  },
-
-  /**
-   * 教练：扫码核销
-   */
-  onScanVerify() {
-    wx.scanCode({
-      success: (res) => {
-        console.log('扫码结果:', res);
-        const scannedCode = res.result;
-        
-        // 这里应该调用后端API验证课程码
-        this.verifyCourseCode(scannedCode);
-      },
-      fail: (err) => {
-        console.error('扫码失败:', err);
-        wx.showToast({
-          title: '扫码失败，请重试',
-          icon: 'none'
-        });
-      }
-    });
-  },
-
-  /**
-   * 验证课程码
-   */
-  verifyCourseCode(courseCode) {
-    // 模拟验证过程
-    console.log('验证课程码:', courseCode);
-    
-    // 这里应该调用后端API验证
-    // 模拟验证成功
-    if (courseCode.startsWith('COURSE_')) {
-      wx.showModal({
-        title: '核销成功',
-        content: '课程已完成核销，状态已更新为已完成',
-        showCancel: false,
-        confirmText: '确定',
-        success: () => {
-          // 更新课程状态为已完成
-          const courseId = this.extractCourseIdFromCode(courseCode);
-          if (courseId) {
-            this.updateCourseStatus(courseId, 'completed');
-            // 重新加载数据
-            this.loadCourses(true);
-          }
-        }
-      });
-    } else {
-      wx.showToast({
-        title: '无效的课程码',
-        icon: 'none'
-      });
-    }
-  },
-
-  /**
-   * 从课程码中提取课程ID
-   */
-  extractCourseIdFromCode(courseCode) {
+  loadUserInfo(callback) {
     try {
-      const parts = courseCode.split('_');
-      if (parts.length >= 2) {
-        return parseInt(parts[1]);
+      const userRole = wx.getStorageSync('userRole');
+      const userInfo = wx.getStorageSync('userInfo');
+      
+      console.log('加载用户角色:', userRole);
+      console.log('加载用户信息:', userInfo);
+      
+      if (userRole && userInfo) {
+        this.setData({
+          userRole: userRole,
+          currentUserId: userInfo.id || null
+        });
+        
+        // 执行回调函数
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+      } else {
+        console.error('未找到用户角色或用户信息');
+        wx.showToast({
+          title: '请先登录',
+          icon: 'error'
+        });
+        
+        // 跳转到登录页面
+        setTimeout(() => {
+          wx.reLaunch({
+            url: '/pages/login/login'
+          });
+        }, 1500);
       }
     } catch (error) {
-      console.error('解析课程码失败:', error);
+      console.error('加载用户信息失败:', error);
+      wx.showToast({
+        title: '加载失败',
+        icon: 'error'
+      });
     }
-    return null;
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
   }
-}) 
+}); 

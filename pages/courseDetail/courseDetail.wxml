@@ -1,0 +1,176 @@
+<!--pages/courseDetail/courseDetail.wxml-->
+<navBar title="课程详情" />
+<layout class="container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 课程详情内容 -->
+  <view wx:else class="course-detail-content">
+    <!-- 课程信息卡片 -->
+    <view class="course-card">
+      <!-- 人员信息 -->
+      <view class="person-info">
+        <view class="person-avatar">
+          <image src="{{courseInfo.displayAvatar}}" class="avatar-img"></image>
+        </view>
+        <view class="person-details">
+          <text class="person-name">{{courseInfo.displayName}}</text>
+          <text class="person-role">{{courseInfo.displayRole}}</text>
+        </view>
+        <!-- 课程状态 -->
+        <view class="status-badge status-{{courseInfo.status}}">
+          <text class="status-text">
+            {{courseInfo.status === 'pending' ? '待确认' : 
+              courseInfo.status === 'confirmed' ? '已确认' : 
+              courseInfo.status === 'completed' ? '已完成' : 
+              courseInfo.status === 'cancelled' ? '已取消' : '未知状态'}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 课程详细信息 -->
+      <view class="course-info-section">
+        <view class="info-item">
+          <view class="info-icon">📅</view>
+          <view class="info-content">
+            <text class="info-label">上课时间</text>
+            <text class="info-value">{{courseInfo.time}}</text>
+          </view>
+        </view>
+
+        <view class="info-item">
+          <view class="info-icon">📍</view>
+          <view class="info-content">
+            <text class="info-label">上课地点</text>
+            <text class="info-value">{{courseInfo.location}}</text>
+          </view>
+        </view>
+
+        <view class="info-item" wx:if="{{courseInfo.remark}}">
+          <view class="info-icon">📝</view>
+          <view class="info-content">
+            <text class="info-label">课程备注</text>
+            <text class="info-value">{{courseInfo.remark}}</text>
+          </view>
+        </view>
+
+        <view class="info-item" wx:if="{{courseInfo.createTime}}">
+          <view class="info-icon">⏰</view>
+          <view class="info-content">
+            <text class="info-label">预约时间</text>
+            <text class="info-value">{{courseInfo.createTime}}</text>
+          </view>
+        </view>
+
+        <!-- 显示取消原因 -->
+        <view class="info-item" wx:if="{{courseInfo.status === 'cancelled' && courseInfo.cancelReason}}">
+          <view class="info-icon">❌</view>
+          <view class="info-content">
+            <text class="info-label">取消原因</text>
+            <text class="info-value cancel-reason">{{courseInfo.cancelReason}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</layout>
+
+<!-- 底部操作按钮 -->
+<view wx:if="{{!loading && courseInfo}}" class="bottom-actions">
+  <!-- 待确认状态的按钮 -->
+  <view wx:if="{{courseInfo.status === 'pending'}}" class="action-buttons">
+    <button class="action-btn cancel-btn" 
+            bindtap="onShowCancelModal">取消课程</button>
+    <button class="action-btn confirm-btn" 
+            bindtap="onConfirmCourse">确认课程</button>
+  </view>
+  
+  <!-- 已确认状态的按钮 -->
+  <view wx:elif="{{courseInfo.status === 'confirmed'}}" class="action-buttons">
+    <!-- 学员视角：查看课程码和取消按钮 -->
+    <view wx:if="{{userRole === 'student'}}" class="button-group">
+      <button class="action-btn cancel-btn" 
+              bindtap="onShowCancelModal">取消课程</button>
+      <button class="action-btn primary-btn" 
+              bindtap="onViewCourseCode">查看课程码</button>
+    </view>
+    
+    <!-- 教练视角：取消和核销按钮 -->
+    <view wx:if="{{userRole === 'coach'}}" class="button-group">
+      <button class="action-btn cancel-btn" 
+              bindtap="onShowCancelModal">取消课程</button>
+      <button class="action-btn verify-btn" 
+              bindtap="onScanVerify">扫码核销</button>
+    </view>
+  </view>
+</view>
+
+<!-- 取消原因模态框 -->
+<view class="cancel-modal {{showCancelModal ? 'show' : ''}}" wx:if="{{showCancelModal}}">
+  <view class="modal-overlay" bindtap="onHideCancelModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">取消课程</text>
+      <text class="modal-close" bindtap="onHideCancelModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <textarea class="cancel-reason-input" 
+                placeholder="请输入取消原因..." 
+                value="{{cancelReason}}" 
+                bindinput="onCancelReasonInput"
+                maxlength="200"
+                auto-height></textarea>
+      <view class="char-count">{{cancelReason.length}}/200</view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel-modal-btn" bindtap="onHideCancelModal">取消</button>
+      <button class="modal-btn confirm-modal-btn active" 
+              bindtap="onConfirmCancel">确认取消</button>
+    </view>
+  </view>
+</view>
+
+<!-- 课程码弹窗 -->
+<view class="course-code-modal {{showCourseCodeModal ? 'show' : ''}}" wx:if="{{showCourseCodeModal}}">
+  <view class="modal-overlay" bindtap="onHideCourseCodeModal"></view>
+  <view class="modal-content course-code-content">
+    <view class="modal-header">
+      <text class="modal-title">课程码</text>
+      <text class="modal-close" bindtap="onHideCourseCodeModal">✕</text>
+    </view>
+    <view class="modal-body course-code-body">
+      <!-- 课程信息 -->
+      <view class="course-info-summary" wx:if="{{courseInfo}}">
+        <view class="info-row">
+          <text class="info-label">课程时间：</text>
+          <text class="info-value">{{courseInfo.time}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">教练：</text>
+          <text class="info-value">{{courseInfo.coachName}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">地点：</text>
+          <text class="info-value">{{courseInfo.location}}</text>
+        </view>
+      </view>
+      
+      <!-- 二维码区域 -->
+      <view class="qr-code-container">
+        <view class="qr-code-placeholder">
+          <text class="qr-code-text">课程二维码</text>
+          <view class="qr-code-box">
+            <text class="code-text">{{currentCourseCode}}</text>
+          </view>
+        </view>
+        <text class="qr-tips">请向教练出示此二维码进行课程核销</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn confirm-modal-btn full-width" 
+              bindtap="onHideCourseCodeModal">关闭</button>
+    </view>
+  </view>
+</view> 

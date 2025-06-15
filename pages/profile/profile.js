@@ -17,7 +17,7 @@ Page({
       avatar: '/images/defaultAvatar.png'
     },
     // 身份信息
-    userRole: 'student', // 'student' 学员, 'coach' 教练
+    userRole: '', // 'student' 学员, 'coach' 教练
     roleNames: {
       student: '学员',
       coach: '教练'
@@ -147,11 +147,44 @@ Page({
   /**
    * 加载用户身份
    */
-  loadUserRole() {
-    const storedRole = wx.getStorageSync('userRole') || 'student';
-    this.setData({
-      userRole: storedRole
-    });
+  loadUserRole(callback) {
+    try {
+      const userRole = wx.getStorageSync('userRole');
+      const userInfo = wx.getStorageSync('userInfo');
+      
+      console.log('加载用户角色:', userRole);
+      console.log('加载用户信息:', userInfo);
+      
+      if (userRole && userInfo) {
+        this.setData({
+          userRole: userRole
+        });
+        
+        // 执行回调函数
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+      } else {
+        console.error('未找到用户角色或用户信息');
+        wx.showToast({
+          title: '请先登录',
+          icon: 'error'
+        });
+        
+        // 跳转到登录页面
+        setTimeout(() => {
+          wx.reLaunch({
+            url: '/pages/login/login'
+          });
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('加载用户角色失败:', error);
+      wx.showToast({
+        title: '加载失败',
+        icon: 'error'
+      });
+    }
   },
 
   /**

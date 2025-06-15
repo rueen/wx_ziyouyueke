@@ -14,7 +14,8 @@
 
   <!-- 课程列表 -->
   <view class="course-list" wx:if="{{courses.length > 0}}">
-    <view class="course-item" wx:for="{{courses}}" wx:key="id">
+    <view class="course-item" wx:for="{{courses}}" wx:key="id" 
+          bindtap="onCourseItemTap" data-id="{{item.id}}">
       <!-- 课程信息 -->
       <view class="course-content">
         <!-- 教练信息 -->
@@ -49,41 +50,6 @@
           </view>
         </view>
       </view>
-
-      <!-- 操作按钮 -->
-      <view class="course-actions">
-        <!-- 待确认状态的按钮 -->
-        <view wx:if="{{item.status === 'pending'}}" class="action-buttons">
-          <button class="action-btn cancel-btn" 
-                  bindtap="onShowCancelModal" 
-                  data-id="{{item.id}}">取消</button>
-          <button class="action-btn confirm-btn" 
-                  bindtap="onConfirmCourse" 
-                  data-id="{{item.id}}">确认</button>
-        </view>
-        
-        <!-- 已确认状态的按钮 -->
-        <view wx:elif="{{item.status === 'confirmed'}}" class="action-buttons">
-          <!-- 学员视角：查看课程码和取消按钮 -->
-          <view wx:if="{{userRole === 'student'}}" class="button-group">
-            <button class="action-btn cancel-btn" 
-                    bindtap="onShowCancelModal" 
-                    data-id="{{item.id}}">取消</button>
-            <button class="action-btn primary-btn" 
-                    bindtap="onViewCourseCode" 
-                    data-id="{{item.id}}">查看课程码</button>
-          </view>
-          
-          <!-- 教练视角：取消和核销按钮 -->
-          <view wx:if="{{userRole === 'coach'}}" class="button-group">
-            <button class="action-btn cancel-btn" 
-                    bindtap="onShowCancelModal" 
-                    data-id="{{item.id}}">取消</button>
-            <button class="action-btn verify-btn" 
-                    bindtap="onScanVerify">核销</button>
-          </view>
-        </view>
-      </view>
     </view>
     
     <!-- 加载更多提示 -->
@@ -106,70 +72,4 @@
   </emptyState>
 </layout>
 
-<!-- 取消原因模态框 -->
-<view class="cancel-modal {{showCancelModal ? 'show' : ''}}" wx:if="{{showCancelModal}}">
-  <view class="modal-overlay" bindtap="onHideCancelModal"></view>
-  <view class="modal-content">
-    <view class="modal-header">
-      <text class="modal-title">取消课程</text>
-      <text class="modal-close" bindtap="onHideCancelModal">✕</text>
-    </view>
-    <view class="modal-body">
-      <textarea class="cancel-reason-input" 
-                placeholder="请输入取消原因..." 
-                value="{{cancelReason}}" 
-                bindinput="onCancelReasonInput"
-                maxlength="200"
-                auto-height></textarea>
-      <view class="char-count">{{cancelReason.length}}/200</view>
-    </view>
-    <view class="modal-footer">
-      <button class="modal-btn cancel-modal-btn" bindtap="onHideCancelModal">取消</button>
-      <button class="modal-btn confirm-modal-btn active" 
-              bindtap="onConfirmCancel">确认取消</button>
-    </view>
-  </view>
-</view>
-
-<!-- 课程码弹窗 -->
-<view class="course-code-modal {{showCourseCodeModal ? 'show' : ''}}" wx:if="{{showCourseCodeModal}}">
-  <view class="modal-overlay" bindtap="onHideCourseCodeModal"></view>
-  <view class="modal-content course-code-content">
-    <view class="modal-header">
-      <text class="modal-title">课程码</text>
-      <text class="modal-close" bindtap="onHideCourseCodeModal">✕</text>
-    </view>
-    <view class="modal-body course-code-body">
-      <!-- 课程信息 -->
-      <view class="course-info-summary" wx:if="{{currentCourseInfo}}">
-        <view class="info-row">
-          <text class="info-label">课程时间：</text>
-          <text class="info-value">{{currentCourseInfo.time}}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">教练：</text>
-          <text class="info-value">{{currentCourseInfo.coachName}}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">地点：</text>
-          <text class="info-value">{{currentCourseInfo.location}}</text>
-        </view>
-      </view>
-      
-      <!-- 二维码区域 -->
-      <view class="qr-code-container">
-        <view class="qr-code-placeholder">
-          <text class="qr-code-text">课程二维码</text>
-          <view class="qr-code-box">
-            <text class="code-text">{{currentCourseCode}}</text>
-          </view>
-        </view>
-        <text class="qr-tips">请向教练出示此二维码进行课程核销</text>
-      </view>
-    </view>
-    <view class="modal-footer">
-      <button class="modal-btn confirm-modal-btn full-width" 
-              bindtap="onHideCourseCodeModal">关闭</button>
-    </view>
-  </view>
-</view> 
+ 
