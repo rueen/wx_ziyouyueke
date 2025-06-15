@@ -33,9 +33,7 @@ Page({
           editableLessons: studentData.remainingLessons.toString(),
           studentRemark: studentData.remark || ''
         });
-        console.log('加载学员数据:', studentData);
       } catch (error) {
-        console.error('解析学员数据失败：', error);
         wx.showToast({
           title: '数据加载失败',
           icon: 'none'
@@ -167,9 +165,6 @@ Page({
         coach_remark: studentRemark.trim()
       };
 
-      console.log('更新师生关系数据:', updateData);
-      console.log('师生关系ID:', studentData.id);
-
       const result = await api.relation.update(studentData.id, updateData);
       
       wx.hideLoading();
@@ -193,8 +188,6 @@ Page({
           icon: 'success',
           duration: 1500
         });
-
-        console.log('师生关系更新成功:', result.data);
       } else {
         throw new Error(result.message || '保存失败');
       }
@@ -285,9 +278,6 @@ Page({
         title: '解除中...'
       });
 
-      console.log('解除师生关系，关系ID:', studentData.id);
-
-      // 调用API解除师生关系
       const result = await api.relation.delete(studentData.id);
       
       wx.hideLoading();
@@ -320,8 +310,6 @@ Page({
             }, 1500);
           }
         });
-
-        console.log('师生关系解除成功:', result.data);
       } else {
         throw new Error(result.message || '解除绑定失败');
       }
@@ -340,6 +328,132 @@ Page({
         title: errorMessage,
         icon: 'none',
         duration: 3000
+      });
+    }
+  },
+
+  async loadStudentData() {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      const result = await api.relation.getDetail(this.data.relationId);
+      
+      wx.hideLoading();
+      
+      if (result && result.data) {
+        const studentData = result.data;
+        
+        this.setData({
+          studentData: {
+            id: studentData.id,
+            studentId: studentData.student.id,
+            studentName: studentData.student.nickname || '未知学员',
+            studentAvatar: studentData.student.avatar_url || '/images/defaultAvatar.png',
+            studentPhone: studentData.student.phone || '',
+            totalSessions: studentData.total_sessions || 0,
+            remainingSessions: studentData.remaining_sessions || 0,
+            status: studentData.status,
+            notes: studentData.notes || '',
+            createTime: studentData.created_at
+          }
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载学员数据失败:', error);
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  async updateRelation() {
+    try {
+      wx.showLoading({
+        title: '保存中...'
+      });
+
+      const { studentData } = this.data;
+      const updateData = {
+        total_sessions: studentData.totalSessions,
+        remaining_sessions: studentData.remainingSessions,
+        notes: studentData.notes
+      };
+
+      const result = await api.relation.update(studentData.id, updateData);
+      
+      wx.hideLoading();
+      
+      if (result && result.data) {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+        
+        // 延迟返回上一页
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('更新师生关系失败:', error);
+      wx.showToast({
+        title: error.message || '保存失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  onUnbindStudent() {
+    const { studentData } = this.data;
+    
+    wx.showModal({
+      title: '确认解除关系',
+      content: `确定要解除与${studentData.studentName}的师生关系吗？此操作不可撤销。`,
+      success: (res) => {
+        if (res.confirm) {
+          this.unbindStudent();
+        }
+      }
+    });
+  },
+
+  /**
+   * 解除师生关系
+   */
+  async unbindStudent() {
+    try {
+      wx.showLoading({
+        title: '处理中...'
+      });
+
+      const { studentData } = this.data;
+
+      const result = await api.relation.delete(studentData.id);
+      
+      wx.hideLoading();
+      
+      if (result && result.data) {
+        wx.showToast({
+          title: '解除成功',
+          icon: 'success'
+        });
+        
+        // 延迟返回上一页
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('解除师生关系失败:', error);
+      wx.showToast({
+        title: error.message || '操作失败',
+        icon: 'none'
       });
     }
   }

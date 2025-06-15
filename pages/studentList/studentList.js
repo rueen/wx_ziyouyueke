@@ -14,7 +14,9 @@ Page({
     students: [],
     coachInfo: {},
     isFirstLoad: true, // 标记是否首次加载
-    isLoading: false // 加载状态
+    isLoading: false, // 加载状态
+    hasLoaded: false, // 标记是否已经加载过数据
+    isEmpty: false // 标记是否没有学员数据
   },
 
   /**
@@ -32,10 +34,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 只有非首次加载时才刷新数据（从其他页面返回时）
-    if (!this.data.isFirstLoad) {
-      console.log('从其他页面返回，刷新学员列表');
-      this.loadStudents(false);
+    // 从其他页面返回时刷新数据
+    if (this.data.hasLoaded) {
+      this.refreshStudentList();
     }
   },
 
@@ -43,10 +44,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    console.log('用户下拉刷新');
-    this.loadStudents().finally(() => {
-      wx.stopPullDownRefresh();
-    });
+    this.refreshStudentList();
   },
 
   /**
@@ -90,17 +88,19 @@ Page({
 
         this.setData({
           students,
-          isLoading: false
+          isLoading: false,
+          isEmpty: students.length === 0,
+          hasLoaded: true
         });
 
-        console.log('加载学员数据成功:', students);
       } else {
         // 没有学员数据时，使用空数组
         this.setData({
           students: [],
-          isLoading: false
+          isLoading: false,
+          isEmpty: true,
+          hasLoaded: true
         });
-        console.log('暂无学员数据');
       }
     } catch (error) {
       if (showLoading) {
@@ -121,11 +121,13 @@ Page({
   },
 
   /**
-   * 刷新学员列表（供其他页面调用）
+   * 刷新学员列表
    */
   refreshStudentList() {
-    console.log('刷新学员列表');
     this.loadStudents(false);
+    
+    // 停止下拉刷新
+    wx.stopPullDownRefresh();
   },
 
   /**
@@ -154,8 +156,6 @@ Page({
    * 添加学员 - 直接分享绑定教练页面
    */
   onAddStudent() {
-    console.log('分享绑定教练页面');
-    
     // 直接触发分享
     this.shareBindCoachPage();
   },
@@ -166,10 +166,7 @@ Page({
   shareBindCoachPage() {
     // 显示分享菜单
     wx.showShareMenu({
-      withShareTicket: true,
-      success: () => {
-        console.log('分享菜单显示成功');
-      }
+      withShareTicket: true
     });
 
     // 提示用户点击右上角分享
@@ -184,12 +181,27 @@ Page({
    * 页面分享配置
    */
   onShareAppMessage() {
-    const { coachInfo } = this.data;
-    console.log(`/pages/bindCoach/bindCoach?coach_id=${coachInfo.id}`)
+    const userInfo = wx.getStorageSync('userInfo');
+    const coachInfo = userInfo || {};
+    
     return {
-      title: `${coachInfo.nickname}邀请您成为学员`,
+      title: `${coachInfo.nickname || '教练'}邀请您绑定师生关系`,
       path: `/pages/bindCoach/bindCoach?coach_id=${coachInfo.id}`,
-      imageUrl: coachInfo.avatar_url
+      imageUrl: coachInfo.avatar_url || '/images/defaultAvatar.png'
+    };
+  },
+
+  /**
+   * 分享到朋友圈
+   */
+  onShareTimeline() {
+    const userInfo = wx.getStorageSync('userInfo');
+    const coachInfo = userInfo || {};
+    
+    return {
+      title: `${coachInfo.nickname || '教练'}邀请您绑定师生关系`,
+      query: `coach_id=${coachInfo.id}`,
+      imageUrl: coachInfo.avatar_url || '/images/defaultAvatar.png'
     };
   }
 }) 

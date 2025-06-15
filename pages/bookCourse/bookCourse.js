@@ -43,51 +43,29 @@ Page({
     // 状态
     isLoading: false,
     canSubmit: false, // 是否可以提交
-    isSubmitting: false // 是否正在提交
+    isSubmitting: false, // 是否正在提交
+    coachId: null,
+    selectedTime: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log('约课页面参数:', options);
-    
-    const { 
-      type, 
-      from, 
-      coachId, 
-      coachName, 
-      studentId, 
-      studentName 
-    } = options;
-    
-    // 设置约课类型
-    let bookingType = type;
-    if (!bookingType) {
-      // 根据参数推断约课类型
-      if (coachId || coachName) {
-        bookingType = 'student-book-coach';
-      } else if (studentId || studentName) {
-        bookingType = 'coach-book-student';
-      } else {
-        bookingType = 'coach-book-student'; // 默认
-      }
-    }
+    // 获取页面参数
+    const { coach_id, date, time } = options;
     
     this.setData({
-      bookingType,
-      from: from || 'home',
-      presetId: coachId || studentId || '',
-      presetName: decodeURIComponent(coachName || studentName || '')
+      coachId: coach_id ? parseInt(coach_id) : null,
+      selectedDate: date || '',
+      selectedTime: time || ''
     });
+
+    // 检查登录状态
+    this.checkLoginStatus();
     
-    // 设置页面标题
-    wx.setNavigationBarTitle({
-      title: bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课'
-    });
-    
-    // 加载数据
-    this.loadInitialData();
+    // 加载页面数据
+    this.loadPageData();
   },
 
   /**
@@ -376,114 +354,53 @@ Page({
   /**
    * 提交约课
    */
-  async onSubmitBooking() {
-    const { 
-      bookingType, 
-      selectedOption, 
-      selectedDate, 
-      selectedTimeSlot, 
-      selectedAddress, 
-      remark,
-      isSubmitting 
-    } = this.data;
-    
-    if (isSubmitting) {
-      return; // 防止重复提交
-    }
-    
-    if (!this.data.canSubmit) {
-      wx.showToast({
-        title: '请完善约课信息',
-        icon: 'none'
-      });
-      return;
-    }
-    
+  async submitBooking() {
     try {
-      this.setData({ isSubmitting: true });
-      
+      // 验证必填字段
+      if (!this.validateForm()) {
+        return;
+      }
+
       wx.showLoading({
         title: '提交中...'
       });
-      
-      // 检查必要的数据
-      if (!selectedTimeSlot || !selectedTimeSlot.startTime || !selectedTimeSlot.endTime) {
-        throw new Error('时间信息不完整，请重新选择时间');
-      }
-      
-      if (!selectedOption.coach_id || !selectedOption.student_id) {
-        throw new Error('师生关系数据不完整，请重新选择');
-      }
-      
-      // 构建提交数据
+
+      const userInfo = wx.getStorageSync('userInfo');
       const bookingData = {
-        course_date: selectedDate,
-        start_time: selectedTimeSlot.startTime,
-        end_time: selectedTimeSlot.endTime,
-        address_id: selectedAddress.id,
-        relation_id: selectedOption.id
+        coach_id: this.data.coachId,
+        student_id: userInfo.id,
+        course_date: this.data.selectedDate,
+        start_time: this.data.selectedTime.split('-')[0],
+        end_time: this.data.selectedTime.split('-')[1],
+        address_id: this.data.selectedAddress ? this.data.selectedAddress.id : null,
+        student_remark: this.data.remark || '',
+        booking_status: 1 // 待确认状态
       };
-      
-      // 添加备注
-      if (remark && remark.trim()) {
-        if (bookingType === 'coach-book-student') {
-          // 教练约学员，备注作为教练备注
-          bookingData.coach_remark = remark.trim();
-        } else {
-          // 学员约教练，备注作为学员备注
-          bookingData.student_remark = remark.trim();
-        }
-      }
-      
-      // 直接从师生关系数据中获取coach_id和student_id
-      if (bookingType === 'coach-book-student') {
-        // 教练约学员
-        bookingData.coach_id = selectedOption.coach_id;
-        bookingData.student_id = selectedOption.student_id;
-      } else {
-        // 学员约教练  
-        bookingData.student_id = selectedOption.student_id;
-        bookingData.coach_id = selectedOption.coach_id;
-      }
-      
-      console.log('提交约课数据:', bookingData);
-      
-      // 调用API提交约课
+
       const result = await api.course.create(bookingData);
       
       wx.hideLoading();
       
-      if (result && result.success) {
+      if (result && result.data) {
         wx.showToast({
           title: '约课成功',
-          icon: 'success',
-          duration: 1500,
-          success: () => {
-            setTimeout(() => {
-              wx.navigateBack({
-                delta: 1
-              });
-            }, 1500);
-          }
+          icon: 'success'
         });
-        
-        console.log('约课成功:', result.data);
-      } else {
-        throw new Error(result.message || '约课失败');
+
+        // 延迟跳转
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
       }
-      
     } catch (error) {
       wx.hideLoading();
-      console.error('提交约课失败:', error);
-      
-      const errorMessage = error.message || '约课失败，请重试';
+      console.error('约课失败:', error);
       wx.showToast({
-        title: errorMessage,
-        icon: 'none',
-        duration: 3000
+        title: error.message || '约课失败',
+        icon: 'none'
       });
-    } finally {
-      this.setData({ isSubmitting: false });
     }
-  }
+  },
+
+  // ... existing code ...
 }) 

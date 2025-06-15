@@ -59,7 +59,6 @@ Page({
    */
   onDateSelected(e) {
     const { date } = e.detail;
-    console.log('选中日期:', date);
   },
 
   /**
@@ -67,7 +66,6 @@ Page({
    */
   onTimeSlotsLoaded(e) {
     const { date, timeSlots } = e.detail;
-    console.log('时间段加载完成:', date, timeSlots);
   },
 
   /**
@@ -79,5 +77,47 @@ Page({
       title: message || '操作失败',
       icon: 'none'
     });
+  },
+
+  /**
+   * 日期选择事件
+   */
+  onDateSelect(e) {
+    const { date } = e.detail;
+    
+    this.setData({
+      selectedDate: date
+    });
+    
+    // 加载选中日期的时间段
+    this.loadTimeSlots(date);
+  },
+
+  /**
+   * 加载时间段数据
+   */
+  async loadTimeSlots(date) {
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      // 这里应该调用API获取指定日期的时间段数据
+      // 暂时使用模拟数据
+      const timeSlots = [];
+      
+      this.setData({
+        timeSlots: timeSlots
+      });
+      
+      wx.hideLoading();
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载时间段失败:', error);
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+    }
   }
 }); 

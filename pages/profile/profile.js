@@ -152,12 +152,10 @@ Page({
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
       
-      console.log('加载用户角色:', userRole);
-      console.log('加载用户信息:', userInfo);
-      
       if (userRole && userInfo) {
         this.setData({
-          userRole: userRole
+          userRole: userRole,
+          userInfo: userInfo
         });
         
         // 执行回调函数

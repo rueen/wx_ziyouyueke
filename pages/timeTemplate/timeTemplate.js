@@ -92,9 +92,7 @@ Page({
           templateEnabled: template.is_active === 1 // 设置启用状态
         });
         
-        console.log('加载时间设置成功:', template);
       } else {
-        console.log('暂无时间模板数据');
       }
     } catch (error) {
       wx.hideLoading();
@@ -188,8 +186,6 @@ Page({
         icon: 'success'
       });
       
-      console.log('模板状态切换成功:', enabled);
-      
     } catch (error) {
       wx.hideLoading();
       console.error('切换模板状态失败:', error);
@@ -273,8 +269,6 @@ Page({
         icon: 'success'
       });
 
-      console.log('保存预约设置成功:', templateData);
-      
     } catch (error) {
       wx.hideLoading();
       console.error('保存预约设置失败:', error);
@@ -394,8 +388,6 @@ Page({
         icon: 'success'
       });
 
-      console.log('添加时间段成功：', newTimeSlot);
-      
     } catch (error) {
       wx.hideLoading();
       console.error('添加时间段失败:', error);
@@ -462,8 +454,6 @@ Page({
               icon: 'success'
             });
 
-            console.log('删除时间段成功:', deletedSlot);
-            
           } catch (error) {
             wx.hideLoading();
             console.error('删除时间段失败:', error);
@@ -509,7 +499,5 @@ Page({
         templateId: result.data.id
       });
     }
-
-    console.log('保存时间模板成功:', templateData);
   }
 }) 
