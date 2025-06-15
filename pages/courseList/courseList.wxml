@@ -18,11 +18,14 @@
       <!-- 课程信息 -->
       <view class="course-content">
         <!-- 教练信息 -->
-        <view class="coach-info">
-          <view class="coach-avatar">
-            <image src="{{item.coachAvatar}}" class="avatar-img"></image>
+        <view class="person-info">
+          <view class="person-avatar">
+            <image src="{{item.displayAvatar}}" class="avatar-img"></image>
           </view>
-          <text class="coach-name">{{item.coachName}}</text>
+          <view class="person-details">
+            <text class="person-name">{{item.displayName}}</text>
+            <text class="person-role">{{item.displayRole}}</text>
+          </view>
         </view>
 
         <!-- 课程详情 -->

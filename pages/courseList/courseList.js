@@ -135,6 +135,18 @@ Page({
         const newCourses = result.data.courses.map((course, index) => {
           console.log(`处理第${index + 1}条课程数据:`, course);
           
+          // 根据用户角色决定显示的头像和昵称
+          let displayName, displayAvatar;
+          if (userRole === 'coach') {
+            // 教练视角：显示学员信息
+            displayName = course.student ? course.student.nickname : '未知学员';
+            displayAvatar = course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png';
+          } else {
+            // 学员视角：显示教练信息
+            displayName = course.coach ? course.coach.nickname : '未知教练';
+            displayAvatar = course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png';
+          }
+
           const mappedCourse = {
             id: course.id,
             coachId: course.coach ? course.coach.id : 0,
@@ -142,6 +154,10 @@ Page({
             coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
             studentName: course.student ? course.student.nickname : '未知学员',
             studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            // 根据角色动态显示的信息
+            displayName: displayName,
+            displayAvatar: displayAvatar,
+            displayRole: userRole === 'coach' ? '学员' : '教练',
             time: `${course.course_date} ${course.start_time}-${course.end_time}`,
             location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
             remark: course.student_remark || course.coach_remark || '',
