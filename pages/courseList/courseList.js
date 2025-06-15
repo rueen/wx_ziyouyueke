@@ -152,9 +152,8 @@ Page({
     const statusMap = {
       1: 'pending',      // 待确认
       2: 'confirmed',    // 已确认  
-      3: 'confirmed',    // 进行中（显示为已确认）
-      4: 'completed',    // 已完成
-      5: 'cancelled'     // 已取消
+      3: 'completed',    // 已完成
+      4: 'cancelled'     // 已取消
     };
     return statusMap[apiStatus] || 'pending';
   },
