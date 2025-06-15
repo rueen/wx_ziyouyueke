@@ -81,10 +81,18 @@
 <view wx:if="{{!loading && courseInfo}}" class="bottom-actions">
   <!-- 待确认状态的按钮 -->
   <view wx:if="{{courseInfo.status === 'pending'}}" class="action-buttons">
-    <button class="action-btn cancel-btn" 
-            bindtap="onShowCancelModal">取消课程</button>
-    <button class="action-btn confirm-btn" 
-            bindtap="onConfirmCourse">确认课程</button>
+    <!-- 如果是课程创建人，只显示取消按钮 -->
+    <view wx:if="{{courseInfo.isCreatedByCurrentUser}}" class="single-button">
+      <button class="action-btn cancel-btn" 
+              bindtap="onShowCancelModal">取消课程</button>
+    </view>
+    <!-- 如果不是课程创建人，显示取消和确认按钮 -->
+    <view wx:else class="button-group">
+      <button class="action-btn cancel-btn" 
+              bindtap="onShowCancelModal">取消课程</button>
+      <button class="action-btn confirm-btn" 
+              bindtap="onConfirmCourse">确认课程</button>
+    </view>
   </view>
   
   <!-- 已确认状态的按钮 -->

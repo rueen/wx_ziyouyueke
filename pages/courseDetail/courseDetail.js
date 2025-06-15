@@ -14,6 +14,7 @@ Page({
     courseId: null,
     courseInfo: null,
     userRole: '',
+    currentUserId: null,
     loading: true,
     
     // 取消课程相关
@@ -64,7 +65,8 @@ Page({
       
       if (userRole && userInfo) {
         this.setData({
-          userRole: userRole
+          userRole: userRole,
+          currentUserId: userInfo.id
         });
         
         // 执行回调函数
@@ -118,6 +120,15 @@ Page({
           displayAvatar = course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png';
         }
 
+        // 判断当前用户是否为课程创建人
+        const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
+        
+        console.log('课程创建人判断:', {
+          courseCreatedBy: course.created_by,
+          currentUserId: this.data.currentUserId,
+          isCreatedByCurrentUser: isCreatedByCurrentUser
+        });
+
         const courseInfo = {
           id: course.id,
           coachId: course.coach ? course.coach.id : 0,
@@ -136,7 +147,9 @@ Page({
           remark: course.student_remark || course.coach_remark || '',
           status: this.getStatusFromApi(course.booking_status),
           createTime: course.created_at || '',
-          cancelReason: course.cancel_reason || ''
+          cancelReason: course.cancel_reason || '',
+          createdBy: course.created_by,
+          isCreatedByCurrentUser: isCreatedByCurrentUser
         };
 
         this.setData({
