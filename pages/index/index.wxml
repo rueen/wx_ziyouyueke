@@ -35,7 +35,7 @@
     <!-- 我的课表 -->
     <view class="my-schedule">
       <view class="section-header">
-        <text class="section-title">近三天课程安排</text>
+        <text class="section-title">最近一次课程安排</text>
       </view>
       
       <!-- 日历式课表 -->
@@ -88,7 +88,7 @@
       
       <!-- 空状态 -->
       <view class="empty-schedule" wx:else>
-        <text class="empty-text">{{userRole === 'student' ? '近三天暂无课程安排' : '近三天暂无时间安排'}}</text>
+        <text class="empty-text">{{userRole === 'student' ? '暂无即将开始的课程' : '暂无即将开始的时间安排'}}</text>
       </view>
     </view>
     
