@@ -94,7 +94,10 @@ Page({
       
       wx.hideLoading();
 
+      console.log('API返回的原始数据:', result);
+      
       if (result && result.data && result.data.courses) {
+        console.log('课程原始数据:', result.data.courses);
         // 格式化API数据为前端需要的格式
         const courses = result.data.courses.map(course => ({
           id: course.id,
@@ -103,9 +106,9 @@ Page({
           coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
           studentName: course.student ? course.student.nickname : '未知学员',
           studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
-          time: `${course.booking_date} ${course.start_time}-${course.end_time}`,
-          location: '待定', // API暂无地点字段
-          remark: course.notes || '',
+          time: `${course.course_date} ${course.start_time}-${course.end_time}`,
+          location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
+          remark: course.student_remark || course.coach_remark || '',
           status: this.getStatusFromApi(course.booking_status),
           createTime: course.created_at || '',
           cancelReason: course.cancel_reason || ''
@@ -116,11 +119,16 @@ Page({
         });
 
         console.log('API加载课程数据成功:', courses);
+        
+        // 过滤当前tab的课程数据
+        this.filterCourses();
       } else {
         // 没有课程数据时使用空数组
+        console.log('API返回了数据但没有courses字段，设置空数组');
         this.setData({
           courses: []
         });
+        this.filterCourses();
       }
     } catch (error) {
       wx.hideLoading();
@@ -240,7 +248,19 @@ Page({
     const { currentTab, tabs, courses } = this.data;
     const currentStatus = tabs[currentTab].status;
     
+    console.log('过滤课程数据:', {
+      currentTab,
+      currentStatus,
+      totalCourses: courses.length,
+      courses
+    });
+    
     const filteredCourses = courses.filter(course => course.status === currentStatus);
+    
+    console.log('过滤后的课程数据:', {
+      filteredCount: filteredCourses.length,
+      filteredCourses
+    });
     
     this.setData({
       filteredCourses
