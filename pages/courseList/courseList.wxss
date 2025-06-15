@@ -298,26 +298,7 @@ page {
   opacity: 0.8;
 }
 
-/* 空状态 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60vh;
-  text-align: center;
-}
-
-.empty-text {
-  font-size: 32rpx;
-  color: #999;
-  margin-bottom: 16rpx;
-}
-
-.empty-desc {
-  font-size: 28rpx;
-  color: #ccc;
-}
+/* 空状态样式已移至通用组件 */
 
 /* 课程码弹窗样式 */
 .course-code-modal {

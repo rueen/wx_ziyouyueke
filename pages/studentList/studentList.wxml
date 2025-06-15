@@ -26,11 +26,12 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:else>
-    <text class="empty-text">暂无学员</text>
-    <text class="empty-desc">您还没有关联任何学员</text>
-    <text class="refresh-hint">下拉可刷新</text>
-  </view>
+  <emptyState 
+    wx:else
+    type="no-data"
+    title="暂无学员"
+    description="您还没有关联任何学员，下拉可刷新">
+  </emptyState>
 
   <!-- 添加学员按钮 -->
   <view class="add-button-container">

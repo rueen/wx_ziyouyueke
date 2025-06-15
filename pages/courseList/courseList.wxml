@@ -85,10 +85,12 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:else>
-    <text class="empty-text">暂无{{tabs[currentTab].name}}课程</text>
-    <text class="empty-desc">{{currentTab === 0 ? '您还没有待确认的课程' : '暂时没有相关课程记录'}}</text>
-  </view>
+  <emptyState 
+    wx:else
+    type="no-course"
+    title="暂无{{tabs[currentTab].name}}课程"
+    description="{{currentTab === 0 ? '您还没有待确认的课程' : '暂时没有相关课程记录'}}">
+  </emptyState>
 </layout>
 
 <!-- 取消原因模态框 -->

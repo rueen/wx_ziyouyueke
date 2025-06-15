@@ -46,15 +46,11 @@
         </view>
         
         <!-- 空状态 -->
-        <view class="empty-options" wx:if="{{showEmptyState && availableOptions.length === 0}}">
-          <view class="empty-icon">
-            <text class="iconfont icon-empty"></text>
-          </view>
-          <text class="empty-text">
-            {{bookingType === 'coach-book-student' ? '暂无可约学员' : '暂无可约教练'}}
-          </text>
-          <text class="empty-desc">需要有剩余课时才能约课</text>
-        </view>
+        <emptyState 
+          wx:if="{{showEmptyState && availableOptions.length === 0}}"
+          type="{{bookingType === 'coach-book-student' ? 'no-student' : 'no-coach'}}"
+          customClass="compact">
+        </emptyState>
       </view>
     </view>
 
@@ -153,10 +149,11 @@
         </view>
         
         <!-- 空状态 -->
-        <view class="empty-addresses" wx:if="{{addresses.length === 0}}">
-          <text class="empty-text">暂无地址</text>
-          <text class="empty-desc">请先添加上课地址</text>
-        </view>
+        <emptyState 
+          wx:if="{{addresses.length === 0}}"
+          type="no-address"
+          customClass="compact">
+        </emptyState>
       </view>
     </view>
   </view>

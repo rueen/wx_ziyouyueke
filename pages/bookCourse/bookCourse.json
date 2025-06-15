@@ -2,6 +2,7 @@
   "usingComponents": {
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
-    "timeSelector": "/components/timeSelector/timeSelector"
+    "timeSelector": "/components/timeSelector/timeSelector",
+    "emptyState": "/components/emptyState/emptyState"
   }
 } 

@@ -145,17 +145,7 @@ page {
   color: #fff;
 }
 
-.empty-slots {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200rpx;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #999;
-}
+/* 空状态样式已移至通用组件 */
 
 /* 弹窗样式 */
 .modal-mask {

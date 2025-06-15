@@ -49,9 +49,13 @@
       </view>
     </view>
     
-    <view class="empty-slots" wx:else>
-      <text class="empty-text">暂无时间段模板</text>
-    </view>
+    <emptyState 
+      wx:else
+      type="no-data"
+      title="暂无时间段模板"
+      description="点击上方添加按钮创建时间段"
+      customClass="compact">
+    </emptyState>
   </view>
 </layout>
 
