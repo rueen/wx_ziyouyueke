@@ -242,45 +242,34 @@ Page({
   },
 
   /**
-   * 游客登录（保留模拟方式）
+   * 游客登录（简化版本）
    */
   mockLoginSuccess(loginType, userData) {
-    // 保存用户信息
+    // 保存最基本的用户信息
     const userInfo = {
-      loginType,
-      nickName: userData.nickname || '微信用户',
-      avatarUrl: userData.avatar || '/images/defaultAvatar.png',
-      loginTime: new Date().toLocaleString(),
-      wxCode: userData.code || '' // 保存微信登录凭证
+      id: null, // 游客没有ID
+      nickname: userData.nickname || '游客用户',
+      avatar_url: userData.avatar || '/images/defaultAvatar.png',
+      loginType: loginType
     };
 
     wx.setStorageSync('userInfo', userInfo);
     wx.setStorageSync('isLoggedIn', true);
     wx.setStorageSync('loginType', loginType);
-    wx.setStorageSync('userRole', this.data.selectedRole); // 保存选择的身份
+    wx.setStorageSync('userRole', this.data.selectedRole);
 
     // 显示登录成功提示
-    const roleNames = { student: '学员', coach: '教练' };
-    const roleText = roleNames[this.data.selectedRole];
     wx.showToast({
-      title: loginType === 'guest' ? '游客登录成功' : `${roleText}身份登录成功`,
+      title: '游客登录成功',
       icon: 'success',
       duration: 2000
     });
 
     // 延迟跳转
     setTimeout(() => {
-      if (this.data.fromBindCoach && this.data.coachId) {
-        // 从绑定教练页面来的，返回绑定教练页面
-        wx.redirectTo({
-          url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
-        });
-      } else {
-        // 正常登录，跳转到首页
-        wx.switchTab({
-          url: '/pages/index/index'
-        });
-      }
+      wx.switchTab({
+        url: '/pages/index/index'
+      });
     }, 2000);
   },
 

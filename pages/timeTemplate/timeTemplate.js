@@ -22,11 +22,7 @@ Page({
     templateId: null, // 模板ID
     
     // 时间段模板（一天的时间段模板）
-    timeSlotTemplate: [
-      { id: 1, startTime: '09:00', endTime: '12:00' },
-      { id: 2, startTime: '14:00', endTime: '17:00' },
-      { id: 3, startTime: '19:00', endTime: '21:00' }
-    ],
+    timeSlotTemplate: [],
     
     // 添加时间段的表单数据
     showAddForm: false,

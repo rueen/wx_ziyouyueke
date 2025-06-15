@@ -160,109 +160,100 @@ Page({
   /**
    * 加载日历式课表数据
    */
-  loadCalendarData() {
-    const { userRole } = this.data;
-    
-    // 获取近三天的日期
-    const today = new Date();
-    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-    const dayAfterTomorrow = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
-    
-    if (userRole === 'student') {
-      // 学员视角：只显示已预约的课程，不显示空闲时间
-      const bookedCourses = [
-        {
-          date: this.formatDateKey(today),
-          startTime: '09:00',
-          endTime: '12:00',
-          coachName: '李教练',
-          coachAvatar: '/images/defaultAvatar.png',
-          location: '万达广场健身房',
-          remark: '瑜伽课程，请提前10分钟到达',
-          status: 'confirmed'
-        },
-        {
-          date: this.formatDateKey(tomorrow),
-          startTime: '14:00',
-          endTime: '17:00',
-          coachName: '王教练',
-          coachAvatar: '/images/defaultAvatar.png',
-          location: '中心广场健身房',
-          remark: '力量训练课程，请穿运动鞋',
-          status: 'pending'
-        },
-        {
-          date: this.formatDateKey(dayAfterTomorrow),
-          startTime: '19:00',
-          endTime: '21:00',
-          coachName: '张教练',
-          coachAvatar: '/images/defaultAvatar.png',
-          location: '舞蹈工作室',
-          remark: '体态矫正课程',
-          status: 'confirmed'
-        }
-      ];
+  async loadCalendarData() {
+    try {
+      const { userRole } = this.data;
       
-      // 生成学员的日历数据（只显示已预约课程）
-      const calendarData = this.generateStudentCalendarData([today, tomorrow, dayAfterTomorrow], bookedCourses);
+      wx.showLoading({
+        title: '加载中...'
+      });
+
+      // 获取近三天的日期
+      const today = new Date();
+      const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+      const dayAfterTomorrow = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+      
+      const startDate = this.formatDateKey(today);
+      const endDate = this.formatDateKey(dayAfterTomorrow);
+      
+      // 从API获取课程数据
+      const result = await api.course.getList({
+        role: userRole,
+        start_date: startDate,
+        end_date: endDate,
+        page: 1,
+        page_size: 50
+      });
+      
+      wx.hideLoading();
+      
+      if (result && result.data && result.data.courses) {
+        const courses = result.data.courses;
+        
+        if (userRole === 'student') {
+          // 学员视角：只显示已预约的课程
+          const calendarData = this.generateStudentCalendarData([today, tomorrow, dayAfterTomorrow], courses);
+          this.setData({ calendarData });
+        } else {
+          // 教练视角：需要获取时间模板，然后显示所有时间段
+          await this.loadCoachCalendarData([today, tomorrow, dayAfterTomorrow], courses);
+        }
+      } else {
+        // 没有数据时显示空状态
+        this.setData({
+          calendarData: []
+        });
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载日历数据失败:', error);
+      
+      // 显示空状态
+      this.setData({
+        calendarData: []
+      });
+      
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 加载教练视角的日历数据
+   */
+  async loadCoachCalendarData(dates, bookedCourses) {
+    try {
+      // 获取时间模板
+      const templateResult = await api.timeTemplate.getList();
+      const timeTemplate = templateResult && templateResult.data ? templateResult.data : [];
+      
+      if (timeTemplate.length === 0) {
+        // 没有时间模板，显示空状态
+        this.setData({
+          calendarData: []
+        });
+        return;
+      }
+      
+      // 生成教练的日历数据（显示所有时间段）
+      const calendarData = dates.map(date => ({
+        date: this.formatDateKey(date),
+        dayTitle: this.getDayTitle(date),
+        dateStr: this.formatDate(date),
+        timeSlots: this.generateDayTimeSlots(date, timeTemplate, bookedCourses)
+      }));
       
       this.setData({
         calendarData
       });
       
-    } else {
-      // 教练视角：显示时间模板中的所有时间段
-      const timeTemplate = [
-        { id: 1, startTime: '09:00', endTime: '12:00' },
-        { id: 2, startTime: '14:00', endTime: '17:00' },
-        { id: 3, startTime: '19:00', endTime: '21:00' }
-      ];
-      
-      const bookedCourses = [
-        {
-          date: this.formatDateKey(today),
-          timeSlotId: 1,
-          studentName: '小李',
-          studentAvatar: '/images/defaultAvatar.png',
-          location: '万达广场健身房',
-          remark: '瑜伽课程',
-          status: 'confirmed'
-        },
-        {
-          date: this.formatDateKey(tomorrow),
-          timeSlotId: 2,
-          studentName: '小王',
-          studentAvatar: '/images/defaultAvatar.png',
-          location: '中心广场健身房',
-          remark: '力量训练课程',
-          status: 'pending'
-        }
-      ];
-      
-      // 生成教练的日历数据（显示所有时间段）
-      const calendarData = [
-        {
-          date: this.formatDateKey(today),
-          dayTitle: '今天',
-          dateStr: this.formatDate(today),
-          timeSlots: this.generateDayTimeSlots(today, timeTemplate, bookedCourses)
-        },
-        {
-          date: this.formatDateKey(tomorrow),
-          dayTitle: '明天',
-          dateStr: this.formatDate(tomorrow),
-          timeSlots: this.generateDayTimeSlots(tomorrow, timeTemplate, bookedCourses)
-        },
-        {
-          date: this.formatDateKey(dayAfterTomorrow),
-          dayTitle: '后天',
-          dateStr: this.formatDate(dayAfterTomorrow),
-          timeSlots: this.generateDayTimeSlots(dayAfterTomorrow, timeTemplate, bookedCourses)
-        }
-      ];
-      
+    } catch (error) {
+      console.error('加载教练日历数据失败:', error);
       this.setData({
-        calendarData
+        calendarData: []
       });
     }
   },
@@ -270,26 +261,30 @@ Page({
   /**
    * 生成学员的日历数据（只显示已预约课程）
    */
-  generateStudentCalendarData(dates, bookedCourses) {
+  generateStudentCalendarData(dates, courses) {
     return dates.map(date => {
       const dateKey = this.formatDateKey(date);
       const dayTitle = this.getDayTitle(date);
       
       // 过滤出该日期的预约课程
-      const dayBookings = bookedCourses
-        .filter(course => course.date === dateKey)
+      const dayBookings = courses
+        .filter(course => {
+          const courseDate = course.start_time ? course.start_time.split(' ')[0] : '';
+          return courseDate === dateKey;
+        })
         .map(course => ({
-          id: `${course.date}_${course.startTime}`,
-          startTime: course.startTime,
-          endTime: course.endTime,
+          id: course.id,
+          startTime: course.start_time ? course.start_time.split(' ')[1].substring(0, 5) : '',
+          endTime: course.end_time ? course.end_time.split(' ')[1].substring(0, 5) : '',
           isBooked: true,
-          coachName: course.coachName,
-          coachAvatar: course.coachAvatar,
-          location: course.location,
-          remark: course.remark,
-          status: course.status,
-          statusText: this.getStatusText(course.status),
-          statusClass: course.status
+          coachName: course.coach ? course.coach.nickname : '未知教练',
+          coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+          location: course.notes || '未指定地点',
+          remark: course.notes || '',
+          status: this.getStatusFromApi(course.booking_status),
+          statusText: this.getStatusText(this.getStatusFromApi(course.booking_status)),
+          statusClass: this.getStatusFromApi(course.booking_status),
+          courseId: course.id
         }))
         .sort((a, b) => a.startTime.localeCompare(b.startTime)); // 按时间排序
       
@@ -319,36 +314,60 @@ Page({
   /**
    * 生成某一天的时间段数据
    */
-  generateDayTimeSlots(date, timeTemplate, bookedCourses) {
+  generateDayTimeSlots(date, timeTemplate, courses) {
     const dateKey = this.formatDateKey(date);
     
     return timeTemplate.map(slot => {
       // 查找该时间段是否有预约
-      const booking = bookedCourses.find(course => 
-        course.date === dateKey && course.timeSlotId === slot.id
-      );
+      const booking = courses.find(course => {
+        const courseDate = course.start_time ? course.start_time.split(' ')[0] : '';
+        const courseStartTime = course.start_time ? course.start_time.split(' ')[1].substring(0, 5) : '';
+        const courseEndTime = course.end_time ? course.end_time.split(' ')[1].substring(0, 5) : '';
+        
+        return courseDate === dateKey && 
+               courseStartTime === slot.start_time && 
+               courseEndTime === slot.end_time;
+      });
       
       if (booking) {
         // 有预约，返回预约信息
         return {
           id: slot.id,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
+          startTime: slot.start_time,
+          endTime: slot.end_time,
           isBooked: true,
-          ...booking,
-          statusText: this.getStatusText(booking.status),
-          statusClass: booking.status
+          studentName: booking.student ? booking.student.nickname : '未知学员',
+          studentAvatar: booking.student ? (booking.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+          location: booking.notes || '未指定地点',
+          remark: booking.notes || '',
+          status: this.getStatusFromApi(booking.booking_status),
+          statusText: this.getStatusText(this.getStatusFromApi(booking.booking_status)),
+          statusClass: this.getStatusFromApi(booking.booking_status),
+          courseId: booking.id
         };
       } else {
         // 无预约，返回空闲时间段
         return {
           id: slot.id,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
+          startTime: slot.start_time,
+          endTime: slot.end_time,
           isBooked: false
         };
       }
     });
+  },
+
+  /**
+   * 将API状态码转换为前端状态
+   */
+  getStatusFromApi(apiStatus) {
+    const statusMap = {
+      1: 'pending',      // 待确认
+      2: 'confirmed',    // 已确认  
+      3: 'completed',    // 已完成
+      4: 'cancelled'     // 已取消
+    };
+    return statusMap[apiStatus] || 'pending';
   },
 
   /**

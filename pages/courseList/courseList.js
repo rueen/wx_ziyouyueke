@@ -207,11 +207,8 @@ Page({
         isRefreshing: false
       });
       
-      // 如果是首次加载失败，使用静态数据
-      if (isRefresh || this.data.courses.length === 0) {
-        console.log('使用静态数据作为后备');
-        this.loadStaticCourses();
-      }
+      // 显示加载失败状态，不使用静态数据
+      console.log('加载课程数据失败，显示空状态');
       
       wx.showToast({
         title: '加载失败，请重试',
@@ -235,45 +232,7 @@ Page({
     return mappedStatus;
   },
 
-  /**
-   * 加载静态课程数据（后备方案）
-   */
-  loadStaticCourses() {
-    const courses = [
-      {
-        id: 1,
-        coachId: 1,
-        coachName: '李教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        displayName: '李教练',
-        displayAvatar: '/images/defaultAvatar.png',
-        displayRole: '教练',
-        time: '2024年1月15日 09:00-12:00',
-        location: '万达广场健身房',
-        remark: '第一次瑜伽课，请提前10分钟到达',
-        status: 'pending',
-        createTime: '2024-01-10 14:30:00'
-      },
-      {
-        id: 2,
-        coachId: 2,
-        coachName: '王教练',
-        coachAvatar: '/images/defaultAvatar.png',
-        displayName: '王教练',
-        displayAvatar: '/images/defaultAvatar.png',
-        displayRole: '教练',
-        time: '2024年1月12日 15:00-18:00',
-        location: '中心广场健身房',
-        remark: '力量训练课程，请穿运动鞋',
-        status: 'confirmed',
-        createTime: '2024-01-08 10:20:00'
-      }
-    ];
-    
-    this.setData({
-      courses
-    });
-  },
+
 
   /**
    * 切换tab

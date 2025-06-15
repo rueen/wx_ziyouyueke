@@ -9,7 +9,7 @@
         <text class="required">*</text>
       </view>
       <input class="form-input" 
-             placeholder="请输入地址名称，如：万达广场健身房" 
+             placeholder="请输入地址名称，如：健身房名称" 
              value="{{addressData.name}}"
              bindinput="onNameInput"
              maxlength="100" />
