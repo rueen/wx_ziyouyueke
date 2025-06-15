@@ -141,7 +141,10 @@ Page({
               name: (item.student && item.student.nickname) || '未知学员',
               avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
               remainingLessons: item.remaining_lessons || 0,
-              phone: (item.student && item.student.phone) || ''
+              phone: (item.student && item.student.phone) || '',
+              student_id: item.student_id,
+              coach_id: item.coach_id,
+              originalData: item // 保存原始数据
             }));
           
           this.setData({
@@ -161,7 +164,10 @@ Page({
               name: (item.coach && item.coach.nickname) || '未知教练',
               avatar: (item.coach && item.coach.avatar_url) || '/images/defaultAvatar.png',
               remainingLessons: item.remaining_lessons || 0,
-              phone: (item.coach && item.coach.phone) || ''
+              phone: (item.coach && item.coach.phone) || '',
+              student_id: item.student_id,
+              coach_id: item.coach_id,
+              originalData: item // 保存原始数据
             }));
           
           this.setData({
@@ -400,20 +406,44 @@ Page({
         title: '提交中...'
       });
       
+      // 检查必要的数据
+      if (!selectedTimeSlot || !selectedTimeSlot.startTime || !selectedTimeSlot.endTime) {
+        throw new Error('时间信息不完整，请重新选择时间');
+      }
+      
+      if (!selectedOption.coach_id || !selectedOption.student_id) {
+        throw new Error('师生关系数据不完整，请重新选择');
+      }
+      
       // 构建提交数据
       const bookingData = {
-        date: selectedDate,
-        time_slot: selectedTimeSlot,
+        course_date: selectedDate,
+        start_time: selectedTimeSlot.startTime,
+        end_time: selectedTimeSlot.endTime,
         address_id: selectedAddress.id,
-        remark: remark.trim()
+        relation_id: selectedOption.id
       };
       
+      // 添加备注
+      if (remark && remark.trim()) {
+        if (bookingType === 'coach-book-student') {
+          // 教练约学员，备注作为教练备注
+          bookingData.coach_remark = remark.trim();
+        } else {
+          // 学员约教练，备注作为学员备注
+          bookingData.student_remark = remark.trim();
+        }
+      }
+      
+      // 直接从师生关系数据中获取coach_id和student_id
       if (bookingType === 'coach-book-student') {
         // 教练约学员
-        bookingData.student_relation_id = selectedOption.id;
+        bookingData.coach_id = selectedOption.coach_id;
+        bookingData.student_id = selectedOption.student_id;
       } else {
-        // 学员约教练
-        bookingData.coach_relation_id = selectedOption.id;
+        // 学员约教练  
+        bookingData.student_id = selectedOption.student_id;
+        bookingData.coach_id = selectedOption.coach_id;
       }
       
       console.log('提交约课数据:', bookingData);
