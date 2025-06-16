@@ -253,13 +253,15 @@ Component({
         const result = await api.course.getList(queryParams);
 
         const bookedCourses = result.data ? result.data.list : [];
-        
+
         // 生成时间段列表
         const timeSlots = templateSlots.map(slot => {
           // 查找该时间段是否有预约
-          const bookedCourse = bookedCourses.find(course => 
-            course.start_time === slot.startTime && course.end_time === slot.endTime
-          );
+          const bookedCourse = bookedCourses.find(course => {
+            const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
+            const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
+            return course_start_time === slot.startTime && course_end_time === slot.endTime;
+          });
 
           if (bookedCourse) {
             return {
@@ -268,7 +270,7 @@ Component({
               endTime: slot.endTime,
               status: 'booked',
               studentName: bookedCourse.student ? bookedCourse.student.nickname : '未知学员',
-              location: bookedCourse.notes || '未指定地点',
+              location: bookedCourse.address.name,
               bookingStatus: this.getBookingStatusText(bookedCourse.booking_status),
               courseId: bookedCourse.id,
               courseData: bookedCourse
