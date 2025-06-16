@@ -45,6 +45,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // 重新加载登录类型和用户角色（从登录页面返回时需要更新）
+    this.loadLoginType();
+    this.loadUserRole();
+    
     // 检查是否需要刷新用户信息（从编辑页面返回时）
     const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
     if (userInfoUpdated) {
@@ -167,10 +171,25 @@ Page({
     try {
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
+      const loginType = wx.getStorageSync('loginType');
       
       console.log('加载用户角色:', userRole);
       console.log('加载用户信息:', userInfo);
+      console.log('登录类型:', loginType);
       
+      // 如果是游客模式，设置默认角色
+      if (loginType === 'guest') {
+        this.setData({
+          userRole: userRole || 'student'
+        });
+        
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+        return;
+      }
+      
+      // 正常登录用户的处理
       if (userRole && userInfo) {
         this.setData({
           userRole: userRole
@@ -181,25 +200,26 @@ Page({
           callback();
         }
       } else {
-        console.error('未找到用户角色或用户信息');
-        wx.showToast({
-          title: '请先登录',
-          icon: 'error'
+        console.error('未找到用户角色或用户信息，但不跳转登录页');
+        // 设置默认角色，不跳转登录页
+        this.setData({
+          userRole: 'student'
         });
         
-        // 跳转到登录页面
-        setTimeout(() => {
-          wx.reLaunch({
-            url: '/pages/login/login'
-          });
-        }, 1500);
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
       }
     } catch (error) {
       console.error('加载用户角色失败:', error);
-      wx.showToast({
-        title: '加载失败',
-        icon: 'error'
+      // 出错时设置默认角色
+      this.setData({
+        userRole: 'student'
       });
+      
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
     }
   },
 
