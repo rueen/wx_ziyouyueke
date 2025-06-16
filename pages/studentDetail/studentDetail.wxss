@@ -242,7 +242,7 @@ page {
 .book-button {
   flex: 1;
   height: 96rpx;
-  background-color: #007aff;
+  background-color: #333;
   color: #fff;
   font-size: 30rpx;
   border-radius: 48rpx;
@@ -253,7 +253,7 @@ page {
 }
 
 .book-button:active {
-  background-color: #0056cc;
+  background-color: #222;
 }
 
 .book-button[disabled] {

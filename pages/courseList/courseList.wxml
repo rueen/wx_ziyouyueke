@@ -27,6 +27,17 @@
             <text class="person-name">{{item.displayName}}</text>
             <text class="person-role">{{item.displayRole}}</text>
           </view>
+          <!-- 课程状态 -->
+          <view class="status-badge status-{{item.status}}">
+            <text class="status-text">{{item.status === 'pending' ? (
+              item.isCreatedByCurrentUser ? (
+                userRole === 'coach' ? '待学员确认' : '待教练确认'
+              ) : '待确认'
+            ) : 
+            item.status === 'confirmed' ? '已确认' : 
+            item.status === 'completed' ? '已完成' : 
+            item.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+          </view>
         </view>
 
         <!-- 课程详情 -->
