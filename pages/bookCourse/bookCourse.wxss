@@ -206,7 +206,6 @@ page {
   height: 96rpx;
   border-radius: 48rpx;
   font-size: 32rpx;
-  font-weight: 600;
   border: none;
   display: flex;
   align-items: center;
@@ -214,12 +213,12 @@ page {
 }
 
 .submit-btn.active {
-  background-color: #007aff;
+  background-color: #333;
   color: #fff;
 }
 
 .submit-btn.active:active {
-  background-color: #0056cc;
+  background-color: #222;
 }
 
 .submit-btn.disabled {

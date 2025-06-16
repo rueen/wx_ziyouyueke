@@ -408,13 +408,6 @@ Component({
         console.warn('时间段点击事件参数不完整:', { slot, currentDate: this.data.currentDate });
         return;
       }
-      if(slot.status === 'booked'){
-        wx.showToast({
-          title: '该时段已被预约',
-          icon: 'none'
-        });
-        return;
-      }
       
       // 触发时间段点击事件
       this.triggerEvent('timeSlotTap', {

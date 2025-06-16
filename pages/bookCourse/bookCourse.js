@@ -304,6 +304,13 @@ Page({
   onTimeSlotTap(e) {
     const { date, slot } = e.detail;
 
+    if(slot.status === 'booked'){
+      wx.showToast({
+        title: '该时段已被预约',
+        icon: 'none'
+      });
+      return;
+    }
     this.setData({
       selectedDate: date || '',
       selectedTimeSlot: slot || ''
