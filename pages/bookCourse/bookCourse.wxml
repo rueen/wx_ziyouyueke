@@ -11,9 +11,7 @@
     <!-- 选择对象区域 -->
     <view class="section">
       <view class="section-header">
-        <text class="section-title">
-          {{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}
-        </text>
+        <text class="section-title">{{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}</text>
       </view>
       
       <!-- 已选择的对象 -->

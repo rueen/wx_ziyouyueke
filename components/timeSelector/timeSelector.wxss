@@ -1,6 +1,5 @@
 /* components/timeSelector/timeSelector.wxss */
-
-.time-selector {
+page {
   background-color: #f5f5f5;
 }
 
