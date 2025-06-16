@@ -137,7 +137,7 @@ Page({
    */
   onMinAdvanceDaysChange(e) {
     this.setData({
-      tempMinAdvanceDays: parseInt(e.detail.value) || 1
+      tempMinAdvanceDays: parseInt(e.detail.value) || ''
     });
   },
 
@@ -146,7 +146,7 @@ Page({
    */
   onMaxAdvanceDaysChange(e) {
     this.setData({
-      tempMaxAdvanceDays: parseInt(e.detail.value) || 30
+      tempMaxAdvanceDays: parseInt(e.detail.value) || ''
     });
   },
 
