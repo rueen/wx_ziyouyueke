@@ -182,7 +182,6 @@ page {
 .location-info .iconfont{
   font-size: 26rpx;
   margin-right: 10rpx;
-  color: #007aff;
 }
 
 /* 空闲状态样式 */

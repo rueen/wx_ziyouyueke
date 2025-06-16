@@ -74,8 +74,14 @@
                     slot.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
                 </view>
                 <view class="course-details" wx:if="{{slot.location || slot.remark}}">
-                  <text class="course-location" wx:if="{{slot.location}}">📍 {{slot.location}}</text>
-                  <text class="course-remark" wx:if="{{slot.remark}}">💬 {{slot.remark}}</text>
+                  <text class="course-location" wx:if="{{slot.location}}">
+                    <text class="iconfont icon-locationfill"></text>
+                    <text>{{slot.location}}</text>
+                  </text>
+                  <text class="course-remark" wx:if="{{slot.remark}}">
+                    <text class="iconfont icon-messagefill"></text>
+                    <text>{{slot.remark}}</text>
+                  </text>
                 </view>
               </view>
             </view>

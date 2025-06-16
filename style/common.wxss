@@ -61,3 +61,11 @@
 .status-cancelled .status-text {
   color: #721c24;
 }
+
+.icon-locationfill{
+  color: #e97b39;
+}
+
+.icon-messagefill{
+  color: #b2bb6b;
+}

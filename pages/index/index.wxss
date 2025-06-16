@@ -229,7 +229,10 @@ page {
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding-left: 60rpx;
+}
+.course-details .iconfont{
+  margin-right: 8rpx;
+  font-size: 28rpx;
 }
 
 .course-location,
