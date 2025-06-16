@@ -14,7 +14,7 @@
             <text class="role-text">{{roleNames[userRole]}}</text>
           </view>
         </view>
-        <text class="user-desc">点击编辑个人资料</text>
+        <text class="user-desc">{{userInfo.intro || '点击编辑个人资料'}}</text>
       </view>
     </view>
     <text class="iconfont icon-arrow-r arrow-icon"></text>

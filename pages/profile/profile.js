@@ -123,7 +123,8 @@ Page({
         this.setData({
           userInfo: {
             nickname: user.nickname || '请设置昵称',
-            avatar: user.avatar_url || '/images/defaultAvatar.png'
+            avatar: user.avatar_url || '/images/defaultAvatar.png',
+            intro: user.intro || ''
           }
         });
         
