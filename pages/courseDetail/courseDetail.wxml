@@ -35,7 +35,9 @@
       <!-- 课程详细信息 -->
       <view class="course-info-section">
         <view class="info-item">
-          <view class="info-icon">📅</view>
+          <view class="info-icon">
+            <text class="iconfont icon-shijianmoban"></text>
+          </view>
           <view class="info-content">
             <text class="info-label">上课时间</text>
             <text class="info-value">{{courseInfo.time}}</text>
@@ -43,23 +45,40 @@
         </view>
 
         <view class="info-item">
-          <view class="info-icon">📍</view>
+          <view class="info-icon">
+            <text class="iconfont icon-locationfill"></text>
+          </view>
           <view class="info-content">
             <text class="info-label">上课地点</text>
             <text class="info-value">{{courseInfo.location}}</text>
           </view>
         </view>
 
-        <view class="info-item" wx:if="{{courseInfo.remark}}">
-          <view class="info-icon">📝</view>
+        <view class="info-item">
+          <view class="info-icon">
+            <text class="iconfont icon-messagefill"></text>
+          </view>
           <view class="info-content">
-            <text class="info-label">课程备注</text>
-            <text class="info-value">{{courseInfo.remark}}</text>
+            <text class="info-label">教练备注</text>
+            <text class="info-value">{{courseInfo.coach_remark || '无'}}</text>
+            <text class="info-label">学员备注</text>
+            <text class="info-value">{{courseInfo.student_remark || '无'}}</text>
           </view>
         </view>
+        <!-- <view class="info-item">
+          <view class="info-icon">
+            <text class="iconfont icon-messagefill"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">学员备注</text>
+            <text class="info-value">{{courseInfo.student_remark || '无'}}</text>
+          </view>
+        </view> -->
 
         <view class="info-item" wx:if="{{courseInfo.createTime}}">
-          <view class="info-icon">⏰</view>
+          <view class="info-icon">
+            <text class="iconfont icon-shijianmoban"></text>
+          </view>
           <view class="info-content">
             <text class="info-label">预约时间</text>
             <text class="info-value">{{courseInfo.createTime}}</text>
@@ -68,7 +87,9 @@
 
         <!-- 显示取消原因 -->
         <view class="info-item" wx:if="{{courseInfo.status === 'cancelled' && courseInfo.cancelReason}}">
-          <view class="info-icon">❌</view>
+          <view class="info-icon">
+            <text class="iconfont icon-yuanyin"></text>
+          </view>
           <view class="info-content">
             <text class="info-label">取消原因</text>
             <text class="info-value cancel-reason">{{courseInfo.cancelReason}}</text>

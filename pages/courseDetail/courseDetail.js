@@ -123,6 +123,7 @@ Page({
         const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
 
         const courseInfo = {
+          ...course,
           id: course.id,
           coachId: course.coach ? course.coach.id : 0,
           coachName: course.coach ? course.coach.nickname : '未知教练',
@@ -137,9 +138,8 @@ Page({
           startTime: course.start_time,
           endTime: course.end_time,
           location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
-          remark: course.student_remark || course.coach_remark || '',
           status: this.getStatusFromApi(course.booking_status),
-          createTime: course.created_at || '',
+          createTime: course.createdAt || '',
           cancelReason: course.cancel_reason || '',
           createdBy: course.created_by,
           isCreatedByCurrentUser: isCreatedByCurrentUser

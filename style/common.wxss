@@ -69,3 +69,7 @@
 .icon-messagefill{
   color: #b2bb6b;
 }
+
+.icon-yuanyin{
+  color: #ffbc2b;
+}

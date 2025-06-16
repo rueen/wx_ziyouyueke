@@ -107,7 +107,6 @@ page {
 }
 
 .info-icon {
-  font-size: 32rpx;
   width: 48rpx;
   height: 48rpx;
   display: flex;
