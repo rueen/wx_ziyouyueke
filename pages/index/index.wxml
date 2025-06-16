@@ -41,10 +41,6 @@
       <!-- 日历式课表 -->
       <view class="calendar-schedule" wx:if="{{calendarData.length > 0}}">
         <view class="day-schedule" wx:for="{{calendarData}}" wx:key="date">
-          <!-- 日期标题 -->
-          <view class="day-header">
-            <text class="day-title">{{item.dayTitle}}</text>
-          </view>
           
           <!-- 时间段列表 -->
           <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
@@ -52,6 +48,7 @@
                   wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id"
                   bindtap="onCourseClick" data-courseid="{{slot.courseId}}" wx:if="{{slot.isBooked}}">
               <view class="time-info">
+                <text class="day-title">{{item.dayTitle}}</text>
                 <text class="time-range">{{slot.startTime}} - {{slot.endTime}}</text>
               </view>
               
@@ -63,8 +60,18 @@
                   </view>
                   <view class="person-details">
                     <text class="person-name">{{userRole === 'student' ? slot.coachName : slot.studentName}}</text>
-                    <text class="booking-status {{slot.statusClass}}">{{slot.statusText}}</text>
                   </view>
+                </view>
+                <!-- 课程状态 -->
+                <view class="status-badge status-{{slot.status}}">
+                  <text class="status-text">{{slot.status === 'pending' ? (
+                    slot.isCreatedByCurrentUser ? (
+                      userRole === 'coach' ? '待学员确认' : '待教练确认'
+                    ) : '待确认'
+                  ) : 
+                    slot.status === 'confirmed' ? '已确认' : 
+                    slot.status === 'completed' ? '已完成' : 
+                    slot.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
                 </view>
                 <view class="course-details" wx:if="{{slot.location || slot.remark}}">
                   <text class="course-location" wx:if="{{slot.location}}">📍 {{slot.location}}</text>

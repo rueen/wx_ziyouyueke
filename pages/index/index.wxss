@@ -135,19 +135,12 @@ page {
 }
 
 /* 日期标题 */
-.day-header {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-bottom: 20rpx;
-  padding: 16rpx 24rpx;
-  border-radius: 12rpx;
-}
 
 .day-title {
   font-size: 30rpx;
   color: #333;
   font-weight: 600;
+  margin-right: 10rpx;
 }
 
 .day-date {
@@ -160,6 +153,7 @@ page {
   display: flex;
   flex-direction: column;
   gap: 12rpx;
+  position: relative;
 }
 
 .time-slot-item {
@@ -224,31 +218,10 @@ page {
   font-weight: 500;
 }
 
-.booking-status {
-  font-size: 22rpx;
-  padding: 4rpx 8rpx;
-  border-radius: 8rpx;
-  align-self: flex-start;
-}
-
-.booking-status.pending {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.booking-status.confirmed {
-  background-color: #e8f5e8;
-  color: #4caf50;
-}
-
-.booking-status.completed {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.booking-status.cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
+.status-badge{
+  position: absolute;
+  right: 20rpx;
+  top: 20rpx;
 }
 
 /* 课程详情 */

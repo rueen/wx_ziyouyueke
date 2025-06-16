@@ -11,6 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    currentUserId: null,
     userInfo: {},
     // 日历式课表数据
     calendarData: [],
@@ -137,7 +138,8 @@ Page({
           userInfo: {
             name: user.nickname || '用户',
             avatar: user.avatar_url || '/images/defaultAvatar.png'
-          }
+          },
+          currentUserId: user.id
         });
         
         // 更新本地缓存
@@ -371,19 +373,6 @@ Page({
   },
 
   /**
-   * 获取状态文本
-   */
-  getStatusText(status) {
-    const statusMap = {
-      'pending': '待确认',
-      'confirmed': '已确认',
-      'completed': '已完成',
-      'cancelled': '已取消'
-    };
-    return statusMap[status] || '未知';
-  },
-
-  /**
    * 格式化日期为键值（YYYY-MM-DD）
    */
   formatDateKey(date) {
@@ -514,13 +503,17 @@ Page({
     
     const courseDate = new Date(`${nextCourse.course_date} 00:00:00`);
     
+    // 判断当前用户是否为课程创建人
+    const isCreatedByCurrentUser = nextCourse.created_by && nextCourse.created_by == this.data.currentUserId;
+    const nextCourse_start_time = `${nextCourse.start_time.split(':')[0]}:${nextCourse.start_time.split(':')[1]}`;
+    const nextCourse_end_time = `${nextCourse.end_time.split(':')[0]}:${nextCourse.end_time.split(':')[1]}`;
     const result = {
       date: nextCourse.course_date,
       dayTitle: this.formatDate(courseDate),
       timeSlots: [{
         id: nextCourse.id,
-        startTime: nextCourse.start_time,
-        endTime: nextCourse.end_time,
+        startTime: nextCourse_start_time,
+        endTime: nextCourse_end_time,
         isBooked: true,
         // 根据用户角色显示对应信息
         coachName: nextCourse.coach ? nextCourse.coach.nickname : '未知教练',
@@ -531,9 +524,8 @@ Page({
         location: nextCourse.address ? (nextCourse.address.name || nextCourse.address.address || '未指定地点') : '未指定地点',
         remark: nextCourse.student_remark || nextCourse.coach_remark || '',
         status: this.getStatusFromApi(nextCourse.booking_status),
-        statusText: this.getStatusText(this.getStatusFromApi(nextCourse.booking_status)),
-        statusClass: this.getStatusFromApi(nextCourse.booking_status),
-        courseId: nextCourse.id
+        courseId: nextCourse.id,
+        isCreatedByCurrentUser: isCreatedByCurrentUser
       }]
     };
     
