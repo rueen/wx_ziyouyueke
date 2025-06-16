@@ -397,36 +397,6 @@ page {
   padding: 30rpx;
 }
 
-.course-info-summary {
-  margin-bottom: 40rpx;
-  padding: 24rpx;
-  background-color: #f8f9fa;
-  border-radius: 12rpx;
-}
-
-.info-row {
-  display: flex;
-  margin-bottom: 12rpx;
-  line-height: 1.5;
-}
-
-.info-row:last-child {
-  margin-bottom: 0;
-}
-
-.info-row .info-label {
-  font-size: 26rpx;
-  color: #666;
-  width: 120rpx;
-  flex-shrink: 0;
-}
-
-.info-row .info-value {
-  font-size: 26rpx;
-  color: #333;
-  flex: 1;
-}
-
 .qr-code-container {
   text-align: center;
 }
@@ -443,22 +413,23 @@ page {
   display: block;
 }
 
-.qr-code-box {
+.qr-code-canvas {
+  width: 150px;
+  height: 150px;
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  z-index: -1;
+}
+
+.qr-code-image {
   width: 300rpx;
   height: 300rpx;
   margin: 0 auto;
-  border: 2rpx dashed #d0d0d0;
+  border: 2rpx solid #e5e5ea;
   border-radius: 12rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fafafa;
-}
-
-.code-text {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #007aff;
+  background-color: #ffffff;
+  display: block;
 }
 
 .qr-tips {

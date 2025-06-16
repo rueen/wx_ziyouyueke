@@ -5,6 +5,8 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
+// 引入二维码生成工具
+const drawQrcode = require('../../utils/weapp-qrcode/weapp.qrcode.js');
 
 Page({
   /**
@@ -23,7 +25,8 @@ Page({
     
     // 课程码相关
     showCourseCodeModal: false,
-    currentCourseCode: ''
+    currentCourseCode: '',
+    qrCodeImagePath: '' // 二维码图片路径
   },
 
   /**
@@ -298,13 +301,77 @@ Page({
   onViewCourseCode(e) {
     const courseId = e.currentTarget.dataset.id || this.data.courseId;
     
-    // 生成课程码（这里用简单的ID+时间戳，实际项目中应该用更安全的方式）
-    const courseCode = `C${courseId}${Date.now().toString().slice(-6)}`;
-    
+    // 显示模态框
     this.setData({
       showCourseCodeModal: true,
-      currentCourseCode: courseCode
+      currentCourseCode: courseId.toString()
     });
+
+    // 生成二维码
+    this.generateQRCode(courseId.toString());
+  },
+
+  /**
+   * 生成二维码
+   * @param {string} courseId 课程ID
+   */
+  generateQRCode(courseId) {
+    try {
+      // 使用weapp-qrcode生成二维码
+      drawQrcode({
+        width: 150, // 使用像素单位，300rpx约等于150px
+        height: 150,
+        canvasId: 'qrcode-canvas',
+        text: courseId,
+        typeNumber: -1,
+        correctLevel: 1, // L级别纠错
+        background: '#ffffff',
+        foreground: '#000000',
+        _this: this,
+        callback: (res) => {
+          console.log('二维码生成完成:', res);
+          // 延迟一下再转换图片，确保绘制完成
+          setTimeout(() => {
+            this.canvasToTempFilePath();
+          }, 100);
+        }
+      });
+    } catch (error) {
+      console.error('生成二维码失败:', error);
+      wx.showToast({
+        title: '生成二维码失败',
+        icon: 'error'
+      });
+    }
+  },
+
+  /**
+   * 将canvas转换为临时图片文件
+   */
+  canvasToTempFilePath() {
+    wx.canvasToTempFilePath({
+      x: 0,
+      y: 0,
+      width: 150,
+      height: 150,
+      destWidth: 300,
+      destHeight: 300,
+      canvasId: 'qrcode-canvas',
+      success: (res) => {
+        console.log('二维码图片生成成功:', res.tempFilePath);
+        this.setData({
+          qrCodeImagePath: res.tempFilePath
+        });
+      },
+      fail: (error) => {
+        console.error('转换二维码图片失败:', error);
+        console.error('错误详情:', error);
+        wx.showToast({
+          title: '生成二维码图片失败',
+          icon: 'error'
+        });
+      }
+    }, this);
   },
 
   /**
@@ -313,7 +380,8 @@ Page({
   onHideCourseCodeModal() {
     this.setData({
       showCourseCodeModal: false,
-      currentCourseCode: ''
+      currentCourseCode: '',
+      qrCodeImagePath: '' // 清除二维码图片路径
     });
   },
 
@@ -324,14 +392,20 @@ Page({
     wx.scanCode({
       success: (res) => {
         console.log('扫码结果：', res);
-        // 这里处理扫码核销逻辑
-        wx.showToast({
-          title: '核销成功',
-          icon: 'success'
-        });
+        const scannedCourseId = res.result;
         
-        // 重新加载课程详情
-        this.loadCourseDetail();
+        // 验证扫描的课程ID是否与当前课程匹配
+        if (scannedCourseId === this.data.courseId.toString()) {
+          // 调用完成课程接口
+          this.completeCourse(scannedCourseId);
+        } else {
+          wx.showModal({
+            title: '扫码错误',
+            content: '扫描的二维码与当前课程不匹配，请确认后重试',
+            showCancel: false,
+            confirmText: '确定'
+          });
+        }
       },
       fail: (error) => {
         console.error('扫码失败：', error);
@@ -341,6 +415,51 @@ Page({
         });
       }
     });
+  },
+
+  /**
+   * 完成课程
+   * @param {string} courseId 课程ID
+   */
+  async completeCourse(courseId) {
+    try {
+      wx.showLoading({ title: '核销中...' });
+      
+      const result = await api.course.complete(courseId);
+
+      wx.hideLoading();
+
+      if (result) {
+        wx.showToast({
+          title: '核销成功',
+          icon: 'success'
+        });
+        
+        // 重新加载课程详情
+        this.loadCourseDetail();
+      } else {
+        throw new Error(result.message || '核销失败');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('完成课程失败：', error);
+      
+      let errorMessage = '核销失败';
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.code === 4004) {
+        errorMessage = '课程状态不正确，无法核销';
+      } else if (error.code === 4003) {
+        errorMessage = '课程不存在';
+      }
+      
+      wx.showModal({
+        title: '核销失败',
+        content: errorMessage,
+        showCancel: false,
+        confirmText: '确定'
+      });
+    }
   },
 
   /**

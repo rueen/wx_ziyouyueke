@@ -149,29 +149,22 @@
       <text class="modal-close" bindtap="onHideCourseCodeModal">✕</text>
     </view>
     <view class="modal-body course-code-body">
-      <!-- 课程信息 -->
-      <view class="course-info-summary" wx:if="{{courseInfo}}">
-        <view class="info-row">
-          <text class="info-label">课程时间：</text>
-          <text class="info-value">{{courseInfo.time}}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">教练：</text>
-          <text class="info-value">{{courseInfo.coachName}}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">地点：</text>
-          <text class="info-value">{{courseInfo.location}}</text>
-        </view>
-      </view>
-      
       <!-- 二维码区域 -->
       <view class="qr-code-container">
         <view class="qr-code-placeholder">
           <text class="qr-code-text">课程二维码</text>
-          <view class="qr-code-box">
-            <text class="code-text">{{currentCourseCode}}</text>
-          </view>
+          <!-- 二维码Canvas -->
+          <canvas 
+            canvas-id="qrcode-canvas" 
+            class="qr-code-canvas">
+          </canvas>
+          <!-- 二维码图片显示 -->
+          <image 
+            wx:if="{{qrCodeImagePath}}"
+            src="{{qrCodeImagePath}}" 
+            class="qr-code-image"
+            mode="aspectFit">
+          </image>
         </view>
         <text class="qr-tips">请向教练出示此二维码进行课程核销</text>
       </view>
