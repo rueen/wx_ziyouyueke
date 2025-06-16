@@ -29,6 +29,10 @@ Component({
     maxAdvanceDays: {
       type: Number,
       value: 30
+    },
+    selectedTimeSlot: {
+      type: Object,
+      value: {}
     }
   },
 
@@ -402,6 +406,13 @@ Component({
       // 确保参数不为 undefined
       if (!slot || !this.data.currentDate) {
         console.warn('时间段点击事件参数不完整:', { slot, currentDate: this.data.currentDate });
+        return;
+      }
+      if(slot.status === 'booked'){
+        wx.showToast({
+          title: '该时段已被预约',
+          icon: 'none'
+        });
         return;
       }
       

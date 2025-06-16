@@ -63,15 +63,10 @@
         coachId="{{bookingType === 'student-book-coach' ? selectedOption.id : ''}}"
         mode="select"
         showBookingDetails="{{false}}"
+        selectedTimeSlot="{{selectedTimeSlot}}"
         bind:timeSlotTap="onTimeSlotTap"
         bind:error="onTimeSelectorError">
       </timeSelector>
-      
-      <!-- 选中的时间显示 -->
-      <view class="selected-time" wx:if="{{selectedDate && selectedTimeSlot}}">
-        <text class="time-label">已选择：</text>
-        <text class="time-value">{{selectedDate}} {{selectedTimeSlot}}</text>
-      </view>
     </view>
 
     <!-- 地址选择区域 -->

@@ -119,29 +119,6 @@ page {
   font-size: 32rpx;
 }
 
-/* 空状态样式已移至通用组件 */
-
-/* 时间选择样式 */
-.selected-time {
-  padding: 20rpx 30rpx;
-  background-color: #f8f9fa;
-  border-top: 1rpx solid #f0f0f0;
-  display: flex;
-  align-items: center;
-}
-
-.time-label {
-  font-size: 28rpx;
-  color: #666;
-  margin-right: 12rpx;
-}
-
-.time-value {
-  font-size: 28rpx;
-  color: #007aff;
-  font-weight: 600;
-}
-
 /* 地址选择样式 */
 .selected-address {
   display: flex;

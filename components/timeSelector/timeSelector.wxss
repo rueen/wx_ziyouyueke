@@ -138,11 +138,9 @@ page {
 .time-slot.selectable {
   cursor: pointer;
 }
-
-.time-slot.selectable:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-2rpx);
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+.time-slot.selected .icon-selected{
+  color: #007aff;
+  font-size: 40rpx;
 }
 
 .time-slot-time {

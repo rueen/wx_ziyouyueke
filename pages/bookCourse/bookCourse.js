@@ -303,6 +303,7 @@ Page({
    */
   onTimeSlotTap(e) {
     const { date, slot } = e.detail;
+
     this.setData({
       selectedDate: date || '',
       selectedTimeSlot: slot || ''
