@@ -137,7 +137,8 @@ Page({
         this.setData({
           userInfo: {
             name: user.nickname || '用户',
-            avatar: user.avatar_url || '/images/defaultAvatar.png'
+            avatar: user.avatar_url || '/images/defaultAvatar.png',
+            gender: user.gender
           },
           currentUserId: user.id
         });

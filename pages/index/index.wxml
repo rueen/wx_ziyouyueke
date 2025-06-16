@@ -9,7 +9,7 @@
           <image src="{{userInfo.avatar}}" class="avatar-img"></image>
         </view>
         <view class="user-info">
-          <text class="greeting">{{userRole === 'student' ? 'HELLO GYM GIRL' : 'HELLO COACH'}}</text>
+          <text class="greeting">{{userRole === 'student' ? userInfo.gender === 2 ? 'HELLO GYM GIRL' : userInfo.gender === 1 ? 'HELLO GYM BOY' : 'HELLO GYM BUDDY' : 'HELLO COACH'}}</text>
           <view class="username-row">
             <text class="username">{{userInfo.name}}</text>
             <view class="role-tag">
