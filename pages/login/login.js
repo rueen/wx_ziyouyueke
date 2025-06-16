@@ -45,8 +45,10 @@ Page({
   checkLoginStatus() {
     const userInfo = wx.getStorageSync('userInfo');
     const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    const loginType = wx.getStorageSync('loginType');
     
-    if (userInfo && isLoggedIn) {
+    // 只有真正登录（非游客模式）才跳转到首页
+    if (userInfo && isLoggedIn && loginType !== 'guest') {
       // 已登录，直接跳转到首页
       wx.switchTab({
         url: '/pages/index/index'

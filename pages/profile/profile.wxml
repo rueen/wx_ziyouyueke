@@ -65,8 +65,8 @@
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
   </view>
-  <!-- 退出登录 -->
+  <!-- 登录/退出登录 -->
   <view class="logout-btn" bindtap="onLogout">
-    <text class="logout-text">退出登录</text>
+    <text class="logout-text">{{loginType === 'guest' ? '登录' : '退出登录'}}</text>
   </view>
 </layout>

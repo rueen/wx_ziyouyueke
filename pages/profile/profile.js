@@ -21,7 +21,8 @@ Page({
     roleNames: {
       student: '学员',
       coach: '教练'
-    }
+    },
+    loginType: '' // 登录类型
   },
 
   /**
@@ -30,6 +31,7 @@ Page({
   onLoad(options) {
     this.loadUserInfo();
     this.loadUserRole();
+    this.loadLoginType();
   },
 
   /**
@@ -43,11 +45,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 检查登录状态
-    if (!this.checkLoginStatus()) {
-      return;
-    }
-    
     // 检查是否需要刷新用户信息（从编辑页面返回时）
     const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
     if (userInfoUpdated) {
@@ -154,6 +151,16 @@ Page({
   },
 
   /**
+   * 加载登录类型
+   */
+  loadLoginType() {
+    const loginType = wx.getStorageSync('loginType') || 'guest';
+    this.setData({
+      loginType: loginType
+    });
+  },
+
+  /**
    * 加载用户身份
    */
   loadUserRole(callback) {
@@ -200,6 +207,11 @@ Page({
    * 编辑个人资料
    */
   onEditProfile() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/editProfile/editProfile'
     })
@@ -209,6 +221,11 @@ Page({
    * 我的教练/我的学员
    */
   onMyCoachesOrStudents() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     const { userRole } = this.data;
     
     if (userRole === 'student') {
@@ -228,6 +245,11 @@ Page({
    * 我的课程
    */
   onMyCourses() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/courseList/courseList'
     })
@@ -237,6 +259,11 @@ Page({
    * 时间模板（教练专用）
    */
   onMyTimeTemplate() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/timeTemplate/timeTemplate'
     });
@@ -246,6 +273,11 @@ Page({
    * 我的时间（教练专用）
    */
   onMySchedule() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/mySchedule/mySchedule'
     });
@@ -255,20 +287,35 @@ Page({
    * 常用地址
    */
   onMyAddresses() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/addressList/addressList'
     });
   },
 
   /**
-   * 检查登录状态
+   * 检查是否需要登录（用于需要登录的功能）
    */
-  checkLoginStatus() {
-    const isLoggedIn = wx.getStorageSync('isLoggedIn');
-    if (!isLoggedIn) {
-      // 未登录，跳转到登录页
-      wx.redirectTo({
-        url: '/pages/login/login'
+  checkLoginRequired() {
+    const loginType = wx.getStorageSync('loginType');
+    if (loginType === 'guest') {
+      // 游客模式，需要引导登录
+      wx.showModal({
+        title: '需要登录',
+        content: '此功能需要登录后才能使用，是否前往登录？',
+        confirmText: '去登录',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login'
+            });
+          }
+        }
       });
       return false;
     }
@@ -276,9 +323,20 @@ Page({
   },
 
   /**
-   * 退出登录
+   * 登录/退出登录
    */
   async onLogout() {
+    const loginType = wx.getStorageSync('loginType');
+    
+    if (loginType === 'guest') {
+      // 游客模式，跳转到登录页
+      wx.navigateTo({
+        url: '/pages/login/login'
+      });
+      return;
+    }
+    
+    // 正常用户，显示退出登录确认
     wx.showModal({
       title: '退出登录',
       content: '确定要退出登录吗？',
@@ -292,7 +350,7 @@ Page({
             // 即使API调用失败，也要清除本地信息
           }
           
-          // 清除登录信息
+          // 清除登录信息，重新设置为游客模式
           wx.removeStorageSync('token');
           wx.removeStorageSync('userInfo');
           wx.removeStorageSync('isLoggedIn');
@@ -302,15 +360,15 @@ Page({
           wx.showToast({
             title: '已退出登录',
             icon: 'success',
-            duration: 2000
+            duration: 1500
           });
 
-          // 跳转到登录页
+          // 重新初始化为游客模式
           setTimeout(() => {
-            wx.redirectTo({
-              url: '/pages/login/login'
+            wx.reLaunch({
+              url: '/pages/index/index'
             });
-          }, 2000);
+          }, 1500);
         }
       }
     });

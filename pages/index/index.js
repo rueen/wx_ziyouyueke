@@ -22,10 +22,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 检查登录状态
-    if (!this.checkLoginStatus()) {
-      return;
-    }
+    // 初始化用户状态（默认游客模式）
+    this.initializeUserState();
     
     this.loadUserInfo();
     
@@ -39,11 +37,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    // 检查登录状态
-    if (!this.checkLoginStatus()) {
-      return;
-    }
-    
     // 检查是否需要刷新用户信息（从个人信息编辑页面返回时）
     const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
     if (userInfoUpdated) {
@@ -53,14 +46,56 @@ Page({
   },
 
   /**
-   * 检查登录状态
+   * 初始化用户状态
    */
-  checkLoginStatus() {
+  initializeUserState() {
     const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    
     if (!isLoggedIn) {
-      // 未登录，跳转到登录页
-      wx.redirectTo({
-        url: '/pages/login/login'
+      // 未登录，设置为游客模式
+      console.log('未登录，初始化为游客模式');
+      this.setGuestMode();
+    } else {
+      console.log('已登录，使用现有登录状态');
+    }
+  },
+
+  /**
+   * 设置游客模式
+   */
+  setGuestMode() {
+    const guestUserInfo = {
+      id: null,
+      nickname: '游客用户',
+      avatar_url: '/images/defaultAvatar.png',
+      loginType: 'guest'
+    };
+
+    wx.setStorageSync('userInfo', guestUserInfo);
+    wx.setStorageSync('isLoggedIn', true); // 设置为已登录状态，但是游客模式
+    wx.setStorageSync('loginType', 'guest');
+    wx.setStorageSync('userRole', 'student'); // 默认设置为学员角色
+  },
+
+  /**
+   * 检查是否需要登录（用于需要登录的功能）
+   */
+  checkLoginRequired() {
+    const loginType = wx.getStorageSync('loginType');
+    if (loginType === 'guest') {
+      // 游客模式，需要引导登录
+      wx.showModal({
+        title: '需要登录',
+        content: '此功能需要登录后才能使用，是否前往登录？',
+        confirmText: '去登录',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login'
+            });
+          }
+        }
       });
       return false;
     }
@@ -137,10 +172,26 @@ Page({
     try {
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
+      const loginType = wx.getStorageSync('loginType');
       
       console.log('加载用户角色:', userRole);
       console.log('加载用户信息:', userInfo);
+      console.log('登录类型:', loginType);
       
+      // 如果是游客模式，确保有默认值
+      if (loginType === 'guest') {
+        console.log('游客模式，确保设置默认角色');
+        this.setData({
+          userRole: userRole || 'student'
+        });
+        
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+        return;
+      }
+      
+      // 正常登录用户的处理
       if (userRole && userInfo) {
         this.setData({
           userRole: userRole
@@ -151,25 +202,30 @@ Page({
           callback();
         }
       } else {
-        console.error('未找到用户角色或用户信息');
-        wx.showToast({
-          title: '请先登录',
-          icon: 'error'
+        console.error('未找到用户角色或用户信息，重新初始化为游客模式');
+        
+        // 重新设置为游客模式
+        this.setGuestMode();
+        this.setData({
+          userRole: 'student'
         });
         
-        // 跳转到登录页面
-        setTimeout(() => {
-          wx.reLaunch({
-            url: '/pages/login/login'
-          });
-        }, 1500);
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
       }
     } catch (error) {
       console.error('加载用户角色失败:', error);
-      wx.showToast({
-        title: '加载失败',
-        icon: 'error'
+      
+      // 出错时也设置为游客模式
+      this.setGuestMode();
+      this.setData({
+        userRole: 'student'
       });
+      
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
     }
   },
 
@@ -397,6 +453,11 @@ Page({
    * 约课按钮点击事件
    */
   onBookCourse: function() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     const { userRole } = this.data;
 
     if (userRole === 'student') {
@@ -416,6 +477,11 @@ Page({
    * 我的教练/我的学员点击事件
    */
   onMyCoachOrStudentClick: function() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     const { userRole } = this.data;
     
     if (userRole === 'student') {
@@ -435,6 +501,11 @@ Page({
    * 我的课程点击事件
    */
   onPendingCoursesClick: function() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/courseList/courseList?tab=0'
     });
@@ -540,6 +611,11 @@ Page({
    * 课程点击事件 - 跳转到课程详情
    */
   onCourseClick(e) {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     const { courseid } = e.currentTarget.dataset;
     
     if (courseid) {

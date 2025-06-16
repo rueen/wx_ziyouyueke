@@ -114,27 +114,44 @@ function handleTokenExpired() {
   
   console.log('[API] Token已过期，正在处理...');
   
-  // 清除本地存储
+  // 清除登录相关的本地存储
   wx.removeStorageSync('token');
   wx.removeStorageSync('userInfo');
   wx.removeStorageSync('isLoggedIn');
+  wx.removeStorageSync('loginType');
+  wx.removeStorageSync('userRole');
   
-  // 显示提示并跳转
+  // 重新设置为游客模式
+  const guestUserInfo = {
+    id: null,
+    nickname: '游客用户',
+    avatar_url: '/images/defaultAvatar.png',
+    loginType: 'guest'
+  };
+  
+  wx.setStorageSync('userInfo', guestUserInfo);
+  wx.setStorageSync('isLoggedIn', true);
+  wx.setStorageSync('loginType', 'guest');
+  wx.setStorageSync('userRole', 'student');
+  
+  console.log('[API] 已重新设置为游客模式');
+  
+  // 显示提示并跳转到首页（而不是登录页）
   wx.showToast({
-    title: '请先登录',
+    title: '登录已过期，已切换为游客模式',
     icon: 'none',
     duration: 2000,
     success() {
-      // 延迟跳转，让用户看到提示
+      // 延迟跳转到首页
       setTimeout(() => {
         wx.reLaunch({
-          url: '/pages/login/login',
+          url: '/pages/index/index',
           success() {
-            console.log('[API] 已跳转到登录页');
+            console.log('[API] 已跳转到首页（游客模式）');
             isHandlingTokenExpired = false;
           },
           fail() {
-            console.error('[API] 跳转登录页失败');
+            console.error('[API] 跳转首页失败');
             isHandlingTokenExpired = false;
           }
         });
