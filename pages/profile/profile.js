@@ -382,7 +382,7 @@ Page({
           // 重新初始化为游客模式
           setTimeout(() => {
             wx.reLaunch({
-              url: '/pages/index/index'
+              url: '/pages/login/login'
             });
           }, 1500);
         }
