@@ -97,7 +97,7 @@
     </view>
 
     <!-- 备注区域 -->
-    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+    <view class="section remark-section" wx:if="{{selectedOption && !showSelection}}">
       <view class="section-header">
         <text class="section-title">
           {{bookingType === 'coach-book-student' ? '教练备注' : '学员备注'}}

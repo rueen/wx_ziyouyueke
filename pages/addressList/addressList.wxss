@@ -48,7 +48,7 @@ page {
   color: #333;
   font-weight: 600;
   margin-right: 12rpx;
-  max-width: 300rpx;
+  max-width: 600rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
