@@ -9,10 +9,6 @@ page {
   background-color: #f5f5f5;
 }
 
-.container {
-  padding: 20rpx;
-}
-
 /* 教练列表 */
 .coach-list {
   display: flex;
@@ -26,7 +22,6 @@ page {
   border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .coach-item:active {

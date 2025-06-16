@@ -25,11 +25,17 @@
   <!-- 可约时间 -->
   <view class="time-section">
     <text class="section-title">可约时间</text>
-    <view class="time-list">
-      <view class="time-item" wx:for="{{coachData.availableTime}}" wx:key="index">
-        <text class="time-text">{{item}}</text>
-      </view>
-    </view>
+      <!-- 时间选择器组件 -->
+      <time-selector 
+        id="timeSelector"
+        coach-id="{{coachId}}"
+        mode="view"
+        show-booking-details="{{true}}"
+        bind:timeSlotTap="onTimeSlotTap"
+        bind:dateSelected="onDateSelected"
+        bind:timeSlotsLoaded="onTimeSlotsLoaded"
+        bind:error="onError"
+      />
   </view>
 
   <!-- 约课按钮 -->

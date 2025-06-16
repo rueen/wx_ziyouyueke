@@ -10,7 +10,6 @@ page {
 }
 
 .container {
-  padding: 20rpx;
   padding-bottom: 140rpx;
 }
 
@@ -22,7 +21,6 @@ page {
   margin-bottom: 20rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .coach-avatar {
@@ -55,7 +53,7 @@ page {
 
 .coach-specialty {
   font-size: 28rpx;
-  color: #666;
+  color: #007aff;
   margin-bottom: 16rpx;
 }
 
@@ -84,20 +82,29 @@ page {
 }
 
 /* 信息区块 */
-.intro-section,
-.time-section {
+.intro-section {
   background-color: #fff;
   border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.time-section {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 40rpx 0 20rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.time-section .section-title {
+  padding: 0 40rpx;
+  margin-bottom: 32rpx;
 }
 
 .section-title {
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 24rpx;
   display: block;
 }
 
@@ -107,28 +114,6 @@ page {
   line-height: 1.6;
 }
 
-/* 可约时间 */
-.time-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.time-item {
-  background-color: #f8f9fa;
-  border-radius: 12rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-}
-
-.time-item:last-child {
-  margin-bottom: 0;
-}
-
-.time-text {
-  font-size: 28rpx;
-  color: #333;
-}
-
 /* 约课按钮 */
 .book-button-container {
   position: fixed;
@@ -136,12 +121,13 @@ page {
   left: 50%;
   transform: translateX(-50%);
   width: 600rpx;
+  z-index: 100;
 }
 
 .book-button {
   width: 100%;
   height: 96rpx;
-  background-color: #333;
+  background-color: #007aff;
   color: #fff;
   font-size: 32rpx;
   font-weight: 600;
@@ -153,9 +139,38 @@ page {
 }
 
 .book-button:active {
-  background-color: #555;
+  background-color: #0051d5;
+  transform: scale(0.98);
 }
 
 .book-button::after {
   border: none;
+}
+
+/* time-selector 组件样式覆盖 */
+.time-section time-selector {
+  background-color: transparent;
+}
+
+.time-section time-selector .time-slots-container {
+  padding: 0 40rpx 20rpx 40rpx;
+}
+
+.time-section time-selector .date-selector {
+  padding: 20rpx 40rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.time-section time-selector .time-slot {
+  background-color: #f8f9fa;
+  border: none;
+  margin-bottom: 12rpx;
+}
+
+.time-section time-selector .time-slot.booked {
+  background-color: #e6f3ff;
+}
+
+.time-section time-selector .time-slot.free {
+  background-color: #f0f0f0;
 } 

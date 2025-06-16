@@ -69,7 +69,7 @@ Page({
         // 解析时间段数据
         let timeSlots = [];
         try {
-          timeSlots = JSON.parse(template.time_slots);
+          timeSlots = template.time_slots;
         } catch (e) {
           console.error('解析时间段数据失败:', e);
           timeSlots = [];

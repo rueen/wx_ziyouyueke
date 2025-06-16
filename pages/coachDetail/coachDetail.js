@@ -11,7 +11,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    coachData: {}
+    coachData: {},
+    coachId: null
   },
 
   /**
@@ -22,10 +23,12 @@ Page({
       try {
         const coachData = JSON.parse(decodeURIComponent(options.coachData));
         this.setData({
-          coachData
+          coachData,
+          coachId: coachData.id
         });
+        // 设置时间选择器的教练ID
+        this.setTimeSelectorCoachId(coachData.id);
       } catch (error) {
-        console.error('解析教练数据失败：', error);
         wx.showToast({
           title: '数据加载失败',
           icon: 'none'
@@ -33,8 +36,28 @@ Page({
       }
     } else if (options.coachId) {
       // 如果只有教练ID，从API获取详情
-      this.loadCoachDetail(options.coachId);
+      const coachId = parseInt(options.coachId);
+      this.setData({ coachId });
+      this.loadCoachDetail(coachId);
+      this.setTimeSelectorCoachId(coachId);
     }
+  },
+
+  /**
+   * 设置时间选择器的教练ID
+   */
+  setTimeSelectorCoachId(coachId) {
+    // 等待页面渲染完成后设置
+    setTimeout(() => {
+      const timeSelector = this.selectComponent('#timeSelector');
+      if (timeSelector) {
+        timeSelector.setData({
+          coachId: coachId
+        });
+        // 重新初始化组件
+        timeSelector.initializeComponent();
+      }
+    }, 100);
   },
 
   /**
@@ -59,7 +82,8 @@ Page({
           specialty: coach.intro || '暂无专业介绍',
           introduction: coach.intro || '暂无介绍',
           stats: coach.stats || {},
-          phone: coach.phone || ''
+          phone: coach.phone || '',
+          remainingLessons: coach.remaining_lessons || 0
         };
 
         this.setData({
@@ -78,17 +102,58 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // 刷新时间选择器数据
+    const timeSelector = this.selectComponent('#timeSelector');
+    if (timeSelector) {
+      timeSelector.refresh();
+    }
+  },
 
+  /**
+   * 处理时间段点击事件
+   */
+  onTimeSlotTap(e) {
+    const { slot } = e.detail;
+    
+    // 如果是已预约的时间段，跳转到课程详情
+    if (slot.status === 'booked' && slot.courseId) {
+      wx.navigateTo({
+        url: `/pages/courseDetail/courseDetail?id=${slot.courseId}`
+      });
+    } else if (slot.status === 'available') {
+      // 如果是可预约时间段，跳转到约课页面
+      this.onBookCoach();
+    }
+  },
+
+  /**
+   * 处理日期选择事件
+   */
+  onDateSelected(e) {
+    const { date } = e.detail;
+    // 可以在这里添加日期选择的处理逻辑
+  },
+
+  /**
+   * 处理时间段加载完成事件
+   */
+  onTimeSlotsLoaded(e) {
+    const { date, timeSlots } = e.detail;
+    // 可以在这里添加时间段加载完成的处理逻辑
+  },
+
+  /**
+   * 处理错误事件
+   */
+  onError(e) {
+    const { message } = e.detail;
+    wx.showToast({
+      title: message || '操作失败',
+      icon: 'none'
+    });
   },
 
   /**
@@ -96,6 +161,29 @@ Page({
    */
   onBookCoach() {
     const { coachData } = this.data;
+    
+    // 检查登录状态
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    const loginType = wx.getStorageSync('loginType');
+    
+    if (!isLoggedIn || loginType === 'guest') {
+      // 未登录，提示登录
+      wx.showModal({
+        title: '请先登录',
+        content: '预约课程需要先登录您的账户',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login'
+            });
+          }
+        }
+      });
+      return;
+    }
+    
+    // 已登录，跳转到约课页面
     wx.navigateTo({
       url: `/pages/bookCourse/bookCourse?type=student-book-coach&from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
     });
