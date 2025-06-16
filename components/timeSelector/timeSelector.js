@@ -227,7 +227,7 @@ Component({
 
         let templateSlots;
         try {
-          templateSlots = JSON.parse(timeTemplate.time_slots);
+          templateSlots = timeTemplate.time_slots;
         } catch (parseError) {
           console.error('解析时间模板失败:', parseError);
           this.setData({
