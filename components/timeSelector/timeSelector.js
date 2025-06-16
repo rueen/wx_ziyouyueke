@@ -271,7 +271,7 @@ Component({
               status: 'booked',
               studentName: bookedCourse.student ? bookedCourse.student.nickname : '未知学员',
               location: bookedCourse.address.name,
-              bookingStatus: this.getBookingStatusText(bookedCourse.booking_status),
+              booking_status: this.getStatusFromApi(bookedCourse.booking_status),
               courseId: bookedCourse.id,
               courseData: bookedCourse
             };
@@ -360,18 +360,17 @@ Component({
     },
 
     /**
-     * 获取预约状态文本
-     */
-    getBookingStatusText(status) {
-      const statusMap = {
-        1: '待确认',
-        2: '已确认',
-        3: '进行中',
-        4: '已完成',
-        5: '已取消'
-      };
-      return statusMap[status] || '未知状态';
-    },
+   * API状态码转换为中文状态
+   */
+  getStatusFromApi(status) {
+    const statusMap = {
+      1: 'pending',    // 待确认
+      2: 'confirmed',  // 已确认
+      3: 'completed',  // 已完成
+      4: 'cancelled'   // 已取消
+    };
+    return statusMap[status] || 'unknown';
+  },
 
     /**
      * 选择日期

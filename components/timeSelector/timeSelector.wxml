@@ -53,9 +53,17 @@
           <view wx:if="{{slot.status === 'booked' && showBookingDetails}}" class="time-slot-content booked-content">
             <view class="student-info">
               <text class="student-name">{{slot.studentName}}</text>
-              <text class="booking-status">{{slot.bookingStatus}}</text>
+              <view class="status-badge status-{{slot.booking_status}}">
+                <text class="status-text">{{slot.booking_status === 'pending' ? '待确认' : 
+                  slot.booking_status === 'confirmed' ? '已确认' : 
+                  slot.booking_status === 'completed' ? '已完成' : 
+                  slot.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+              </view>
             </view>
-            <view class="location-info">{{slot.location}}</view>
+            <view class="location-info">
+              <text class="iconfont icon-locationfill"></text>
+              <text>{{slot.location}}</text>
+            </view>
           </view>
           
           <!-- 空闲状态 -->
