@@ -24,3 +24,53 @@ page {
   font-size: 22rpx;
   color: #007aff;
 }
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  background-color: #f0f9ff;
+  border: 1rpx solid #007aff;
+  border-radius: 16rpx;
+  padding: 6rpx 12rpx;
+}
+
+.status-badge.status-pending {
+  background-color: #fff3cd;
+  border: 1rpx solid #ffeaa7;
+}
+
+.status-badge.status-confirmed {
+  background-color: #d4edda; 
+  border: 1rpx solid #c3e6cb;
+}
+
+.status-badge.status-completed {
+  background-color: #d1ecf1;
+  border: 1rpx solid #bee5eb;
+}
+
+.status-badge.status-cancelled {
+  background-color: #f8d7da;
+  border: 1rpx solid #f5c6cb;
+}
+
+.status-text {
+  font-size: 22rpx;
+  color: #333;
+}
+
+.status-pending .status-text {
+  color: #856404;
+}
+
+.status-confirmed .status-text {
+  color: #155724;
+}
+
+.status-completed .status-text {
+  color: #0c5460;
+}
+
+.status-cancelled .status-text {
+  color: #721c24;
+}
