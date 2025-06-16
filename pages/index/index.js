@@ -72,7 +72,23 @@ Page({
    */
   async loadUserInfo() {
     try {
-      // 从API获取用户信息和统计数据
+      // 检查登录类型，游客模式不调用API
+      const loginType = wx.getStorageSync('loginType');
+      const storedUserInfo = wx.getStorageSync('userInfo');
+      
+      if (loginType === 'guest') {
+        // 游客模式，直接使用本地缓存的用户信息
+        console.log('游客模式，跳过API调用，使用本地缓存');
+        this.setData({
+          userInfo: {
+            name: (storedUserInfo && storedUserInfo.nickname) || '游客用户',
+            avatar: (storedUserInfo && storedUserInfo.avatar_url) || '/images/defaultAvatar.png'
+          }
+        });
+        return;
+      }
+
+      // 正常用户，从API获取用户信息
       const [profileResult] = await Promise.all([
         api.user.getProfile(),
       ]);
@@ -163,6 +179,17 @@ Page({
   async loadCalendarData() {
     try {
       const { userRole } = this.data;
+      
+      // 检查登录类型，游客模式不调用API
+      const loginType = wx.getStorageSync('loginType');
+      if (loginType === 'guest') {
+        console.log('游客模式，跳过课程数据加载');
+        this.setData({
+          calendarData: [],
+          hasNextCourse: false
+        });
+        return;
+      }
       
       wx.showLoading({
         title: '加载中...'

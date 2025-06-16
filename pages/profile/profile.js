@@ -96,8 +96,11 @@ Page({
    */
   async loadUserInfo() {
     try {
-      // 先从缓存获取
+      // 检查登录类型，游客模式不调用API
+      const loginType = wx.getStorageSync('loginType');
       const storedUserInfo = wx.getStorageSync('userInfo');
+      
+      // 先从缓存获取
       if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
         this.setData({
           userInfo: {
@@ -107,7 +110,13 @@ Page({
         });
       }
 
-      // 从API获取最新的用户信息
+      if (loginType === 'guest') {
+        // 游客模式，跳过API调用，只使用本地缓存
+        console.log('游客模式，跳过用户信息API调用');
+        return;
+      }
+
+      // 正常用户，从API获取最新的用户信息
       const result = await api.user.getProfile();
       if (result && result.data) {
         const user = result.data;

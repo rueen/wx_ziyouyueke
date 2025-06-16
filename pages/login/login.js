@@ -143,10 +143,7 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          this.mockLoginSuccess('guest', {
-            nickname: '游客用户',
-            avatar: '/images/defaultAvatar.png'
-          });
+          this.mockLoginSuccess('guest');
         }
       }
     });
@@ -244,12 +241,12 @@ Page({
   /**
    * 游客登录（简化版本）
    */
-  mockLoginSuccess(loginType, userData) {
+  mockLoginSuccess(loginType) {
     // 保存最基本的用户信息
     const userInfo = {
       id: null, // 游客没有ID
-      nickname: userData.nickname || '游客用户',
-      avatar_url: userData.avatar || '/images/defaultAvatar.png',
+      nickname: '游客用户',
+      avatar_url: '/images/defaultAvatar.png',
       loginType: loginType
     };
 

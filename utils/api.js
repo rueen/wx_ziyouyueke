@@ -121,7 +121,7 @@ function handleTokenExpired() {
   
   // 显示提示并跳转
   wx.showToast({
-    title: '登录已过期',
+    title: '请先登录',
     icon: 'none',
     duration: 2000,
     success() {
