@@ -15,7 +15,6 @@ page {
   background-color: #fff;
   border-radius: 24rpx;
   padding: 20rpx 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
 /* 表单项 */
@@ -166,19 +165,16 @@ page {
 
 /* 保存按钮 */
 .save-btn {
-  width: 100%;
-  height: 88rpx;
-  background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  flex: 1;
+  height: 96rpx;
+  background-color: #007aff;
   color: #fff;
-  font-size: 34rpx;
-  font-weight: 600;
+  font-size: 30rpx;
+  border-radius: 48rpx;
   border: none;
-  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.3);
-  transition: all 0.3s ease;
 }
 
 .save-btn:active {

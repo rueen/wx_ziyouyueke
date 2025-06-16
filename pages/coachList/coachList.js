@@ -62,7 +62,6 @@ Page({
             relationId: relation.id, // 师生关系ID
             name: coach.nickname || '未知教练',
             avatar: coach.avatar_url || '/images/defaultAvatar.png',
-            specialty: coach.intro || '暂无专业介绍',
             remainingLessons: relation.remaining_lessons || 0, // 剩余课时
             totalLessons: lessonStats.total_lessons || 0, // 总课时
             introduction: coach.intro || '暂无介绍',

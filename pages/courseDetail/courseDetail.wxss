@@ -174,7 +174,6 @@ page {
 .single-button .action-btn {
   max-width: 400rpx;
   flex: none;
-  padding: 0;
 }
 
 .action-btn {
@@ -185,6 +184,7 @@ page {
   font-size: 28rpx;
   font-weight: 500;
   line-height: 80rpx;
+  padding: 0;
 }
 
 .action-btn::after {

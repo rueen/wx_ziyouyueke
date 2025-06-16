@@ -51,12 +51,6 @@ page {
   margin-bottom: 12rpx;
 }
 
-.coach-specialty {
-  font-size: 28rpx;
-  color: #007aff;
-  margin-bottom: 16rpx;
-}
-
 .remaining-lessons {
   display: flex;
   align-items: center;

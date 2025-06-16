@@ -63,11 +63,6 @@ page {
   display: block;
 }
 
-.coach-specialty {
-  font-size: 28rpx;
-  color: #666;
-}
-
 .remaining-lessons {
   display: flex;
   align-items: center;

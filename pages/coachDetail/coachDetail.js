@@ -79,7 +79,6 @@ Page({
           id: coach.id,
           name: coach.nickname || '未知教练',
           avatar: coach.avatar_url || '/images/defaultAvatar.png',
-          specialty: coach.intro || '暂无专业介绍',
           introduction: coach.intro || '暂无介绍',
           stats: coach.stats || {},
           phone: coach.phone || '',

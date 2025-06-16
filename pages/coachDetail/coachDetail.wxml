@@ -8,7 +8,6 @@
     </view>
     <view class="coach-info">
       <text class="coach-name">{{coachData.name}}</text>
-      <text class="coach-specialty">{{coachData.specialty}}</text>
       <view class="remaining-lessons">
         <text class="lessons-label">剩余课时：</text>
         <text class="lessons-count {{coachData.remainingLessons > 0 ? 'active' : 'empty'}}">{{coachData.remainingLessons}}节</text>

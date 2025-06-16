@@ -9,7 +9,6 @@
       <view class="coach-info">
         <view class="coach-main-info">
           <text class="coach-name">{{item.name}}</text>
-          <text class="coach-specialty">{{item.specialty}}</text>
         </view>
         <view class="remaining-lessons">
           <text class="lessons-label">剩余课时：</text>

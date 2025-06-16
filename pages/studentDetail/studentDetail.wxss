@@ -245,7 +245,6 @@ page {
   background-color: #007aff;
   color: #fff;
   font-size: 30rpx;
-  font-weight: 600;
   border-radius: 48rpx;
   border: none;
   display: flex;
