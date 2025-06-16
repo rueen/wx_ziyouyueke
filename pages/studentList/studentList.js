@@ -34,7 +34,6 @@ Page({
   onShow() {
     // 只有非首次加载时才刷新数据（从其他页面返回时）
     if (!this.data.isFirstLoad) {
-      console.log('从其他页面返回，刷新学员列表');
       this.loadStudents(false);
     }
   },
@@ -43,7 +42,6 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    console.log('用户下拉刷新');
     this.loadStudents().finally(() => {
       wx.stopPullDownRefresh();
     });
@@ -92,15 +90,12 @@ Page({
           students,
           isLoading: false
         });
-
-        console.log('加载学员数据成功:', students);
       } else {
         // 没有学员数据时，使用空数组
         this.setData({
           students: [],
           isLoading: false
         });
-        console.log('暂无学员数据');
       }
     } catch (error) {
       if (showLoading) {
@@ -124,7 +119,6 @@ Page({
    * 刷新学员列表（供其他页面调用）
    */
   refreshStudentList() {
-    console.log('刷新学员列表');
     this.loadStudents(false);
   },
 
@@ -154,7 +148,6 @@ Page({
    * 添加学员 - 直接分享绑定教练页面
    */
   onAddStudent() {
-    console.log('分享绑定教练页面');
     
     // 直接触发分享
     this.shareBindCoachPage();
@@ -168,7 +161,6 @@ Page({
     wx.showShareMenu({
       withShareTicket: true,
       success: () => {
-        console.log('分享菜单显示成功');
       }
     });
 
@@ -185,7 +177,6 @@ Page({
    */
   onShareAppMessage() {
     const { coachInfo } = this.data;
-    console.log(`/pages/bindCoach/bindCoach?coach_id=${coachInfo.id}`)
     return {
       title: `${coachInfo.nickname}邀请您成为学员`,
       path: `/pages/bindCoach/bindCoach?coach_id=${coachInfo.id}`,

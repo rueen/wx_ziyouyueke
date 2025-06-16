@@ -26,7 +26,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log('页面参数:', options);
 
     // 检查是否为编辑模式
     if (options.addressData) {
@@ -132,14 +131,12 @@ Page({
         type: 'wgs84',
         success: (locationRes) => {
           wx.hideLoading();
-          console.log('获取当前位置成功:', locationRes);
           
           // 使用用户当前位置调用选择位置API
           wx.chooseLocation({
             latitude: locationRes.latitude,
             longitude: locationRes.longitude,
             success: (result) => {
-              console.log('选择的地点:', result);
 
               // 更新地址信息
               this.setData({
@@ -172,7 +169,6 @@ Page({
             latitude: 30.2741,
             longitude: 120.1551,
             success: (result) => {
-              console.log('选择的地点:', result);
 
               this.setData({
                 'addressData.name': result.name || this.data.addressData.name,

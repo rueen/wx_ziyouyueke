@@ -33,7 +33,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log('课程详情页面加载，参数：', options);
     
     if (options.id) {
       this.setData({
@@ -62,9 +61,6 @@ Page({
     try {
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
-      
-      console.log('加载用户角色:', userRole);
-      console.log('加载用户信息:', userInfo);
       
       if (userRole && userInfo) {
         this.setData({
@@ -125,12 +121,6 @@ Page({
 
         // 判断当前用户是否为课程创建人
         const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
-        
-        console.log('课程创建人判断:', {
-          courseCreatedBy: course.created_by,
-          currentUserId: this.data.currentUserId,
-          isCreatedByCurrentUser: isCreatedByCurrentUser
-        });
 
         const courseInfo = {
           id: course.id,
@@ -329,7 +319,6 @@ Page({
         foreground: '#000000',
         _this: this,
         callback: (res) => {
-          console.log('二维码生成完成:', res);
           // 延迟一下再转换图片，确保绘制完成
           setTimeout(() => {
             this.canvasToTempFilePath();
@@ -358,7 +347,6 @@ Page({
       destHeight: 300,
       canvasId: 'qrcode-canvas',
       success: (res) => {
-        console.log('二维码图片生成成功:', res.tempFilePath);
         this.setData({
           qrCodeImagePath: res.tempFilePath
         });
@@ -391,7 +379,6 @@ Page({
   onScanVerify() {
     wx.scanCode({
       success: (res) => {
-        console.log('扫码结果：', res);
         const scannedCourseId = res.result;
         
         // 验证扫描的课程ID是否与当前课程匹配

@@ -51,10 +51,6 @@ Page({
       });
       
       wx.hideLoading();
-      
-      console.log('API返回的完整数据:', result);
-      console.log('result.data:', result.data);
-      console.log('result.data.list:', result.data && result.data.list);
 
       if (result && result.success && result.data && result.data.list && result.data.list.length > 0) {
         // 格式化API数据 - 新接口返回的是师生关系数据，包含教练信息和课程统计
@@ -85,15 +81,12 @@ Page({
         this.setData({
           coaches
         });
-
-        console.log('API加载我的教练数据成功:', coaches);
         
       } else {
         // 没有教练数据
         this.setData({
           coaches: []
         });
-        console.log('暂无绑定的教练');
         
         wx.showToast({
           title: '还没有绑定教练',

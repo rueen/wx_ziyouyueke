@@ -35,8 +35,6 @@ function request(options) {
       ? options.url 
       : `${API_CONFIG.baseUrl}${options.url}`;
     
-    console.log(`[API] ${options.method || 'GET'} ${url}`, options.data);
-    
     wx.request({
       url,
       method: options.method || 'GET',
@@ -44,7 +42,6 @@ function request(options) {
       header,
       timeout: options.timeout || API_CONFIG.timeout,
       success(res) {
-        console.log(`[API Response] ${url}`, res.data);
         
         // 检查HTTP状态码
         if (res.statusCode !== 200) {
@@ -112,8 +109,6 @@ function handleTokenExpired() {
   }
   isHandlingTokenExpired = true;
   
-  console.log('[API] Token已过期，正在处理...');
-  
   // 清除登录相关的本地存储
   wx.removeStorageSync('token');
   wx.removeStorageSync('userInfo');
@@ -134,8 +129,6 @@ function handleTokenExpired() {
   wx.setStorageSync('loginType', 'guest');
   wx.setStorageSync('userRole', 'student');
   
-  console.log('[API] 已重新设置为游客模式');
-  
   // 显示提示并跳转到首页（而不是登录页）
   wx.showToast({
     title: '登录已过期，已切换为游客模式',
@@ -147,7 +140,6 @@ function handleTokenExpired() {
         wx.reLaunch({
           url: '/pages/index/index',
           success() {
-            console.log('[API] 已跳转到首页（游客模式）');
             isHandlingTokenExpired = false;
           },
           fail() {
@@ -586,7 +578,6 @@ function uploadImage(filePath, directory = 'images') {
         'Authorization': `Bearer ${token}`
       },
       success: (res) => {
-        console.log(`[API Upload] /api/upload/image (directory: ${directory})`, res.data);
         
         try {
           const data = JSON.parse(res.data);

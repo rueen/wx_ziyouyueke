@@ -113,7 +113,6 @@ Page({
 
       if (loginType === 'guest') {
         // 游客模式，跳过API调用，只使用本地缓存
-        console.log('游客模式，跳过用户信息API调用');
         return;
       }
 
@@ -172,10 +171,6 @@ Page({
       const userRole = wx.getStorageSync('userRole');
       const userInfo = wx.getStorageSync('userInfo');
       const loginType = wx.getStorageSync('loginType');
-      
-      console.log('加载用户角色:', userRole);
-      console.log('加载用户信息:', userInfo);
-      console.log('登录类型:', loginType);
       
       // 如果是游客模式，设置默认角色
       if (loginType === 'guest') {

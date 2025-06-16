@@ -50,7 +50,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log('约课页面参数:', options);
     
     const { 
       type, 
@@ -446,8 +445,6 @@ Page({
         bookingData.coach_id = selectedOption.coach_id;
       }
       
-      console.log('提交约课数据:', bookingData);
-      
       // 调用API提交约课
       const result = await api.course.create(bookingData);
       
@@ -466,8 +463,6 @@ Page({
             }, 1500);
           }
         });
-        
-        console.log('约课成功:', result.data);
       } else {
         throw new Error(result.message || '约课失败');
       }

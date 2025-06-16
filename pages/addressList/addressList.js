@@ -84,8 +84,6 @@ Page({
         hasMore: result.data.pagination.current_page < result.data.pagination.total_pages
       });
 
-      console.log('加载地址列表成功:', addresses);
-
     } catch (error) {
       console.error('加载地址列表失败:', error);
       
@@ -180,14 +178,12 @@ Page({
         type: 'wgs84',
         success: (locationRes) => {
           wx.hideLoading();
-          console.log('获取当前位置成功:', locationRes);
           
           // 使用用户当前位置调用选择位置API
           wx.chooseLocation({
             latitude: locationRes.latitude,
             longitude: locationRes.longitude,
             success: (result) => {
-              console.log('选择的地点:', result);
 
               // 跳转到地址编辑页面，传递选择的地点信息
               const locationData = {
@@ -230,7 +226,6 @@ Page({
             latitude: 30.2741,
             longitude: 120.1551,
             success: (result) => {
-              console.log('选择的地点:', result);
 
               const locationData = {
                 name: result.name || '',

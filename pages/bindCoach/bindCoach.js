@@ -56,8 +56,6 @@ Page({
     this.setData({
       isLoggedIn: !!token && isLoggedIn
     });
-
-    console.log('用户登录状态:', this.data.isLoggedIn);
   },
 
   /**
@@ -91,8 +89,6 @@ Page({
           coachData,
           isLoading: false
         });
-
-        console.log('加载教练信息成功:', coachData);
       } else {
         throw new Error(result.message || '获取教练信息失败');
       }
@@ -191,8 +187,6 @@ Page({
           title: '绑定成功！',
           icon: 'success'
         });
-
-        console.log('师生关系绑定成功:', result.data);
 
         // 延迟跳转到首页
         setTimeout(() => {

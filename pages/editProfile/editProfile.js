@@ -119,12 +119,10 @@ Page({
         
         if (isLocalFile) {
           try {
-            console.log('检测到本地头像文件，开始上传:', userInfo.avatarUrl);
             // 上传头像文件
             const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
             if (uploadResult && uploadResult.url) {
               updateData.avatar_url = uploadResult.url;
-              console.log('头像上传成功:', uploadResult.url);
             }
           } catch (uploadError) {
             console.error('头像上传失败:', uploadError);
@@ -138,10 +136,8 @@ Page({
         } else {
           // 如果是网络URL（现有头像），直接传递
           updateData.avatar_url = userInfo.avatarUrl;
-          console.log('使用现有头像URL:', userInfo.avatarUrl);
         }
       }
-      console.log('updateData------', updateData);
       // 调用API更新用户信息
       const result = await api.user.updateProfile(updateData);
       
@@ -191,11 +187,9 @@ Page({
         filePath: filePath,
         success: (fileInfo) => {
           const fileSizeKB = Math.round(fileInfo.size / 1024);
-          console.log(`原图大小: ${fileSizeKB}KB`);
           
           // 如果文件小于200KB，不进行压缩
           if (fileInfo.size < 200 * 1024) {
-            console.log('文件较小，无需压缩');
             resolve({ tempFilePath: filePath });
             return;
           }
@@ -208,8 +202,6 @@ Page({
             quality = 60;
           }
           
-          console.log(`开始压缩，质量设置为: ${quality}`);
-          
           wx.compressImage({
             src: filePath,
             quality: quality,
@@ -218,21 +210,10 @@ Page({
               wx.getFileInfo({
                 filePath: res.tempFilePath,
                 success: (compressedInfo) => {
-                  const compressedSizeKB = Math.round(compressedInfo.size / 1024);
-                  const compressionRatio = ((fileInfo.size - compressedInfo.size) / fileInfo.size * 100).toFixed(1);
-                  
-                  console.log('图片压缩成功:', {
-                    原图大小: `${fileSizeKB}KB`,
-                    压缩后大小: `${compressedSizeKB}KB`,
-                    压缩率: `${compressionRatio}%`,
-                    压缩质量: quality
-                  });
-                  
                   resolve(res);
                 },
                 fail: () => {
                   // 获取压缩后文件信息失败，但压缩成功
-                  console.log('图片压缩成功（未获取到压缩后文件信息）');
                   resolve(res);
                 }
               });
@@ -364,7 +345,6 @@ Page({
    * 获取手机号
    */
   async onGetPhoneNumber(e) {
-    console.log('获取手机号结果：', e.detail);
     if (e.detail.code) {
       try {
         wx.showLoading({

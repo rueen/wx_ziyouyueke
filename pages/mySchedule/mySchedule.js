@@ -59,7 +59,6 @@ Page({
    */
   onDateSelected(e) {
     const { date } = e.detail;
-    console.log('选中日期:', date);
   },
 
   /**
@@ -67,7 +66,6 @@ Page({
    */
   onTimeSlotsLoaded(e) {
     const { date, timeSlots } = e.detail;
-    console.log('时间段加载完成:', date, timeSlots);
   },
 
   /**

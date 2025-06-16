@@ -50,10 +50,8 @@ Component({
    */
   lifetimes: {
     attached() {
-      console.log('timeSelector组件已附加到页面');
     },
     ready() {
-      console.log('timeSelector组件已准备就绪，开始初始化');
       // 在ready阶段初始化，确保组件完全准备好
       this.initializeComponent();
     }
@@ -79,8 +77,6 @@ Component({
      */
     async initializeComponent() {
       try {
-        console.log('开始初始化时间选择器组件');
-        
         // 先生成基本的日期列表
         this.generateBasicDateList();
         
@@ -89,8 +85,6 @@ Component({
         this.setData({
           currentDate: today
         });
-        
-        console.log('时间选择器组件基础初始化完成，当前日期:', today);
         
         // 异步加载时间模板和时间段数据
         this.loadTimeTemplate().then(() => {

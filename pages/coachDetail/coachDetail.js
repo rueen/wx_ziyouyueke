@@ -65,8 +65,6 @@ Page({
         this.setData({
           coachData
         });
-
-        console.log('加载教练详情成功:', coachData);
       }
     } catch (error) {
       wx.hideLoading();

@@ -33,7 +33,6 @@ Page({
           editableLessons: studentData.remainingLessons.toString(),
           studentRemark: studentData.remark || ''
         });
-        console.log('加载学员数据:', studentData);
       } catch (error) {
         console.error('解析学员数据失败：', error);
         wx.showToast({
@@ -167,9 +166,6 @@ Page({
         coach_remark: studentRemark.trim()
       };
 
-      console.log('更新师生关系数据:', updateData);
-      console.log('师生关系ID:', studentData.id);
-
       const result = await api.relation.update(studentData.id, updateData);
       
       wx.hideLoading();
@@ -193,8 +189,6 @@ Page({
           icon: 'success',
           duration: 1500
         });
-
-        console.log('师生关系更新成功:', result.data);
       } else {
         throw new Error(result.message || '保存失败');
       }
@@ -285,8 +279,6 @@ Page({
         title: '解除中...'
       });
 
-      console.log('解除师生关系，关系ID:', studentData.id);
-
       // 调用API解除师生关系
       const result = await api.relation.delete(studentData.id);
       
@@ -320,8 +312,6 @@ Page({
             }, 1500);
           }
         });
-
-        console.log('师生关系解除成功:', result.data);
       } else {
         throw new Error(result.message || '解除绑定失败');
       }
