@@ -96,14 +96,10 @@ Page({
     // 获取微信登录凭证
     wx.login({
       success: (res) => {
-        console.log('微信登录成功，code:', res.code);
-        
         // 获取用户信息
         wx.getUserProfile({
           desc: '用于完善会员资料',
           success: (userRes) => {
-            console.log('获取用户信息成功:', userRes);
-            
             // 调用后端API进行登录验证
             this.performLogin(res.code, {
               nickname: userRes.userInfo.nickName,
@@ -167,14 +163,10 @@ Page({
         loginParams.coach_id = parseInt(this.data.coachId);
       }
       
-      console.log('开始登录，参数:', loginParams);
-      
       // 调用登录API
       const result = await api.auth.login(loginParams);
       
       wx.hideLoading();
-      
-      console.log('登录成功:', result);
       
       // 保存用户信息和Token
       const { token, user, isNewUser, autoBindCoach } = result.data;
