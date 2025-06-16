@@ -127,8 +127,8 @@ page {
   align-items: center;
   position: relative;
   transition: all 0.3s ease;
-  margin-bottom: 20rpx;
   height: 130rpx;
+  border-bottom: 1rpx solid #f5f5f5;
 }
 
 .time-slot.free::before {
