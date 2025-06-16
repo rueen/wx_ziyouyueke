@@ -9,4 +9,18 @@ page {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-} 
+}
+
+.role-tag {
+  display: flex;
+  align-items: center;
+  background-color: #f0f9ff;
+  border: 1rpx solid #007aff;
+  border-radius: 16rpx;
+  padding: 6rpx 12rpx;
+}
+
+.role-text {
+  font-size: 22rpx;
+  color: #007aff;
+}

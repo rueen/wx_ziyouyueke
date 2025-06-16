@@ -24,7 +24,7 @@
   <view class="menu-section">
     <view class="menu-item" bindtap="onMyCoachesOrStudents">
       <view class="menu-content">
-        <text class="iconfont {{userRole === 'student' ? 'icon-jianshenjiaolian' : 'icon-user'}} menu-icon"></text>
+        <text class="iconfont {{userRole === 'student' ? 'icon-jiaolian' : 'icon-users'}} menu-icon"></text>
         <text class="menu-text">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -32,7 +32,7 @@
     
     <view class="menu-item" bindtap="onMyCourses">
       <view class="menu-content">
-        <text class="iconfont icon-kechengbiao menu-icon"></text>
+        <text class="iconfont icon-yuyuekecheng menu-icon"></text>
         <text class="menu-text">我的课程</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -41,7 +41,7 @@
     <!-- 教练专用：时间模板 -->
     <view class="menu-item" bindtap="onMyTimeTemplate" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <text class="iconfont icon-kechengbiao menu-icon"></text>
+        <text class="iconfont icon-shijianmoban menu-icon"></text>
         <text class="menu-text">时间模板</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -50,7 +50,7 @@
     <!-- 教练专用：我的时间 -->
     <view class="menu-item" bindtap="onMySchedule" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <text class="iconfont icon-time menu-icon"></text>
+        <text class="iconfont icon-timeline menu-icon"></text>
         <text class="menu-text">我的时间</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
