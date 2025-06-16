@@ -2,6 +2,7 @@
  * pages/studentDetail/studentDetail.wxss
  * 学员详情页面样式
  */
+@import '/style/iconfont.wxss';
 
 page {
   height: 100vh;
@@ -81,17 +82,7 @@ page {
 }
 
 .edit-btn {
-  background-color: #007aff;
-  color: #fff;
-  font-size: 24rpx;
-  padding: 12rpx 24rpx;
-  border-radius: 20rpx;
-  border: none;
-  line-height: 1;
-}
-
-.edit-btn::after {
-  border: none;
+  font-size: 40rpx;
 }
 
 /* 信息项 */
@@ -104,7 +95,6 @@ page {
 .info-label {
   font-size: 28rpx;
   color: #333;
-  font-weight: 500;
 }
 
 .info-value {
@@ -163,10 +153,6 @@ page {
 
 .remark-display {
   min-height: 80rpx;
-  padding: 20rpx;
-  background-color: #f8f9fa;
-  border-radius: 12rpx;
-  border: 1rpx solid #e9ecef;
 }
 
 .remark-text {

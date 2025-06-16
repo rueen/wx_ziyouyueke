@@ -16,7 +16,7 @@
   <view class="info-section">
     <view class="section-header">
       <text class="section-title">课时信息</text>
-      <button wx:if="{{!isEditing}}" class="edit-btn" bindtap="onStartEdit">编辑</button>
+      <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
     </view>
     
     <view class="info-item">
