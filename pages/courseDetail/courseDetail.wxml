@@ -21,7 +21,11 @@
         </view>
         <!-- 课程状态 -->
         <view class="status-badge status-{{courseInfo.status}}">
-          <text class="status-text">{{courseInfo.status === 'pending' ? '待确认' : 
+          <text class="status-text">{{courseInfo.status === 'pending' ? (
+            courseInfo.isCreatedByCurrentUser ? (
+              userRole === 'coach' ? '待学员确认' : '待教练确认'
+            ) : '待确认'
+          ) : 
             courseInfo.status === 'confirmed' ? '已确认' : 
             courseInfo.status === 'completed' ? '已完成' : 
             courseInfo.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
