@@ -268,11 +268,8 @@ Page({
    * 查看用户协议和隐私政策
    */
   onViewAgreement() {
-    wx.showModal({
-      title: '用户协议和隐私政策',
-      content: '这里会显示详细的用户协议和隐私政策内容。在实际应用中，可以跳转到专门的协议页面或打开WebView显示协议内容。',
-      showCancel: false,
-      confirmText: '知道了'
+    wx.navigateTo({
+      url: '/pages/agreement/agreement'
     });
   },
 

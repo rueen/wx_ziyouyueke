@@ -157,11 +157,13 @@ page {
 
 .agreement-text {
   font-size: 24rpx;
+  color: #666;
 }
 
 .agreement-link {
   font-size: 24rpx;
   margin-left: 8rpx;
+  color: #333;
 }
 
 /* 登录按钮 */
