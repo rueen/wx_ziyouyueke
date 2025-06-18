@@ -375,13 +375,13 @@ Component({
           return 'available';
         }
         
-        // 检查是否所有时间段都已被有效预约（排除已取消和过期的）
-        const bookedSlots = timeSlots.filter(slot => 
-          slot.status === 'booked' || slot.status === 'expired-booked'
+        // 检查是否存在可以预约的时段
+        const availableSlots = timeSlots.filter(slot => 
+          slot.status === 'free' || slot.status === 'free-with-cancelled'
         );
-        const totalSlots = timeSlots.length;
         
-        if (bookedSlots.length === totalSlots) {
+        // 如果不存在可以预约的时段，显示"已满"
+        if (availableSlots.length === 0) {
           return 'full';
         } else {
           return 'available';
