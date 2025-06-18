@@ -273,30 +273,56 @@ Component({
           // 检查时间段是否已过期
           const isExpired = this.isTimeSlotExpired(date, slot.startTime);
           
-          // 查找该时间段是否有预约
-          const bookedCourse = bookedCourses.find(course => {
+          // 查找该时间段的所有课程（包括已取消的）
+          const allCoursesInSlot = bookedCourses.filter(course => {
             const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
             const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
             return course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
-          if (bookedCourse) {
-            // 判断当前用户是否为课程创建人
-            const isCreatedByCurrentUser = bookedCourse.created_by && bookedCourse.created_by == this.data.currentUserId;
+          // 查找有效的课程（非已取消状态）
+          const activeCourse = allCoursesInSlot.find(course => course.booking_status !== 4);
+          
+          // 如果有showBookingDetails且有课程（包括已取消的），优先显示最新的课程信息
+          const displayCourse = this.properties.showBookingDetails && allCoursesInSlot.length > 0 
+            ? allCoursesInSlot[allCoursesInSlot.length - 1] // 显示最新的课程
+            : activeCourse; // 或者有效的课程
+
+          if (activeCourse) {
+            // 有有效课程，时间段不可预约
+            const isCreatedByCurrentUser = activeCourse.created_by && activeCourse.created_by == this.data.currentUserId;
             return {
               id: `${date}_${slot.startTime}_${slot.endTime}`,
               startTime: slot.startTime,
               endTime: slot.endTime,
               status: isExpired ? 'expired-booked' : 'booked',
-              studentName: bookedCourse.student ? bookedCourse.student.nickname : '未知学员',
-              location: bookedCourse.address.name,
-              booking_status: this.getStatusFromApi(bookedCourse.booking_status),
+              studentName: activeCourse.student ? activeCourse.student.nickname : '未知学员',
+              location: activeCourse.address.name,
+              booking_status: this.getStatusFromApi(activeCourse.booking_status),
               isCreatedByCurrentUser: isCreatedByCurrentUser,
-              courseId: bookedCourse.id,
-              courseData: bookedCourse,
+              courseId: activeCourse.id,
+              courseData: activeCourse,
               isExpired: isExpired
             };
+          } else if (displayCourse && this.properties.showBookingDetails) {
+            // 没有有效课程，但有已取消的课程且需要显示详情
+            const isCreatedByCurrentUser = displayCourse.created_by && displayCourse.created_by == this.data.currentUserId;
+            return {
+              id: `${date}_${slot.startTime}_${slot.endTime}`,
+              startTime: slot.startTime,
+              endTime: slot.endTime,
+              status: isExpired ? 'expired' : 'free-with-cancelled', // 新状态：空闲但有已取消课程
+              studentName: displayCourse.student ? displayCourse.student.nickname : '未知学员',
+              location: displayCourse.address.name,
+              booking_status: this.getStatusFromApi(displayCourse.booking_status),
+              isCreatedByCurrentUser: isCreatedByCurrentUser,
+              courseId: displayCourse.id,
+              courseData: displayCourse,
+              isExpired: isExpired,
+              isSelectable: !isExpired // 可以重新预约
+            };
           } else {
+            // 没有任何课程或不显示详情
             return {
               id: `${date}_${slot.startTime}_${slot.endTime}`,
               startTime: slot.startTime,
@@ -349,8 +375,10 @@ Component({
           return 'available';
         }
         
-        // 检查是否所有时间段都已被预约
-        const bookedSlots = timeSlots.filter(slot => slot.status === 'booked');
+        // 检查是否所有时间段都已被有效预约（排除已取消和过期的）
+        const bookedSlots = timeSlots.filter(slot => 
+          slot.status === 'booked' || slot.status === 'expired-booked'
+        );
         const totalSlots = timeSlots.length;
         
         if (bookedSlots.length === totalSlots) {
@@ -460,6 +488,16 @@ Component({
       if (slot.isExpired) {
         wx.showToast({
           title: '该时段已过期',
+          icon: 'none'
+        });
+        return;
+      }
+      
+      // 检查时间段是否可以选择
+      const selectableStatuses = ['free', 'free-with-cancelled'];
+      if (this.properties.mode === 'select' && !selectableStatuses.includes(slot.status)) {
+        wx.showToast({
+          title: '该时段已被预约',
           icon: 'none'
         });
         return;

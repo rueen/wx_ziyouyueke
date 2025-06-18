@@ -45,9 +45,8 @@ Page({
    */
   onTimeSlotTap(e) {
     const { slot } = e.detail;
-    
     // 如果是已预约的时间段，跳转到课程详情
-    if (slot.status === 'booked' && slot.courseId) {
+    if (slot.courseId != null) {
       wx.navigateTo({
         url: `/pages/courseDetail/courseDetail?id=${slot.courseId}`
       });

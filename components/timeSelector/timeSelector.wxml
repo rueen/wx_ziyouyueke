@@ -38,7 +38,7 @@
       
       <view wx:else>
         <view 
-          class="time-slot {{slot.status}} {{mode === 'select' && slot.status === 'free' && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
+          class="time-slot {{slot.status}} {{mode === 'select' && (slot.status === 'free' || slot.status === 'free-with-cancelled') && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
           wx:for="{{timeSlots}}" 
           wx:for-item="slot"
           wx:key="id"
@@ -75,6 +75,28 @@
             <text class="free-text">空闲</text>
             <view wx:if="{{mode === 'select' && slot.id !== selectedTimeSlot.id}}" class="select-hint">点击选择</view>
             <text class="iconfont icon-selected" wx:if="{{mode === 'select' && slot.id === selectedTimeSlot.id}}"></text>
+          </view>
+          
+          <!-- 空闲状态（有已取消课程） -->
+          <view wx:elif="{{slot.status === 'free-with-cancelled'}}" class="time-slot-content">
+            <!-- 显示已取消课程的详情 -->
+            <view class="booked-content cancelled-course">
+              <view class="student-info">
+                <text class="student-name cancelled">{{slot.studentName}}</text>
+                <view class="status-badge status-{{slot.booking_status}}">
+                  <text class="status-text">已取消</text>
+                </view>
+              </view>
+              <view class="location-info cancelled">
+                <text class="iconfont icon-locationfill"></text>
+                <text>{{slot.location}}</text>
+              </view>
+              <!-- 重新预约提示 -->
+              <view wx:if="{{mode === 'select'}}" class="rebook-hint">
+                <view wx:if="{{slot.id !== selectedTimeSlot.id}}" class="select-hint">可重新预约</view>
+                <text class="iconfont icon-selected" wx:if="{{slot.id === selectedTimeSlot.id}}"></text>
+              </view>
+            </view>
           </view>
           
           <!-- 过期的空闲状态 -->

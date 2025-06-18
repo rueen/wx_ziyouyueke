@@ -244,6 +244,40 @@ page {
   color: #c7c7cc;
 }
 
+/* 已取消课程的样式 */
+.time-slot.free-with-cancelled {
+  background-color: #fff;
+  border: 1rpx dashed #e5e5ea;
+}
+
+.cancelled-course {
+  opacity: 0.7;
+}
+
+.cancelled-course .student-name.cancelled {
+  color: #8e8e93;
+  text-decoration: line-through;
+}
+
+.cancelled-course .location-info.cancelled {
+  color: #8e8e93;
+}
+
+.rebook-hint {
+  margin-top: 12rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.rebook-hint .select-hint {
+  font-size: 22rpx;
+  color: #34c759;
+  background-color: #e8f5e8;
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+}
+
 /* 简化的已预约状态样式 */
 .booked-simple {
   display: flex;
