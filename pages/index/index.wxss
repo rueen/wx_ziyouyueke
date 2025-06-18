@@ -152,25 +152,13 @@ page {
 .time-slots {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
   position: relative;
 }
 
 .time-slot-item {
-  background-color: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  border: 2rpx solid transparent;
-}
-
-.time-slot-item.available {
-  border-color: #e9ecef;
-  background-color: #fafafa;
-}
-
-.time-slot-item.booked {
-  border-color: #007aff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.1);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  border: 2rpx solid #333
 }
 
 /* 时间信息 */

@@ -44,7 +44,7 @@
           
           <!-- 时间段列表 -->
           <view class="time-slots" wx:if="{{item.timeSlots.length > 0}}">
-            <view class="time-slot-item {{slot.isBooked ? 'booked' : 'available'}}" 
+            <view class="time-slot-item" 
                   wx:for="{{item.timeSlots}}" wx:for-item="slot" wx:key="id"
                   bindtap="onCourseClick" data-courseid="{{slot.courseId}}" wx:if="{{slot.isBooked}}">
               <view class="time-info">
