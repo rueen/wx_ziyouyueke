@@ -132,6 +132,8 @@ Page({
           }
 
           const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
+          const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
+          const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
           const mappedCourse = {
             id: course.id,
             coachId: course.coach ? course.coach.id : 0,
@@ -143,7 +145,7 @@ Page({
             displayName: displayName,
             displayAvatar: displayAvatar,
             displayRole: userRole === 'coach' ? '学员' : '教练',
-            time: `${course.course_date} ${course.start_time}-${course.end_time}`,
+            time: `${course.course_date} ${course_start_time}-${course_end_time}`,
             location: course.address ? (course.address.name || course.address.address || '未指定地点') : '未指定地点',
             remark: course.student_remark || course.coach_remark || '',
             status: this.getStatusFromApi(course.booking_status),

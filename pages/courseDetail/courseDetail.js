@@ -126,7 +126,8 @@ Page({
 
         // 判断当前用户是否为课程创建人
         const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
-
+        const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
+        const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
         const courseInfo = {
           ...course,
           id: course.id,
@@ -138,7 +139,7 @@ Page({
           displayName: displayName,
           displayAvatar: displayAvatar,
           displayRole: this.data.userRole === 'coach' ? '学员' : '教练',
-          time: `${course.course_date} ${course.start_time}-${course.end_time}`,
+          time: `${course.course_date} ${course_start_time}-${course_end_time}`,
           date: course.course_date,
           startTime: course.start_time,
           endTime: course.end_time,
