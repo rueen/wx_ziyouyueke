@@ -363,7 +363,8 @@ Page({
       1: 'pending',      // 待确认
       2: 'confirmed',    // 已确认  
       3: 'completed',    // 已完成
-      4: 'cancelled'     // 已取消
+      4: 'cancelled',     // 已取消
+      5: 'cancelled'     // 超时已取消
     };
     return statusMap[apiStatus] || 'pending';
   },
