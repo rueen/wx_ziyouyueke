@@ -127,7 +127,7 @@ Page({
       });
 
       // 获取用户当前位置作为默认位置
-      wx.getLocation({
+      wx.getFuzzyLocation({
         type: 'wgs84',
         success: (locationRes) => {
           wx.hideLoading();
