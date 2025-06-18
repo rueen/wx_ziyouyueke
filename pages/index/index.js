@@ -477,8 +477,9 @@ Page({
     // 过滤出未来的课程，并按时间排序
     const futureCourses = courses
       .filter(course => {
-        // 构建课程日期时间
-        const courseDateTime = new Date(`${course.course_date} ${course.start_time}`);
+        // 构建课程日期时间，使用兼容iOS的格式
+        const dateTimeStr = `${course.course_date}T${course.start_time}`;
+        const courseDateTime = new Date(dateTimeStr);
         
         const isFuture = courseDateTime > now;
         const timeDiff = courseDateTime.getTime() - now.getTime();
@@ -486,8 +487,10 @@ Page({
         return isFuture;
       })
       .sort((a, b) => {
-        const aDateTime = new Date(`${a.course_date} ${a.start_time}`);
-        const bDateTime = new Date(`${b.course_date} ${b.start_time}`);
+        const aDateTimeStr = `${a.course_date}T${a.start_time}`;
+        const bDateTimeStr = `${b.course_date}T${b.start_time}`;
+        const aDateTime = new Date(aDateTimeStr);
+        const bDateTime = new Date(bDateTimeStr);
         const diff = aDateTime - bDateTime;
         return diff;
       });
@@ -498,7 +501,7 @@ Page({
     
     const nextCourse = futureCourses[0];
     
-    const courseDate = new Date(`${nextCourse.course_date} 00:00:00`);
+    const courseDate = new Date(`${nextCourse.course_date}T00:00:00`);
     
     // 判断当前用户是否为课程创建人
     const isCreatedByCurrentUser = nextCourse.created_by && nextCourse.created_by == this.data.currentUserId;
