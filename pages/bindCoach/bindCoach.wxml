@@ -19,7 +19,6 @@
       </view>
       <view class="coach-basic-info">
         <text class="coach-name">{{coachData.name}}</text>
-        <text class="coach-specialty">{{coachData.specialty}}</text>
       </view>
     </view>
 
@@ -35,9 +34,6 @@
 
     <!-- 绑定提示 -->
     <view class="bind-tips">
-      <view class="tips-icon">
-        <text class="iconfont icon-info"></text>
-      </view>
       <view class="tips-content">
         <text class="tips-title">绑定说明</text>
         <text class="tips-desc">绑定后您可以预约该教练的课程，享受专业的教学服务</text>

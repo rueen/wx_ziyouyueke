@@ -81,8 +81,7 @@ Page({
           name: coach.nickname || '未知教练',
           avatar: coach.avatar_url || '/images/defaultAvatar.png',
           intro: coach.intro || '暂无简介',
-          phone: coach.phone || '',
-          specialty: coach.specialty || '专业教练'
+          phone: coach.phone || ''
         };
 
         this.setData({

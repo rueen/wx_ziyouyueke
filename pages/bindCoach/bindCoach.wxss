@@ -68,12 +68,6 @@
   margin-bottom: 8rpx;
 }
 
-.coach-specialty {
-  font-size: 28rpx;
-  color: #007aff;
-  font-weight: 500;
-}
-
 /* 教练简介区域 */
 .coach-intro-section {
   margin-bottom: 40rpx;
@@ -112,16 +106,6 @@
   padding: 24rpx;
   margin-bottom: 40rpx;
   border: 1rpx solid #007aff;
-}
-
-.tips-icon {
-  margin-right: 16rpx;
-  margin-top: 4rpx;
-}
-
-.tips-icon .iconfont {
-  font-size: 32rpx;
-  color: #007aff;
 }
 
 .tips-content {
