@@ -484,16 +484,16 @@ Component({
         console.warn('时间段点击事件参数不完整:', { slot, currentDate: this.data.currentDate });
         return;
       }
-      
+
       // 检查时间段是否已过期
-      if (slot.isExpired) {
+      if (slot.isExpired && slot.courseId == null) {
         wx.showToast({
           title: '该时段已过期',
           icon: 'none'
         });
         return;
       }
-      
+
       // 检查时间段是否可以选择
       const selectableStatuses = ['free', 'free-with-cancelled'];
       if (this.properties.mode === 'select' && !selectableStatuses.includes(slot.status)) {
