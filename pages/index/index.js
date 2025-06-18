@@ -38,6 +38,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    // 总是重新加载用户信息（确保登录状态变化后能及时更新）
+    this.loadUserInfo();
+    
     // 重新加载用户角色（从登录页面返回时需要更新）
     this.loadUserRole(() => {
       // 用户角色更新后，重新加载课程数据
@@ -48,7 +51,6 @@ Page({
     const userInfoUpdated = wx.getStorageSync('userInfoUpdated');
     if (userInfoUpdated) {
       wx.removeStorageSync('userInfoUpdated');
-      this.loadUserInfo();
     }
   },
 

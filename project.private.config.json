@@ -3,7 +3,7 @@
   "projectname": "wx_ziyouyueke",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true
+    "urlCheck": false
   },
   "condition": {
     "miniprogram": {
