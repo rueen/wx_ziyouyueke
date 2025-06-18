@@ -79,7 +79,7 @@
         <!-- 显示取消原因 -->
         <view class="info-item" wx:if="{{courseInfo.status === 'cancelled' && courseInfo.cancelReason}}">
           <view class="info-icon">
-            <text class="iconfont icon-yuanyin"></text>
+            <text class="iconfont icon-quxiaoyuanyin"></text>
           </view>
           <view class="info-content">
             <text class="info-label">取消原因</text>
@@ -186,6 +186,28 @@
     <view class="modal-footer">
       <button class="modal-btn confirm-modal-btn full-width" 
               bindtap="onHideCourseCodeModal">关闭</button>
+    </view>
+  </view>
+</view>
+
+<!-- 核销确认弹窗 -->
+<view class="verify-confirm-modal {{showVerifyConfirmModal ? 'show' : ''}}" wx:if="{{showVerifyConfirmModal}}">
+  <view class="modal-overlay" bindtap="onHideVerifyConfirmModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">确认核销</text>
+      <text class="modal-close" bindtap="onHideVerifyConfirmModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <view class="confirm-content">
+        <text class="confirm-text">确认要核销这节课程吗？</text>
+        <text class="confirm-tips">核销后课程状态将变为"已完成"，此操作不可撤销。</text>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn cancel-modal-btn" bindtap="onHideVerifyConfirmModal">取消</button>
+      <button class="modal-btn confirm-modal-btn active" 
+              bindtap="onConfirmVerify">确认核销</button>
     </view>
   </view>
 </view> 

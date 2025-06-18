@@ -26,7 +26,12 @@ Page({
     // 课程码相关
     showCourseCodeModal: false,
     currentCourseCode: '',
-    qrCodeImagePath: '' // 二维码图片路径
+    qrCodeImagePath: '', // 二维码图片路径
+    pollingTimer: null, // 轮询定时器
+    
+    // 扫码核销确认相关
+    showVerifyConfirmModal: false,
+    scannedCourseId: ''
   },
 
   /**
@@ -299,6 +304,11 @@ Page({
 
     // 生成二维码
     this.generateQRCode(courseId.toString());
+    
+    // 如果是学员查看课程码，启动轮询检查课程状态
+    if (this.data.userRole === 'student') {
+      this.startPollingCourseStatus();
+    }
   },
 
   /**
@@ -363,9 +373,83 @@ Page({
   },
 
   /**
+   * 启动轮询检查课程状态
+   */
+  startPollingCourseStatus() {
+    // 清除之前的定时器
+    if (this.data.pollingTimer) {
+      clearInterval(this.data.pollingTimer);
+    }
+    
+    // 每3秒检查一次课程状态
+    const timer = setInterval(() => {
+      this.checkCourseStatus();
+    }, 3000);
+    
+    this.setData({
+      pollingTimer: timer
+    });
+  },
+
+  /**
+   * 停止轮询
+   */
+  stopPollingCourseStatus() {
+    if (this.data.pollingTimer) {
+      clearInterval(this.data.pollingTimer);
+      this.setData({
+        pollingTimer: null
+      });
+    }
+  },
+
+  /**
+   * 检查课程状态
+   */
+  async checkCourseStatus() {
+    try {
+      const result = await api.course.getDetail(this.data.courseId);
+      
+      if (result && result.data) {
+        const currentStatus = this.getStatusFromApi(result.data.booking_status);
+        const originalStatus = this.data.courseInfo.status;
+        
+        // 如果状态发生变化（特别是变为已完成），停止轮询并更新页面
+        if (currentStatus !== originalStatus) {
+          this.stopPollingCourseStatus();
+          
+          // 隐藏课程码弹窗
+          this.setData({
+            showCourseCodeModal: false,
+            currentCourseCode: '',
+            qrCodeImagePath: ''
+          });
+          
+          // 显示状态变化提示
+          if (currentStatus === 'completed') {
+            wx.showToast({
+              title: '课程已完成',
+              icon: 'success'
+            });
+          }
+          
+          // 重新加载课程详情
+          this.loadCourseDetail();
+        }
+      }
+    } catch (error) {
+      console.error('检查课程状态失败:', error);
+      // 轮询失败不影响主要功能，只记录错误
+    }
+  },
+
+  /**
    * 隐藏课程码模态框
    */
   onHideCourseCodeModal() {
+    // 停止轮询
+    this.stopPollingCourseStatus();
+    
     this.setData({
       showCourseCodeModal: false,
       currentCourseCode: '',
@@ -383,8 +467,11 @@ Page({
         
         // 验证扫描的课程ID是否与当前课程匹配
         if (scannedCourseId === this.data.courseId.toString()) {
-          // 调用完成课程接口
-          this.completeCourse(scannedCourseId);
+          // 显示二次确认弹窗
+          this.setData({
+            showVerifyConfirmModal: true,
+            scannedCourseId: scannedCourseId
+          });
         } else {
           wx.showModal({
             title: '扫码错误',
@@ -402,6 +489,29 @@ Page({
         });
       }
     });
+  },
+
+  /**
+   * 隐藏核销确认弹窗
+   */
+  onHideVerifyConfirmModal() {
+    this.setData({
+      showVerifyConfirmModal: false,
+      scannedCourseId: ''
+    });
+  },
+
+  /**
+   * 确认核销课程
+   */
+  onConfirmVerify() {
+    // 隐藏确认弹窗
+    this.setData({
+      showVerifyConfirmModal: false
+    });
+    
+    // 调用完成课程接口
+    this.completeCourse(this.data.scannedCourseId);
   },
 
   /**
@@ -474,7 +584,8 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    // 页面卸载时清理定时器
+    this.stopPollingCourseStatus();
   },
 
   /**
