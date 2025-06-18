@@ -2,8 +2,9 @@
 <navBar title="我的时间" />
 <layout class="container">
   <!-- 时间选择器组件 -->
-  <time-selector 
+  <timeSelector 
     id="timeSelector"
+    coachId="{{userRole === 'coach' ? currentUserId : ''}}"
     mode="view"
     show-booking-details="{{true}}"
     bind:timeSlotTap="onTimeSlotTap"

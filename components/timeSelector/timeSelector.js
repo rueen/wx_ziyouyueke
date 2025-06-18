@@ -253,7 +253,6 @@ Component({
         
         // 获取该日期的预约情况
         const queryParams = {
-          role: 'coach',
           start_date: date,
           end_date: date
         };

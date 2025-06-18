@@ -2,7 +2,7 @@
   "usingComponents": {
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
-    "time-selector": "/components/timeSelector/timeSelector"
+    "timeSelector": "/components/timeSelector/timeSelector"
   },
   "navigationStyle": "custom",
   "backgroundColor": "#f5f5f5",
