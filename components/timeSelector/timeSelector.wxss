@@ -204,6 +204,46 @@ page {
   border-radius: 16rpx;
 }
 
+/* 过期时间段样式 */
+.time-slot.expired {
+  background-color: #f8f9fa;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.time-slot.expired .time-slot-time {
+  color: #c7c7cc;
+}
+
+.time-slot.expired .free-text {
+  color: #c7c7cc;
+}
+
+.time-slot.expired .select-hint {
+  display: none;
+}
+
+.time-slot.expired-booked {
+  background-color: #f8f9fa;
+  opacity: 0.6;
+}
+
+.time-slot.expired-booked .time-slot-time {
+  color: #c7c7cc;
+}
+
+.time-slot.expired-booked .student-name {
+  color: #c7c7cc;
+}
+
+.time-slot.expired-booked .location-info {
+  color: #c7c7cc;
+}
+
+.time-slot.expired-booked .booked-text {
+  color: #c7c7cc;
+}
+
 /* 简化的已预约状态样式 */
 .booked-simple {
   display: flex;

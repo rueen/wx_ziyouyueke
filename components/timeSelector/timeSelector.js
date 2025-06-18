@@ -270,6 +270,9 @@ Component({
 
         // 生成时间段列表
         const timeSlots = templateSlots.map(slot => {
+          // 检查时间段是否已过期
+          const isExpired = this.isTimeSlotExpired(date, slot.startTime);
+          
           // 查找该时间段是否有预约
           const bookedCourse = bookedCourses.find(course => {
             const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
@@ -284,21 +287,23 @@ Component({
               id: `${date}_${slot.startTime}_${slot.endTime}`,
               startTime: slot.startTime,
               endTime: slot.endTime,
-              status: 'booked',
+              status: isExpired ? 'expired-booked' : 'booked',
               studentName: bookedCourse.student ? bookedCourse.student.nickname : '未知学员',
               location: bookedCourse.address.name,
               booking_status: this.getStatusFromApi(bookedCourse.booking_status),
               isCreatedByCurrentUser: isCreatedByCurrentUser,
               courseId: bookedCourse.id,
-              courseData: bookedCourse
+              courseData: bookedCourse,
+              isExpired: isExpired
             };
           } else {
             return {
               id: `${date}_${slot.startTime}_${slot.endTime}`,
               startTime: slot.startTime,
               endTime: slot.endTime,
-              status: 'free',
-              date: date
+              status: isExpired ? 'expired' : 'free',
+              date: date,
+              isExpired: isExpired
             };
           }
         });
@@ -411,6 +416,35 @@ Component({
     },
 
     /**
+     * 判断时间段是否已过期
+     * @param {string} date 日期 YYYY-MM-DD
+     * @param {string} startTime 开始时间 HH:MM
+     * @returns {boolean} 是否已过期
+     */
+    isTimeSlotExpired(date, startTime) {
+      try {
+        const now = new Date();
+        const currentDate = this.formatDate(now);
+        
+        // 如果不是今天，不需要检查过期
+        if (date !== currentDate) {
+          return false;
+        }
+        
+        // 解析时间段的开始时间
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const slotDateTime = new Date();
+        slotDateTime.setHours(hours, minutes, 0, 0);
+        
+        // 比较时间，如果时间段开始时间小于当前时间，则已过期
+        return slotDateTime <= now;
+      } catch (error) {
+        console.error('判断时间段过期状态失败:', error);
+        return false;
+      }
+    },
+
+    /**
      * 点击时间段
      */
     onTimeSlotTap(e) {
@@ -419,6 +453,15 @@ Component({
       // 确保参数不为 undefined
       if (!slot || !this.data.currentDate) {
         console.warn('时间段点击事件参数不完整:', { slot, currentDate: this.data.currentDate });
+        return;
+      }
+      
+      // 检查时间段是否已过期
+      if (slot.isExpired) {
+        wx.showToast({
+          title: '该时段已过期',
+          icon: 'none'
+        });
         return;
       }
       

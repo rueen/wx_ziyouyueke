@@ -38,7 +38,7 @@
       
       <view wx:else>
         <view 
-          class="time-slot {{slot.status === 'booked' ? 'booked' : 'free'}} {{mode === 'select' && slot.status === 'free' ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
+          class="time-slot {{slot.status}} {{mode === 'select' && slot.status === 'free' && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
           wx:for="{{timeSlots}}" 
           wx:for-item="slot"
           wx:key="id"
@@ -50,7 +50,7 @@
           </view>
           
           <!-- 已预约状态 -->
-          <view wx:if="{{slot.status === 'booked' && showBookingDetails}}" class="time-slot-content booked-content">
+          <view wx:if="{{(slot.status === 'booked' || slot.status === 'expired-booked') && showBookingDetails}}" class="time-slot-content booked-content">
             <view class="student-info">
               <text class="student-name">{{slot.studentName}}</text>
               <view class="status-badge status-{{slot.booking_status}}">
@@ -77,9 +77,14 @@
             <text class="iconfont icon-selected" wx:if="{{mode === 'select' && slot.id === selectedTimeSlot.id}}"></text>
           </view>
           
+          <!-- 过期的空闲状态 -->
+          <view wx:elif="{{slot.status === 'expired'}}" class="time-slot-content free-content">
+            <text class="free-text">已过期</text>
+          </view>
+          
           <!-- 简化的已预约状态（不显示详细信息） -->
           <view wx:else class="time-slot-content booked-simple">
-            <text class="booked-text">已预约</text>
+            <text class="booked-text">{{slot.status === 'expired-booked' ? '已过期' : '已预约'}}</text>
           </view>
         </view>
       </view>
