@@ -146,17 +146,17 @@ Page({
       // 首先检查位置权限
       const authResult = await wx.getSetting();
       
-      if (!authResult.authSetting['scope.userLocation']) {
-        // 如果没有位置权限，先申请权限
+      if (!authResult.authSetting['scope.userFuzzyLocation']) {
+        // 如果没有模糊位置权限，先申请权限
         try {
           await wx.authorize({
-            scope: 'scope.userLocation'
+            scope: 'scope.userFuzzyLocation'
           });
         } catch (authError) {
           // 用户拒绝授权，引导用户手动开启
           wx.showModal({
             title: '位置权限',
-            content: '需要获取您的位置信息来选择地址，请在设置中开启位置权限',
+            content: '需要获取您的大概位置信息来选择地址，请在设置中开启位置权限',
             confirmText: '去设置',
             success: (res) => {
               if (res.confirm) {

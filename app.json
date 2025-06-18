@@ -20,11 +20,11 @@
   ],
   "requiredPrivateInfos": [
     "chooseLocation",
-    "getLocation"
+    "getFuzzyLocation"
   ],
   "permission": {
-    "scope.userLocation": {
-      "desc": "你的位置信息将用于选择常用地址"
+    "scope.userFuzzyLocation": {
+      "desc": "你的大概位置信息将用于选择常用地址，我们不会获取精确位置"
     }
   },
   "window": {
