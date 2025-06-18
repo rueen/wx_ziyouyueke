@@ -141,6 +141,18 @@ page {
   color: #333;
   font-weight: 600;
   margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.default-tag {
+  font-size: 20rpx;
+  color: #007aff;
+  background-color: #e8f4ff;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+  font-weight: 400;
 }
 
 .address-detail {
@@ -245,7 +257,7 @@ page {
 }
 
 .modal-container {
-  width: 600rpx;
+  width: 650rpx;
   max-height: 80vh;
   background-color: #fff;
   border-radius: 20rpx;

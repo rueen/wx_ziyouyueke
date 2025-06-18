@@ -200,12 +200,45 @@ Page({
         this.setData({
           addresses: addresses
         });
+        
+        // 自动选择默认地址
+        this.autoSelectDefaultAddress(addresses);
       }
     } catch (error) {
       console.error('加载地址列表失败:', error);
       this.setData({
         addresses: []
       });
+    }
+  },
+
+  /**
+   * 自动选择默认地址
+   * @param {Array} addresses 地址列表
+   */
+  autoSelectDefaultAddress(addresses) {
+    if (!addresses || addresses.length === 0) {
+      return;
+    }
+    
+    let defaultAddress = null;
+    
+    // 首先查找标记为默认的地址
+    defaultAddress = addresses.find(addr => !!addr.is_default);
+
+    // 如果没有找到默认地址，选择第一个地址
+    if (!defaultAddress && addresses.length > 0) {
+      defaultAddress = addresses[0];
+    }
+    
+    // 设置默认选中的地址
+    if (defaultAddress) {
+      this.setData({
+        selectedAddress: defaultAddress
+      });
+      
+      // 重新检查提交条件
+      this.checkCanSubmit();
     }
   },
 
@@ -253,18 +286,26 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
     const coachId = bookingType === 'student-book-coach' ? option.id : (userInfo ? userInfo.id : '');
     
-    this.setData({
+    // 根据约课类型决定是否重置地址
+    const updateData = {
       selectedOption: option,
       showSelection: false,
       showEmptyState: false,
       selectedCoachId: coachId,
       selectedDate: '',
       selectedTimeSlot: '',
-      selectedAddress: null,
       remark: ''
-    });
+    };
     
-    // 如果是学员约教练，选择教练后加载该教练的地址
+    // 如果是学员约教练，需要重置地址（因为教练变了）
+    // 如果是教练约学员，不重置地址（因为教练没变）
+    if (bookingType === 'student-book-coach') {
+      updateData.selectedAddress = null;
+    }
+    
+    this.setData(updateData);
+    
+    // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
     if (bookingType === 'student-book-coach') {
       await this.loadAddresses(option.id);
     }
@@ -284,17 +325,24 @@ Page({
    * 更换选择
    */
   onChangeSelection() {
-    const { availableOptions } = this.data;
+    const { availableOptions, bookingType } = this.data;
     
-    this.setData({
+    const updateData = {
       showSelection: true,
       showEmptyState: availableOptions.length === 0,
       selectedDate: '',
       selectedTimeSlot: '',
-      selectedAddress: null,
-      remark: '',
-      addresses: [] // 清空地址列表，重新选择后再加载
-    });
+      remark: ''
+    };
+    
+    // 如果是学员约教练，需要清空地址相关数据（因为要重新选择教练）
+    // 如果是教练约学员，不清空地址（因为教练没变，地址不变）
+    if (bookingType === 'student-book-coach') {
+      updateData.selectedAddress = null;
+      updateData.addresses = [];
+    }
+    
+    this.setData(updateData);
     this.checkCanSubmit();
   },
 

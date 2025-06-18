@@ -78,7 +78,10 @@
       <!-- 已选择的地址 -->
       <view class="selected-address" wx:if="{{selectedAddress}}" bindtap="onShowAddressSelection">
         <view class="address-info">
-          <text class="address-name">{{selectedAddress.name}}</text>
+          <text class="address-name">
+            <text>{{selectedAddress.name}}</text>
+            <text class="default-tag" wx:if="{{selectedAddress.is_default}}">默认</text>
+          </text>
           <text class="address-detail">{{selectedAddress.address}}</text>
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
@@ -134,7 +137,10 @@
               bindtap="onSelectAddress" 
               data-address="{{item}}">
           <view class="address-info">
-            <text class="address-name">{{item.name}}</text>
+            <text class="address-name">
+              <text>{{item.name}}</text>
+              <text class="default-tag" wx:if="{{item.is_default}}">默认</text>
+            </text>
             <text class="address-detail">{{item.address}}</text>
           </view>
           <text class="iconfont icon-check select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
