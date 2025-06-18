@@ -46,7 +46,9 @@ Component({
     isLoading: false, // 加载状态
     timeTemplate: null, // 时间模板
     scrollLeft: 0, // 日期滚动位置
-    maxAdvanceDays: 30 // 最大可预约天数，默认30天
+    maxAdvanceDays: 30, // 最大可预约天数，默认30天
+    userRole: '',
+    currentUserId: null,
   },
 
   /**
@@ -54,6 +56,14 @@ Component({
    */
   lifetimes: {
     attached() {
+      const userRole = wx.getStorageSync('userRole');
+      const userInfo = wx.getStorageSync('userInfo');
+      if (userRole && userInfo) {
+        this.setData({
+          userRole: userRole,
+          currentUserId: userInfo.id
+        });
+      }
     },
     ready() {
       // 在ready阶段初始化，确保组件完全准备好
@@ -268,6 +278,8 @@ Component({
           });
 
           if (bookedCourse) {
+            // 判断当前用户是否为课程创建人
+            const isCreatedByCurrentUser = bookedCourse.created_by && bookedCourse.created_by == this.data.currentUserId;
             return {
               id: `${date}_${slot.startTime}_${slot.endTime}`,
               startTime: slot.startTime,
@@ -276,6 +288,7 @@ Component({
               studentName: bookedCourse.student ? bookedCourse.student.nickname : '未知学员',
               location: bookedCourse.address.name,
               booking_status: this.getStatusFromApi(bookedCourse.booking_status),
+              isCreatedByCurrentUser: isCreatedByCurrentUser,
               courseId: bookedCourse.id,
               courseData: bookedCourse
             };

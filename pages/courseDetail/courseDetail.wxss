@@ -116,6 +116,10 @@ page {
   flex-shrink: 0;
 }
 
+.info-icon .iconfont{
+  color: #333;
+}
+
 .info-content {
   display: flex;
   flex-direction: column;

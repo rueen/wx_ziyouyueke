@@ -112,23 +112,6 @@ Page({
   },
 
   /**
-   * 处理时间段点击事件
-   */
-  onTimeSlotTap(e) {
-    const { slot } = e.detail;
-    
-    // 如果是已预约的时间段，跳转到课程详情
-    if (slot.status === 'booked' && slot.courseId) {
-      wx.navigateTo({
-        url: `/pages/courseDetail/courseDetail?id=${slot.courseId}`
-      });
-    } else if (slot.status === 'available') {
-      // 如果是可预约时间段，跳转到约课页面
-      this.onBookCoach();
-    }
-  },
-
-  /**
    * 处理日期选择事件
    */
   onDateSelected(e) {

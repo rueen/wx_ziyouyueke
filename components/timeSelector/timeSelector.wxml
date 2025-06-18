@@ -54,7 +54,11 @@
             <view class="student-info">
               <text class="student-name">{{slot.studentName}}</text>
               <view class="status-badge status-{{slot.booking_status}}">
-                <text class="status-text">{{slot.booking_status === 'pending' ? '待确认' : 
+                <text class="status-text">{{slot.booking_status === 'pending' ? (
+                  slot.isCreatedByCurrentUser ? (
+                    userRole === 'coach' ? '待学员确认' : '待教练确认'
+                  ) : '待确认'
+                ) : 
                   slot.booking_status === 'confirmed' ? '已确认' : 
                   slot.booking_status === 'completed' ? '已完成' : 
                   slot.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>

@@ -46,7 +46,7 @@
 
         <view class="info-item">
           <view class="info-icon">
-            <text class="iconfont icon-locationfill"></text>
+            <text class="iconfont icon-location"></text>
           </view>
           <view class="info-content">
             <text class="info-label">上课地点</text>
@@ -56,7 +56,7 @@
 
         <view class="info-item">
           <view class="info-icon">
-            <text class="iconfont icon-messagefill"></text>
+            <text class="iconfont icon-xiaoxi"></text>
           </view>
           <view class="info-content">
             <text class="info-label">教练备注</text>

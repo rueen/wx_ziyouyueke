@@ -25,12 +25,11 @@
   <view class="time-section">
     <text class="section-title">可约时间</text>
       <!-- 时间选择器组件 -->
-      <time-selector 
+      <timeSelector
         id="timeSelector"
-        coach-id="{{coachId}}"
+        coachId="{{coachId}}"
         mode="view"
-        show-booking-details="{{true}}"
-        bind:timeSlotTap="onTimeSlotTap"
+        showBookingDetails="{{false}}"
         bind:dateSelected="onDateSelected"
         bind:timeSlotsLoaded="onTimeSlotsLoaded"
         bind:error="onError"
