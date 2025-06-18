@@ -25,13 +25,6 @@ Page({
   onLoad: function (options) {
     // 初始化用户状态（默认游客模式）
     this.initializeUserState();
-    
-    this.loadUserInfo();
-    
-    // 加载用户角色，完成后再加载日历数据
-    this.loadUserRole(() => {
-      this.loadCalendarData();
-    });
   },
 
   /**

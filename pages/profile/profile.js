@@ -29,9 +29,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.loadUserInfo();
-    this.loadUserRole();
-    this.loadLoginType();
+    // 页面加载时只做基础初始化，用户信息加载移到onShow中
   },
 
   /**
