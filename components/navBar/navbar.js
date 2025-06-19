@@ -71,6 +71,25 @@ Component({
      */
     onBack() {
       wx.navigateBack();
+    },
+
+    /**
+     * 点击logo跳转至首页
+     */
+    onLogoTap() {
+      // 获取当前页面栈
+      const pages = getCurrentPages();
+      const currentPage = pages[pages.length - 1];
+      
+      // 如果当前已经是首页，则不进行跳转
+      if (currentPage.route === 'pages/index/index') {
+        return;
+      }
+      
+      // 跳转至首页
+      wx.switchTab({
+        url: '/pages/index/index'
+      });
     }
   }
 })

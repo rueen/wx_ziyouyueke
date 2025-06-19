@@ -7,7 +7,7 @@
     </view>
     
     <!-- Logo -->
-    <view class="logo" style="width: {{contentHeight*0.8}}px;height: {{contentHeight*0.8}}px;" wx:if="{{!canGoBack}}">
+    <view class="logo" style="width: {{contentHeight*0.8}}px;height: {{contentHeight*0.8}}px;" wx:if="{{!canGoBack}}" bindtap="onLogoTap">
       <text class="iconfont icon-logo"></text>
     </view>
     
