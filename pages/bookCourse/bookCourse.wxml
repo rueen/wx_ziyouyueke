@@ -15,7 +15,7 @@
       </view>
       
       <!-- 已选择的对象 -->
-      <view class="selected-option" wx:if="{{selectedOption && !showSelection}}" bindtap="onChangeSelection">
+      <view class="selected-option" wx:if="{{selectedOption}}" bindtap="onChangeSelection">
         <view class="option-avatar">
           <image src="{{selectedOption.avatar}}" class="avatar-img"></image>
         </view>
@@ -26,34 +26,15 @@
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>
       
-      <!-- 选择界面 -->
-      <view class="selection-list" wx:if="{{showSelection}}">
-        <view class="option-item" 
-              wx:for="{{availableOptions}}" 
-              wx:key="id" 
-              bindtap="onSelectOption" 
-              data-option="{{item}}">
-          <view class="option-avatar">
-            <image src="{{item.avatar}}" class="avatar-img"></image>
-          </view>
-          <view class="option-info">
-            <text class="option-name">{{item.name}}</text>
-            <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
-          </view>
-          <text class="iconfont icon-check select-icon"></text>
-        </view>
-        
-        <!-- 空状态 -->
-        <emptyState 
-          wx:if="{{showEmptyState && availableOptions.length === 0}}"
-          type="{{bookingType === 'coach-book-student' ? 'no-student' : 'no-coach'}}"
-          customClass="compact">
-        </emptyState>
+      <!-- 选择按钮（没有选中任何对象时显示） -->
+      <view class="select-option-btn" wx:else bindtap="onShowOptionSelection">
+        <text class="btn-text">{{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}</text>
+        <text class="iconfont icon-arrow-r"></text>
       </view>
     </view>
 
     <!-- 时间选择区域 -->
-    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+    <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
         <text class="section-title">选择时间</text>
       </view>
@@ -70,7 +51,7 @@
     </view>
 
     <!-- 地址选择区域 -->
-    <view class="section" wx:if="{{selectedOption && !showSelection}}">
+    <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
         <text class="section-title">选择地点</text>
       </view>
@@ -95,7 +76,7 @@
     </view>
 
     <!-- 备注区域 -->
-    <view class="section remark-section" wx:if="{{selectedOption && !showSelection}}">
+    <view class="section remark-section" wx:if="{{selectedOption}}">
       <view class="section-header">
         <text class="section-title">
           {{bookingType === 'coach-book-student' ? '教练备注' : '学员备注'}}
@@ -112,7 +93,7 @@
     </view>
 
     <!-- 提交按钮 -->
-    <view class="submit-container" wx:if="{{selectedOption && !showSelection}}">
+    <view class="submit-container" wx:if="{{selectedOption}}">
       <button class="submit-btn {{canSubmit ? 'active' : 'disabled'}}" 
               bindtap="onSubmitBooking" 
               disabled="{{!canSubmit || isSubmitting}}">
@@ -121,6 +102,41 @@
     </view>
   </view>
 </layout>
+
+<!-- 选择对象弹窗 -->
+<view class="modal-mask" wx:if="{{showOptionSelection}}" bindtap="onHideOptionSelection">
+  <view class="modal-container" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">{{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}</text>
+      <text class="modal-close" bindtap="onHideOptionSelection">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="option-list">
+        <view class="option-item {{item.remainingLessons <= 0 ? 'disabled' : ''}}" 
+              wx:for="{{availableOptions}}" 
+              wx:key="id" 
+              bindtap="onSelectOption" 
+              data-option="{{item}}">
+          <view class="option-avatar">
+            <image src="{{item.avatar}}" class="avatar-img"></image>
+          </view>
+          <view class="option-info">
+            <text class="option-name">{{item.name}}</text>
+            <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
+          </view>
+          <text class="iconfont icon-check select-icon {{selectedOption && selectedOption.id === item.id ? 'selected' : ''}}"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <emptyState 
+          wx:if="{{availableOptions.length === 0}}"
+          type="{{bookingType === 'coach-book-student' ? 'no-student' : 'no-coach'}}"
+          customClass="compact">
+        </emptyState>
+      </view>
+    </view>
+  </view>
+</view>
 
 <!-- 地址选择弹窗 -->
 <view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">

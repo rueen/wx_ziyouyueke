@@ -22,10 +22,9 @@ Page({
     presetName: '', // 预设的教练名称或学员名称
     
     // 选择对象相关
-    availableOptions: [], // 可选择的教练或学员列表
+    availableOptions: [], // 可选择的教练或学员列表（包括课时为0的）
     selectedOption: null, // 已选择的教练或学员
-    showSelection: false, // 是否显示选择界面
-    showEmptyState: false, // 是否显示空状态
+    showOptionSelection: false, // 是否显示选择弹窗
     
     // 时间选择相关
     selectedCoachId: '', // 用于时间选择器的教练ID
@@ -128,46 +127,42 @@ Page({
     try {
       let result;
       if (bookingType === 'coach-book-student') {
-        // 教练约学员：获取我的学员列表（排除剩余课时为0的）
+        // 教练约学员：获取我的学员列表（包括剩余课时为0的）
         result = await api.relation.getMyStudents();
         if (result && result.data && result.data.list) {
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
-          const students = dataArray
-            .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的学员
-            .map(item => ({
-              id: item.id,
-              name: (item.student && item.student.nickname) || '未知学员',
-              avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
-              remainingLessons: item.remaining_lessons || 0,
-              phone: (item.student && item.student.phone) || '',
-              student_id: item.student_id,
-              coach_id: item.coach_id,
-              originalData: item // 保存原始数据
-            }));
+          const students = dataArray.map(item => ({
+            id: item.id,
+            name: (item.student && item.student.nickname) || '未知学员',
+            avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
+            remainingLessons: item.remaining_lessons || 0,
+            phone: (item.student && item.student.phone) || '',
+            student_id: item.student_id,
+            coach_id: item.coach_id,
+            originalData: item // 保存原始数据
+          }));
           
           this.setData({
             availableOptions: students
           });
         }
       } else {
-        // 学员约教练：获取可约教练列表（排除剩余课时为0的）
+        // 学员约教练：获取可约教练列表（包括剩余课时为0的）
         result = await api.relation.getMyCoaches();
         if (result && result.data && result.data.list) {
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
-          const coaches = dataArray
-            .filter(item => item.remaining_lessons > 0) // 排除剩余课时为0的教练
-            .map(item => ({
-              id: item.id,
-              name: (item.coach && item.coach.nickname) || '未知教练',
-              avatar: (item.coach && item.coach.avatar_url) || '/images/defaultAvatar.png',
-              remainingLessons: item.remaining_lessons || 0,
-              phone: (item.coach && item.coach.phone) || '',
-              student_id: item.student_id,
-              coach_id: item.coach_id,
-              originalData: item // 保存原始数据
-            }));
+          const coaches = dataArray.map(item => ({
+            id: item.id,
+            name: (item.coach && item.coach.nickname) || '未知教练',
+            avatar: (item.coach && item.coach.avatar_url) || '/images/defaultAvatar.png',
+            remainingLessons: item.remaining_lessons || 0,
+            phone: (item.coach && item.coach.phone) || '',
+            student_id: item.student_id,
+            coach_id: item.coach_id,
+            originalData: item // 保存原始数据
+          }));
           
           this.setData({
             availableOptions: coaches
@@ -257,22 +252,18 @@ Page({
       }
     }
     
-    // 没有预设或找不到预设，根据可选项数量决定
-    if (availableOptions.length === 0) {
-      // 没有可选项，显示空状态（不使用toast）
-      this.setData({
-        showSelection: true,
-        showEmptyState: true
-      });
-    } else if (availableOptions.length === 1) {
-      // 只有一个选项，直接选中
-      this.selectOption(availableOptions[0]);
-    } else {
-      // 多个选项，显示选择界面
-      this.setData({
-        showSelection: true,
-        showEmptyState: false
-      });
+    // 没有预设或找不到预设，选择第一个课时>0的选项
+    if (availableOptions.length > 0) {
+      const firstValidOption = availableOptions.find(option => option.remainingLessons > 0);
+      if (firstValidOption) {
+        this.selectOption(firstValidOption);
+      } else {
+        // 所有选项的课时都为0，显示提示但不自动选择
+        wx.showToast({
+          title: '暂无可用课时',
+          icon: 'none'
+        });
+      }
     }
   },
 
@@ -282,6 +273,15 @@ Page({
   async selectOption(option) {
     const { bookingType } = this.data;
     
+    // 检查课时是否充足
+    if (option.remainingLessons <= 0) {
+      wx.showToast({
+        title: '该选项剩余课时不足',
+        icon: 'none'
+      });
+      return;
+    }
+    
     // 获取当前用户信息，用于教练约学员时的时间选择器
     const userInfo = wx.getStorageSync('userInfo');
     const coachId = bookingType === 'student-book-coach' ? option.id : (userInfo ? userInfo.id : '');
@@ -289,8 +289,7 @@ Page({
     // 根据约课类型决定是否重置地址
     const updateData = {
       selectedOption: option,
-      showSelection: false,
-      showEmptyState: false,
+      showOptionSelection: false,
       selectedCoachId: coachId,
       selectedDate: '',
       selectedTimeSlot: '',
@@ -322,21 +321,19 @@ Page({
   },
 
   /**
-   * 更换选择
+   * 更换选择 - 显示选择弹窗
    */
   onChangeSelection() {
-    const { availableOptions, bookingType } = this.data;
-    
+    // 清理时间选择和备注，但保持地址选择（对于教练约学员场景）
+    const { bookingType } = this.data;
     const updateData = {
-      showSelection: true,
-      showEmptyState: availableOptions.length === 0,
+      showOptionSelection: true,
       selectedDate: '',
       selectedTimeSlot: '',
       remark: ''
     };
     
     // 如果是学员约教练，需要清空地址相关数据（因为要重新选择教练）
-    // 如果是教练约学员，不清空地址（因为教练没变，地址不变）
     if (bookingType === 'student-book-coach') {
       updateData.selectedAddress = null;
       updateData.addresses = [];
@@ -344,6 +341,24 @@ Page({
     
     this.setData(updateData);
     this.checkCanSubmit();
+  },
+
+  /**
+   * 显示选择对象弹窗
+   */
+  onShowOptionSelection() {
+    this.setData({
+      showOptionSelection: true
+    });
+  },
+
+  /**
+   * 隐藏选择对象弹窗
+   */
+  onHideOptionSelection() {
+    this.setData({
+      showOptionSelection: false
+    });
   },
 
   /**
@@ -422,7 +437,7 @@ Page({
    */
   checkCanSubmit() {
     const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress } = this.data;
-    const canSubmit = !!(selectedOption && selectedDate && selectedTimeSlot && selectedAddress);
+    const canSubmit = !!(selectedOption && selectedOption.remainingLessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
     this.setData({
       canSubmit: canSubmit
     });
