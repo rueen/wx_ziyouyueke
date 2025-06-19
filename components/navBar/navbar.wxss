@@ -22,7 +22,7 @@
 
 /* Logo样式 */
 .logo{
-  background-color: #171819;
+  background-color: #000;
   border-radius: 50%;
   position: absolute;
   left: 40rpx;
