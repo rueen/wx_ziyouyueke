@@ -10,7 +10,7 @@ page {
 
 /* 地址列表 */
 .address-list {
-  margin-bottom: 20rpx;
+  margin-bottom: 120rpx;
 }
 
 .address-item {

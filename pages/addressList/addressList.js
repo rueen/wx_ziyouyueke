@@ -14,7 +14,7 @@ Page({
     isLoading: false, // 加载状态
     hasMore: true, // 是否还有更多数据
     page: 1, // 当前页码
-    limit: 20 // 每页数量
+    limit: 10 // 每页数量
   },
 
   /**
