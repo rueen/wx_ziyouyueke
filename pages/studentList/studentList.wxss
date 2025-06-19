@@ -25,10 +25,12 @@ page {
   background-color: #fff;
   padding: 40rpx;
   margin-bottom: 20rpx;
+  transition: transform 0.2s ease;
 }
 
 .student-item:active {
-  background-color: #f8f9fa;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 学员头像 */

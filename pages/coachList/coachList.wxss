@@ -22,10 +22,12 @@ page {
   border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
+  transition: transform 0.2s ease;
 }
 
 .coach-item:active {
-  background-color: #f8f9fa;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 教练头像 */

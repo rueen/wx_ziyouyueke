@@ -121,4 +121,9 @@ page {
   font-size: 32rpx;
   color: #fff;
   margin: 40rpx auto;
+  transition: transform 0.2s ease;
+}
+.logout-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }

@@ -250,10 +250,12 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .book-button:active {
-  background-color: #222;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .book-button[disabled] {
@@ -277,11 +279,12 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .unbind-button:active {
-  background-color: #ff3b30;
-  color: #fff;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .unbind-button[disabled] {

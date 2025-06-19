@@ -177,11 +177,12 @@ page {
   align-items: center;
   justify-content: center;
   font-size: 32rpx;
+  transition: transform 0.2s ease;
 }
 
 .login-btn:active {
-  opacity: .9;
-  transform: translateY(1rpx);
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .login-btn::after {

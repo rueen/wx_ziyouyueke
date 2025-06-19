@@ -158,7 +158,12 @@ page {
 .time-slot-item {
   border-radius: 24rpx;
   padding: 30rpx;
-  border: 2rpx solid #333
+  border: 2rpx solid #333;
+  transition: transform 0.2s ease;
+}
+.time-slot-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 时间信息 */
@@ -287,6 +292,11 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
+}
+.book-button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .book-button::after {

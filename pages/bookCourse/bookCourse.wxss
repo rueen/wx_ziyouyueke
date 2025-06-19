@@ -93,6 +93,13 @@ page {
   font-size: 28rpx;
 }
 
+.select-option-btn{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+}
+
 /* 选择列表样式 */
 .selection-list {
   max-height: 600rpx;
@@ -222,6 +229,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .submit-btn.active {
@@ -230,7 +238,8 @@ page {
 }
 
 .submit-btn.active:active {
-  background-color: #222;
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .submit-btn.disabled {
