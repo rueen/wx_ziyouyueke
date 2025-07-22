@@ -306,7 +306,7 @@ Page({
     
     // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
     if (bookingType === 'student-book-coach') {
-      await this.loadAddresses(option.id);
+      await this.loadAddresses(option.coach_id);
     }
     
     this.checkCanSubmit();
