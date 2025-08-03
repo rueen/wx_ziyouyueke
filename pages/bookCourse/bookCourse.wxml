@@ -41,7 +41,7 @@
       
       <!-- 时间选择器组件 -->
       <timeSelector 
-        coachId="{{bookingType === 'student-book-coach' ? selectedOption.id : ''}}"
+        coachId="{{bookingType === 'student-book-coach' ? selectedOption.coach_id : ''}}"
         mode="select"
         showBookingDetails="{{false}}"
         selectedTimeSlot="{{selectedTimeSlot}}"

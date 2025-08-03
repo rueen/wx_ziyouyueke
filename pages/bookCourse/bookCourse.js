@@ -284,8 +284,8 @@ Page({
     
     // 获取当前用户信息，用于教练约学员时的时间选择器
     const userInfo = wx.getStorageSync('userInfo');
-    const coachId = bookingType === 'student-book-coach' ? option.id : (userInfo ? userInfo.id : '');
-    
+    const coachId = bookingType === 'student-book-coach' ? option.coach_id : (userInfo ? userInfo.id : '');
+
     // 根据约课类型决定是否重置地址
     const updateData = {
       selectedOption: option,
