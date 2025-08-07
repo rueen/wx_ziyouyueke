@@ -20,14 +20,9 @@ function request(options) {
     // 获取Token
     const token = wx.getStorageSync('token');
     
-    // 获取用户时区
-    const app = getApp();
-    const userTimezone = app ? app.getUserTimezone() : 'Asia/Shanghai';
-    
     // 构建请求头
     const header = {
       'Content-Type': 'application/json',
-      'X-Timezone': userTimezone,  // 添加时区请求头
       ...options.header
     };
     
@@ -573,10 +568,6 @@ function uploadImage(filePath, directory = 'images') {
   return new Promise((resolve, reject) => {
     const token = wx.getStorageSync('token');
     
-    // 获取用户时区
-    const app = getApp();
-    const userTimezone = app ? app.getUserTimezone() : 'Asia/Shanghai';
-    
     wx.uploadFile({
       url: `${API_CONFIG.baseUrl}/api/upload/image`,
       filePath: filePath,
@@ -585,8 +576,7 @@ function uploadImage(filePath, directory = 'images') {
         directory: directory
       },
       header: {
-        'Authorization': `Bearer ${token}`,
-        'X-Timezone': userTimezone  // 添加时区请求头
+        'Authorization': `Bearer ${token}`
       },
       success: (res) => {
         
