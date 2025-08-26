@@ -14,14 +14,20 @@ Page({
     students: [],
     coachInfo: {},
     isFirstLoad: true, // 标记是否首次加载
-    isLoading: false // 加载状态
+    isLoading: false, // 加载状态
+    
+    // 分页相关
+    currentPage: 1,
+    pageSize: 10,
+    hasMore: true,
+    isRefreshing: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.loadStudents();
+    this.loadStudents(true);
     this.loadCoachInfo();
     this.setData({
       isFirstLoad: false
@@ -34,7 +40,7 @@ Page({
   onShow() {
     // 只有非首次加载时才刷新数据（从其他页面返回时）
     if (!this.data.isFirstLoad) {
-      this.loadStudents(false);
+      this.loadStudents(true);
     }
   },
 
@@ -42,40 +48,49 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh() {
-    this.loadStudents().finally(() => {
+    this.loadStudents(true).finally(() => {
       wx.stopPullDownRefresh();
     });
   },
 
   /**
    * 加载学员列表
+   * @param {boolean} isRefresh 是否是刷新操作
    */
-  async loadStudents(showLoading = true) {
-    if (this.data.isLoading) {
-      return; // 防止重复加载
-    }
-
+  async loadStudents(isRefresh = false) {
+    if (this.data.isLoading) return;
+    
     try {
-      this.setData({
-        isLoading: true
-      });
-
-      if (showLoading) {
-        wx.showLoading({
-          title: '加载中...'
+      this.setData({ isLoading: true });
+      
+      if (isRefresh) {
+        this.setData({ 
+          currentPage: 1,
+          hasMore: true,
+          isRefreshing: true
         });
       }
 
-      // 调用API获取我的学员列表
-      const result = await api.relation.getMyStudents();
-      
-      if (showLoading) {
-        wx.hideLoading();
+      if (!isRefresh && !this.data.hasMore) {
+        this.setData({ isLoading: false });
+        return;
       }
 
-      if (result && result.data && result.data.list && result.data.list.length > 0) {
-        // 格式化数据
-        const students = result.data.list.map(item => ({
+      // 构建请求参数
+      const { currentPage, pageSize } = this.data;
+      
+      const params = {
+        page: currentPage,
+        limit: pageSize
+      };
+
+      // 调用API获取我的学员列表
+      const result = await api.relation.getMyStudents(params);
+      
+      if (result && result.data && result.data.list) {
+        
+        // 格式化API数据为前端需要的格式
+        const newStudents = result.data.list.map(item => ({
           id: item.id,
           name: (item.student && item.student.nickname) || '未知学员',
           avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
@@ -86,27 +101,41 @@ Page({
           phone: (item.student && item.student.phone) || ''
         }));
 
+        // 处理分页数据
+        const { pagination } = result.data;
+        const hasMore = pagination ? pagination.current_page < pagination.total_pages : false;
+        
+        let students;
+        if (isRefresh || currentPage === 1) {
+          students = newStudents;
+        } else {
+          students = [...this.data.students, ...newStudents];
+        }
+
         this.setData({
           students,
-          isLoading: false
+          currentPage: currentPage + 1,
+          hasMore,
+          isLoading: false,
+          isRefreshing: false
         });
+        
       } else {
-        // 没有学员数据时，使用空数组
+        // 没有学员数据
         this.setData({
-          students: [],
-          isLoading: false
+          students: isRefresh ? [] : this.data.students,
+          hasMore: false,
+          isLoading: false,
+          isRefreshing: false
         });
       }
     } catch (error) {
-      if (showLoading) {
-        wx.hideLoading();
-      }
+      console.error('加载学员数据失败:', error);
       
       this.setData({
-        isLoading: false
+        isLoading: false,
+        isRefreshing: false
       });
-      
-      console.error('加载学员数据失败:', error);
       
       wx.showToast({
         title: '加载失败，请重试',
@@ -119,7 +148,16 @@ Page({
    * 刷新学员列表（供其他页面调用）
    */
   refreshStudentList() {
-    this.loadStudents(false);
+    this.loadStudents(true);
+  },
+
+  /**
+   * 上拉加载更多
+   */
+  onReachBottom() {
+    if (!this.data.isLoading && this.data.hasMore) {
+      this.loadStudents(false);
+    }
   },
 
   /**

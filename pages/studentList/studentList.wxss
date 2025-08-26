@@ -114,11 +114,43 @@ page {
 }
 
 .loading-text {
-  font-size: 32rpx;
+  font-size: 28rpx;
   color: #666;
 }
 
 /* 空状态样式已移至通用组件 */
+
+/* 加载更多提示 */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.load-more-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.load-more-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 没有更多数据提示 */
+.no-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  margin-top: 20rpx;
+}
+
+.no-more-text {
+  font-size: 26rpx;
+  color: #c7c7cc;
+}
 
 /* 添加学员按钮 */
 .add-button-container {

@@ -344,12 +344,16 @@ function createRelation(relation) {
 
 /**
  * 获取我的学员列表
+ * @param {Object} params 查询参数
+ * @param {number} params.page 页码，默认1
+ * @param {number} params.limit 每页数量，默认10
  * @returns {Promise}
  */
-function getMyStudents() {
+function getMyStudents(params = {}) {
   return request({
     url: '/api/h5/relations/my-students',
-    method: 'GET'
+    method: 'GET',
+    data: params
   });
 }
 
