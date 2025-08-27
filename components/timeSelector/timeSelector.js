@@ -254,7 +254,8 @@ Component({
         // 获取该日期的预约情况
         const queryParams = {
           start_date: date,
-          end_date: date
+          end_date: date,
+          limit: 100
         };
         
         // 如果指定了教练ID，添加到查询参数中

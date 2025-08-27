@@ -128,7 +128,9 @@ Page({
       let result;
       if (bookingType === 'coach-book-student') {
         // 教练约学员：获取我的学员列表（包括剩余课时为0的）
-        result = await api.relation.getMyStudents();
+        result = await api.relation.getMyStudents({
+          limit: 200
+        });
         if (result && result.data && result.data.list) {
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
@@ -183,7 +185,9 @@ Page({
    */
   async loadAddresses(coachId = null) {
     try {
-      const params = {};
+      const params = {
+        limit: 200
+      };
       if (coachId) {
         params.coach_id = coachId;
       }
