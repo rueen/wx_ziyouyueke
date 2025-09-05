@@ -91,7 +91,8 @@ Page({
         
         // 格式化API数据为前端需要的格式
         const newStudents = result.data.list.map(item => ({
-          id: item.id,
+          id: item.id, // 师生关系ID
+          studentId: item.student_id, // 学员用户ID
           name: (item.student && item.student.nickname) || '未知学员',
           avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
           level: '初级', // 暂时写死，后续可以从用户信息中获取

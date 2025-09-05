@@ -245,11 +245,20 @@ Page({
    * 处理预设选择
    */
   handlePresetSelection() {
-    const { presetId, availableOptions } = this.data;
+    const { presetId, availableOptions, bookingType } = this.data;
     
     if (presetId && availableOptions.length > 0) {
       // 有预设ID，查找对应的选项
-      const preset = availableOptions.find(option => option.id == presetId);
+      let preset = null;
+      
+      if (bookingType === 'student-book-coach') {
+        // 学员约教练：presetId是教练的用户ID，需要匹配coach_id字段
+        preset = availableOptions.find(option => option.coach_id == presetId);
+      } else {
+        // 教练约学员：presetId是学员的用户ID，需要匹配student_id字段
+        preset = availableOptions.find(option => option.student_id == presetId);
+      }
+      
       if (preset) {
         this.selectOption(preset);
         return;
