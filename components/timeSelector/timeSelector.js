@@ -67,7 +67,6 @@ Component({
     },
     ready() {
       // 在ready阶段初始化，确保组件完全准备好
-      this.initializeComponent();
     }
   },
 
@@ -273,6 +272,9 @@ Component({
           // 检查时间段是否已过期
           const isExpired = this.isTimeSlotExpired(date, slot.startTime);
           
+          // 获取该时间段的最大预约人数
+          const maxAdvanceNums = timeTemplate.max_advance_nums || 1;
+          
           // 查找该时间段的所有课程（包括已取消的）
           const allCoursesInSlot = bookedCourses.filter(course => {
             const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
@@ -280,58 +282,47 @@ Component({
             return course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
-          // 查找有效的课程（非已取消状态）
-          const activeCourse = allCoursesInSlot.find(course => course.booking_status !== 4);
+          // 查找非已取消状态的课程（用于计算已预约名额）
+          const activeCourses = allCoursesInSlot.filter(course => course.booking_status !== 4);
+          const bookedCount = activeCourses.length;
+          const remainingCount = Math.max(0, maxAdvanceNums - bookedCount);
           
-          // 如果有showBookingDetails且有课程（包括已取消的），优先显示最新的课程信息
-          const displayCourse = this.properties.showBookingDetails && allCoursesInSlot.length > 0 
-            ? allCoursesInSlot[allCoursesInSlot.length - 1] // 显示最新的课程
-            : activeCourse; // 或者有效的课程
+          // 处理课程列表数据
+          const courses = allCoursesInSlot.map(course => {
+            const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
+            return {
+              id: course.id,
+              studentName: course.student ? course.student.nickname : '未知学员',
+              location: course.address.name,
+              booking_status: this.getStatusFromApi(course.booking_status),
+              isCreatedByCurrentUser: isCreatedByCurrentUser,
+              courseData: course
+            };
+          });
 
-          if (activeCourse) {
-            // 有有效课程，时间段不可预约
-            const isCreatedByCurrentUser = activeCourse.created_by && activeCourse.created_by == this.data.currentUserId;
-            return {
-              id: `${date}_${slot.startTime}_${slot.endTime}`,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-              status: isExpired ? 'expired-booked' : 'booked',
-              studentName: activeCourse.student ? activeCourse.student.nickname : '未知学员',
-              location: activeCourse.address.name,
-              booking_status: this.getStatusFromApi(activeCourse.booking_status),
-              isCreatedByCurrentUser: isCreatedByCurrentUser,
-              courseId: activeCourse.id,
-              courseData: activeCourse,
-              isExpired: isExpired
-            };
-          } else if (displayCourse && this.properties.showBookingDetails) {
-            // 没有有效课程，但有已取消的课程且需要显示详情
-            const isCreatedByCurrentUser = displayCourse.created_by && displayCourse.created_by == this.data.currentUserId;
-            return {
-              id: `${date}_${slot.startTime}_${slot.endTime}`,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-              status: isExpired ? 'expired' : 'free-with-cancelled', // 新状态：空闲但有已取消课程
-              studentName: displayCourse.student ? displayCourse.student.nickname : '未知学员',
-              location: displayCourse.address.name,
-              booking_status: this.getStatusFromApi(displayCourse.booking_status),
-              isCreatedByCurrentUser: isCreatedByCurrentUser,
-              courseId: displayCourse.id,
-              courseData: displayCourse,
-              isExpired: isExpired,
-              isSelectable: !isExpired // 可以重新预约
-            };
+          // 判断时间段状态
+          let status;
+          if (isExpired) {
+            status = 'expired';
+          } else if (remainingCount <= 0) {
+            status = 'full';
+          } else if (bookedCount > 0) {
+            status = 'booked';
           } else {
-            // 没有任何课程或不显示详情
-            return {
-              id: `${date}_${slot.startTime}_${slot.endTime}`,
-              startTime: slot.startTime,
-              endTime: slot.endTime,
-              status: isExpired ? 'expired' : 'free',
-              date: date,
-              isExpired: isExpired
-            };
+            status = 'free';
           }
+
+          return {
+            id: `${date}_${slot.startTime}_${slot.endTime}`,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+            status: status,
+            maxAdvanceNums: maxAdvanceNums,
+            bookedCount: bookedCount,
+            remainingCount: remainingCount,
+            courses: courses,
+            isExpired: isExpired
+          };
         });
 
         this.setData({
@@ -375,9 +366,9 @@ Component({
           return 'available';
         }
         
-        // 检查是否存在可以预约的时段
+        // 检查是否存在可以预约的时段（有剩余名额的时段）
         const availableSlots = timeSlots.filter(slot => 
-          slot.status === 'free' || slot.status === 'free-with-cancelled'
+          slot.status === 'free' || slot.status === 'booked'
         );
         
         // 如果不存在可以预约的时段，显示"已满"
@@ -486,7 +477,7 @@ Component({
       }
 
       // 检查时间段是否已过期
-      if (slot.isExpired && slot.courseId == null) {
+      if (this.properties.mode === 'select' && slot.isExpired) {
         wx.showToast({
           title: '该时段已过期',
           icon: 'none'
@@ -495,18 +486,26 @@ Component({
       }
 
       // 检查时间段是否可以选择
-      const selectableStatuses = ['free', 'free-with-cancelled'];
+      const selectableStatuses = ['free', 'booked'];
       if (this.properties.mode === 'select' && !selectableStatuses.includes(slot.status)) {
         wx.showToast({
-          title: '该时段已被预约',
+          title: '该时段已满员',
           icon: 'none'
         });
         return;
       }
-      
+
       // 触发时间段点击事件
       this.triggerEvent('timeSlotTap', {
         slot: slot,
+        date: this.data.currentDate
+      });
+    },
+
+    onCourseTap(e){
+      const { course } = e.currentTarget.dataset;
+      this.triggerEvent('courseTap', {
+        course: course,
         date: this.data.currentDate
       });
     },

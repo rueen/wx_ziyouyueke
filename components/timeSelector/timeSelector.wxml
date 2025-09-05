@@ -41,7 +41,7 @@
       
       <view wx:else>
         <view 
-          class="time-slot {{slot.status}} {{mode === 'select' && (slot.status === 'free' || slot.status === 'free-with-cancelled') && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
+          class="time-slot {{slot.status}} {{mode === 'select' && (slot.status === 'free' || slot.status === 'booked') && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
           wx:for="{{timeSlots}}" 
           wx:for-item="slot"
           wx:key="id"
@@ -49,67 +49,66 @@
           bindtap="onTimeSlotTap"
         >
           <view class="time-slot-time">
-            {{slot.startTime}} - {{slot.endTime}}
+            <text>{{slot.startTime}} - {{slot.endTime}}</text>
+            <!-- 名额统计 -->
+            <text class="quota-statistics" wx:if="{{mode === 'view' && showBookingDetails}}">{{slot.bookedCount}}/{{slot.maxAdvanceNums}} 已预约</text>
           </view>
           
-          <!-- 已预约状态 -->
-          <view wx:if="{{(slot.status === 'booked' || slot.status === 'expired-booked') && showBookingDetails}}" class="time-slot-content booked-content">
-            <view class="student-info">
-              <text class="student-name">{{slot.studentName}}</text>
-              <view class="status-badge status-{{slot.booking_status}}">
-                <text class="status-text">{{slot.booking_status === 'pending' ? (
-                  slot.isCreatedByCurrentUser ? (
-                    userRole === 'coach' ? '待学员确认' : '待教练确认'
-                  ) : '待确认'
-                ) : 
-                  slot.booking_status === 'confirmed' ? '已确认' : 
-                  slot.booking_status === 'completed' ? '已完成' : 
-                  slot.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
-              </view>
-            </view>
-            <view class="location-info">
-              <text class="iconfont icon-locationfill"></text>
-              <text>{{slot.location}}</text>
-            </view>
-          </view>
-          
-          <!-- 空闲状态 -->
-          <view wx:elif="{{slot.status === 'free'}}" class="time-slot-content free-content">
-            <text class="free-text">空闲</text>
-            <view wx:if="{{mode === 'select' && slot.id !== selectedTimeSlot.id}}" class="select-hint">点击选择</view>
-            <text class="iconfont icon-selected" wx:if="{{mode === 'select' && slot.id === selectedTimeSlot.id}}"></text>
-          </view>
-          
-          <!-- 空闲状态（有已取消课程） -->
-          <view wx:elif="{{slot.status === 'free-with-cancelled'}}" class="time-slot-content">
-            <!-- 显示已取消课程的详情 -->
-            <view class="booked-content cancelled-course">
-              <view class="student-info">
-                <text class="student-name cancelled">{{slot.studentName}}</text>
-                <view class="status-badge status-{{slot.booking_status}}">
-                  <text class="status-text">已取消</text>
+          <!-- 查看模式：显示课程列表 -->
+          <view wx:if="{{mode === 'view' && showBookingDetails}}" class="time-slot-content">
+            <!-- 课程列表 -->
+            <view wx:if="{{slot.courses.length > 0}}" class="courses-list">
+              <view 
+                class="course-item" 
+                wx:for="{{slot.courses}}" 
+                wx:for-item="course" 
+                wx:key="id"
+                data-course="{{course}}"
+                bindtap="onCourseTap"
+              >
+                <view class="student-info">
+                  <text class="student-name">{{course.studentName}}</text>
+                  <view class="status-badge status-{{course.booking_status}}">
+                    <text class="status-text">{{course.booking_status === 'pending' ? (
+                      course.isCreatedByCurrentUser ? (
+                        userRole === 'coach' ? '待学员确认' : '待教练确认'
+                      ) : '待确认'
+                    ) : 
+                      course.booking_status === 'confirmed' ? '已确认' : 
+                      course.booking_status === 'completed' ? '已完成' : 
+                      course.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+                  </view>
+                </view>
+                <view class="location-info">
+                  <text class="iconfont icon-locationfill"></text>
+                  <text>{{course.location}}</text>
                 </view>
               </view>
-              <view class="location-info cancelled">
-                <text class="iconfont icon-locationfill"></text>
-                <text>{{slot.location}}</text>
-              </view>
-              <!-- 重新预约提示 -->
-              <view wx:if="{{mode === 'select'}}" class="rebook-hint">
-                <view wx:if="{{slot.id !== selectedTimeSlot.id}}" class="select-hint">可重新预约</view>
-                <text class="iconfont icon-selected" wx:if="{{slot.id === selectedTimeSlot.id}}"></text>
-              </view>
+            </view>
+            
+            <!-- 无课程时的提示 -->
+            <view wx:else class="no-courses">
+              <text class="no-courses-text">暂无预约</text>
             </view>
           </view>
           
-          <!-- 过期的空闲状态 -->
-          <view wx:elif="{{slot.status === 'expired'}}" class="time-slot-content free-content">
-            <text class="free-text">已过期</text>
-          </view>
-          
-          <!-- 简化的已预约状态（不显示详细信息） -->
-          <view wx:else class="time-slot-content booked-simple">
-            <text class="booked-text">{{slot.status === 'expired-booked' ? '已过期' : '已预约'}}</text>
+          <!-- 选择模式：显示名额统计 -->
+          <view wx:elif="{{mode === 'select'}}" class="time-slot-content">
+            <!-- 过期状态 -->
+            <view wx:if="{{slot.status === 'expired'}}" class="quota-info">
+              <text class="expired-text">已过期</text>
+            </view>
+            <view class="quota-info" wx:else>
+              <text class="quota-text">{{slot.bookedCount}}/{{slot.maxAdvanceNums}}</text>
+              <text wx:if="{{slot.remainingCount > 0}}" class="remaining-text">(剩余{{slot.remainingCount}}个)</text>
+              <text wx:else class="full-text">(已满员)</text>
+            </view>
+            
+            <!-- 选择提示 -->
+            <view wx:if="{{slot.status === 'free' || slot.status === 'booked'}}" class="select-hint-container">
+              <view wx:if="{{slot.id !== selectedTimeSlot.id}}" class="select-hint">点击选择</view>
+              <text class="iconfont icon-selected" wx:if="{{slot.id === selectedTimeSlot.id}}"></text>
+            </view>
           </view>
         </view>
       </view>

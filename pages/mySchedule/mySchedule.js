@@ -87,12 +87,12 @@ Page({
   /**
    * 处理时间段点击事件
    */
-  onTimeSlotTap(e) {
-    const { slot } = e.detail;
+  onCourseTap(e) {
+    const { course } = e.detail;
     // 如果是已预约的时间段，跳转到课程详情
-    if (slot.courseId != null) {
+    if (course && course.id != null) {
       wx.navigateTo({
-        url: `/pages/courseDetail/courseDetail?id=${slot.courseId}`
+        url: `/pages/courseDetail/courseDetail?id=${course.id}`
       });
     }
   },

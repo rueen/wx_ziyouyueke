@@ -371,9 +371,9 @@ Page({
   onTimeSlotTap(e) {
     const { date, slot } = e.detail;
 
-    if(slot.status === 'booked'){
+    if(slot.status === 'full'){
       wx.showToast({
-        title: '该时段已被预约',
+        title: '该时段已满员',
         icon: 'none'
       });
       return;
