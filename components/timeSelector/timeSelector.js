@@ -162,13 +162,9 @@ Component({
             timeTemplate: template
           });
           
-          // 如果组件属性没有设置maxAdvanceDays，使用模板中的配置
-          const propMaxDays = this.properties && this.properties.maxAdvanceDays ? this.properties.maxAdvanceDays : 30;
-          if (!propMaxDays || propMaxDays === 30) {
-            this.setData({
-              maxAdvanceDays: template.max_advance_days || 30
-            });
-          }
+          this.setData({
+            maxAdvanceDays: template.max_advance_days || 30
+          });
         }
       } catch (error) {
         console.error('获取时间模板失败:', error);
