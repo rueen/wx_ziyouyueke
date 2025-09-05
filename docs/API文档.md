@@ -496,7 +496,7 @@ Authorization: Bearer <token>
 
 ### 师生关系模块 (`/api/h5/relations`)
 
-#### 2. 绑定师生关系
+#### 1. 绑定师生关系
 
 **接口地址**: `POST /api/h5/relations`
 
@@ -522,7 +522,7 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 3. 获取我的教练列表
+#### 2. 获取我的教练列表
 
 **接口地址**: `GET /api/h5/relations/my-coaches`
 
@@ -579,7 +579,7 @@ GET /api/h5/relations/my-coaches?page=1&limit=10
 }
 ```
 
-#### 4. 获取我的学员列表
+#### 3. 获取我的学员列表
 
 **接口地址**: `GET /api/h5/relations/my-students`
 
@@ -670,6 +670,16 @@ GET /api/h5/relations/my-students?page=1&limit=10
 |--------|------|------|--------|------|
 | page | number | 否 | 1 | 页码 |
 | limit | number | 否 | 20 | 每页数量 |
+| coach_id | number | 否 | - | 教练ID，如果指定则获取该教练的地址列表 |
+
+**请求示例**:
+```
+# 获取当前用户的地址列表
+GET /api/h5/addresses?page=1&limit=20
+
+# 获取指定教练的地址列表
+GET /api/h5/addresses?coach_id=456&page=1&limit=20
+```
 
 **响应示例**:
 ```json
@@ -996,7 +1006,7 @@ Authorization: Bearer <token>
 |--------|------|------|--------|------|
 | page | number | 否 | 1 | 页码 |
 | limit | number | 否 | 10 | 每页数量 |
-| status | number | 否 | "" | 状态筛选 |
+| status | number | 否 | "" | 状态筛选：1-待确认，2-已确认，3-已完成，4-已取消（包含超时取消） |
 | coach_id | number | 否 | "" | 教练ID筛选 |
 | student_id | number | 否 | "" | 学员ID筛选 |
 | start_date | string | 否 | "" | 开始日期 |
@@ -1015,6 +1025,9 @@ GET /api/h5/courses?student_id=1&coach_id=5
 
 # 获取当前用户相关的所有课程（不指定student_id）
 GET /api/h5/courses?page=1&limit=10&status=2
+
+# 获取所有已取消的课程（包含手动取消和超时取消）
+GET /api/h5/courses?status=4
 ```
 
 **响应示例**:
@@ -1126,9 +1139,9 @@ GET /api/h5/courses/456
 
 **接口地址**: `PUT /api/h5/courses/:id/confirm`
 
-**接口描述**: 教练确认课程预约
+**接口描述**: 确认课程预约（学员或教练都可以确认，但不能确认自己创建的课程）
 
-**认证**: 需要（仅教练）
+**认证**: 需要
 
 **请求参数**:
 
@@ -1336,7 +1349,7 @@ interface CourseBooking {
   course_date: string;         // 课程日期（YYYY-MM-DD）
   start_time: string;          // 开始时间（HH:mm）
   end_time: string;            // 结束时间（HH:mm）
-  booking_status: number;      // 预约状态：1-待确认，2-已确认，3-已完成，4-已取消
+      booking_status: number;      // 预约状态：1-待确认，2-已确认，3-已完成，4-已取消，5-超时取消
   address_id: number;          // 地址ID
   student_remark?: string;     // 学员备注
   coach_remark?: string;       // 教练备注
