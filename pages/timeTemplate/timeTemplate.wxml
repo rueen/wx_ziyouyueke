@@ -17,13 +17,17 @@
           color="#007aff"
         />
       </view>
-      <view class="setting-item">
+      <!-- <view class="setting-item">
         <text class="setting-label">最少提前天数</text>
         <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
-      </view>
+      </view> -->
       <view class="setting-item">
         <text class="setting-label">最多可预约天数</text>
         <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">同时段最多可预约人数</text>
+        <text class="setting-value">{{bookingSettings.maxAdvanceNums}}人</text>
       </view>
     </view>
   </view>
@@ -67,14 +71,14 @@
       <text class="modal-close" bindtap="onHideSettingsForm">×</text>
     </view>
     <view class="modal-content">
-      <view class="form-item">
+      <!-- <view class="form-item">
         <text class="form-label">最少提前天数</text>
         <input class="form-input" 
                type="number" 
                value="{{tempMinAdvanceDays}}" 
                bindinput="onMinAdvanceDaysChange" 
                placeholder="请输入天数" />
-      </view>
+      </view> -->
       <view class="form-item">
         <text class="form-label">最多可预约天数</text>
         <input class="form-input" 
@@ -82,6 +86,14 @@
                value="{{tempMaxAdvanceDays}}" 
                bindinput="onMaxAdvanceDaysChange" 
                placeholder="请输入天数" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">同时段最多可预约人数</text>
+        <input class="form-input" 
+               type="number" 
+               value="{{tempMaxAdvanceNums}}" 
+               bindinput="onMaxAdvanceNumsChange" 
+               placeholder="请输入人数" />
       </view>
     </view>
     <view class="modal-footer">

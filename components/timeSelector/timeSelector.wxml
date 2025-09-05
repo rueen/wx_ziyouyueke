@@ -1,5 +1,8 @@
 <!--components/timeSelector/timeSelector.wxml-->
-<view class="time-selector">
+<view class="template-status" wx:if="{{timeTemplate && !timeTemplate.is_active}}">
+  <text class="status-text">⚠️ 教练已关闭预约</text>
+</view>
+<view class="time-selector" wx:else>
   <!-- 日期选择器 -->
   <view class="date-selector">
     <scroll-view class="date-scroll" scroll-x="true" scroll-left="{{scrollLeft}}" show-scrollbar="{{false}}">

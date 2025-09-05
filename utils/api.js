@@ -5,8 +5,8 @@
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -283,6 +283,7 @@ function createTimeTemplate(template) {
  * @returns {Promise}
  */
 function updateTimeTemplate(id, template) {
+  console.log(template)
   return request({
     url: `/api/h5/time-templates/${id}`,
     method: 'PUT',

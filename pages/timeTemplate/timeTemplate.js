@@ -14,7 +14,8 @@ Page({
     // 预约设置
     bookingSettings: {
       minAdvanceDays: 1, // 最少需要提前几天预约
-      maxAdvanceDays: 30 // 最多可预约未来几天
+      maxAdvanceDays: 30, // 最多可预约未来几天
+      maxAdvanceNums: 1, // 同时段最多可预约人数
     },
     
     // 模板启用状态
@@ -32,7 +33,8 @@ Page({
     // 设置表单数据
     showSettingsForm: false,
     tempMinAdvanceDays: 1,
-    tempMaxAdvanceDays: 30
+    tempMaxAdvanceDays: 30,
+    tempMaxAdvanceNums: 1
   },
 
   /**
@@ -85,7 +87,8 @@ Page({
         this.setData({
           bookingSettings: {
             minAdvanceDays: template.min_advance_days,
-            maxAdvanceDays: template.max_advance_days
+            maxAdvanceDays: template.max_advance_days,
+            maxAdvanceNums: template.max_advance_nums
           },
           timeSlotTemplate: timeSlots,
           templateId: template.id, // 保存模板ID用于更新
@@ -119,7 +122,8 @@ Page({
     this.setData({
       showSettingsForm: true,
       tempMinAdvanceDays: bookingSettings.minAdvanceDays,
-      tempMaxAdvanceDays: bookingSettings.maxAdvanceDays
+      tempMaxAdvanceDays: bookingSettings.maxAdvanceDays,
+      tempMaxAdvanceNums: bookingSettings.maxAdvanceNums
     });
   },
 
@@ -147,6 +151,12 @@ Page({
   onMaxAdvanceDaysChange(e) {
     this.setData({
       tempMaxAdvanceDays: parseInt(e.detail.value) || ''
+    });
+  },
+
+  onMaxAdvanceNumsChange(e) {
+    this.setData({
+      tempMaxAdvanceNums: parseInt(e.detail.value) || ''
     });
   },
 
@@ -204,7 +214,7 @@ Page({
    * 保存预约设置
    */
   async onSaveSettings() {
-    const { tempMinAdvanceDays, tempMaxAdvanceDays, timeSlotTemplate, templateId } = this.data;
+    const { tempMinAdvanceDays, tempMaxAdvanceDays, tempMaxAdvanceNums, timeSlotTemplate, templateId } = this.data;
     
     if (tempMinAdvanceDays >= tempMaxAdvanceDays) {
       wx.showToast({
@@ -217,6 +227,14 @@ Page({
     if (tempMinAdvanceDays < 0 || tempMaxAdvanceDays <= 0) {
       wx.showToast({
         title: '请输入有效的天数',
+        icon: 'none'
+      });
+      return;
+    }
+
+    if(!tempMaxAdvanceNums) {
+      wx.showToast({
+        title: '请输入有效的人数',
         icon: 'none'
       });
       return;
@@ -236,6 +254,7 @@ Page({
       const templateData = {
         min_advance_days: tempMinAdvanceDays,
         max_advance_days: tempMaxAdvanceDays,
+        max_advance_nums: tempMaxAdvanceNums,
         time_slots: timeSlots,
         is_active: 1
       };
@@ -257,7 +276,8 @@ Page({
       this.setData({
         bookingSettings: {
           minAdvanceDays: tempMinAdvanceDays,
-          maxAdvanceDays: tempMaxAdvanceDays
+          maxAdvanceDays: tempMaxAdvanceDays,
+          maxAdvanceNums: tempMaxAdvanceNums
         },
         showSettingsForm: false
       });
@@ -482,6 +502,7 @@ Page({
     const templateData = {
       min_advance_days: bookingSettings.minAdvanceDays,
       max_advance_days: bookingSettings.maxAdvanceDays,
+      max_advance_nums: bookingSettings.maxAdvanceNums,
       time_slots: timeSlotData,
       is_active: 1
     };
