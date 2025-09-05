@@ -102,8 +102,7 @@ Page({
         }));
 
         // 处理分页数据
-        const { pagination } = result.data;
-        const hasMore = pagination ? pagination.current_page < pagination.total_pages : false;
+        const hasMore = result.data.page < result.data.totalPages;
         
         let students;
         if (isRefresh || currentPage === 1) {

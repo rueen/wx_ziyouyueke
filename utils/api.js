@@ -315,20 +315,6 @@ function toggleTimeTemplate(id) {
 }
 
 // ========== 师生关系模块 ==========
-
-/**
- * 获取师生关系列表
- * @param {Object} params 查询参数
- * @returns {Promise}
- */
-function getRelations(params = {}) {
-  return request({
-    url: '/api/h5/relations',
-    method: 'GET',
-    data: params
-  });
-}
-
 /**
  * 绑定师生关系
  * @param {Object} relation 师生关系数据
@@ -663,7 +649,6 @@ module.exports = {
   
   // 师生关系模块
   relation: {
-    getList: getRelations,
     create: createRelation,
     getMyStudents,
     getMyCoaches,

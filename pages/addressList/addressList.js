@@ -81,7 +81,7 @@ Page({
       this.setData({
         addresses: this.data.page === 1 ? addresses : [...this.data.addresses, ...addresses],
         isLoading: false,
-        hasMore: result.data.pagination.current_page < result.data.pagination.total_pages
+        hasMore: result.data.page < result.data.totalPages
       });
 
     } catch (error) {
