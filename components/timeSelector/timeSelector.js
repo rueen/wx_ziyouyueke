@@ -184,6 +184,7 @@ Component({
       const today = new Date();
       // 获取最大可预约天数，优先使用data中的值，然后是properties中的值，最后是默认值
       let maxDays = 30;
+      const { date_slots } = this.data.timeTemplate
       if (this.data && this.data.maxAdvanceDays) {
         maxDays = this.data.maxAdvanceDays;
       } else if (this.properties && this.properties.maxAdvanceDays) {
@@ -197,14 +198,23 @@ Component({
         const dateStr = this.formatDate(date);
         const weekDay = this.getWeekDay(date);
         const monthDay = this.getMonthDay(date);
-        
-        dateList.push({
-          date: dateStr,
-          weekDay: weekDay,
-          monthDay: monthDay,
-          isToday: i === 0,
-          status: 'available' // 默认状态为可约
-        });
+        let isChecked = true;
+        const weekDayJson = date_slots.find(item => item.text === weekDay) || {};
+
+        if(weekDayJson.checked != null){
+          isChecked = weekDayJson.checked
+        } else {
+          isChecked = true;
+        }
+        if(isChecked) {
+          dateList.push({
+            date: dateStr,
+            weekDay: weekDay,
+            monthDay: monthDay,
+            isToday: i === 0,
+            status: 'available' // 默认状态为可约
+          });
+        }
       }
       
       this.setData({

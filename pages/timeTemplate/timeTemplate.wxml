@@ -14,7 +14,6 @@
           class="setting-switch" 
           checked="{{templateEnabled}}" 
           bindchange="onTemplateToggle"
-          color="#007aff"
         />
       </view>
       <!-- <view class="setting-item">
@@ -60,6 +59,19 @@
       description="点击上方添加按钮创建时间段"
       customClass="compact">
     </emptyState>
+  </view>
+
+  <!-- 日期模板 -->
+  <view class="data-section">
+    <view class="section-header">
+      <text class="section-title">日期模板</text>
+    </view>
+    <view class="date-slots">
+      <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
+        <text>{{ item.text }}</text>
+        <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchDateChange"/>
+      </view>
+    </view>
   </view>
 </layout>
 

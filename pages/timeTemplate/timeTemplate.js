@@ -22,6 +22,37 @@ Page({
     templateEnabled: true, // 默认启用
     templateId: null, // 模板ID
     
+    //日期模板（一周的日期模板）
+    dateSlotTemplate: [{
+      id: 0,
+      text: '周日',
+      checked: true
+    }, {
+      id: 1,
+      text: '周一',
+      checked: true
+    }, {
+      id: 2,
+      text: '周二',
+      checked: true
+    }, {
+      id: 3,
+      text: '周三',
+      checked: true
+    }, {
+      id: 4,
+      text: '周四',
+      checked: true
+    }, {
+      id: 5,
+      text: '周五',
+      checked: true
+    }, {
+      id: 6,
+      text: '周六',
+      checked: true
+    }],
+
     // 时间段模板（一天的时间段模板）
     timeSlotTemplate: [],
     
@@ -91,6 +122,7 @@ Page({
             maxAdvanceNums: template.max_advance_nums
           },
           timeSlotTemplate: timeSlots,
+          dateSlotTemplate: template.date_slots,
           templateId: template.id, // 保存模板ID用于更新
           templateEnabled: template.is_active === 1 // 设置启用状态
         });
@@ -442,8 +474,6 @@ Page({
    * 删除时间段
    */
   onDeleteTimeSlot(e) {
-    const { slotIndex } = e.currentTarget.dataset;
-    
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个时间段吗？',
@@ -456,7 +486,6 @@ Page({
 
             const { timeSlotTemplate } = this.data;
             const updatedTemplate = [...timeSlotTemplate];
-            const deletedSlot = updatedTemplate.splice(slotIndex, 1)[0];
             
             // 调用API保存到后端
             await this.saveTimeTemplate(updatedTemplate);
@@ -518,5 +547,22 @@ Page({
         templateId: result.data.id
       });
     }
+  },
+
+  /**
+   * 日期模板
+   */
+  switchDateChange(e) {
+    const { target: { dataset: { index } }, detail: { value } } = e;
+    const _dateSlotTemplate = [...this.data.dateSlotTemplate];
+    _dateSlotTemplate[index].checked = value;
+    this.setData({
+      dateSlotTemplate: _dateSlotTemplate
+    }, () => {
+      const { templateId, dateSlotTemplate } = this.data;
+      api.timeTemplate.update(templateId, {
+        date_slots: dateSlotTemplate
+      });
+    })
   }
 }) 

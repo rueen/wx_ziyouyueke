@@ -35,7 +35,7 @@
 
     <!-- 时间段列表 -->
     <view wx:else class="time-slots">
-      <view wx:if="{{timeSlots.length === 0}}" class="empty-state">
+      <view wx:if="{{timeSlots.length === 0 || !dateList.length}}" class="empty-state">
         <text>暂无时间安排</text>
       </view>
       

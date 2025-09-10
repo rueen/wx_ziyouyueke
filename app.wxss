@@ -12,3 +12,6 @@ page {
   padding: 0;
   box-sizing: border-box;
 }
+switch {
+  transform: scale(0.8);
+}

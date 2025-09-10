@@ -5,8 +5,9 @@
 @import '/style/iconfont.wxss';
 
 page {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f5f5f5;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
 /* 通用样式 */
@@ -35,7 +36,6 @@ page {
 /* 预约设置区域 */
 .settings-section {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
 }
@@ -68,14 +68,30 @@ page {
   color: #666;
 }
 
-.setting-switch {
-  transform: scale(0.8);
+/* 日期模板区域 */
+.data-section {
+  background-color: #fff;
+  padding: 30rpx;
+  margin-top: 20rpx;
+}
+.date-slots{
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.date-slot{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100rpx;
+  padding: 0 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
 }
 
 /* 时间段模板区域 */
 .template-section {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 30rpx;
 }
 
@@ -102,7 +118,8 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx;
+  height: 100rpx;
+  padding: 0 24rpx;
   background-color: #f8f9fa;
   border-radius: 16rpx;
   transition: all 0.3s ease;
