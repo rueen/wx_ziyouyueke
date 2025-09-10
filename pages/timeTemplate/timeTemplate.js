@@ -474,6 +474,8 @@ Page({
    * 删除时间段
    */
   onDeleteTimeSlot(e) {
+    const { slotIndex } = e.currentTarget.dataset;
+
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这个时间段吗？',
@@ -486,6 +488,8 @@ Page({
 
             const { timeSlotTemplate } = this.data;
             const updatedTemplate = [...timeSlotTemplate];
+            
+            updatedTemplate.splice(slotIndex, 1)[0];
             
             // 调用API保存到后端
             await this.saveTimeTemplate(updatedTemplate);
