@@ -283,7 +283,6 @@ function createTimeTemplate(template) {
  * @returns {Promise}
  */
 function updateTimeTemplate(id, template) {
-  console.log(template)
   return request({
     url: `/api/h5/time-templates/${id}`,
     method: 'PUT',

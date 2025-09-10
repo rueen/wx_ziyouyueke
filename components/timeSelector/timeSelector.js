@@ -90,19 +90,10 @@ Component({
      */
     async initializeComponent() {
       try {
-        // 先生成基本的日期列表
-        this.generateBasicDateList();
-        
-        // 设置默认选中今天
-        const today = this.formatDate(new Date());
-        this.setData({
-          currentDate: today
-        });
-        
         // 异步加载时间模板和时间段数据
         this.loadTimeTemplate().then(() => {
           this.generateDateList(); // 重新生成日期列表
-          this.loadTimeSlots(today); // 加载时间段
+          this.loadTimeSlots(this.data.currentDate); // 加载时间段
         }).catch(error => {
           console.error('加载时间模板失败:', error);
           // 即使失败也显示基本的日期选择器
@@ -114,36 +105,6 @@ Component({
           message: '加载失败，请重试'
         });
       }
-    },
-
-    /**
-     * 生成基本日期列表（不依赖时间模板）
-     */
-    generateBasicDateList() {
-      const dateList = [];
-      const today = new Date();
-      const maxDays = 30; // 使用默认值
-      
-      for (let i = 0; i < maxDays; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
-        
-        const dateStr = this.formatDate(date);
-        const weekDay = this.getWeekDay(date);
-        const monthDay = this.getMonthDay(date);
-        
-        dateList.push({
-          date: dateStr,
-          weekDay: weekDay,
-          monthDay: monthDay,
-          isToday: i === 0,
-          status: 'available' // 默认状态为可约
-        });
-      }
-      
-      this.setData({
-        dateList: dateList
-      });
     },
 
     /**
@@ -216,10 +177,14 @@ Component({
           });
         }
       }
-      
       this.setData({
         dateList: dateList
       });
+      if(dateList && dateList[0] && dateList[0].date){
+        this.setData({
+          currentDate: dateList[0].date
+        });
+      }
     },
 
     /**
