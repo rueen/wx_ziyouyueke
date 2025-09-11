@@ -189,7 +189,7 @@ page {
 
 /* 备注样式 */
 .remark-textarea {
-  width: 100%;
+  width: 690rpx;
   min-height: 120rpx;
   background-color: #f8f9fa;
   border-radius: 12rpx;
