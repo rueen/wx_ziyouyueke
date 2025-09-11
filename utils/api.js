@@ -5,8 +5,8 @@
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -450,6 +450,15 @@ function completeCourse(courseId, data = {}) {
   });
 }
 
+// 删除课程
+function deleteCourse(courseId, data = {}){
+  return request({
+    url: `/api/h5/courses/${courseId}`,
+    method: 'DELETE',
+    data: data
+  });
+}
+
 /**
  * 获取课程详情
  * @param {number} courseId 课程ID
@@ -664,7 +673,8 @@ module.exports = {
     confirm: confirmCourse,
     cancel: cancelCourse,
     complete: completeCourse,
-    getDetail: getCourseDetail
+    delete: deleteCourse,
+    getDetail: getCourseDetail,
   },
 
   // 教练模块

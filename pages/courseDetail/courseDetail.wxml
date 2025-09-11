@@ -127,6 +127,13 @@
               bindtap="onScanVerify">扫码核销</button>
     </view>
   </view>
+
+  <!-- 已取消状态的按钮 -->
+  <view wx:elif="{{courseInfo.status === 'cancelled'}}" class="action-buttons">
+    <view class="single-button">
+      <button class="action-btn cancel-btn" bindtap="handleDel">删除课程</button>
+    </view>
+  </view>
 </view>
 
 <!-- 取消原因模态框 -->

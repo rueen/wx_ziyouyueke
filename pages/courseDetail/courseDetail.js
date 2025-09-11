@@ -561,6 +561,45 @@ Page({
     }
   },
 
+  // 删除课程
+  handleDel: function() {
+    const { courseInfo } = this.data;
+    wx.showModal({
+      title: '',
+      content: '删除后不可恢复，确认删除吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          const courseId = courseInfo.id;
+          try {
+            const result = await api.course.delete(courseId);
+            if (result) {
+              wx.showModal({
+                title: '',
+                content: '删除成功',
+                showCancel: false,
+                confirmText: '确定',
+                success: () => {
+                  wx.navigateBack({
+                    delta: 1 // 返回的页面数，1 表示上一页
+                  })
+                }
+              });
+            } else {
+              throw new Error(result.message || '删除失败');
+            }
+          } catch (error) {
+            wx.showModal({
+              title: '删除失败',
+              content: error.message,
+              showCancel: false,
+              confirmText: '确定'
+            });
+          }
+        }
+      }
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
