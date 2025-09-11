@@ -264,19 +264,6 @@ function getTimeTemplates(coach_id) {
 }
 
 /**
- * 创建时间模板
- * @param {Object} template 时间模板数据
- * @returns {Promise}
- */
-function createTimeTemplate(template) {
-  return request({
-    url: '/api/h5/time-templates',
-    method: 'POST',
-    data: template
-  });
-}
-
-/**
  * 更新时间模板
  * @param {number} id 模板ID
  * @param {Object} template 时间模板数据
@@ -287,18 +274,6 @@ function updateTimeTemplate(id, template) {
     url: `/api/h5/time-templates/${id}`,
     method: 'PUT',
     data: template
-  });
-}
-
-/**
- * 删除时间模板
- * @param {number} id 模板ID
- * @returns {Promise}
- */
-function deleteTimeTemplate(id) {
-  return request({
-    url: `/api/h5/time-templates/${id}`,
-    method: 'DELETE'
   });
 }
 
@@ -639,9 +614,7 @@ module.exports = {
   // 时间模板模块
   timeTemplate: {
     getList: getTimeTemplates,
-    create: createTimeTemplate,
     update: updateTimeTemplate,
-    delete: deleteTimeTemplate,
     toggle: toggleTimeTemplate
   },
   

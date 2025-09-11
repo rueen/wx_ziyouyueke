@@ -295,12 +295,6 @@ Page({
       if (templateId) {
         // 更新现有模板
         await api.timeTemplate.update(templateId, templateData);
-      } else {
-        // 创建新模板
-        const result = await api.timeTemplate.create(templateData);
-        this.setData({
-          templateId: result.data.id
-        });
       }
 
       wx.hideLoading();
@@ -544,12 +538,6 @@ Page({
     if (templateId) {
       // 更新现有模板
       await api.timeTemplate.update(templateId, templateData);
-    } else {
-      // 创建新模板
-      const result = await api.timeTemplate.create(templateData);
-      this.setData({
-        templateId: result.data.id
-      });
     }
   },
 
