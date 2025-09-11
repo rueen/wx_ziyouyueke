@@ -10,19 +10,16 @@ page {
 }
 
 .container {
-  padding: 20rpx;
   padding-bottom: 140rpx;
 }
 
 /* 学员基础信息 */
 .student-header {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .student-avatar {
@@ -62,10 +59,8 @@ page {
 /* 信息区块 */
 .info-section {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 40rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .section-header {
@@ -144,8 +139,6 @@ page {
   margin-left: 8rpx;
 }
 
-
-
 /* 备注区域 */
 .remark-container {
   width: 100%;
@@ -182,6 +175,16 @@ page {
 
 .remark-textarea::placeholder {
   color: #999;
+}
+
+/* 课程记录 */
+.course-list{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  height: 100rpx;
+  padding: 0 40rpx;
 }
 
 /* 编辑操作按钮 */

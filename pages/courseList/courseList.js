@@ -32,13 +32,24 @@ Page({
     pageSize: 10,
     hasMore: true,
     isLoading: false,
-    isRefreshing: false
+    isRefreshing: false,
+    pageFrom: '',
+    student: null
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    if(options.pageFrom === 'studentDetail' && options.student){
+      try {
+        const student = JSON.parse(options.student);
+        this.setData({
+          pageFrom: options.pageFrom,
+          student
+        })
+      } catch {}
+    }
     // 从URL参数获取初始tab
     if (options.tab) {
       const tabIndex = parseInt(options.tab);
@@ -96,7 +107,7 @@ Page({
       }
 
       // 构建请求参数
-      const { currentTab, tabs, userRole, currentUserId, currentPage, pageSize } = this.data;
+      const { currentTab, tabs, userRole, currentUserId, currentPage, pageSize, pageFrom, student } = this.data;
       const currentTabData = tabs[currentTab];
       
       const params = {
@@ -104,7 +115,10 @@ Page({
         limit: pageSize,
         status: currentTabData.apiStatus
       };
-
+      if(pageFrom === 'studentDetail' && student) {
+        // 查看某一个学员的课程记录
+        params.student_id = student.student_id
+      }
       // 根据用户角色添加对应的用户ID
       if (userRole === 'coach' && currentUserId) {
         params.coach_id = currentUserId;

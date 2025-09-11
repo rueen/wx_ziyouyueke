@@ -148,6 +148,7 @@ Page({
         
         // 格式化API数据为前端需要的格式
         const newStudents = result.data.list.map(item => ({
+          ...item,
           id: item.id, // 师生关系ID
           studentId: item.student_id, // 学员用户ID
           name: (item.student && item.student.nickname) || '未知学员',

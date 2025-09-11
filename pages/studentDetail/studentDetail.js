@@ -332,5 +332,18 @@ Page({
         duration: 3000
       });
     }
+  },
+
+  // 查看课程记录
+  handleViewCourseList() {
+    const { studentData } = this.data;
+    const student = {
+      student_id: studentData.student_id,
+      nickname: studentData.name
+    }
+    wx.navigateTo({
+      url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`
+    });
   }
+
 })

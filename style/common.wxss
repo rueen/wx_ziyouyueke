@@ -165,3 +165,9 @@
   background-color: #007aff;
   color: #fff;
 }
+
+/* active 操作 */
+.active:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
