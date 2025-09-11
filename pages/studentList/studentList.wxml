@@ -50,7 +50,8 @@
 
   <!-- 添加学员按钮 -->
   <view class="add-button-container">
-    <button class="add-button" bindtap="onAddStudent">添加学员</button>
+    <!-- <button class="add-button" bindtap="onAddStudent">添加学员</button> -->
+    <button class="add-button" open-type="share">添加学员</button>
   </view>
 </layout>
 <!-- 添加学员弹窗 -->
