@@ -151,7 +151,7 @@ Page({
         }
       } else {
         // 学员约教练：获取可约教练列表（包括剩余课时为0的）
-        result = await api.relation.getMyCoaches();
+        result = await api.relation.getMyCoachList();
         if (result && result.data && result.data.list) {
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];

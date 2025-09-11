@@ -45,7 +45,7 @@ Page({
       });
 
       // 调用API获取我的教练列表（学员绑定的教练）
-      const result = await api.coach.getMyList({
+      const result = await api.relation.getMyCoachList({
         page: 1,
         limit: 20
       });

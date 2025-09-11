@@ -344,17 +344,6 @@ function getMyStudents(params = {}) {
 }
 
 /**
- * 获取我的教练列表（简化版本）
- * @returns {Promise}
- */
-function getMyCoaches() {
-  return request({
-    url: '/api/h5/relations/my-coaches',
-    method: 'GET'
-  });
-}
-
-/**
  * 更新师生关系
  * @param {number} id 关系ID
  * @param {Object} relation 师生关系数据
@@ -660,7 +649,7 @@ module.exports = {
   relation: {
     create: createRelation,
     getMyStudents,
-    getMyCoaches,
+    getMyCoachList,
     update: updateRelation,
     delete: deleteRelation
   },
@@ -675,11 +664,6 @@ module.exports = {
     complete: completeCourse,
     delete: deleteCourse,
     getDetail: getCourseDetail,
-  },
-
-  // 教练模块
-  coach: {
-    getMyList: getMyCoachList
   },
 
   // 地址管理模块
