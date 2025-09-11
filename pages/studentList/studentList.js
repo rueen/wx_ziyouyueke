@@ -5,6 +5,8 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
+// 引入工具函数
+const { validatePhone } = require('../../utils/util.js');
 
 Page({
   /**
@@ -20,7 +22,62 @@ Page({
     currentPage: 1,
     pageSize: 10,
     hasMore: true,
-    isRefreshing: false
+    isRefreshing: false,
+    showModal: false,
+
+    studentPhone: null
+  },
+
+  onAddStudent() {
+    this.setData({
+      showModal: true
+    });
+  },
+  onHideModal() {
+    this.setData({
+      showModal: false
+    });
+  },
+  /**
+   * 手机号输入事件
+   * @param {Object} e 事件对象
+   */
+  onPhoneInput(e) {
+    this.setData({
+      studentPhone: e.detail.value
+    });
+  },
+
+  /**
+   * 确认绑定学员
+   */
+  onConfirmBind() {
+    const { studentPhone } = this.data;
+    
+    // 检查手机号是否已填写
+    if (!studentPhone || studentPhone.trim() === '') {
+      wx.showToast({
+        title: '请输入学员手机号',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 检查手机号格式是否正确
+    if (!validatePhone(studentPhone)) {
+      wx.showToast({
+        title: '手机号格式不正确',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 手机号验证通过，这里可以添加后续的绑定逻辑
+    console.log('手机号验证通过:', studentPhone);
+    // TODO: 调用绑定学员的API接口
+    
+    // 关闭弹窗
+    this.onHideModal();
   },
 
   /**
@@ -179,34 +236,6 @@ Page({
     const student = e.currentTarget.dataset.student;
     wx.navigateTo({
       url: `/pages/studentDetail/studentDetail?studentData=${encodeURIComponent(JSON.stringify(student))}`
-    });
-  },
-
-  /**
-   * 添加学员 - 直接分享绑定教练页面
-   */
-  onAddStudent() {
-    
-    // 直接触发分享
-    this.shareBindCoachPage();
-  },
-
-    /**
-   * 分享绑定教练页面
-   */
-  shareBindCoachPage() {
-    // 显示分享菜单
-    wx.showShareMenu({
-      withShareTicket: true,
-      success: () => {
-      }
-    });
-
-    // 提示用户点击右上角分享
-    wx.showToast({
-      title: '请点击右上角分享给好友',
-      icon: 'none',
-      duration: 2000
     });
   },
 

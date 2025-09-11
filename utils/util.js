@@ -55,8 +55,24 @@ const safeParseDateTimeString = (dateTimeStr) => {
   }
 }
 
+/**
+ * 验证手机号格式是否正确
+ * @param {string} phone 手机号
+ * @returns {boolean} 格式正确返回true，否则返回false
+ */
+const validatePhone = (phone) => {
+  if (!phone) {
+    return false;
+  }
+  
+  // 中国手机号正则表达式：1开头的11位数字
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  return phoneRegex.test(phone);
+}
+
 module.exports = {
   formatTime,
   createCompatibleDate,
-  safeParseDateTimeString
+  safeParseDateTimeString,
+  validatePhone
 }

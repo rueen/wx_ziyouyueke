@@ -183,4 +183,11 @@ page {
   background-color: #555;
 }
 
+.phoneInput{
+  background: #f8f9fa;
+  width: 100%;
+  height: 100rpx;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
  
