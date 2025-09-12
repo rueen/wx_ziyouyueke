@@ -15,7 +15,3 @@ page {
 switch {
   transform: scale(0.8);
 }
-text{
-  color: #333;
-  font-size: 30rpx;
-}

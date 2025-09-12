@@ -185,6 +185,8 @@ page {
   background: #fff;
   height: 100rpx;
   padding: 0 40rpx;
+  font-size: 30rpx;
+  color: #333;
 }
 
 /* 编辑操作按钮 */
