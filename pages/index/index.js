@@ -85,7 +85,7 @@ Page({
       // 游客模式，需要引导登录
       wx.showModal({
         title: '需要登录',
-        content: '此功能需要登录后才能使用，是否前往登录？',
+        content: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？',
         confirmText: '去登录',
         cancelText: '取消',
         success: (res) => {
