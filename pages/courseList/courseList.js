@@ -138,11 +138,11 @@ Page({
           if (userRole === 'coach') {
             // 教练视角：显示学员信息
             displayName = course.student ? course.student.nickname : '未知学员';
-            displayAvatar = course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png';
+            displayAvatar = course.student ? (course.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png';
           } else {
             // 学员视角：显示教练信息
             displayName = course.coach ? course.coach.nickname : '未知教练';
-            displayAvatar = course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png';
+            displayAvatar = course.coach ? (course.coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png';
           }
 
           const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
@@ -152,9 +152,9 @@ Page({
             id: course.id,
             coachId: course.coach ? course.coach.id : 0,
             coachName: course.coach ? course.coach.nickname : '未知教练',
-            coachAvatar: course.coach ? (course.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            coachAvatar: course.coach ? (course.coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             studentName: course.student ? course.student.nickname : '未知学员',
-            studentAvatar: course.student ? (course.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+            studentAvatar: course.student ? (course.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             // 根据角色动态显示的信息
             displayName: displayName,
             displayAvatar: displayAvatar,

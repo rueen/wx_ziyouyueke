@@ -121,7 +121,7 @@ function handleTokenExpired() {
   const guestUserInfo = {
     id: null,
     nickname: '游客用户',
-    avatar_url: '/images/defaultAvatar.png',
+    avatar_url: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
     loginType: 'guest'
   };
   

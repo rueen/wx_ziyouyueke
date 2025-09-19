@@ -62,7 +62,7 @@ Page({
       if (result && result.data) {
         const user = result.data;
         const userInfo = {
-          avatarUrl: user.avatar_url || '/images/defaultAvatar.png',
+          avatarUrl: user.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
           nickName: user.nickname || '未设置',
           phoneNumber: user.phone || '',
           gender: user.gender || 0,

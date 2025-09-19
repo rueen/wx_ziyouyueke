@@ -137,7 +137,7 @@ Page({
           const students = dataArray.map(item => ({
             id: item.id,
             name: (item.student && item.student.nickname) || '未知学员',
-            avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
+            avatar: (item.student && item.student.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             remainingLessons: item.remaining_lessons || 0,
             phone: (item.student && item.student.phone) || '',
             student_id: item.student_id,
@@ -158,7 +158,7 @@ Page({
           const coaches = dataArray.map(item => ({
             id: item.id,
             name: (item.coach && item.coach.nickname) || '未知教练',
-            avatar: (item.coach && item.coach.avatar_url) || '/images/defaultAvatar.png',
+            avatar: (item.coach && item.coach.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             remainingLessons: item.remaining_lessons || 0,
             phone: (item.coach && item.coach.phone) || '',
             student_id: item.student_id,

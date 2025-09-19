@@ -78,7 +78,7 @@ Page({
         const coachData = {
           id: coach.id,
           name: coach.nickname || '未知教练',
-          avatar: coach.avatar_url || '/images/defaultAvatar.png',
+          avatar: coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
           introduction: coach.intro || '暂无介绍',
           stats: coach.stats || {},
           phone: coach.phone || '',

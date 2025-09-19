@@ -113,7 +113,7 @@ Page({
             // 用户拒绝授权，使用默认信息登录
             this.performLogin(res.code, {
               nickname: '微信用户',
-              avatarUrl: '/images/defaultAvatar.png',
+              avatarUrl: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
               gender: 0
             });
           }
@@ -240,7 +240,7 @@ Page({
     const userInfo = {
       id: null, // 游客没有ID
       nickname: '游客用户',
-      avatar_url: '/images/defaultAvatar.png',
+      avatar_url: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
       loginType: loginType
     };
 

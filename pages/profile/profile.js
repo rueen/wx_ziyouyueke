@@ -14,7 +14,7 @@ Page({
   data: {
     userInfo: {
       nickname: '请设置昵称',
-      avatar: '/images/defaultAvatar.png'
+      avatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
     },
     // 身份信息
     userRole: '', // 'student' 学员, 'coach' 教练
@@ -106,7 +106,7 @@ Page({
         this.setData({
           userInfo: {
             nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
-            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       }
@@ -123,7 +123,7 @@ Page({
         this.setData({
           userInfo: {
             nickname: user.nickname || '请设置昵称',
-            avatar: user.avatar_url || '/images/defaultAvatar.png',
+            avatar: user.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             intro: user.intro || ''
           }
         });
@@ -139,7 +139,7 @@ Page({
         this.setData({
           userInfo: {
             nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
-            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       } else {
@@ -147,7 +147,7 @@ Page({
         this.setData({
           userInfo: {
             nickname: '请设置昵称',
-            avatar: '/images/defaultAvatar.png'
+            avatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       }

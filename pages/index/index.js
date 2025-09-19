@@ -66,7 +66,7 @@ Page({
     const guestUserInfo = {
       id: null,
       nickname: '游客用户',
-      avatar_url: '/images/defaultAvatar.png',
+      avatar_url: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
       loginType: 'guest'
     };
 
@@ -115,7 +115,7 @@ Page({
         this.setData({
           userInfo: {
             name: (storedUserInfo && storedUserInfo.nickname) || '游客用户',
-            avatar: (storedUserInfo && storedUserInfo.avatar_url) || '/images/defaultAvatar.png'
+            avatar: (storedUserInfo && storedUserInfo.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
         return;
@@ -132,7 +132,7 @@ Page({
         this.setData({
           userInfo: {
             name: user.nickname || '用户',
-            avatar: user.avatar_url || '/images/defaultAvatar.png',
+            avatar: user.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             gender: user.gender
           },
           currentUserId: user.id
@@ -150,7 +150,7 @@ Page({
         this.setData({
           userInfo: {
             name: storedUserInfo.nickName || storedUserInfo.nickname || '用户',
-            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       } else {
@@ -158,7 +158,7 @@ Page({
         this.setData({
           userInfo: {
             name: '用户',
-            avatar: '/images/defaultAvatar.png'
+            avatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       }
@@ -517,9 +517,9 @@ Page({
         isBooked: true,
         // 根据用户角色显示对应信息
         coachName: nextCourse.coach ? nextCourse.coach.nickname : '未知教练',
-        coachAvatar: nextCourse.coach ? (nextCourse.coach.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+        coachAvatar: nextCourse.coach ? (nextCourse.coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
         studentName: nextCourse.student ? nextCourse.student.nickname : '未知学员',
-        studentAvatar: nextCourse.student ? (nextCourse.student.avatar_url || '/images/defaultAvatar.png') : '/images/defaultAvatar.png',
+        studentAvatar: nextCourse.student ? (nextCourse.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
         // 根据角色显示地址信息
         location: nextCourse.address ? (nextCourse.address.name || nextCourse.address.address || '未指定地点') : '未指定地点',
         remark: nextCourse.student_remark || nextCourse.coach_remark || '',
