@@ -14,7 +14,7 @@ page {
   background-color: #fff;
   border-radius: 20rpx;
   padding: 40rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -75,13 +75,15 @@ page {
   background-color: #fff;
   border-radius: 20rpx;
   overflow: hidden;
+  margin: 0 30rpx;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 40rpx;
+  padding: 0 30rpx;
+  height: 110rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 

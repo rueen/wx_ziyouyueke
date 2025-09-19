@@ -4,32 +4,34 @@
   <!-- 学员信息 -->
   <view class="student-header">
     <view class="student-avatar">
-      <image src="{{studentData.avatar}}" class="avatar-img"></image>
+      <image src="{{studentData.student.avatar_url}}" class="avatar-img"></image>
     </view>
     <view class="student-info">
-      <text class="student-name">{{studentData.name}}</text>
-      <view class="student-intro">{{studentData.introduction}}</view>
+      <text class="student-name">{{studentData.student.nickname}}</text>
+      <view class="student-intro">{{studentData.student.intro}}</view>
     </view>
   </view>
 
   <!-- 课时信息 -->
   <view class="info-section">
     <view class="section-header">
-      <text class="section-title">课时信息</text>
+      <text class="section-title">剩余课时</text>
       <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
     </view>
     
-    <view class="info-item">
-      <text class="info-label">剩余课时：</text>
+    <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
+      <text class="info-label">{{item.category.name}}：</text>
       <view wx:if="{{!isEditing}}" class="info-value">
-        <text class="lessons-count {{studentData.remainingLessons > 0 ? 'active' : 'empty'}}">{{studentData.remainingLessons}}节</text>
+        <text class="lessons-count active">{{item.remaining_lessons}}节</text>
       </view>
       <view wx:else class="edit-value-container">
-        <input class="edit-input" 
-               type="number" 
-               value="{{editableLessons}}" 
-               bindinput="onLessonsInput"
-               placeholder="请输入课时数"></input>
+        <input
+          class="edit-input" 
+          type="number" 
+          value="{{item.remaining_lessons}}" 
+          bindinput="onLessonsInput"
+          data-id="{{item.category.id}}"
+          placeholder="请输入课时数"></input>
         <text class="edit-unit">节</text>
       </view>
     </view>
@@ -45,7 +47,7 @@
     
     <view class="remark-container">
       <view wx:if="{{!isEditing}}" class="remark-display">
-        <text class="remark-text">{{studentData.remark || '暂无备注'}}</text>
+        <text class="remark-text">{{studentData.coach_remark || '暂无备注'}}</text>
       </view>
       <textarea wx:else 
                 class="remark-textarea" 
@@ -89,7 +91,7 @@
     <view class="modal-content">
       <view class="confirm-text">
         <text class="warning-icon">⚠️</text>
-        <text class="confirm-message">确定要解除与"{{studentData.name}}"的师生关系吗？</text>
+        <text class="confirm-message">确定要解除与"{{studentData.student.nickname}}"的师生关系吗？</text>
       </view>
       <view class="confirm-tips">
         <text class="tips-text">解除后将无法查看该学员信息，且无法恢复</text>

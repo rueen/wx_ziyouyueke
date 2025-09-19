@@ -13,12 +13,12 @@ Page({
    */
   data: {
     studentData: {},
-    editableLessons: '', // 可编辑的课时数
     studentRemark: '',   // 学员备注
     isEditing: false,    // 是否处于编辑状态
     isSaving: false,     // 是否正在保存
     showUnbindModal: false, // 是否显示解除绑定确认弹窗
-    isUnbinding: false   // 是否正在解除绑定
+    isUnbinding: false,   // 是否正在解除绑定
+    lessons: []
   },
 
   /**
@@ -30,8 +30,8 @@ Page({
         const studentData = JSON.parse(decodeURIComponent(options.studentData));
         this.setData({
           studentData,
-          editableLessons: studentData.remainingLessons.toString(),
-          studentRemark: studentData.remark || ''
+          lessons: studentData.lessons,
+          studentRemark: studentData.coach_remark || ''
         });
       } catch (error) {
         console.error('解析学员数据失败：', error);
@@ -108,8 +108,7 @@ Page({
     const { studentData } = this.data;
     this.setData({
       isEditing: false,
-      editableLessons: studentData.remainingLessons.toString(),
-      studentRemark: studentData.remark || ''
+      studentRemark: studentData.coach_remark || ''
     });
   },
 
@@ -117,9 +116,16 @@ Page({
    * 输入课时数
    */
   onLessonsInput(e) {
+    const { currentTarget: { dataset: { id } }, detail: { value } } = e;
+    const lessons = [...this.data.lessons];
+    lessons.map(item => {
+      if(item.category_id === id) {
+        item.remaining_lessons = parseInt(value);
+      }
+    })
     this.setData({
-      editableLessons: e.detail.value
-    });
+      lessons: lessons
+    })
   },
 
   /**
@@ -135,20 +141,10 @@ Page({
    * 保存修改
    */
   async onSave() {
-    const { editableLessons, studentRemark, studentData, isSaving } = this.data;
-    
+    const { lessons, studentRemark, studentData, isSaving } = this.data;
+
     if (isSaving) {
       return; // 防止重复提交
-    }
-    
-    const lessonsNum = parseInt(editableLessons);
-    
-    if (isNaN(lessonsNum) || lessonsNum < 0) {
-      wx.showToast({
-        title: '请输入正确的课时数',
-        icon: 'none'
-      });
-      return;
     }
 
     try {
@@ -162,7 +158,7 @@ Page({
 
       // 调用API更新师生关系
       const updateData = {
-        remaining_lessons: lessonsNum,
+        category_lessons: lessons,
         coach_remark: studentRemark.trim()
       };
 
@@ -172,10 +168,17 @@ Page({
 
       if (result && result.success) {
         // 更新本地数据
+        const new_category_lessons = studentData.category_lessons.map(item => {
+          const _item = lessons.find(i => i.category_id === item.category.id);
+          return {
+            category:item.category,
+            remaining_lessons:_item.remaining_lessons
+          }
+        });
         const updatedStudentData = {
           ...studentData,
-          remainingLessons: lessonsNum,
-          remark: studentRemark.trim()
+          category_lessons: new_category_lessons,
+          coach_remark: studentRemark.trim()
         };
 
         this.setData({
@@ -217,7 +220,7 @@ Page({
   onBookStudent() {
     const { studentData } = this.data;
     wx.navigateTo({
-      url: `/pages/bookCourse/bookCourse?type=coach-book-student&from=studentDetail&studentId=${studentData.studentId}&studentName=${encodeURIComponent(studentData.name)}`
+      url: `/pages/bookCourse/bookCourse?type=coach-book-student&from=studentDetail&studentId=${studentData.student_id}&studentName=${encodeURIComponent(studentData.student.nickname)}`
     });
   },
 
@@ -233,12 +236,14 @@ Page({
    */
   onShowUnbindConfirm() {
     const { studentData } = this.data;
-    
+    const lessons = studentData.lessons || [];
+    const remaining = lessons.reduce((acc, curr) => acc + curr.remaining_lessons, 0);
+
     // 检查剩余课时数，如果大于0则不允许解除绑定
-    if (studentData.remainingLessons > 0) {
+    if (remaining > 0) {
       wx.showModal({
         title: '无法解除绑定',
-        content: `该学员还有 ${studentData.remainingLessons} 节剩余课时，请先消耗完课时或将课时数修改为0后再解除绑定。`,
+        content: `该学员还有 ${remaining} 节剩余课时，请先消耗完课时或将课时数修改为0后再解除绑定。`,
         showCancel: false,
         confirmText: '我知道了',
         confirmColor: '#007aff'

@@ -149,15 +149,6 @@ Page({
         // 格式化API数据为前端需要的格式
         const newStudents = result.data.list.map(item => ({
           ...item,
-          id: item.id, // 师生关系ID
-          studentId: item.student_id, // 学员用户ID
-          name: (item.student && item.student.nickname) || '未知学员',
-          avatar: (item.student && item.student.avatar_url) || '/images/defaultAvatar.png',
-          level: '初级', // 暂时写死，后续可以从用户信息中获取
-          remainingLessons: item.remaining_lessons || 0,
-          introduction: (item.student && item.student.intro) || '暂无介绍',
-          remark: item.coach_remark || '无备注',
-          phone: (item.student && item.student.phone) || ''
         }));
 
         // 处理分页数据
