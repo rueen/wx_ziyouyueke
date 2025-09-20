@@ -1,0 +1,67 @@
+<!--pages/categoriesDetail/categoriesDetail.wxml-->
+<navBar title="课程分类" />
+<layout>
+  <view class="container">
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">分类名称</text>
+        <view class="icon-section">
+          <text class="iconfont icon-del del-btn" wx:if="{{!isEditing}}" bindtap="handleDel"></text>
+          <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
+        </view>
+      </view>
+      <text wx:if="{{!isEditing}}" class="name">{{ category.name }}</text>
+      <input
+        wx:else
+        type="text"
+        placeholder="请输入分类名称"
+        class="edit-input"
+        value="{{name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">描述</text>
+      </view>
+      <view class="remark-container">
+        <text wx:if="{{!isEditing}}" class="remark-text">{{category.desc || '暂无描述'}}</text>
+        <textarea wx:else 
+          class="remark-textarea" 
+          placeholder="请输入分类描述" 
+          value="{{desc}}" 
+          bindinput="onDescInput"
+          maxlength="200"></textarea>
+      </view>
+    </view>
+    <view class="info-section" wx:if="{{!isEditing}}">
+      <view class="section-header">
+        <text class="section-title">相关学员</text>
+      </view>
+      <view class="studentLessons" wx:if="{{studentLessons && studentLessons.length}}">
+        <view class="studentLessons-item" wx:for="{{studentLessons}}" wx:key="index">
+          <view class="left">
+            <view class="studentAvatar">
+              <image mode="widthFix" src="{{item.studentAvatar}}" class="avatar-img"></image>
+            </view>
+            <view class="studentName">{{item.studentName}}</view>
+          </view>
+          <view class="remainingLessons">{{item.remainingLessons}}节</view>
+        </view>
+      </view>
+      <emptyState
+        wx:else
+        type="no-data"
+        title="暂无相关学员"
+        description="学员详情可为学员添加课时">
+      </emptyState>
+    </view>
+    <!-- 编辑状态的操作按钮 -->
+    <view wx:if="{{isEditing}}" class="edit-actions">
+      <button class="cancel-btn" bindtap="onCancelEdit" wx:if="{{type === 'edit'}}">取消</button>
+      <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
+        {{isSaving ? '保存中...' : '保存'}}
+      </button>
+    </view>
+  </view>
+</layout>

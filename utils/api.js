@@ -647,6 +647,45 @@ module.exports = {
     delete: deleteAddress
   },
 
+  // 课程分类
+  categories: {
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/categories',
+        method: 'GET',
+        data: params
+      });
+    },
+    add: function(params = {}) {
+      return request({
+        url: '/api/h5/categories',
+        method: 'POST',
+        data: params
+      });
+    },
+    edit: function(id, params = {}) {
+      return request({
+        url: `/api/h5/categories/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
+    delete: function(id, params = {}) {
+      return request({
+        url: `/api/h5/categories/${id}`,
+        method: 'DELETE',
+        data: params
+      });
+    },
+    getDetail: function(id, params = {}) {
+      return request({
+        url: `/api/h5/categories/${id}`,
+        method: 'GET',
+        data: params
+      });
+    }
+  },
+
   // 文件上传模块
   upload: {
     image: uploadImage,

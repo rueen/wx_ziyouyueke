@@ -85,6 +85,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 80rpx;
 }
 
 .info-label {
@@ -193,7 +194,7 @@ page {
 .edit-actions {
   display: flex;
   gap: 20rpx;
-  margin-top: 20rpx;
+  padding: 40rpx;
 }
 
 .cancel-btn,

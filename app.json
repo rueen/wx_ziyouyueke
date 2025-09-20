@@ -16,7 +16,9 @@
     "pages/addressEdit/addressEdit",
     "pages/mySchedule/mySchedule",
     "pages/bookCourse/bookCourse",
-    "pages/agreement/agreement"
+    "pages/agreement/agreement",
+    "pages/categoriesList/categoriesList",
+    "pages/categoriesDetail/categoriesDetail"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

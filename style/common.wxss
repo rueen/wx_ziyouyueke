@@ -171,3 +171,18 @@
   transform: scale(0.98);
   opacity: 0.9;
 }
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}

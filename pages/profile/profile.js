@@ -271,6 +271,18 @@ Page({
     })
   },
 
+  // 课程分类
+  onCoursesCategories(){
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+
+    wx.navigateTo({
+      url: '/pages/categoriesList/categoriesList'
+    })
+  },
+
   /**
    * 时间模板（教练专用）
    */

@@ -35,8 +35,7 @@
         <text class="edit-unit">节</text>
       </view>
     </view>
-    
-
+  
   </view>
 
   <!-- 备注信息 -->
@@ -59,7 +58,7 @@
   </view>
 
   <!-- 上课记录 -->
-  <view class="course-list active" bind:tap="handleViewCourseList">
+  <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
     <text>查看课程</text>
     <text class="iconfont icon-arrow-r arrow"></text>
   </view>

@@ -12,10 +12,8 @@
           <text class="student-name">{{item.student.nickname}}</text>
         </view>
         <view class="remaining-lessons">
-          <view wx:for="{{item.category_lessons}}" wx:for-item="lesson" wx:key="index">
-            <text class="lessons-label">{{lesson.category.name}}</text>
-            <text class="lessons-count active">{{lesson.remaining_lessons}}节</text>
-          </view>
+          <text class="lessons-label">剩余课时：</text>
+          <text class="lessons-count active">{{item.remaining_lessons}}节</text>
         </view>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
