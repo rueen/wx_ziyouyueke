@@ -65,7 +65,8 @@ Page({
           category: category,
           name: category.name,
           desc: category.desc,
-          studentLessons: studentLessons.filter(item => item.remainingLessons > 0)
+          studentLessons: studentLessons.filter(item => item.remainingLessons > 0),
+          isLoading: false
         });
       }
     } catch (error) {
@@ -92,7 +93,7 @@ Page({
     if(studentLessons.length > 0){
       wx.showModal({
         title: '无法删除',
-        content: `该分类下有相关学员存在剩余课时，请先消耗完课时或将课时数修改为0后再删除。`,
+        content: `该分类下有学员存在剩余课时，请先消耗完课时或将课时数修改为0后再删除。`,
         showCancel: false,
         confirmText: '我知道了',
         confirmColor: '#007aff'
@@ -283,6 +284,15 @@ Page({
         duration: 3000
       });
     }
+  },
+  /**
+   * 进入学员详情
+   */
+  onStudentDetail(e) {
+    const item = e.currentTarget.dataset.item;
+    wx.navigateTo({
+      url: `/pages/studentDetail/studentDetail?relationId=${item.relationId}&studentId=${item.studentId}`
+    });
   },
   async onSave(){
     if(this.data.type === 'add') {

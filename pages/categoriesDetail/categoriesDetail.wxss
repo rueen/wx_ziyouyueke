@@ -2,7 +2,7 @@
 @import '/style/iconfont.wxss';
 
 page {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f5f5f5;
 }
 .container {
@@ -94,6 +94,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 20rpx 0;
 }
 .studentLessons-item .left{
   display: flex;
@@ -162,4 +163,9 @@ page {
 .cancel-btn::after,
 .save-btn::after {
   border: none;
+}
+
+.arrow-icon {
+  color: #999;
+  font-size: 28rpx;
 }

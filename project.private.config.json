@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "绑定教练",
+          "pathName": "/pages/bindCoach/bindCoach",
+          "query": "coach_id=28",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "我的",
           "pathName": "pages/profile/profile",
           "query": "",
@@ -19,13 +26,6 @@
           "name": "我的时间",
           "pathName": "pages/mySchedule/mySchedule",
           "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "绑定教练",
-          "pathName": "/pages/bindCoach/bindCoach",
-          "query": "coach_id=1",
           "launchMode": "default",
           "scene": null
         },
