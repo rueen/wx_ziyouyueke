@@ -149,6 +149,7 @@ Page({
           const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
           const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
           const mappedCourse = {
+            ...course,
             id: course.id,
             coachId: course.coach ? course.coach.id : 0,
             coachName: course.coach ? course.coach.nickname : '未知教练',
@@ -165,7 +166,8 @@ Page({
             status: this.getStatusFromApi(course.booking_status),
             createTime: course.created_at || '',
             cancelReason: course.cancel_reason || '',
-            isCreatedByCurrentUser: isCreatedByCurrentUser
+            isCreatedByCurrentUser: isCreatedByCurrentUser,
+            categoryName: course.coach.course_categories.find(i => i.id === course.category_id).name
           };
           return mappedCourse;
         });

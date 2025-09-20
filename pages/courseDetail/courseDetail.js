@@ -148,7 +148,8 @@ Page({
           createTime: course.createdAt || '',
           cancelReason: course.cancel_reason || '',
           createdBy: course.created_by,
-          isCreatedByCurrentUser: isCreatedByCurrentUser
+          isCreatedByCurrentUser: isCreatedByCurrentUser,
+          categoryName: course.coach.course_categories.find(i => i.id === course.category_id).name
         };
 
         this.setData({

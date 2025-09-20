@@ -227,7 +227,7 @@ Page({
   onStudentDetail(e) {
     const student = e.currentTarget.dataset.student;
     wx.navigateTo({
-      url: `/pages/studentDetail/studentDetail?studentData=${encodeURIComponent(JSON.stringify(student))}`
+      url: `/pages/studentDetail/studentDetail?relationId=${student.id}&studentId=${student.student_id}`
     });
   },
 

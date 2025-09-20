@@ -126,6 +126,17 @@ page {
   font-size: 32rpx;
 }
 
+/* 课程分类 */
+.categorie-name{
+  font-size: 30rpx;
+  color: #333;
+}
+.remaining-lessons{
+  margin-left: 12rpx;
+  font-size: 30rpx;
+  color: #007aff;
+}
+
 /* 地址选择样式 */
 .selected-address {
   display: flex;

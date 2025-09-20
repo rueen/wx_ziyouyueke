@@ -15,7 +15,9 @@
   <!-- 课时信息 -->
   <view class="info-section">
     <view class="section-header">
-      <text class="section-title">剩余课时</text>
+      <text class="section-title">
+        <text>剩余课时</text>
+      </text>
       <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
     </view>
     
@@ -34,6 +36,9 @@
           placeholder="请输入课时数"></input>
         <text class="edit-unit">节</text>
       </view>
+    </view>
+    <view class="section-info">
+      <text>可在“我的”->“课程分类”维护课程分类</text>
     </view>
   
   </view>

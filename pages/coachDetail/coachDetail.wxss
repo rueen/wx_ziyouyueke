@@ -10,7 +10,7 @@ page {
 }
 
 .container {
-  padding-bottom: 140rpx;
+  padding-bottom: 160rpx;
 }
 
 /* 教练基础信息 */
@@ -100,12 +100,29 @@ page {
   color: #333;
   font-weight: 600;
   display: block;
+  margin-bottom: 10rpx;
 }
 
 .intro-text {
   font-size: 28rpx;
   color: #666;
   line-height: 1.6;
+}
+
+.lessons-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60rpx;
+}
+.categorie-name{
+  font-size: 30rpx;
+  color: #333;
+}
+.remaining-lessons{
+  margin-left: 12rpx;
+  font-size: 30rpx;
+  color: #007aff;
 }
 
 /* 约课按钮 */

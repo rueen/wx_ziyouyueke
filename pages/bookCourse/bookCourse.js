@@ -25,6 +25,11 @@ Page({
     availableOptions: [], // 可选择的教练或学员列表（包括课时为0的）
     selectedOption: null, // 已选择的教练或学员
     showOptionSelection: false, // 是否显示选择弹窗
+
+    // 课程分类
+    categoriesList: [],
+    selectedCategorie: null, // 已选中的课程分类
+    showCategorieSelection: false, // 是否显示课程分类选择
     
     // 时间选择相关
     selectedCoachId: '', // 用于时间选择器的教练ID
@@ -322,6 +327,18 @@ Page({
       await this.loadAddresses(option.coach_id);
     }
     
+    // 获取课程类型列表
+    if(option.originalData){
+      const originalData = option.originalData || {};
+      const category_lessons = originalData.category_lessons || [];
+      const _categoryLessons = category_lessons.filter(item => item.remaining_lessons > 0);
+
+      this.setData({
+        categoriesList: _categoryLessons,
+        selectedCategorie: _categoryLessons.length ? _categoryLessons[0] : null
+      })
+    }
+
     this.checkCanSubmit();
   },
 
@@ -372,6 +389,26 @@ Page({
     this.setData({
       showOptionSelection: false
     });
+  },
+
+  // 选择课程分类
+  onShowCategorieSelection() {
+    this.setData({
+      showCategorieSelection: true
+    });
+  },
+  onHideCategorieSelection() {
+    this.setData({
+      showCategorieSelection: false
+    });
+  },
+  onSelectCategorie(e) {
+    const item = e.currentTarget.dataset.item;
+    this.setData({
+      selectedCategorie: item,
+      showCategorieSelection: false
+    });
+    this.checkCanSubmit();
   },
 
   /**
@@ -449,8 +486,8 @@ Page({
    * 检查是否可以提交
    */
   checkCanSubmit() {
-    const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress } = this.data;
-    const canSubmit = !!(selectedOption && selectedOption.remainingLessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
+    const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress, selectedCategorie } = this.data;
+    const canSubmit = !!(selectedOption && selectedCategorie.remaining_lessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
     this.setData({
       canSubmit: canSubmit
     });
@@ -467,7 +504,8 @@ Page({
       selectedTimeSlot, 
       selectedAddress, 
       remark,
-      isSubmitting 
+      isSubmitting,
+      selectedCategorie
     } = this.data;
     
     if (isSubmitting) {
@@ -497,14 +535,15 @@ Page({
       if (!selectedOption.coach_id || !selectedOption.student_id) {
         throw new Error('师生关系数据不完整，请重新选择');
       }
-      
+
       // 构建提交数据
       const bookingData = {
         course_date: selectedDate,
         start_time: selectedTimeSlot.startTime,
         end_time: selectedTimeSlot.endTime,
         address_id: selectedAddress.id,
-        relation_id: selectedOption.id
+        relation_id: selectedOption.id,
+        category_id: selectedCategorie.category.id
       };
       
       // 添加备注

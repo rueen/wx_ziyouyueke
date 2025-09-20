@@ -622,7 +622,21 @@ module.exports = {
   relation: {
     create: createRelation,
     getMyStudents,
+    getMyStudentsDetail: function(id, params = {}) {
+      return request({
+        url: `/api/h5/relations/my-students/${id}`,
+        method: 'GET',
+        data: params
+      });
+    },
     getMyCoachList,
+    getMyCoachDetail: function(id, params = {}) {
+      return request({
+        url: `/api/h5/relations/my-coaches/${id}`,
+        method: 'GET',
+        data: params
+      });
+    },
     update: updateRelation,
     delete: deleteRelation
   },

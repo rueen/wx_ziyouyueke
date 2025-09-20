@@ -167,4 +167,7 @@ page {
 .end-text {
   font-size: 26rpx;
   color: #ccc;
-} 
+}
+.categoryName{
+  color: #f2652e;
+}

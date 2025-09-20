@@ -12,6 +12,7 @@ Page({
    */
   data: {
     coachData: {},
+    relationId: null,
     coachId: null
   },
 
@@ -19,34 +20,22 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    if (options.coachData) {
-      try {
-        const coachData = JSON.parse(decodeURIComponent(options.coachData));
-        this.setData({
-          coachData,
-          coachId: coachData.id
-        });
-        // 设置时间选择器的教练ID
-        this.setTimeSelectorCoachId(coachData.id);
-      } catch (error) {
-        wx.showToast({
-          title: '数据加载失败',
-          icon: 'none'
-        });
-      }
-    } else if (options.coachId) {
-      // 如果只有教练ID，从API获取详情
-      const coachId = parseInt(options.coachId);
-      this.setData({ coachId });
-      this.loadCoachDetail(coachId);
-      this.setTimeSelectorCoachId(coachId);
+    if (options.coachId && options.relationId) {
+      this.setData({
+        coachId: options.coachId - 0,
+        relationId: options.relationId - 0
+      }, () => {
+        this.loadCoachDetail();
+        this.setTimeSelectorCoachId();
+      });
     }
   },
 
   /**
    * 设置时间选择器的教练ID
    */
-  setTimeSelectorCoachId(coachId) {
+  setTimeSelectorCoachId() {
+    const { coachId } = this.data;
     // 等待页面渲染完成后设置
     setTimeout(() => {
       const timeSelector = this.selectComponent('#timeSelector');
@@ -63,30 +52,21 @@ Page({
   /**
    * 从API加载教练详情
    */
-  async loadCoachDetail(coachId) {
+  async loadCoachDetail() {
+    const { relationId } = this.data;
     try {
       wx.showLoading({
         title: '加载中...'
       });
 
-      const result = await api.user.getDetail(coachId);
+      const result = await api.relation.getMyCoachDetail(relationId);
       
       wx.hideLoading();
 
       if (result && result.data) {
         const coach = result.data;
-        const coachData = {
-          id: coach.id,
-          name: coach.nickname || '未知教练',
-          avatar: coach.avatar_url || '/images/defaultAvatar.png',
-          introduction: coach.intro || '暂无介绍',
-          stats: coach.stats || {},
-          phone: coach.phone || '',
-          remainingLessons: coach.remaining_lessons || 0
-        };
-
         this.setData({
-          coachData
+          coachData: coach
         });
       }
     } catch (error) {

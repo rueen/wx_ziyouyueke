@@ -1,6 +1,6 @@
 <!--pages/courseDetail/courseDetail.wxml-->
 <navBar title="课程详情" />
-<layout class="container">
+<layout>
   <!-- 加载状态 -->
   <view wx:if="{{loading}}" class="loading-container">
     <text class="loading-text">加载中...</text>
@@ -34,6 +34,16 @@
 
       <!-- 课程详细信息 -->
       <view class="course-info-section">
+        <view class="info-item">
+          <view class="info-icon">
+            <text class="iconfont icon-leimu"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">课程类型</text>
+            <text class="info-value categoryName">{{courseInfo.categoryName}}</text>
+          </view>
+        </view>
+
         <view class="info-item">
           <view class="info-icon">
             <text class="iconfont icon-shijianmoban"></text>
@@ -73,6 +83,36 @@
           <view class="info-content">
             <text class="info-label">预约时间</text>
             <text class="info-value">{{courseInfo.createTime}}</text>
+          </view>
+        </view>
+
+        <view class="info-item" wx:if="{{courseInfo.confirmed_at}}">
+          <view class="info-icon">
+            <text class="iconfont icon-shijianmoban"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">确认时间</text>
+            <text class="info-value">{{courseInfo.confirmed_at}}</text>
+          </view>
+        </view>
+
+        <view class="info-item" wx:if="{{courseInfo.complete_at}}">
+          <view class="info-icon">
+            <text class="iconfont icon-shijianmoban"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">完成时间</text>
+            <text class="info-value">{{courseInfo.complete_at}}</text>
+          </view>
+        </view>
+
+        <view class="info-item" wx:if="{{courseInfo.cancelled_at}}">
+          <view class="info-icon">
+            <text class="iconfont icon-shijianmoban"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">取消时间</text>
+            <text class="info-value">{{courseInfo.cancelled_at}}</text>
           </view>
         </view>
 

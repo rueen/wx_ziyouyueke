@@ -13,6 +13,8 @@ Page({
    */
   data: {
     studentData: {},
+    relationId: null,
+    studentId: null,
     studentRemark: '',   // 学员备注
     isEditing: false,    // 是否处于编辑状态
     isSaving: false,     // 是否正在保存
@@ -25,29 +27,30 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    if (options.studentData) {
-      try {
-        const studentData = JSON.parse(decodeURIComponent(options.studentData));
-        this.setData({
-          studentData,
-          lessons: studentData.lessons,
-          studentRemark: studentData.coach_remark || ''
-        });
-      } catch (error) {
-        console.error('解析学员数据失败：', error);
-        wx.showToast({
-          title: '数据加载失败',
-          icon: 'none'
-        });
-      }
+    if(options.relationId && options.studentId) {
+      this.setData({
+        studentId: options.studentId - 0,
+        relationId: options.relationId - 0
+      }, () => {
+        this.loadStudentDetail();
+      });
     }
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+    // if (options.studentData) {
+    //   try {
+    //     const studentData = JSON.parse(decodeURIComponent(options.studentData));
+    //     this.setData({
+    //       studentData,
+    //       lessons: studentData.lessons,
+    //       studentRemark: studentData.coach_remark || ''
+    //     });
+    //   } catch (error) {
+    //     console.error('解析学员数据失败：', error);
+    //     wx.showToast({
+    //       title: '数据加载失败',
+    //       icon: 'none'
+    //     });
+    //   }
+    // }
   },
 
   /**
@@ -57,39 +60,34 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
+  async loadStudentDetail() {
+    const { relationId } = this.data;
+    try {
+      wx.showLoading({
+        title: '加载中...'
+      });
 
-  },
+      const result = await api.relation.getMyStudentsDetail(relationId);
+      
+      wx.hideLoading();
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+      if (result && result.data) {
+        const studentData = result.data || {};
+        this.setData({
+          studentData: studentData,
+          lessons: studentData.lessons,
+          studentRemark: studentData.coach_remark || ''
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载学员详情失败:', error);
+      
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
+    }
   },
 
   /**
@@ -344,7 +342,7 @@ Page({
     const { studentData } = this.data;
     const student = {
       student_id: studentData.student_id,
-      nickname: studentData.name
+      nickname: studentData.student.nickname
     }
     wx.navigateTo({
       url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`

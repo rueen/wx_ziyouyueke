@@ -1,43 +1,54 @@
 <!--pages/coachDetail/coachDetail.wxml-->
 <navBar title="教练详情" />
-<layout class="container">
-  <!-- 教练信息 -->
-  <view class="coach-header">
-    <view class="coach-avatar">
-      <image src="{{coachData.avatar}}" class="avatar-img"></image>
-    </view>
-    <view class="coach-info">
-      <text class="coach-name">{{coachData.name}}</text>
-      <view class="remaining-lessons">
-        <text class="lessons-label">剩余课时：</text>
-        <text class="lessons-count {{coachData.remainingLessons > 0 ? 'active' : 'empty'}}">{{coachData.remainingLessons}}节</text>
+<layout>
+  <view class="container">
+    <!-- 教练信息 -->
+    <view class="coach-header">
+      <view class="coach-avatar">
+        <image src="{{coachData.coach.avatar_url}}" class="avatar-img"></image>
+      </view>
+      <view class="coach-info">
+        <text class="coach-name">{{coachData.coach.nickname}}</text>
+        <view class="remaining-lessons">
+          <text class="lessons-label">剩余课时：</text>
+          <text class="lessons-count active">{{coachData.remaining_lessons}}节</text>
+        </view>
       </view>
     </view>
-  </view>
 
-  <!-- 教练介绍 -->
-  <view class="intro-section">
-    <text class="section-title">教练介绍</text>
-    <text class="intro-text">{{coachData.introduction}}</text>
-  </view>
+    <!-- 教练介绍 -->
+    <view class="intro-section">
+      <text class="section-title">教练介绍</text>
+      <text class="intro-text">{{coachData.coach.intro}}</text>
+    </view>
 
-  <!-- 可约时间 -->
-  <view class="time-section">
-    <text class="section-title">可约时间</text>
-      <!-- 时间选择器组件 -->
-      <timeSelector
-        id="timeSelector"
-        coachId="{{coachId}}"
-        mode="view"
-        showBookingDetails="{{false}}"
-        bind:dateSelected="onDateSelected"
-        bind:timeSlotsLoaded="onTimeSlotsLoaded"
-        bind:error="onError"
-      />
-  </view>
+    <!-- 课时信息 -->
+    <view class="intro-section">
+      <text class="section-title">课时信息</text>
+      <view class="lessons-item" wx:for="{{coachData.category_lessons}}" wx:key="index">
+        <text class="categorie-name">{{item.category.name}}</text>
+        <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+      </view>
+    </view>
 
-  <!-- 约课按钮 -->
-  <view class="book-button-container">
-    <button class="book-button" bindtap="onBookCoach">立即约课</button>
+    <!-- 可约时间 -->
+    <view class="time-section">
+      <text class="section-title">可约时间</text>
+        <!-- 时间选择器组件 -->
+        <timeSelector
+          id="timeSelector"
+          coachId="{{coachId}}"
+          mode="view"
+          showBookingDetails="{{false}}"
+          bind:dateSelected="onDateSelected"
+          bind:timeSlotsLoaded="onTimeSlotsLoaded"
+          bind:error="onError"
+        />
+    </view>
+
+    <!-- 约课按钮 -->
+    <view class="book-button-container">
+      <button class="book-button" bindtap="onBookCoach">立即约课</button>
+    </view>
   </view>
 </layout> 

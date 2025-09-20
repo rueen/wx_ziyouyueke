@@ -33,6 +33,30 @@
       </view>
     </view>
 
+    <!-- 选择课程分类区域 -->
+    <view class="section" wx:if="{{selectedOption}}">
+      <view class="section-header">
+        <text class="section-title">选择课程分类</text>
+      </view>
+      
+      <!-- 已选择的课程分类 -->
+      <view class="selected-address" wx:if="{{selectedCategorie}}" bindtap="onShowCategorieSelection">
+        <view class="address-info">
+          <text class="categorie-name">
+            <text>{{selectedCategorie.category.name}}</text>
+            <text class="remaining-lessons">{{ selectedCategorie.remaining_lessons }}节</text>
+          </text>
+        </view>
+        <text class="iconfont icon-arrow-r change-icon"></text>
+      </view>
+      
+      <!-- 课程分类按钮 -->
+      <view class="select-address-btn" wx:else bindtap="onShowCategorieSelection">
+        <text class="btn-text">选择课程分类</text>
+        <text class="iconfont icon-arrow-r"></text>
+      </view>
+    </view>
+
     <!-- 时间选择区域 -->
     <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
@@ -137,6 +161,40 @@
     </view>
   </view>
 </view>
+
+<!-- 课程分类弹窗 -->
+<view class="modal-mask" wx:if="{{showCategorieSelection}}" bindtap="onHideCategorieSelection">
+  <view class="modal-container">
+    <view class="modal-header">
+      <text class="modal-title">选择课程分类</text>
+      <text class="modal-close" bindtap="onHideCategorieSelection">×</text>
+    </view>
+    <view class="modal-content">
+      <view class="address-list">
+        <view class="address-item" 
+          wx:for="{{categoriesList}}" 
+          wx:key="id" 
+          bindtap="onSelectCategorie" 
+          data-item="{{item}}">
+          <view class="address-info">
+            <text class="categorie-name">
+              <text>{{item.category.name}}</text>
+              <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+            </text>
+            <text class="address-detail">{{item.category.desc}}</text>
+          </view>
+          <text class="iconfont icon-selected select-icon {{selectedCategorie && selectedCategorie.category.id === item.category.id ? 'selected' : ''}}"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <emptyState 
+          wx:if="{{categoriesList.length === 0}}"
+          customClass="compact">
+        </emptyState>
+      </view>
+    </view>
+  </view>
+</view> 
 
 <!-- 地址选择弹窗 -->
 <view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">

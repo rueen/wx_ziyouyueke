@@ -43,6 +43,10 @@
         <!-- 课程详情 -->
         <view class="course-details">
           <view class="detail-item">
+            <text class="detail-label">类型：</text>
+            <text class="detail-value categoryName">{{item.categoryName}}</text>
+          </view>
+          <view class="detail-item">
             <text class="detail-label">时间：</text>
             <text class="detail-value">{{item.time}}</text>
           </view>
