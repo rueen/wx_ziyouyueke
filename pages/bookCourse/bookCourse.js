@@ -320,23 +320,21 @@ Page({
       updateData.selectedAddress = null;
     }
     
-    this.setData(updateData);
-    
-    // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
-    if (bookingType === 'student-book-coach') {
-      await this.loadAddresses(option.coach_id);
-    }
-    
     // 获取课程类型列表
     if(option.originalData){
       const originalData = option.originalData || {};
       const category_lessons = originalData.category_lessons || [];
       const _categoryLessons = category_lessons.filter(item => item.remaining_lessons > 0);
 
-      this.setData({
-        categoriesList: _categoryLessons,
-        selectedCategorie: _categoryLessons.length ? _categoryLessons[0] : null
-      })
+      updateData.categoriesList = _categoryLessons;
+      updateData.selectedCategorie = _categoryLessons.length ? _categoryLessons[0] : null;
+    }
+    
+    this.setData(updateData);
+    
+    // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
+    if (bookingType === 'student-book-coach') {
+      await this.loadAddresses(option.coach_id);
     }
 
     this.checkCanSubmit();
@@ -487,7 +485,7 @@ Page({
    */
   checkCanSubmit() {
     const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress, selectedCategorie } = this.data;
-    const canSubmit = !!(selectedOption && selectedCategorie.remaining_lessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
+    const canSubmit = !!(selectedOption && selectedCategorie && selectedCategorie.remaining_lessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
     this.setData({
       canSubmit: canSubmit
     });
