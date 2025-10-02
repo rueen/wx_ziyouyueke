@@ -121,11 +121,6 @@ page {
   background-color: #f8f9fa;
 }
 
-.select-icon {
-  color: #007aff;
-  font-size: 32rpx;
-}
-
 /* 课程分类 */
 .categorie-name{
   font-size: 30rpx;
@@ -343,11 +338,11 @@ page {
   flex: 1;
 }
 
-.address-item .select-icon {
+.select-icon {
   color: #ddd;
   font-size: 32rpx;
 }
 
-.address-item .select-icon.selected {
+.select-icon.selected {
   color: #007aff;
 } 
