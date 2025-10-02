@@ -146,7 +146,7 @@
             <text class="option-name">{{item.name}}</text>
             <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
           </view>
-          <text class="iconfont icon-check select-icon {{selectedOption && selectedOption.id === item.id ? 'selected' : ''}}"></text>
+          <text class="iconfont icon-selected select-icon {{selectedOption && selectedOption.id === item.id ? 'selected' : ''}}"></text>
         </view>
         
         <!-- 空状态 -->
@@ -215,7 +215,7 @@
             </text>
             <text class="address-detail">{{item.address}}</text>
           </view>
-          <text class="iconfont icon-check select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
+          <text class="iconfont icon-selected select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
         </view>
         
         <!-- 空状态 -->
