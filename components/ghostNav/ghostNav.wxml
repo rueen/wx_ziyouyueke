@@ -1,0 +1,14 @@
+<!--components/ghostNav/ghostNav.wxml-->
+<view class="container" style="height: {{navBarHeight}}px;">
+  <view class="content" style="height: {{contentHeight}}px;">
+    <!-- 返回按钮 -->
+    <view class="back-btn" style="width: {{contentHeight}}px;height: {{contentHeight}}px;" wx:if="{{canGoBack}}" bindtap="onBack">
+      <text class="iconfont icon-arrow-l"></text>
+    </view>
+    
+    <!-- Logo -->
+    <view class="logo" style="width: {{contentHeight*0.8}}px;height: {{contentHeight*0.8}}px;" wx:if="{{!canGoBack}}" bindtap="onLogoTap">
+      <text class="iconfont icon-logo"></text>
+    </view>
+  </view>
+</view>

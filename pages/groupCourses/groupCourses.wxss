@@ -1,0 +1,219 @@
+/* pages/groupCourses/groupCourses.wxss */
+@import '/style/iconfont.wxss';
+
+page {
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 筛选标签 */
+.tabs {
+  display: flex;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  font-size: 32rpx;
+  color: #000;
+  position: relative;
+  transition: all 0.3s ease;
+  height: 100rpx;
+  line-height: 100rpx;
+}
+
+.tab-item.active {
+  color: #007aff;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30rpx;
+  height: 6rpx;
+  background-color: #007aff;
+  border-radius: 2rpx;
+}
+
+/* 课程列表容器 */
+.courses-container {
+  padding: 24rpx 16rpx 200rpx 16rpx;
+}
+
+/* 课程卡片 */
+.course-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.course-card-wrap{
+  padding: 24rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.course-card:active {
+  transform: scale(0.98);
+}
+
+/* 状态标签 */
+.status-tag {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  z-index: 10;
+}
+
+.status-tag.status_0 {
+  background-color: #fa541c;
+  color: #fff;
+}
+.status-tag.status_1 {
+  background-color: #fae64f;
+  color: #000;
+}
+.status-tag.status_2 {
+  background-color: #86868b;
+  color: white;
+}
+
+/* 课程图片 */
+.course-image {
+  width: 260rpx;
+  height: 220rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.course-image image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 课程信息 */
+.course-info {
+  flex: 1;
+  height: 220rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+.meta-item .icon {
+  margin-right: 10rpx;
+  font-size: 24rpx;
+}
+
+.meta-item .text {
+  flex: 1;
+}
+
+/* 价格 */
+.price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ea4f23;
+}
+
+.course-bottom{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30rpx 30rpx 30rpx;
+}
+/* 参与者信息 */
+.participants {
+  display: flex;
+  align-items: center;
+}
+
+.participant-count {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  align-items: center;
+}
+.delete-btn{
+  background-color: #f2f2f2;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.delete-btn .iconfont{
+  font-size: 30rpx;
+  color: #333;
+}
+.delete-btn:active {
+  transform: scale(0.98);
+  opacity: .8;
+}
+
+/* 新增团课按钮 */
+.add-course-btn-container{
+  position: fixed;
+  bottom: 100rpx;
+  left: 0;
+  right: 0;
+}
+.add-course-btn {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+.add-course-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.btn-text {
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}

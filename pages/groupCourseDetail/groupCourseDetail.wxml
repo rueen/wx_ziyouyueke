@@ -1,0 +1,186 @@
+<!--pages/groupCourseDetail/groupCourseDetail.wxml-->
+<wxs module="_filters">
+module.exports = {
+  getCoursePrice: function(course){
+    switch (course.price_type) {
+      case 1: // 扣课时
+        return course.lesson_cost + '课时'
+      case 2: // 金额展示
+        return '¥' + course.price_amount
+      case 3: // 免费
+        return '免费'
+      default:
+      return '--'
+    }
+  }
+}
+</wxs>
+<ghostNav />
+<!-- 课程封面图片 -->
+<view class="cover-section">
+  <swiper
+    class="swiper"
+    wx:if="{{courseDetail.cover_images && courseDetail.cover_images.length}}"
+    indicator-dots="true"
+  >
+    <block wx:for="{{courseDetail.cover_images}}" wx:key="*this">
+      <swiper-item>
+        <image
+          class="cover-image" 
+          src="{{item}}"
+          mode="aspectFill"
+        ></image>
+      </swiper-item>
+    </block>
+  </swiper>
+  <view wx:else class="cover-placeholder">
+    <text class="placeholder-text">暂无封面</text>
+  </view>
+</view>
+<view class="container">
+  <!-- 课程状态标签 -->
+  <view class="price-info">
+    <view class="status-tag status_{{courseDetail.status}}">
+      <block wx:if="{{courseDetail.status === 0}}">
+        <text wx:if="{{courseDetail.is_published === 0}}">未发布</text>
+      </block>
+      <text wx:if="{{courseDetail.status === 1}}">报名中</text>
+      <text wx:if="{{courseDetail.status === 2}}">已结束</text>
+    </view>
+    <view class="price">
+      <text>{{_filters.getCoursePrice(courseDetail)}}</text>
+    </view>
+  </view>
+  
+  <view class="course-title">{{courseDetail.title}}</view>
+  <!-- 时间信息 -->
+  <view class="time-info">
+    <view class="time-item">
+      <text>
+        <text class="iconfont icon-shijianmoban time-icon"></text>
+        <text class="time-text">{{courseDetail.showTime}}</text>
+      </text>
+      <text class="time-tag">{{courseDetail.duration}}分钟</text>
+    </view>
+  </view>
+
+  <!-- 地址信息 -->
+  <view wx:if="{{courseDetail.address}}" class="address-info" bindtap="onAddressTap">
+    <text class="iconfont icon-locationfill address-icon"></text>
+    <view class="address-details">
+      <text class="address-name">{{courseDetail.address.name}}</text>
+      <text class="address-desc">{{courseDetail.address.address}}</text>
+    </view>
+    <text class="iconfont icon-arrow-r"></text>
+  </view>
+
+  <!-- 报名信息 -->
+  <view class="registration-info">
+    <view class="section-title">
+      <text>已报名</text>
+      <text>{{courseDetail.current_participants}}/{{courseDetail.max_participants}} 人</text>
+    </view>
+    <view class="registration-details">
+      <view class="registration-item">
+        <text class="registration-label">报名范围：</text>
+        <text class="registration-value">{{courseDetail.enrollment_scope === 1 ? '仅学员' : '所有人'}}</text>
+      </view>
+      <view class="registration-item">
+        <text class="registration-label">成团人数：</text>
+        <text class="registration-value">{{courseDetail.min_participants}} 人</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 教练信息 -->
+  <view class="coach-info">
+    <image 
+      class="coach-avatar" 
+      src="{{courseDetail.coach.avatar_url || '/images/defaultAvatar.png'}}"
+    ></image>
+    <view class="coach-details">
+      <text class="coach-name">{{courseDetail.coach.nickname}}</text>
+      <text class="coach-desc">教练</text>
+    </view>
+    <text class="iconfont icon-arrow-r"></text>
+  </view>
+
+  <!-- 课程详情 -->
+  <view wx:if="{{courseDetail.content}}" class="content-section">
+    <view class="section-title">课程详情</view>
+    <view class="course-content">
+      <text>{{courseDetail.content}}</text>
+    </view>
+    <view class="images-section">
+      <image 
+        wx:for="{{courseDetail.images}}" 
+        wx:key="*this"
+        class="detail-image"
+        src="{{item}}"
+        mode="widthFix"
+        bindtap="previewImage"
+        data-current="{{item}}"
+        data-urls="{{courseDetail.images}}"
+      ></image>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions">
+    <view class="action-buttons">
+      <!-- 课程所有者操作按钮 -->
+      <view wx:if="{{isOwner}}" class="owner-actions">
+        <!-- 未发布课程：编辑、发布 -->
+        <view wx:if="{{!courseDetail.is_published}}" class="button-group">
+          <button class="action-btn editable" bindtap="onEditCourse">
+            编辑课程
+          </button>
+          <button class="action-btn publish" bindtap="onPublishCourse">
+            发布课程
+          </button>
+        </view>
+        
+        <!-- 已发布课程：编辑 -->
+        <view wx:elif="{{courseDetail.status === 1}}" class="button-group">
+          <button class="action-btn editable" bindtap="onEditCourse">
+            编辑课程
+          </button>
+        </view>
+      </view>
+      
+      <!-- 非课程所有者：报名相关按钮 -->
+      <view wx:else class="student-actions">
+        <!-- 报名/取消报名按钮 -->
+        <button 
+          wx:if="{{!isRegistered && courseDetail.registration_status === 1 && courseDetail.current_participants < courseDetail.max_participants}}"
+          class="action-btn primary"
+          bindtap="onRegisterTap"
+        >
+          立即报名
+        </button>
+        
+        <button 
+          wx:elif="{{isRegistered}}"
+          class="action-btn secondary"
+          bindtap="onUnregisterTap"
+        >
+          取消报名
+        </button>
+        
+        <button 
+          wx:else
+          class="action-btn disabled"
+          disabled
+        >
+          {{courseDetail.current_participants >= courseDetail.max_participants ? '已满员' : '报名已结束'}}
+        </button>
+
+        <!-- 分享按钮 -->
+        <button class="action-btn share" bindtap="onShareTap">
+          <text class="share-icon">📤</text>
+          分享
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

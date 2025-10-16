@@ -9,11 +9,18 @@
     "miniprogram": {
       "list": [
         {
+          "name": "团课列表",
+          "pathName": "pages/groupCourses/groupCourses",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "绑定教练",
           "pathName": "/pages/bindCoach/bindCoach",
           "query": "coach_id=28",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "我的",

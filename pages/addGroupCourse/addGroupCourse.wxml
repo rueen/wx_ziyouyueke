@@ -1,0 +1,346 @@
+<!--pages/addGroupCourse/addGroupCourse.wxml-->
+<wxs module="_filters">
+module.exports = {
+  show_price_type: function(priceTypes, price_type){
+    var label;
+    for (var i = 0; i < priceTypes.length; i++) {
+      if (priceTypes[i].value === price_type) {
+        label = priceTypes[i].label;
+        break;
+      }
+    }
+    return label;
+  },
+  show_enrollment_scope: function(enrollmentScopes, enrollment_scope){
+    var label;
+    for (var i = 0; i < enrollmentScopes.length; i++) {
+      if (enrollmentScopes[i].value === enrollment_scope) {
+        label = enrollmentScopes[i].label;
+        break;
+      }
+    }
+    return label;
+  }
+}
+</wxs>
+<navBar title="{{mode === 'add' ? '新增团课' : '编辑团课'}}" />
+<layout>
+  <view class="form-container">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
+      <!-- 课程标题 -->
+      <view class="form-item">
+        <view class="form-label">课程标题 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          placeholder="请输入课程标题"
+          value="{{formData.title}}"
+          data-field="title"
+          bindinput="onInputChange"
+        />
+      </view>
+      
+      <!-- 课程介绍 -->
+      <view class="form-item">
+        <view class="form-label">课程介绍</view>
+        <textarea 
+          class="form-textarea" 
+          placeholder="请输入课程介绍"
+          value="{{formData.content}}"
+          data-field="content"
+          bindinput="onInputChange"
+        ></textarea>
+      </view>
+    </view>
+
+    <!-- 时间安排 -->
+    <view class="form-section">
+      <view class="section-title">时间安排</view>
+      
+      <!-- 时间选择器组件 -->
+      <view class="form-item">
+        <view class="form-label">选择上课时间 <text class="required">*</text></view>
+        <view class="time-selector-container">
+          <timeSelector 
+            coachId="{{currentUserId}}"
+            mode="select"
+            showBookingDetails="{{false}}"
+            selectedTimeSlot="{{selectedTimeSlot}}"
+            bind:timeSlotTap="onTimeSlotTap"
+            bind:error="onTimeSelectorError">
+          </timeSelector>
+        </view>
+      </view>
+      
+      <!-- 课程时长 -->
+      <view class="form-item">
+        <view class="form-label">课程时长（分钟）</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="自动计算"
+          value="{{formData.duration}}"
+          data-field="duration"
+          bindinput="onInputChange"
+        />
+      </view>
+    </view>
+
+    <!-- 地点设置 -->
+    <view class="form-section">
+      <view class="section-title">地点设置</view>
+      
+      <!-- 已选择的地址 -->
+      <view class="selected-address" wx:if="{{selectedAddress}}" bindtap="onShowAddressSelection">
+        <view class="address-info">
+          <text class="address-name">
+            <text>{{selectedAddress.name}}</text>
+            <text class="default-tag" wx:if="{{selectedAddress.is_default}}">默认</text>
+          </text>
+          <text class="address-detail">{{selectedAddress.address}}</text>
+        </view>
+        <text class="iconfont icon-arrow-r change-icon"></text>
+      </view>
+      
+      <!-- 选择地址按钮 -->
+      <view class="select-address-btn" wx:else bindtap="onShowAddressSelection">
+        <text class="btn-text">选择上课地点</text>
+        <text class="iconfont icon-arrow-r"></text>
+      </view>
+    </view>
+
+    <!-- 人数设置 -->
+    <view class="form-section">
+      <view class="section-title">人数设置</view>
+      
+      <!-- 最大参与人数 -->
+      <view class="form-item">
+        <view class="form-label">最大参与人数</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入最大参与人数"
+          value="{{formData.max_participants}}"
+          data-field="max_participants"
+          bindinput="onInputChange"
+        />
+      </view>
+      
+      <!-- 最小开课人数 -->
+      <view class="form-item">
+        <view class="form-label">最小开课人数</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入最小开课人数"
+          value="{{formData.min_participants}}"
+          data-field="min_participants"
+          bindinput="onInputChange"
+        />
+      </view>
+    </view>
+
+    <!-- 收费设置 -->
+    <view class="form-section">
+      <view class="section-title">收费设置</view>
+      
+      <!-- 收费方式 -->
+      <view class="form-item">
+        <view class="form-label">收费方式</view>
+        <picker 
+          mode="selector" 
+          range="{{priceTypes}}" 
+          range-key="label"
+          value="{{formData.price_type - 1}}"
+          bindchange="priceTypeOnPickerChange"
+        >
+          <view class="picker-text">
+            <text>{{_filters.show_price_type(priceTypes, formData.price_type)}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
+      </view>
+      
+      <!-- 课时数 -->
+      <view wx:if="{{formData.price_type === 1}}" class="form-item">
+        <view class="form-label">课时数</view>
+        <input 
+          class="form-input" 
+          type="number"
+          placeholder="请输入课时数"
+          value="{{formData.lesson_cost}}"
+          data-field="lesson_cost"
+          bindinput="onInputChange"
+        />
+      </view>
+      
+      <!-- 费用金额 -->
+      <view wx:if="{{formData.price_type === 2}}" class="form-item">
+        <view class="form-label">费用金额（元）</view>
+        <input 
+          class="form-input" 
+          type="digit"
+          placeholder="请输入费用金额"
+          value="{{formData.price_amount}}"
+          data-field="price_amount"
+          bindinput="onInputChange"
+        />
+      </view>
+    </view>
+
+    <!-- 报名设置 -->
+    <view class="form-section">
+      <view class="section-title">报名设置</view>
+      
+      <!-- 报名范围 -->
+      <view class="form-item">
+        <view class="form-label">报名范围</view>
+        <picker 
+          mode="selector" 
+          range="{{enrollmentScopes}}" 
+          range-key="label"
+          value="{{formData.enrollment_scope - 1}}"
+          bindchange="enrollmentScopeOnPickerChange"
+        >
+          <view class="picker-text">
+            <text>{{_filters.show_enrollment_scope(enrollmentScopes, formData.enrollment_scope)}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 图片设置 -->
+    <view class="form-section">
+      <view class="section-title">图片设置</view>
+      
+      <!-- 封面图片 -->
+      <view class="form-item">
+        <view class="form-label">封面图片（最多3张）</view>
+        <view class="image-upload">
+          <view class="image-list">
+            <view 
+              wx:for="{{cover_images}}" 
+              wx:key="*this"
+              class="image-item"
+              bindtap="onPreviewImage"
+              data-type="cover"
+              data-index="{{index}}"
+              data-urls="{{cover_images}}"
+            >
+              <image src="{{item}}" mode="aspectFill"></image>
+              <view 
+                class="delete-btn"
+                bindtap="onDeleteImage"
+                data-type="cover"
+                data-index="{{index}}"
+                catchtap="true"
+              >×</view>
+            </view>
+            <view 
+              wx:if="{{cover_images.length < 3}}"
+              class="add-image-btn"
+              bindtap="onChooseCoverImage"
+            >
+              <text class="add-icon">+</text>
+              <text class="add-text">添加封面</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 详情图片 -->
+      <view class="form-item">
+        <view class="form-label">详情图片（最多9张）</view>
+        <view class="image-upload">
+          <view class="image-list">
+            <view 
+              wx:for="{{images}}" 
+              wx:key="*this"
+              class="image-item"
+              bindtap="onPreviewImage"
+              data-type="detail"
+              data-index="{{index}}"
+              data-urls="{{images}}"
+            >
+              <image src="{{item}}" mode="aspectFill"></image>
+              <view 
+                class="delete-btn"
+                bindtap="onDeleteImage"
+                data-type="detail"
+                data-index="{{index}}"
+                catchtap="true"
+              >×</view>
+            </view>
+            <view 
+              wx:if="{{images.length < 9}}"
+              class="add-image-btn"
+              bindtap="onChooseDetailImage"
+            >
+              <text class="add-icon">+</text>
+              <text class="add-text">添加图片</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-actions">
+    <view class="action-buttons">
+      <button 
+        class="action-btn secondary"
+        bindtap="onSaveOnly"
+        disabled="{{saving}}"
+      >
+        <text wx:if="{{!saving}}">保存</text>
+        <text wx:else>保存中...</text>
+      </button>
+      
+      <button 
+        class="action-btn primary"
+        bindtap="onSaveAndPreview"
+        disabled="{{saving}}"
+      >
+        <text wx:if="{{!saving}}">保存并预览</text>
+        <text wx:else>保存中...</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 地址选择弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">
+    <view class="modal-container" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">选择上课地点</text>
+        <text class="modal-close" bindtap="onHideAddressSelection">×</text>
+      </view>
+      <view class="modal-content">
+        <view class="address-list">
+          <view class="address-item" 
+                wx:for="{{addresses}}" 
+                wx:key="id" 
+                bindtap="onSelectAddress" 
+                data-address="{{item}}">
+            <view class="address-info">
+              <text class="address-name">
+                <text>{{item.name}}</text>
+                <text class="default-tag" wx:if="{{item.is_default}}">默认</text>
+              </text>
+              <text class="address-detail">{{item.address}}</text>
+            </view>
+            <text class="iconfont icon-selected select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
+          </view>
+          
+          <!-- 空状态 -->
+          <view wx:if="{{addresses.length === 0}}" class="empty-address">
+            <text class="empty-text">暂无地址，请先添加地址</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</layout>

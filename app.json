@@ -18,7 +18,10 @@
     "pages/bookCourse/bookCourse",
     "pages/agreement/agreement",
     "pages/categoriesList/categoriesList",
-    "pages/categoriesDetail/categoriesDetail"
+    "pages/categoriesDetail/categoriesDetail",
+    "pages/groupCourses/groupCourses",
+    "pages/addGroupCourse/addGroupCourse",
+    "pages/groupCourseDetail/groupCourseDetail"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

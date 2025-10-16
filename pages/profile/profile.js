@@ -283,6 +283,13 @@ Page({
     })
   },
 
+  // 打开团课
+  onGroupCourses() {
+    wx.navigateTo({
+      url: '/pages/groupCourses/groupCourses'
+    })
+  },
+
   /**
    * 时间模板（教练专用）
    */

@@ -5,8 +5,8 @@
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -695,6 +695,117 @@ module.exports = {
       return request({
         url: `/api/h5/categories/${id}`,
         method: 'GET',
+        data: params
+      });
+    }
+  },
+
+  // 团课管理模块
+  groupCourse: {
+    // 获取团课列表
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/group-courses',
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    // 创建团课
+    create: function(params = {}) {
+      return request({
+        url: '/api/h5/group-courses',
+        method: 'POST',
+        data: params
+      });
+    },
+    
+    // 获取团课详情
+    getDetail: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}`,
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    // 更新团课
+    update: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
+    
+    // 报名团课
+    register: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/register`,
+        method: 'POST',
+        data: params
+      });
+    },
+    
+    // 取消报名
+    unregister: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/register`,
+        method: 'DELETE',
+        data: params
+      });
+    },
+    
+    // 获取我的团课报名列表（学员视角）
+    getMyRegistrations: function(params = {}) {
+      return request({
+        url: '/api/h5/group-courses/my-registrations',
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    // 获取团课报名列表（教练视角）
+    getRegistrations: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/registrations`,
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    // 签到团课
+    checkIn: function(courseId, registrationId, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${courseId}/registrations/${registrationId}/check-in`,
+        method: 'POST',
+        data: params
+      });
+    },
+
+    // 取消团课
+    cancel: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/cancel`,
+        method: 'PUT',
+        data: params
+      });
+    },
+
+    // 删除团课
+    del: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}`,
+        method: 'DELETE',
+        data: params
+      });
+    },
+
+    // 发布团课
+    publish: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/publish`,
+        method: 'PUT',
         data: params
       });
     }

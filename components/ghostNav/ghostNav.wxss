@@ -1,0 +1,58 @@
+/* components/ghostNav/ghostNav.wxss */
+@import '/style/iconfont.wxss';
+
+.container{
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.content{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo样式 */
+.logo{
+  background-color: #000;
+  border-radius: 50%;
+  position: absolute;
+  left: 40rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.logo:active {
+  transform: translateY(-50%) scale(0.95);
+  opacity: 0.8;
+}
+
+.logo .iconfont{
+  color: #fff;
+  font-size: 20px;
+}
+
+/* 返回按钮样式 */
+.back-btn {
+  position: absolute;
+  bottom: 0;
+  left: 20rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-btn .iconfont {
+  color: #171819;
+  font-size: 40rpx;
+}
