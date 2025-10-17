@@ -150,7 +150,7 @@ Component({
         const params = {
           course_date_start: date,
           course_date_end: date,
-          status: 1, // 只获取报名中的团课
+          status: [0,1],
           limit: 100
         };
         
