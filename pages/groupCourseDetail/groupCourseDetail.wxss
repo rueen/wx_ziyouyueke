@@ -13,6 +13,7 @@ page {
   z-index: 2;
   background-color: #f5f5f5;
   padding: 16rpx 16rpx calc(120rpx + env(safe-area-inset-bottom)) 16rpx;
+  border-radius: 32rpx 32rpx 0 0;
 }
 
 /* 封面区域 */
@@ -291,6 +292,7 @@ page {
 
 /* 学员操作按钮 */
 .student-actions {
+  width: 100%;
   display: flex;
   gap: 16rpx;
 }
@@ -300,7 +302,7 @@ page {
   height: 88rpx;
   border-radius: 44rpx;
   font-size: 32rpx;
-  font-weight: 600;
+  font-weight: normal;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,7 +312,10 @@ page {
 .action-btn:active {
   transform: scale(0.98);
 }
-
+.action-btn.registration{
+  background-color: #fae64f;
+  color: #000;
+}
 .action-btn.editable {
   background-color: #007aff;
   color: white;
@@ -327,12 +332,31 @@ page {
 }
 
 .action-btn.share {
-  width: 120rpx;
-  background-color: #f2f2f7;
-  color: #007aff;
+  display: flex;
+  flex-direction: column;
+  background: none;
+  font-weight: normal;
+  font-size: 26rpx;
+  width: 80rpx!important;
+  padding: 0;
+  flex: none;
+  position: relative;
+}
+.action-btn.share::after{
+  content: '';
+  display: block;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 15rpx;
+  background: #fae64f;
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  border: none;
 }
 
 .share-icon {
-  margin-right: 8rpx;
-  font-size: 28rpx;
+  font-size: 30rpx;
 }

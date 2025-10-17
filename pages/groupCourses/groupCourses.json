@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "navBar": "/components/navBar/navbar",
+    "ghostNav": "/components/ghostNav/ghostNav",
     "layout": "/components/layout/layout",
     "emptyState": "/components/emptyState/emptyState"
   }

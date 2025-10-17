@@ -11,7 +11,7 @@
         {
           "name": "团课列表",
           "pathName": "pages/groupCourses/groupCourses",
-          "query": "",
+          "query": "coachId=27",
           "scene": null,
           "launchMode": "default"
         },

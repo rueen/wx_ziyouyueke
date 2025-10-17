@@ -100,11 +100,12 @@ Page({
       // 检查登录类型，游客模式不调用API
       const loginType = wx.getStorageSync('loginType');
       const storedUserInfo = wx.getStorageSync('userInfo');
-      
+
       // 先从缓存获取
       if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
         this.setData({
           userInfo: {
+            id: storedUserInfo.id,
             nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
             avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
           }
@@ -122,6 +123,7 @@ Page({
         const user = result.data;
         this.setData({
           userInfo: {
+            id: user.id,
             nickname: user.nickname || '请设置昵称',
             avatar: user.avatar_url || '/images/defaultAvatar.png',
             intro: user.intro || ''
@@ -138,6 +140,7 @@ Page({
       if (storedUserInfo && (storedUserInfo.nickName || storedUserInfo.nickname)) {
         this.setData({
           userInfo: {
+            id: storedUserInfo.id,
             nickname: storedUserInfo.nickName || storedUserInfo.nickname || '请设置昵称',
             avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
           }
@@ -285,8 +288,9 @@ Page({
 
   // 打开团课
   onGroupCourses() {
+    const { userInfo } = this.data;
     wx.navigateTo({
-      url: '/pages/groupCourses/groupCourses'
+      url: `/pages/groupCourses/groupCourses?coachId=${userInfo.id}`
     })
   },
 

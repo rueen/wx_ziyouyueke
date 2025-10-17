@@ -1,105 +1,123 @@
 <!--pages/groupCourses/groupCourses.wxml-->
-<navBar title="我的团课" />
+<ghostNav />
 <layout>
-  <!-- 筛选标签 -->
-  <view class="tabs">
-    <view 
-      wx:for="{{tabs}}" 
-      wx:key="key"
-      class="tab-item {{activeTab === item.status ? 'active' : ''}}"
-      data-status="{{item.status}}"
-      bindtap="onTabChange"
-    >
-      {{item.name}}
-    </view>
-  </view>
-
-  <!-- 课程列表 -->
-  <view class="courses-container">
-    <view wx:if="{{courses.length > 0}}">
-      <view 
-        wx:for="{{courses}}" 
-        wx:key="id"
-        class="course-card"
-        data-course="{{item}}"
-        bindtap="onCourseTap"
-      >
-        <view class="course-card-wrap">
-          <!-- 课程状态标签 -->
-          <view class="status-tag status_{{item.status}}">
-            <block wx:if="{{item.status === 0}}">
-              <text wx:if="{{item.is_published === 0}}">未发布</text>
-            </block>
-            <text wx:if="{{item.status === 1}}">报名中</text>
-            <text wx:if="{{item.status === 2}}">已结束</text>
-          </view>
-
-          <!-- 课程图片 -->
-          <view class="course-image">
-            <image src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
-          </view>
-
-          <!-- 课程信息 -->
-          <view class="course-info">
-            <view class="course-title">
-              <text>{{item.title}}</text>
-            </view>
-            <!-- 时间信息 -->
-            <view class="course-meta">
-              <view class="meta-item">
-                <text class="iconfont icon-shijianmoban icon"></text>
-                <text class="text">{{item.date}} {{item.weekday}} {{item.time}}</text>
-              </view>
-              <view class="meta-item">
-                <text class="iconfont icon-location icon"></text>
-                <text class="text">{{item.address.name}}</text>
-              </view>
-            </view>
-            <view class="price">
-              <text>{{item.price}}</text>
-            </view>
-          </view>
+  <view class="user-section" bindtap="onBindCoach">
+    <view class="user-info">
+      <view class="user-avatar">
+        <image src="{{coachData.avatar_url}}" class="avatar-img"></image>
+      </view>
+      <view class="user-details">
+        <view class="username-row">
+          <text class="username">{{coachData.nickname}}</text>
         </view>
-        <view class="course-bottom">
-          <!-- 参与者信息 -->
-          <view class="participants">
-            <text class="participant-count">{{item.current_participants}}人已报名</text>
-          </view>
+        <text class="user-desc">{{coachData.intro}}</text>
+      </view>
+    </view>
+    <text class="iconfont icon-arrow-r arrow-icon"></text>
+  </view>
+  <view class="container">
+    <!-- 筛选标签 -->
+    <view class="tabs">
+      <view 
+        wx:for="{{tabs}}" 
+        wx:key="key"
+        class="tab-item {{activeTab === item.status ? 'active' : ''}}"
+        data-status="{{item.status}}"
+        bindtap="onTabChange"
+      >
+        {{item.name}}
+      </view>
+    </view>
 
-          <!-- 操作按钮 -->
-          <view class="actions">
-            <view
-              wx:if="{{item.status === 1}}"
-              class="delete-btn"
-              data-course="{{item}}"
-              catch:tap="onCancelCourse">
-              <text class="iconfont icon-quxiao"></text>
+    <!-- 课程列表 -->
+    <view class="courses-container">
+      <view wx:if="{{courses.length > 0}}">
+        <view 
+          wx:for="{{courses}}" 
+          wx:key="id"
+          class="course-card"
+          data-course="{{item}}"
+          bindtap="onCourseTap"
+        >
+          <view class="course-card-wrap">
+            <!-- 课程状态标签 -->
+            <view class="status-tag status_{{item.status}}">
+              <block wx:if="{{item.status === 0}}">
+                <text wx:if="{{item.is_published === 0}}">未发布</text>
+              </block>
+              <text wx:if="{{item.status === 1}}">报名中</text>
+              <text wx:if="{{item.status === 2}}">已结束</text>
             </view>
-            <view
-              wx:if="{{item.status === 0 || (item.status === 2 && item.current_participants === 0)}}"
-              class="delete-btn"
-              data-course="{{item}}"
-              catch:tap="onDeleteCourse">
-              <text class="iconfont icon-del"></text>
+
+            <!-- 课程图片 -->
+            <view class="course-image">
+              <image src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            </view>
+
+            <!-- 课程信息 -->
+            <view class="course-info">
+              <view class="course-title">
+                <text>{{item.title}}</text>
+              </view>
+              <!-- 时间信息 -->
+              <view class="course-meta">
+                <view class="meta-item">
+                  <text class="iconfont icon-shijianmoban icon"></text>
+                  <text class="text">{{item.date}} {{item.weekday}} {{item.time}}</text>
+                </view>
+                <view class="meta-item">
+                  <text class="iconfont icon-location icon"></text>
+                  <text class="text">{{item.address.name}}</text>
+                </view>
+              </view>
+              <view class="price">
+                <text>{{item.price}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="course-bottom">
+            <!-- 参与者信息 -->
+            <view class="participants">
+              <text class="participant-count">{{item.current_participants}}人已报名</text>
+            </view>
+
+            <!-- 课程所有者操作按钮 -->
+            <view wx:if="{{isOwner}}" class="action-buttons">
+              <button
+                wx:if="{{item.status === 1}}"
+                class="action-btn cancel"
+                data-course="{{item}}"
+                catch:tap="onCancelCourse"
+              >取消</button>
+              <button
+                wx:if="{{item.status === 0 || (item.status === 2 && item.current_participants === 0)}}"
+                class="action-btn cancel"
+                data-course="{{item}}"
+                catch:tap="onDeleteCourse"
+              >删除</button>
+            </view>
+            <!-- 非课程所有者操作按钮 -->
+            <view class="action-buttons" wx:else>
+              <button wx:if="{{item.status === 1}}" class="action-btn registration">立即报名</button>
             </view>
           </view>
         </view>
       </view>
+
+      <!-- 空状态 -->
+      <emptyState 
+        wx:if="{{courses.length === 0 && !isLoading}}">
+      </emptyState>
+
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{isLoading}}">
+        <text class="loading-text">加载中...</text>
+      </view>
     </view>
 
-    <!-- 空状态 -->
-    <emptyState 
-      wx:if="{{courses.length === 0 && !isLoading}}">
-    </emptyState>
-
-    <!-- 加载状态 -->
-    <view class="loading-state" wx:if="{{isLoading}}">
-      <text class="loading-text">加载中...</text>
+    <!-- 新增团课按钮 -->
+    <view class="add-course-btn-container" wx:if="{{isOwner}}">
+      <button class="add-course-btn" bindtap="onAddCourseTap">新增团课</button>
     </view>
-  </view>
-
-  <!-- 新增团课按钮 -->
-  <view class="add-course-btn-container">
-    <button class="add-course-btn" bindtap="onAddCourseTap">新增团课</button>
   </view>
 </layout>

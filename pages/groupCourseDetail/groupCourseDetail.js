@@ -8,9 +8,9 @@ Page({
    */
   data: {
     courseId: null,
+    coachId: null,
     courseDetail: null,
     isRegistered: false,
-    userRole: 'student', // student, coach
     loginType: 'guest',
     mode: 'view', // view-查看，preview-预览
     isOwner: false, // 是否为课程创建者
@@ -53,14 +53,10 @@ Page({
    * 加载用户信息
    */
   loadUserInfo() {
-    const app = getApp()
-    const userInfo = wx.getStorageSync('userInfo')
     const loginType = wx.getStorageSync('loginType') || 'guest'
-    const userRole = wx.getStorageSync('userRole') || 'student'
-    
+
     this.setData({
       loginType: loginType,
-      userRole: userRole
     })
   },
 
@@ -105,6 +101,7 @@ Page({
             isOwner: isOwner,
             canEdit: canEdit,
             canPublish: canPublish,
+            coachId: course.coach_id
           })
         }
       })
@@ -120,12 +117,20 @@ Page({
       })
   },
 
+  // 打开团课
+  onGroupCourses() {
+    const { coachId } = this.data;
+    wx.navigateTo({
+      url: `/pages/groupCourses/groupCourses?coachId=${coachId}`
+    })
+  },
+  
   /**
    * 报名团课
    */
   onRegisterTap() {
     const { courseDetail, loginType } = this.data
-    
+
     // 检查登录状态
     if (loginType === 'guest') {
       wx.showModal({

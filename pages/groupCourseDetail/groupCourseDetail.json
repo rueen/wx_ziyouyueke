@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "ghostNav": "/components/ghostNav/ghostNav",
-    "layout": "/components/layout/layout"
+    "ghostNav": "/components/ghostNav/ghostNav"
   }
 }

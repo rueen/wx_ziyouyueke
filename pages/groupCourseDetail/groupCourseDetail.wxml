@@ -93,7 +93,7 @@ module.exports = {
   </view>
 
   <!-- 教练信息 -->
-  <view class="coach-info">
+  <view class="coach-info" bindtap="onGroupCourses">
     <image 
       class="coach-avatar" 
       src="{{courseDetail.coach.avatar_url || '/images/defaultAvatar.png'}}"
@@ -150,10 +150,15 @@ module.exports = {
       
       <!-- 非课程所有者：报名相关按钮 -->
       <view wx:else class="student-actions">
+        <!-- 分享按钮 -->
+        <button class="action-btn share" bindtap="onShareTap">
+          <text class="iconfont icon-share-line share-icon"></text>
+          <text>分享</text>
+        </button>
         <!-- 报名/取消报名按钮 -->
         <button 
-          wx:if="{{!isRegistered && courseDetail.registration_status === 1 && courseDetail.current_participants < courseDetail.max_participants}}"
-          class="action-btn primary"
+          wx:if="{{!isRegistered && courseDetail.status === 1 && courseDetail.current_participants < courseDetail.max_participants}}"
+          class="action-btn registration"
           bindtap="onRegisterTap"
         >
           立即报名
@@ -173,12 +178,6 @@ module.exports = {
           disabled
         >
           {{courseDetail.current_participants >= courseDetail.max_participants ? '已满员' : '报名已结束'}}
-        </button>
-
-        <!-- 分享按钮 -->
-        <button class="action-btn share" bindtap="onShareTap">
-          <text class="share-icon">📤</text>
-          分享
         </button>
       </view>
     </view>
