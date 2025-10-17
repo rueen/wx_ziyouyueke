@@ -25,7 +25,7 @@ Page({
       category_id: 0, // 课程分类ID
       lesson_cost: 1,
       price_amount: 0,
-      enrollment_scope: 2, // 1-仅学员，2-所有人
+      enrollment_scope: 1, // 1-仅学员，2-所有人
       auto_confirm: 1,
       address_id: null
     },
@@ -36,7 +36,7 @@ Page({
     
     // 选项数据
     priceTypes: [
-      { value: 1, label: '扣课时' },
+      { value: 1, label: '扣课时（1课时）' },
       { value: 2, label: '线下收费' },
       { value: 3, label: '免费' }
     ],
