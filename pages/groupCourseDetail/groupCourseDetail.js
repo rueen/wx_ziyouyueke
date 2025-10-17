@@ -95,7 +95,7 @@ Page({
           const userInfo = wx.getStorageSync('userInfo')
           const isOwner = userInfo && userInfo.id === course.coach_id
           const canEdit = isOwner && this.canEditCourse(course)
-          const canPublish = isOwner && !course.is_published
+          const canPublish = isOwner && !course.status
           
           this.setData({
             courseDetail: course,

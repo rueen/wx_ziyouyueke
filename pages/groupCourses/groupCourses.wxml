@@ -42,9 +42,7 @@
           <view class="course-card-wrap">
             <!-- 课程状态标签 -->
             <view class="status-tag status_{{item.status}}">
-              <block wx:if="{{item.status === 0}}">
-                <text wx:if="{{item.is_published === 0}}">未发布</text>
-              </block>
+              <text wx:if="{{item.status === 0}}">未发布</text>
               <text wx:if="{{item.status === 1}}">报名中</text>
               <text wx:if="{{item.status === 2}}">已结束</text>
             </view>

@@ -169,9 +169,6 @@ Page({
         status: activeTab,
         coach_id: coachId
       }
-      if(activeTab === 0) {
-        params.is_published = 0
-      }
       // 调用API获取团课列表
       const res = await api.groupCourse.getList(params)
 
