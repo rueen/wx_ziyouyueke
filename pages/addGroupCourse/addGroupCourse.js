@@ -22,6 +22,7 @@ Page({
       max_participants: 10,
       min_participants: 1,
       price_type: 1, // 1-扣课时，2-金额展示，3-免费
+      category_id: 0, // 课程分类ID
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 2, // 1-仅学员，2-所有人
@@ -44,6 +45,9 @@ Page({
       { value: 1, label: '仅学员' },
       { value: 2, label: '所有人' }
     ],
+
+    // 课程分类
+    categoryList: [],
     
     // 地址列表
     addresses: [],
@@ -80,7 +84,8 @@ Page({
     
     // 加载地址列表
     this.loadAddresses()
-    
+    // 加载课程分类列表
+    this.loadCategoryList()
     // 获取当前用户ID
     this.getCurrentUserId()
   },
@@ -95,6 +100,20 @@ Page({
     this.setData({
       'formData.course_date': this.formatDate(tomorrow)
     })
+  },
+
+  async loadCategoryList() {
+    try {
+      const res = await api.categories.getList();
+      if(res.success) {
+        const list = res.data || [];
+        this.setData({
+          categoryList: list.map(item => ({...item, value: item.id}))
+        })
+      }
+    } catch (error) {
+
+    }
   },
 
   /**
@@ -239,6 +258,14 @@ Page({
 
     this.setData({
       ['formData.price_type']: priceTypes[value].value
+    })
+  },
+  categoryIdOnPickerChange(e) {
+    const { categoryList } = this.data;
+    const { value } = e.detail
+
+    this.setData({
+      ['formData.category_id']: categoryList[value].value
     })
   },
   enrollmentScopeOnPickerChange(e){
@@ -390,7 +417,7 @@ Page({
     })
     
     const uploadPromises = filePaths.map(filePath => {
-      return api.upload.image(filePath)
+      return api.upload.groupCourse(filePath)
     })
     
     Promise.all(uploadPromises)
@@ -475,14 +502,6 @@ Page({
     if (!this.data.selectedTimeSlot || !formData.course_date || !formData.start_time || !formData.end_time) {
       wx.showToast({
         title: '请选择上课时间',
-        icon: 'none'
-      })
-      return false
-    }
-    
-    if (formData.price_type === 1 && formData.lesson_cost <= 0) {
-      wx.showToast({
-        title: '请输入课时数',
         icon: 'none'
       })
       return false

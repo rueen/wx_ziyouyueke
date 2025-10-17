@@ -212,11 +212,22 @@ page {
 .participants {
   display: flex;
   align-items: center;
+  gap: 12rpx;
 }
-
+.participants .avatar-list{
+  display: flex;
+  align-items: center;
+}
+.participants .avatar-list .avatar{
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-left: -10rpx;
+  border: 1rpx solid #fff;
+}
 .participant-count {
-  font-size: 28rpx;
-  color: #86868b;
+  font-size: 26rpx;
+  color: #666;
 }
 
 /* 操作按钮 */

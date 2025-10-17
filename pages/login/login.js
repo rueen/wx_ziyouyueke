@@ -18,7 +18,10 @@ Page({
     inviteCode: '',
     coachId: '',
     isInvited: false,
-    fromBindCoach: false // 是否从绑定教练页面跳转过来
+    fromBindCoach: false, // 是否从绑定教练页面跳转过来
+    // 来源页面信息
+    redirectUrl: '', // 登录成功后要跳转的页面
+    redirectParams: {} // 跳转页面的参数
   },
 
   /**
@@ -30,6 +33,9 @@ Page({
     
     // 处理邀请码参数
     this.handleInviteParams(options);
+    
+    // 处理来源页面参数
+    this.handleRedirectParams(options);
   },
 
   /**
@@ -196,17 +202,7 @@ Page({
       
       // 延迟跳转
       setTimeout(() => {
-        if (this.data.fromBindCoach && this.data.coachId) {
-          // 从绑定教练页面来的，返回绑定教练页面
-          wx.redirectTo({
-            url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
-          });
-        } else {
-          // 正常登录，跳转到首页
-          wx.switchTab({
-            url: '/pages/index/index'
-          });
-        }
+        this.handleLoginRedirect();
       }, 2000);
       
     } catch (error) {
@@ -258,9 +254,7 @@ Page({
 
     // 延迟跳转
     setTimeout(() => {
-      wx.switchTab({
-        url: '/pages/index/index'
-      });
+      this.handleLoginRedirect();
     }, 2000);
   },
 
@@ -306,6 +300,71 @@ Page({
         title: '请登录后绑定教练',
         icon: 'none',
         duration: 2000
+      });
+    }
+  },
+
+  /**
+   * 处理来源页面参数
+   */
+  handleRedirectParams(options) {
+    const { redirectUrl, ...params } = options;
+    
+    if (redirectUrl) {
+      // 移除redirectUrl，剩下的都是页面参数
+      delete params.coach;
+      delete params.invite;
+      delete params.from;
+      delete params.coach_id;
+      
+      this.setData({
+        redirectUrl: decodeURIComponent(redirectUrl),
+        redirectParams: params
+      });
+      
+      console.log('检测到来源页面:', this.data.redirectUrl, this.data.redirectParams);
+    }
+  },
+
+  /**
+   * 处理登录成功后的跳转
+   */
+  handleLoginRedirect() {
+    if (this.data.fromBindCoach && this.data.coachId) {
+      // 从绑定教练页面来的，返回绑定教练页面
+      wx.redirectTo({
+        url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
+      });
+    } else if (this.data.redirectUrl) {
+      // 有来源页面，跳转回原页面
+      let url = this.data.redirectUrl;
+      
+      // 构建参数字符串
+      const paramKeys = Object.keys(this.data.redirectParams);
+      if (paramKeys.length > 0) {
+        const paramString = paramKeys
+          .map(key => `${key}=${encodeURIComponent(this.data.redirectParams[key])}`)
+          .join('&');
+        url += (url.includes('?') ? '&' : '?') + paramString;
+      }
+      
+      console.log('跳转回原页面:', url);
+      
+      // 判断是否为tabBar页面
+      const tabBarPages = ['/pages/index/index', '/pages/profile/profile'];
+      if (tabBarPages.includes(this.data.redirectUrl)) {
+        wx.switchTab({
+          url: this.data.redirectUrl
+        });
+      } else {
+        wx.redirectTo({
+          url: url
+        });
+      }
+    } else {
+      // 正常登录，跳转到首页
+      wx.switchTab({
+        url: '/pages/index/index'
       });
     }
   }

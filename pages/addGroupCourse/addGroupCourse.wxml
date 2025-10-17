@@ -20,6 +20,26 @@ module.exports = {
       }
     }
     return label;
+  },
+  getCategoryPickerValue: function(categoryList, category_id) {
+    var index = 0;
+    for (var i = 0; i < categoryList.length; i++) {
+      if (categoryList[i].value === category_id) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  },
+  show_category: function(categoryList, category_id) {
+    var name;
+    for (var i = 0; i < categoryList.length; i++) {
+      if (categoryList[i].value === category_id) {
+        name = categoryList[i].name;
+        break;
+      }
+    }
+    return name;
   }
 }
 </wxs>
@@ -163,17 +183,21 @@ module.exports = {
         </picker>
       </view>
       
-      <!-- 课时数 -->
+      <!-- 课程分类 -->
       <view wx:if="{{formData.price_type === 1}}" class="form-item">
-        <view class="form-label">课时数</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入课时数"
-          value="{{formData.lesson_cost}}"
-          data-field="lesson_cost"
-          bindinput="onInputChange"
-        />
+        <view class="form-label">课程分类</view>
+        <picker 
+          mode="selector" 
+          range="{{categoryList}}" 
+          range-key="name"
+          value="{{_filters.getCategoryPickerValue(categoryList, formData.category_id)}}"
+          bindchange="categoryIdOnPickerChange"
+        >
+          <view class="picker-text">
+            <text>{{_filters.show_category(categoryList, formData.category_id)}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
       </view>
       
       <!-- 费用金额 -->
@@ -233,11 +257,12 @@ module.exports = {
               <image src="{{item}}" mode="aspectFill"></image>
               <view 
                 class="delete-btn"
-                bindtap="onDeleteImage"
+                catchtap="onDeleteImage"
                 data-type="cover"
                 data-index="{{index}}"
-                catchtap="true"
-              >×</view>
+              >
+                <text class="iconfont icon-close"></text>
+              </view>
             </view>
             <view 
               wx:if="{{cover_images.length < 3}}"
@@ -268,11 +293,12 @@ module.exports = {
               <image src="{{item}}" mode="aspectFill"></image>
               <view 
                 class="delete-btn"
-                bindtap="onDeleteImage"
+                catch:tap="onDeleteImage"
                 data-type="detail"
                 data-index="{{index}}"
-                catchtap="true"
-              >×</view>
+              >
+                <text class="iconfont icon-close"></text>
+              </view>
             </view>
             <view 
               wx:if="{{images.length < 9}}"

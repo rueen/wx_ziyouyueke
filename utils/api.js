@@ -814,9 +814,10 @@ module.exports = {
   // 文件上传模块
   upload: {
     image: uploadImage,
+    groupCourse: (filePath) => uploadImage(filePath, 'groupCourse'),
     avatar: (filePath) => uploadImage(filePath, 'avatar'),
-    document: (filePath) => uploadImage(filePath, 'documents'),
-    temp: (filePath) => uploadImage(filePath, 'temp')
+    // document: (filePath) => uploadImage(filePath, 'documents'),
+    // temp: (filePath) => uploadImage(filePath, 'temp')
   },
   
   // 其他

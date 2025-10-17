@@ -5,6 +5,7 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
+const { navigateToLoginWithRedirect } = require('../../utils/util.js');
 
 Page({
 
@@ -343,19 +344,7 @@ Page({
     const loginType = wx.getStorageSync('loginType');
     if (loginType === 'guest') {
       // 游客模式，需要引导登录
-      wx.showModal({
-        title: '需要登录',
-        content: '此功能需要登录后才能使用，是否前往登录？',
-        confirmText: '去登录',
-        cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) {
-            wx.navigateTo({
-              url: '/pages/login/login'
-            });
-          }
-        }
-      });
+      navigateToLoginWithRedirect();
       return false;
     }
     return true;

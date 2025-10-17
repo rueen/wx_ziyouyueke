@@ -1,5 +1,6 @@
 // pages/groupCourseDetail/groupCourseDetail.js
 const api = require('../../utils/api.js')
+const { navigateToLoginWithRedirect } = require('../../utils/util.js')
 
 Page({
 
@@ -15,7 +16,8 @@ Page({
     mode: 'view', // view-查看，preview-预览
     isOwner: false, // 是否为课程创建者
     canEdit: false, // 是否可以编辑
-    canPublish: false // 是否可以发布
+    canPublish: false, // 是否可以发布
+    showRegistrationModal: false // 是否显示报名人员弹窗
   },
 
   /**
@@ -133,18 +135,7 @@ Page({
 
     // 检查登录状态
     if (loginType === 'guest') {
-      wx.showModal({
-        title: '提示',
-        content: '请先登录后再报名',
-        confirmText: '去登录',
-        success: (res) => {
-          if (res.confirm) {
-            wx.navigateTo({
-              url: '/pages/login/login'
-            })
-          }
-        }
-      })
+      navigateToLoginWithRedirect('请先登录后再报名');
       return
     }
     
@@ -160,58 +151,35 @@ Page({
     wx.showModal({
       title: '确认报名',
       content: `确定要报名"${courseDetail.title}"吗？`,
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          this.registerCourse()
+          try {
+            wx.showLoading({
+              title: '报名中...'
+            });
+            const { courseId } = this.data
+            const res = await api.groupCourse.register(courseId);
+            if(res.success) {
+              wx.hideLoading();
+              wx.showToast({
+                title: '报名成功',
+                icon: 'success'
+              })
+              setTimeout(() => {
+                // 重新加载详情
+                this.loadCourseDetail()
+              }, 1500)
+            }
+          } catch (error) {
+            wx.hideLoading();
+            wx.showToast({
+              title: error.message || '报名失败',
+              icon: 'error'
+            })
+          }
         }
       }
     })
-  },
-
-  /**
-   * 执行报名
-   */
-  registerCourse() {
-    const { courseId } = this.data
-    
-    wx.showLoading({
-      title: '报名中...'
-    })
-
-    api.groupCourse.register(courseId)
-      .then(res => {
-        console.log('报名结果:', res)
-        
-        if (res.success) {
-          wx.showToast({
-            title: '报名成功',
-            icon: 'success'
-          })
-          
-          // 更新报名状态
-          this.setData({
-            isRegistered: true
-          })
-          
-          // 重新加载详情
-          this.loadCourseDetail()
-        } else {
-          wx.showToast({
-            title: res.message || '报名失败',
-            icon: 'error'
-          })
-        }
-      })
-      .catch(err => {
-        console.error('报名失败:', err)
-        wx.showToast({
-          title: '报名失败',
-          icon: 'error'
-        })
-      })
-      .finally(() => {
-        wx.hideLoading()
-      })
   },
 
   /**
@@ -221,69 +189,52 @@ Page({
     wx.showModal({
       title: '取消报名',
       content: '确定要取消报名吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          this.unregisterCourse()
+          try {
+            wx.showLoading({
+              title: '取消中...'
+            });
+            const { courseId } = this.data
+            const res = await api.groupCourse.unregister(courseId);
+            if(res.success) {
+              wx.hideLoading();
+              wx.showToast({
+                title: '取消成功',
+                icon: 'success'
+              })
+              setTimeout(() => {
+                // 重新加载详情
+                this.loadCourseDetail()
+              }, 1500)
+            }
+          } catch (error) {
+            wx.hideLoading();
+            wx.showToast({
+              title: error.message || '取消失败',
+              icon: 'error'
+            })
+          }
         }
       }
     })
   },
 
   /**
-   * 执行取消报名
+   * 显示报名人员弹窗
    */
-  unregisterCourse() {
-    const { courseId } = this.data
-    
-    wx.showLoading({
-      title: '取消中...'
+  onShowRegistrationModal() {
+    this.setData({
+      showRegistrationModal: true
     })
-
-    api.groupCourse.unregister(courseId)
-      .then(res => {
-        console.log('取消报名结果:', res)
-        
-        if (res.success) {
-          wx.showToast({
-            title: '取消成功',
-            icon: 'success'
-          })
-          
-          // 更新报名状态
-          this.setData({
-            isRegistered: false
-          })
-          
-          // 重新加载详情
-          this.loadCourseDetail()
-        } else {
-          wx.showToast({
-            title: res.message || '取消失败',
-            icon: 'error'
-          })
-        }
-      })
-      .catch(err => {
-        console.error('取消报名失败:', err)
-        wx.showToast({
-          title: '取消失败',
-          icon: 'error'
-        })
-      })
-      .finally(() => {
-        wx.hideLoading()
-      })
   },
 
   /**
-   * 分享课程
+   * 隐藏报名人员弹窗
    */
-  onShareTap() {
-    const { courseDetail } = this.data
-    
-    wx.showShareMenu({
-      withShareTicket: true,
-      menus: ['shareAppMessage', 'shareTimeline']
+  onHideRegistrationModal() {
+    this.setData({
+      showRegistrationModal: false
     })
   },
 
@@ -348,6 +299,45 @@ Page({
       default:
         return '免费'
     }
+  },
+
+  /**
+   * 格式化报名时间
+   */
+  formatRegistrationTime(dateStr) {
+    if (!dateStr) return ''
+    
+    const date = new Date(dateStr)
+    const now = new Date()
+    const diff = now - date
+    
+    // 小于1分钟
+    if (diff < 60 * 1000) {
+      return '刚刚'
+    }
+    
+    // 小于1小时
+    if (diff < 60 * 60 * 1000) {
+      const minutes = Math.floor(diff / (60 * 1000))
+      return `${minutes}分钟前`
+    }
+    
+    // 小于1天
+    if (diff < 24 * 60 * 60 * 1000) {
+      const hours = Math.floor(diff / (60 * 60 * 1000))
+      return `${hours}小时前`
+    }
+    
+    // 小于7天
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+      const days = Math.floor(diff / (24 * 60 * 60 * 1000))
+      return `${days}天前`
+    }
+    
+    // 超过7天显示具体日期
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    return `${month}-${day}`
   },
 
   /**
@@ -446,6 +436,7 @@ Page({
     
     return {
       title: courseDetail ? courseDetail.title : '团课详情',
+      imageUrl: courseDetail.cover_images[0] || courseDetail.images[0],
       path: `/pages/groupCourseDetail/groupCourseDetail?id=${this.data.courseId}`
     }
   }

@@ -5,7 +5,11 @@ page {
   height: 100vh;
   background-color: #f5f5f5;
 }
-
+.iconfont.icon-arrow-r{
+  font-size: 26rpx;
+  color: #666;
+  padding-left: 10rpx;
+}
 .container{
   position: relative;
   left: 0;
@@ -161,6 +165,26 @@ page {
   color: #86868b;
 }
 
+/* 参与者信息 */
+.participants {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.participants .avatar-list{
+  display: flex;
+  align-items: center;
+}
+.participants .avatar-list .avatar{
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-left: -10rpx;
+  border: 1rpx solid #fff;
+}
+.registration-left{
+  color: #ff4400;
+}
 /* 报名信息 */
 .registration-info {
   background: #fff;
@@ -168,12 +192,10 @@ page {
   margin-top: 24rpx;
   border-radius: 16rpx;
 }
-
 .registration-details {
   display: flex;
   flex-direction: column;
 }
-
 .registration-item {
   display: flex;
   justify-content: space-between;
@@ -194,7 +216,6 @@ page {
 .registration-value {
   font-size: 28rpx;
   color: #1d1d1f;
-  font-weight: 500;
 }
 
 /* 教练信息 */
@@ -359,4 +380,114 @@ page {
 
 .share-icon {
   font-size: 30rpx;
+}
+
+/* 报名人员弹窗 */
+.registration-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  width: 100%;
+  max-height: 80vh;
+  min-height: 40vh;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1rpx solid #f2f2f7;
+  position: relative;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.modal-close {
+  font-size: 32rpx;
+  color: #86868b;
+  width: 100rpx;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.modal-body {
+  max-height: 60vh;
+  padding: 0 32rpx 32rpx 32rpx;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f2f2f7;
+}
+
+.participant-item:last-child {
+  border-bottom: none;
+}
+
+.participant-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+}
+
+.participant-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.participant-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1d1d1f;
+  margin-bottom: 8rpx;
+}
+
+.participant-time {
+  font-size: 24rpx;
+  color: #86868b;
 }

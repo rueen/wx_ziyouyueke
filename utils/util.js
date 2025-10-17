@@ -70,9 +70,50 @@ const validatePhone = (phone) => {
   return phoneRegex.test(phone);
 }
 
+/**
+ * 跳转到登录页面，并在登录成功后跳转回当前页面
+ * @param {string} message 提示信息，默认为"此功能需要登录后才能使用，是否前往登录？"
+ */
+const navigateToLoginWithRedirect = (message = '此功能需要登录后才能使用，是否前往登录？') => {
+  wx.showModal({
+    title: '需要登录',
+    content: message,
+    confirmText: '去登录',
+    cancelText: '取消',
+    success: (res) => {
+      if (res.confirm) {
+        // 构建当前页面信息，登录成功后跳转回来
+        const currentPages = getCurrentPages();
+        const currentPage = currentPages[currentPages.length - 1];
+        const currentRoute = currentPage.route;
+        const currentOptions = currentPage.options;
+        
+        // 构建跳转URL，包含当前页面信息
+        let loginUrl = '/pages/login/login?redirectUrl=' + encodeURIComponent('/' + currentRoute);
+        
+        // 添加当前页面的参数
+        const paramKeys = Object.keys(currentOptions);
+        if (paramKeys.length > 0) {
+          const paramString = paramKeys
+            .map(key => `${key}=${encodeURIComponent(currentOptions[key])}`)
+            .join('&');
+          loginUrl += '&' + paramString;
+        }
+        
+        console.log('跳转登录页面:', loginUrl);
+        
+        wx.navigateTo({
+          url: loginUrl
+        });
+      }
+    }
+  });
+};
+
 module.exports = {
   formatTime,
   createCompatibleDate,
   safeParseDateTimeString,
-  validatePhone
+  validatePhone,
+  navigateToLoginWithRedirect
 }

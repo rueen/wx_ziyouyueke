@@ -12,6 +12,43 @@ module.exports = {
       default:
       return '--'
     }
+  },
+  formatRegistrationTime: function(dateStr) {
+    if (!dateStr) return ''
+    
+    var date = getDate(dateStr)
+    var now = getDate()
+    var diff = now.getTime() - date.getTime()
+    
+    // 小于1分钟
+    if (diff < 60 * 1000) {
+      return '刚刚'
+    }
+    
+    // 小于1小时
+    if (diff < 60 * 60 * 1000) {
+      var minutes = Math.floor(diff / (60 * 1000))
+      return minutes + '分钟前'
+    }
+    
+    // 小于1天
+    if (diff < 24 * 60 * 60 * 1000) {
+      var hours = Math.floor(diff / (60 * 60 * 1000))
+      return hours + '小时前'
+    }
+    
+    // 小于7天
+    if (diff < 7 * 24 * 60 * 60 * 1000) {
+      var days = Math.floor(diff / (24 * 60 * 60 * 1000))
+      return days + '天前'
+    }
+    
+    // 超过7天显示具体日期
+    var month = (date.getMonth() + 1).toString()
+    var day = date.getDate().toString()
+    if (month.length === 1) month = '0' + month
+    if (day.length === 1) day = '0' + day
+    return month + '-' + day
   }
 }
 </wxs>
@@ -76,10 +113,7 @@ module.exports = {
 
   <!-- 报名信息 -->
   <view class="registration-info">
-    <view class="section-title">
-      <text>已报名</text>
-      <text>{{courseDetail.current_participants}}/{{courseDetail.max_participants}} 人</text>
-    </view>
+    <view class="section-title">报名信息</view>
     <view class="registration-details">
       <view class="registration-item">
         <text class="registration-label">报名范围：</text>
@@ -88,6 +122,18 @@ module.exports = {
       <view class="registration-item">
         <text class="registration-label">成团人数：</text>
         <text class="registration-value">{{courseDetail.min_participants}} 人</text>
+      </view>
+      <view class="registration-item" bindtap="onShowRegistrationModal">
+        <view class="participants">
+          <view class="avatar-list">
+            <image src="{{applicant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" mode="aspectFill" wx:for="{{courseDetail.registrations}}" wx:key="*this" wx:for-item="applicant" wx:if="{{index < 6}}" class="avatar"/>
+          </view>
+          <text class="registration-label">{{courseDetail.current_participants}}人已报名</text>
+        </view>
+        <view class="registration-value">
+          <text>剩余<text class="registration-left">{{courseDetail.max_participants - courseDetail.current_participants}}</text>个名额</text>
+          <text class="iconfont icon-arrow-r"></text>
+        </view>
       </view>
     </view>
   </view>
@@ -151,7 +197,7 @@ module.exports = {
       <!-- 非课程所有者：报名相关按钮 -->
       <view wx:else class="student-actions">
         <!-- 分享按钮 -->
-        <button class="action-btn share" bindtap="onShareTap">
+        <button class="action-btn share" open-type="share">
           <text class="iconfont icon-share-line share-icon"></text>
           <text>分享</text>
         </button>
@@ -181,5 +227,29 @@ module.exports = {
         </button>
       </view>
     </view>
+  </view>
+</view>
+
+<!-- 报名人员弹窗 -->
+<view class="registration-modal" wx:if="{{showRegistrationModal}}">
+  <view class="modal-mask" bindtap="onHideRegistrationModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">{{courseDetail.current_participants}}人已报名 | 剩余<text class="registration-left">{{courseDetail.max_participants - courseDetail.current_participants}}</text>个名额</text>
+      <text class="iconfont icon-close modal-close" bindtap="onHideRegistrationModal"></text>
+    </view>
+    <scroll-view class="modal-body" scroll-y="true">
+      <view class="participant-item" wx:for="{{courseDetail.registrations}}" wx:key="*this" wx:for-item="participant">
+        <image 
+          class="participant-avatar" 
+          src="{{participant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" 
+          mode="aspectFill"
+        />
+        <view class="participant-info">
+          <text class="participant-name">{{participant.student.nickname}}</text>
+          <text class="participant-time">{{_filters.formatRegistrationTime(participant.created_at)}} 报名</text>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 </view>
