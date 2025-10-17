@@ -20,6 +20,11 @@ Component({
       type: String,
       value: 'view'
     },
+    // 组件类型：'default'(普通课程) 或 'groupCourses'(团课)
+    type: {
+      type: String,
+      value: 'default'
+    },
     // 是否显示已预约的详细信息
     showBookingDetails: {
       type: Boolean,
@@ -138,6 +143,30 @@ Component({
     },
 
     /**
+     * 加载团课数据
+     */
+    async loadGroupCourses(date, coachId) {
+      try {
+        const params = {
+          course_date_start: date,
+          course_date_end: date,
+          status: 1, // 只获取报名中的团课
+          limit: 100
+        };
+        
+        if (coachId) {
+          params.coach_id = coachId;
+        }
+        
+        const result = await api.groupCourse.getList(params);
+        return result.data ? result.data.list : [];
+      } catch (error) {
+        console.error('获取团课数据失败:', error);
+        return [];
+      }
+    },
+
+    /**
      * 生成日期列表
      */
     generateDateList() {
@@ -187,56 +216,61 @@ Component({
       }
     },
 
-    /**
-     * 加载指定日期的时间段
-     */
-    async loadTimeSlots(date) {
-      if (this.data.isLoading) return;
-      
-      try {
+  /**
+   * 加载指定日期的时间段
+   */
+  async loadTimeSlots(date) {
+    if (this.data.isLoading) return;
+    
+    try {
+      this.setData({
+        isLoading: true
+      });
+
+      // 获取时间模板的时间段
+      const timeTemplate = this.data.timeTemplate;
+      if (!timeTemplate || !timeTemplate.time_slots) {
+        console.warn('时间模板未配置，显示空状态');
         this.setData({
-          isLoading: true
+          isLoading: false,
+          timeSlots: []
         });
+        return;
+      }
 
-        // 获取时间模板的时间段
-        const timeTemplate = this.data.timeTemplate;
-        if (!timeTemplate || !timeTemplate.time_slots) {
-          console.warn('时间模板未配置，显示空状态');
-          this.setData({
-            isLoading: false,
-            timeSlots: []
-          });
-          return;
-        }
+      let templateSlots;
+      try {
+        templateSlots = timeTemplate.time_slots;
+      } catch (parseError) {
+        console.error('解析时间模板失败:', parseError);
+        this.setData({
+          isLoading: false,
+          timeSlots: []
+        });
+        return;
+      }
+      
+      // 获取该日期的预约情况
+      const queryParams = {
+        start_date: date,
+        end_date: date,
+        limit: 100
+      };
+      
+      // 如果指定了教练ID，添加到查询参数中
+      const coachId = this.properties && this.properties.coachId ? this.properties.coachId : null;
+      if (coachId) {
+        queryParams.coach_id = coachId;
+      }
+      
+      // 无论哪种模式都需要加载个人课程和团课数据，用于冲突检测
+      const [courseResult, groupCourseResult] = await Promise.all([
+        api.course.getList(queryParams),
+        this.loadGroupCourses(date, coachId)
+      ]);
 
-        let templateSlots;
-        try {
-          templateSlots = timeTemplate.time_slots;
-        } catch (parseError) {
-          console.error('解析时间模板失败:', parseError);
-          this.setData({
-            isLoading: false,
-            timeSlots: []
-          });
-          return;
-        }
-        
-        // 获取该日期的预约情况
-        const queryParams = {
-          start_date: date,
-          end_date: date,
-          limit: 100
-        };
-        
-        // 如果指定了教练ID，添加到查询参数中
-        const coachId = this.properties && this.properties.coachId ? this.properties.coachId : null;
-        if (coachId) {
-          queryParams.coach_id = coachId;
-        }
-        
-        const result = await api.course.getList(queryParams);
-
-        const bookedCourses = result.data ? result.data.list : [];
+      const bookedCourses = courseResult.data ? courseResult.data.list : [];
+      const groupCourses = groupCourseResult || [];
 
         // 生成时间段列表
         const timeSlots = templateSlots.map(slot => {
@@ -246,19 +280,26 @@ Component({
           // 获取该时间段的最大预约人数
           const maxAdvanceNums = timeTemplate.max_advance_nums || 1;
           
-          // 查找该时间段的所有课程（包括已取消的）
+          // 查找该时间段的所有个人课程（包括已取消的）
           const allCoursesInSlot = bookedCourses.filter(course => {
             const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
             const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
             return course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
-          // 查找非已取消状态的课程（用于计算已预约名额）
+          // 查找该时间段的团课
+          const groupCoursesInSlot = groupCourses.filter(groupCourse => {
+            const course_start_time = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
+            const course_end_time = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
+            return course_start_time === slot.startTime && course_end_time === slot.endTime;
+          });
+
+          // 计算个人课程名额统计
           const activeCourses = allCoursesInSlot.filter(course => course.booking_status !== 4);
           const bookedCount = activeCourses.length;
           const remainingCount = Math.max(0, maxAdvanceNums - bookedCount);
           
-          // 处理课程列表数据
+          // 处理个人课程列表数据
           const courses = allCoursesInSlot.map(course => {
             const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
             return {
@@ -267,19 +308,44 @@ Component({
               location: course.address.name,
               booking_status: this.getStatusFromApi(course.booking_status),
               isCreatedByCurrentUser: isCreatedByCurrentUser,
-              courseData: course
+              courseData: course,
+              type: 'personal' // 标记为个人课程
             };
           });
+
+          // 处理团课列表数据
+          const groupCoursesList = groupCoursesInSlot.map(groupCourse => {
+            return {
+              id: groupCourse.id,
+              title: groupCourse.title,
+              coachName: groupCourse.coach ? groupCourse.coach.nickname : '未知教练',
+              location: groupCourse.address ? groupCourse.address.name : '未设置地址',
+              currentParticipants: groupCourse.current_participants || 0,
+              maxParticipants: groupCourse.max_participants || 0,
+              price: this.getGroupCoursePrice(groupCourse),
+              courseData: groupCourse,
+              type: 'group' // 标记为团课
+            };
+          });
+
+          // 合并个人课程和团课
+          const allCourses = [...courses, ...groupCoursesList];
 
           // 判断时间段状态
           let status;
           if (isExpired) {
             status = 'expired';
+          } else if (groupCoursesInSlot.length > 0) {
+            // 有团课：无论什么模式都不可选
+            status = 'groupBooked';
           } else if (remainingCount <= 0) {
+            // 个人课程已满员
             status = 'full';
           } else if (bookedCount > 0) {
+            // 个人课程有预约但未满
             status = 'booked';
           } else {
+            // 空闲
             status = 'free';
           }
 
@@ -291,7 +357,8 @@ Component({
             maxAdvanceNums: maxAdvanceNums,
             bookedCount: bookedCount,
             remainingCount: remainingCount,
-            courses: courses,
+            courses: allCourses, // 包含个人课程和团课
+            groupCourses: groupCoursesList, // 单独的团课列表
             isExpired: isExpired
           };
         });
@@ -457,13 +524,32 @@ Component({
       }
 
       // 检查时间段是否可以选择
-      const selectableStatuses = ['free', 'booked'];
-      if (this.properties.mode === 'select' && !selectableStatuses.includes(slot.status)) {
-        wx.showToast({
-          title: '该时段已满员',
-          icon: 'none'
-        });
-        return;
+      if (this.properties.mode === 'select') {
+        let canSelect = false;
+        let message = '该时段不可选择';
+        
+        if (slot.status === 'free') {
+          canSelect = true;
+        } else if (slot.status === 'booked' && this.properties.type === 'default') {
+          // 普通模式：有预约但未满可以选择
+          canSelect = true;
+        } else if (slot.status === 'groupBooked') {
+          message = '该时段已有团课';
+        } else if (slot.status === 'booked' && this.properties.type === 'groupCourses') {
+          message = '该时段已预约';
+        } else if (slot.status === 'full') {
+          message = '该时段已满员';
+        } else if (slot.status === 'expired') {
+          message = '该时段已过期';
+        }
+        
+        if (!canSelect) {
+          wx.showToast({
+            title: message,
+            icon: 'none'
+          });
+          return;
+        }
       }
 
       // 触发时间段点击事件
@@ -475,10 +561,36 @@ Component({
 
     onCourseTap(e){
       const { course } = e.currentTarget.dataset;
+      
+      // 如果是团课，跳转到团课详情页面
+      if (course.type === 'group') {
+        wx.navigateTo({
+          url: `/pages/groupCourseDetail/groupCourseDetail?id=${course.id}`
+        });
+        return;
+      }
+      
+      // 个人课程的处理逻辑
       this.triggerEvent('courseTap', {
         course: course,
         date: this.data.currentDate
       });
+    },
+
+    /**
+     * 获取团课价格显示文本
+     */
+    getGroupCoursePrice(course) {
+      switch (course.price_type) {
+        case 1:
+          return `${course.lesson_cost}课时`
+        case 2:
+          return `¥${course.price_amount}`
+        case 3:
+          return '免费'
+        default:
+          return '免费'
+      }
     },
 
     /**

@@ -442,3 +442,101 @@ page {
   font-size: 26rpx;
   color: #856404;
 }
+
+/* 团课样式 */
+.group-course {
+  border-left: 4rpx solid #ff6b35;
+  background-color: #fff8f5;
+}
+
+.group-course-info {
+  width: 100%;
+}
+
+.group-course-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.group-course-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  flex: 1;
+  margin-right: 12rpx;
+}
+
+.group-course-badge {
+  background-color: #ff6b35;
+  color: #fff;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+}
+
+.badge-text {
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.group-course-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.group-course-coach,
+.group-course-location {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 24rpx;
+}
+
+.group-course-coach .iconfont,
+.group-course-location .iconfont {
+  margin-right: 8rpx;
+  font-size: 20rpx;
+}
+
+.group-course-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8rpx;
+}
+
+.participants {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.price {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #ff6b35;
+}
+
+/* 个人课程样式 */
+.personal-course {
+  border-left: 4rpx solid #007aff;
+}
+
+/* 团课模式样式 */
+.booked-text {
+  color: #ff6b35;
+  font-weight: 500;
+}
+
+.free-text {
+  color: #34c759;
+  font-weight: 500;
+}
+
+.group-booked-text {
+  color: #ff6b35;
+  font-weight: 500;
+  font-size: 28rpx;
+}

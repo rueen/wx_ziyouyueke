@@ -41,7 +41,7 @@
       
       <view wx:else>
         <view 
-          class="time-slot {{slot.status}} {{mode === 'select' && (slot.status === 'free' || slot.status === 'booked') && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
+          class="time-slot {{slot.status}} {{mode === 'select' && (slot.status === 'free' || (slot.status === 'booked' && type === 'default')) && !slot.isExpired ? 'selectable' : ''}} {{slot.id === selectedTimeSlot.id ? 'selected' : ''}}"
           wx:for="{{timeSlots}}" 
           wx:for-item="slot"
           wx:key="id"
@@ -59,29 +59,56 @@
             <!-- 课程列表 -->
             <view wx:if="{{slot.courses.length > 0}}" class="courses-list">
               <view 
-                class="course-item" 
+                class="course-item {{course.type === 'group' ? 'group-course' : 'personal-course'}}" 
                 wx:for="{{slot.courses}}" 
                 wx:for-item="course" 
                 wx:key="id"
                 data-course="{{course}}"
                 bindtap="onCourseTap"
               >
-                <view class="student-info">
-                  <text class="student-name">{{course.studentName}}</text>
-                  <view class="status-badge status-{{course.booking_status}}">
-                    <text class="status-text">{{course.booking_status === 'pending' ? (
-                      course.isCreatedByCurrentUser ? (
-                        userRole === 'coach' ? '待学员确认' : '待教练确认'
-                      ) : '待确认'
-                    ) : 
-                      course.booking_status === 'confirmed' ? '已确认' : 
-                      course.booking_status === 'completed' ? '已完成' : 
-                      course.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+                <!-- 个人课程显示 -->
+                <view wx:if="{{course.type === 'personal'}}" class="personal-course-info">
+                  <view class="student-info">
+                    <text class="student-name">{{course.studentName}}</text>
+                    <view class="status-badge status-{{course.booking_status}}">
+                      <text class="status-text">{{course.booking_status === 'pending' ? (
+                        course.isCreatedByCurrentUser ? (
+                          userRole === 'coach' ? '待学员确认' : '待教练确认'
+                        ) : '待确认'
+                      ) : 
+                        course.booking_status === 'confirmed' ? '已确认' : 
+                        course.booking_status === 'completed' ? '已完成' : 
+                        course.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+                    </view>
+                  </view>
+                  <view class="location-info">
+                    <text class="iconfont icon-locationfill"></text>
+                    <text>{{course.location}}</text>
                   </view>
                 </view>
-                <view class="location-info">
-                  <text class="iconfont icon-locationfill"></text>
-                  <text>{{course.location}}</text>
+                
+                <!-- 团课显示 -->
+                <view wx:elif="{{course.type === 'group'}}" class="group-course-info">
+                  <view class="group-course-header">
+                    <text class="group-course-title">{{course.title}}</text>
+                    <view class="group-course-badge">
+                      <text class="badge-text">团课</text>
+                    </view>
+                  </view>
+                  <view class="group-course-details">
+                    <view class="group-course-coach">
+                      <text class="iconfont icon-user"></text>
+                      <text>{{course.coachName}}</text>
+                    </view>
+                    <view class="group-course-location">
+                      <text class="iconfont icon-locationfill"></text>
+                      <text>{{course.location}}</text>
+                    </view>
+                    <view class="group-course-stats">
+                      <text class="participants">{{course.currentParticipants}}/{{course.maxParticipants}}人</text>
+                      <text class="price">{{course.price}}</text>
+                    </view>
+                  </view>
                 </view>
               </view>
             </view>
@@ -98,14 +125,27 @@
             <view wx:if="{{slot.status === 'expired'}}" class="quota-info">
               <text class="expired-text">已过期</text>
             </view>
-            <view class="quota-info" wx:else>
+            <!-- 团课占用 -->
+            <view wx:elif="{{slot.status === 'groupBooked'}}" class="quota-info">
+              <text class="group-booked-text">已有团课</text>
+            </view>
+            <!-- 团课模式：普通课程占用 -->
+            <view wx:elif="{{type === 'groupCourses' && (slot.status === 'booked' || slot.status === 'full')}}" class="quota-info">
+              <text class="booked-text">已预约</text>
+            </view>
+            <!-- 普通模式：显示名额统计 -->
+            <view wx:elif="{{type === 'default'}}" class="quota-info">
               <text class="quota-text">{{slot.bookedCount}}/{{slot.maxAdvanceNums}}</text>
               <text wx:if="{{slot.remainingCount > 0}}" class="remaining-text">(剩余{{slot.remainingCount}}个)</text>
               <text wx:else class="full-text">(已满员)</text>
             </view>
+            <!-- 空闲状态 -->
+            <view wx:else class="quota-info">
+              <text class="free-text">可选择</text>
+            </view>
             
-            <!-- 选择提示 -->
-            <view wx:if="{{slot.status === 'free' || slot.status === 'booked'}}" class="select-hint-container">
+            <!-- 选择提示：free状态和普通模式的booked状态都可以选择 -->
+            <view wx:if="{{slot.status === 'free' || (slot.status === 'booked' && type === 'default')}}" class="select-hint-container">
               <view wx:if="{{slot.id !== selectedTimeSlot.id}}" class="select-hint">点击选择</view>
               <text class="iconfont icon-selected" wx:if="{{slot.id === selectedTimeSlot.id}}"></text>
             </view>

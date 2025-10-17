@@ -86,6 +86,7 @@ module.exports = {
           <timeSelector 
             coachId="{{currentUserId}}"
             mode="select"
+            type="groupCourses"
             showBookingDetails="{{false}}"
             selectedTimeSlot="{{selectedTimeSlot}}"
             bind:timeSlotTap="onTimeSlotTap"
