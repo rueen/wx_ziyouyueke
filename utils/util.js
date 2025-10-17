@@ -110,10 +110,152 @@ const navigateToLoginWithRedirect = (message = '此功能需要登录后才能�
   });
 };
 
+/**
+ * 图片压缩配置
+ */
+const IMAGE_COMPRESS_CONFIG = {
+  // 压缩阈值（字节）
+  COMPRESS_THRESHOLD: 200 * 1024, // 200KB
+  // 压缩质量配置
+  QUALITY: {
+    LARGE: 50,   // 大于1MB
+    MEDIUM: 60,  // 512KB-1MB
+    SMALL: 70    // 200KB-512KB
+  },
+  // 文件大小阈值
+  SIZE_THRESHOLD: {
+    LARGE: 1024 * 1024,  // 1MB
+    MEDIUM: 512 * 1024   // 512KB
+  }
+};
+
+/**
+ * 压缩图片
+ * @param {string} filePath 图片文件路径
+ * @param {Object} options 压缩选项
+ * @param {number} options.quality 压缩质量 (0-100)，不传则根据文件大小自动调整
+ * @param {number} options.threshold 压缩阈值（字节），小于此大小不压缩，默认200KB
+ * @param {boolean} options.force 是否强制压缩，即使文件很小也压缩
+ * @returns {Promise<{tempFilePath: string, originalSize: number, compressedSize: number}>} 压缩结果
+ */
+const compressImage = (filePath, options = {}) => {
+  return new Promise((resolve, reject) => {
+    const {
+      quality: customQuality,
+      threshold = IMAGE_COMPRESS_CONFIG.COMPRESS_THRESHOLD,
+      force = false
+    } = options;
+
+    // 先获取文件信息
+    wx.getFileInfo({
+      filePath: filePath,
+      success: (fileInfo) => {
+        const originalSize = fileInfo.size;
+        const fileSizeKB = Math.round(originalSize / 1024);
+        
+        console.log(`[图片压缩] 原始文件大小: ${fileSizeKB}KB`);
+        
+        // 如果文件小于阈值且不强制压缩，不进行压缩
+        if (!force && originalSize < threshold) {
+          console.log(`[图片压缩] 文件小于${Math.round(threshold/1024)}KB，跳过压缩`);
+          resolve({ 
+            tempFilePath: filePath, 
+            originalSize: originalSize,
+            compressedSize: originalSize
+          });
+          return;
+        }
+        
+        // 确定压缩质量
+        let quality = customQuality;
+        if (quality === undefined) {
+          if (originalSize > IMAGE_COMPRESS_CONFIG.SIZE_THRESHOLD.LARGE) {
+            quality = IMAGE_COMPRESS_CONFIG.QUALITY.LARGE;
+          } else if (originalSize > IMAGE_COMPRESS_CONFIG.SIZE_THRESHOLD.MEDIUM) {
+            quality = IMAGE_COMPRESS_CONFIG.QUALITY.MEDIUM;
+          } else {
+            quality = IMAGE_COMPRESS_CONFIG.QUALITY.SMALL;
+          }
+        }
+        
+        console.log(`[图片压缩] 开始压缩，质量: ${quality}%`);
+        
+        wx.compressImage({
+          src: filePath,
+          quality: quality,
+          success: (res) => {
+            // 获取压缩后文件信息
+            wx.getFileInfo({
+              filePath: res.tempFilePath,
+              success: (compressedInfo) => {
+                const compressedSize = compressedInfo.size;
+                const compressedSizeKB = Math.round(compressedSize / 1024);
+                const compressionRatio = Math.round((1 - compressedSize / originalSize) * 100);
+                
+                console.log(`[图片压缩] 压缩完成: ${fileSizeKB}KB -> ${compressedSizeKB}KB (压缩率: ${compressionRatio}%)`);
+                
+                resolve({
+                  tempFilePath: res.tempFilePath,
+                  originalSize: originalSize,
+                  compressedSize: compressedSize
+                });
+              },
+              fail: () => {
+                // 获取压缩后文件信息失败，但压缩成功
+                console.log(`[图片压缩] 压缩完成，但无法获取压缩后文件大小`);
+                resolve({
+                  tempFilePath: res.tempFilePath,
+                  originalSize: originalSize,
+                  compressedSize: originalSize // 无法获取时使用原大小
+                });
+              }
+            });
+          },
+          fail: (error) => {
+            console.error('[图片压缩] 压缩失败:', error);
+            reject(new Error(`图片压缩失败: ${error.errMsg || '未知错误'}`));
+          }
+        });
+      },
+      fail: (error) => {
+        console.error('[图片压缩] 获取文件信息失败:', error);
+        reject(new Error(`获取文件信息失败: ${error.errMsg || '未知错误'}`));
+      }
+    });
+  });
+};
+
+/**
+ * 批量压缩图片
+ * @param {string[]} filePaths 图片文件路径数组
+ * @param {Object} options 压缩选项
+ * @returns {Promise<Array>} 压缩结果数组
+ */
+const compressImages = async (filePaths, options = {}) => {
+  try {
+    const compressPromises = filePaths.map(filePath => compressImage(filePath, options));
+    const results = await Promise.all(compressPromises);
+    
+    const totalOriginalSize = results.reduce((sum, result) => sum + result.originalSize, 0);
+    const totalCompressedSize = results.reduce((sum, result) => sum + result.compressedSize, 0);
+    const totalCompressionRatio = Math.round((1 - totalCompressedSize / totalOriginalSize) * 100);
+    
+    console.log(`[批量压缩] 完成 ${filePaths.length} 张图片压缩，总压缩率: ${totalCompressionRatio}%`);
+    
+    return results;
+  } catch (error) {
+    console.error('[批量压缩] 批量压缩失败:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   formatTime,
   createCompatibleDate,
   safeParseDateTimeString,
   validatePhone,
-  navigateToLoginWithRedirect
+  navigateToLoginWithRedirect,
+  compressImage,
+  compressImages,
+  IMAGE_COMPRESS_CONFIG
 }

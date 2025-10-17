@@ -175,62 +175,6 @@ Page({
     }
   },
 
-  /**
-   * 压缩图片
-   * @param {string} filePath 图片文件路径
-   * @returns {Promise} 压缩结果
-   */
-  async compressImage(filePath) {
-    return new Promise((resolve, reject) => {
-      // 先获取文件信息
-      wx.getFileInfo({
-        filePath: filePath,
-        success: (fileInfo) => {
-          const fileSizeKB = Math.round(fileInfo.size / 1024);
-          
-          // 如果文件小于200KB，不进行压缩
-          if (fileInfo.size < 200 * 1024) {
-            resolve({ tempFilePath: filePath });
-            return;
-          }
-          
-          // 根据文件大小动态调整压缩质量
-          let quality = 70;
-          if (fileInfo.size > 1024 * 1024) { // 大于1MB
-            quality = 50;
-          } else if (fileInfo.size > 512 * 1024) { // 大于512KB
-            quality = 60;
-          }
-          
-          wx.compressImage({
-            src: filePath,
-            quality: quality,
-            success: (res) => {
-              // 获取压缩后文件信息
-              wx.getFileInfo({
-                filePath: res.tempFilePath,
-                success: (compressedInfo) => {
-                  resolve(res);
-                },
-                fail: () => {
-                  // 获取压缩后文件信息失败，但压缩成功
-                  resolve(res);
-                }
-              });
-            },
-            fail: (error) => {
-              console.error('图片压缩失败:', error);
-              reject(error);
-            }
-          });
-        },
-        fail: (error) => {
-          console.error('获取文件信息失败:', error);
-          reject(error);
-        }
-      });
-    });
-  },
 
   /**
    * 上传头像
@@ -256,27 +200,15 @@ Page({
         title: '处理图片中...'
       });
       
-      // 压缩图片
-      const compressedResult = await this.compressImage(avatarUrl);
-      
-      wx.hideLoading();
-      
       const userInfo = {
         ...this.data.userInfo,
-        avatarUrl: compressedResult.tempFilePath
+        avatarUrl: avatarUrl
       };
       this.setData({
         userInfo
       });
       
-      // 只有真正压缩了才显示压缩成功提示
-      if (compressedResult.tempFilePath !== avatarUrl) {
-        wx.showToast({
-          title: '图片已压缩',
-          icon: 'success',
-          duration: 1000
-        });
-      }
+      wx.hideLoading();
       
     } catch (error) {
       wx.hideLoading();

@@ -3,6 +3,9 @@
  * 基于API文档的接口封装
  */
 
+// 引入工具类
+const { compressImage } = require('./util.js');
+
 // API基础配置
 const API_CONFIG = {
   baseUrl: 'http://localhost:3000',
@@ -522,56 +525,120 @@ function deleteAddress(id) {
 // ========== 文件上传模块 ==========
 
 /**
- * 上传图片
+ * 上传图片（自动压缩）
  * @param {string} filePath 本地文件路径
  * @param {string} directory 上传目录，支持：images、avatar、documents、temp，默认为images
+ * @param {Object} compressOptions 压缩选项
  * @returns {Promise}
  */
-function uploadImage(filePath, directory = 'images') {
-  return new Promise((resolve, reject) => {
-    const token = wx.getStorageSync('token');
+async function uploadImage(filePath, directory = 'images', compressOptions = {}) {
+  try {
+    // 先压缩图片
+    console.log(`[API Upload] 开始压缩图片: ${filePath}`);
+    const compressResult = await compressImage(filePath, compressOptions);
+    const compressedFilePath = compressResult.tempFilePath;
     
-    wx.uploadFile({
-      url: `${API_CONFIG.baseUrl}/api/upload/image`,
-      filePath: filePath,
-      name: 'file',
-      formData: {
-        directory: directory
-      },
-      header: {
-        'Authorization': `Bearer ${token}`
-      },
-      success: (res) => {
-        
-        try {
-          const data = JSON.parse(res.data);
-          if (data.success) {
-            resolve(data);
-          } else {
-            // Token过期处理
-            if (data.code === 1002 || data.code === 2002) {
-              handleTokenExpired();
+    console.log(`[API Upload] 图片压缩完成，开始上传到目录: ${directory}`);
+    
+    // 上传压缩后的图片
+    return new Promise((resolve, reject) => {
+      const token = wx.getStorageSync('token');
+      
+      wx.uploadFile({
+        url: `${API_CONFIG.baseUrl}/api/upload/image`,
+        filePath: compressedFilePath,
+        name: 'file',
+        formData: {
+          directory: directory
+        },
+        header: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: (res) => {
+          try {
+            const data = JSON.parse(res.data);
+            if (data.success) {
+              // 在返回数据中添加压缩信息
+              data.compressInfo = {
+                originalSize: compressResult.originalSize,
+                compressedSize: compressResult.compressedSize,
+                compressionRatio: Math.round((1 - compressResult.compressedSize / compressResult.originalSize) * 100)
+              };
+              console.log(`[API Upload] 上传成功，压缩率: ${data.compressInfo.compressionRatio}%`);
+              resolve(data);
+            } else {
+              // Token过期处理
+              if (data.code === 1002 || data.code === 2002) {
+                handleTokenExpired();
+              }
+              reject(data);
             }
-            reject(data);
+          } catch (e) {
+            reject({
+              code: -1,
+              message: '响应解析失败',
+              error: e
+            });
           }
-        } catch (e) {
+        },
+        fail: (error) => {
+          console.error(`[API Upload Error] /api/upload/image (directory: ${directory})`, error);
           reject({
             code: -1,
-            message: '响应解析失败',
-            error: e
+            message: '上传失败',
+            error: error
           });
         }
-      },
-      fail: (error) => {
-        console.error(`[API Upload Error] /api/upload/image (directory: ${directory})`, error);
-        reject({
-          code: -1,
-          message: '上传失败',
-          error: error
-        });
-      }
+      });
     });
-  });
+  } catch (error) {
+    console.error('[API Upload] 图片压缩失败，使用原图上传:', error);
+    
+    // 压缩失败时，使用原图上传
+    return new Promise((resolve, reject) => {
+      const token = wx.getStorageSync('token');
+      
+      wx.uploadFile({
+        url: `${API_CONFIG.baseUrl}/api/upload/image`,
+        filePath: filePath,
+        name: 'file',
+        formData: {
+          directory: directory
+        },
+        header: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: (res) => {
+          try {
+            const data = JSON.parse(res.data);
+            if (data.success) {
+              resolve(data);
+            } else {
+              // Token过期处理
+              if (data.code === 1002 || data.code === 2002) {
+                handleTokenExpired();
+              }
+              reject(data);
+            }
+          } catch (e) {
+            reject({
+              code: -1,
+              message: '响应解析失败',
+              error: e
+            });
+          }
+        },
+        fail: (error) => {
+          console.error(`[API Upload Error] /api/upload/image (directory: ${directory})`, error);
+          reject({
+            code: -1,
+            message: '上传失败',
+            error: error
+          });
+        }
+      });
+    });
+  }
 }
 
 
