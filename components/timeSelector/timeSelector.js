@@ -582,7 +582,7 @@ Component({
       // 如果是团课，跳转到团课详情页面
       if (course.type === 'group') {
         wx.navigateTo({
-          url: `/pages/groupCourseDetail/groupCourseDetail?id=${course.id}`
+          url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
         });
         return;
       }

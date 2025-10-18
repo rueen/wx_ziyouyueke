@@ -273,7 +273,7 @@ Page({
     
     // 跳转到团课详情页
     wx.navigateTo({
-      url: `/pages/groupCourseDetail/groupCourseDetail?id=${course.id}`
+      url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
     })
   },
 

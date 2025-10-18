@@ -26,9 +26,9 @@ Page({
   onLoad(options) {
     console.log('团课详情页面参数:', options)
     
-    if (options.id) {
+    if (options.courseId) {
       this.setData({
-        courseId: parseInt(options.id),
+        courseId: parseInt(options.courseId),
         mode: options.mode || 'view'
       })
       this.loadCourseDetail()
@@ -135,7 +135,14 @@ Page({
 
     // 检查登录状态
     if (loginType === 'guest') {
-      navigateToLoginWithRedirect('请先登录后再报名');
+      navigateToLoginWithRedirect({
+        message: '请先登录后再报名',
+        redirectParams: {
+          isFixedRole: true,
+          selectedRole: 'student',
+          courseId: this.data.courseId
+        }
+      });
       return
     }
     
@@ -437,7 +444,7 @@ Page({
     return {
       title: courseDetail ? courseDetail.title : '团课详情',
       imageUrl: courseDetail.cover_images[0] || courseDetail.images[0],
-      path: `/pages/groupCourseDetail/groupCourseDetail?id=${this.data.courseId}`
+      path: `/pages/groupCourseDetail/groupCourseDetail?courseId=${this.data.courseId}`
     }
   }
 })

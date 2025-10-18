@@ -84,7 +84,9 @@ Page({
     const loginType = wx.getStorageSync('loginType');
     if (loginType === 'guest') {
       // 游客模式，需要引导登录
-      navigateToLoginWithRedirect('游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？');
+      navigateToLoginWithRedirect({
+        message: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？'
+      });
       return false;
     }
     return true;

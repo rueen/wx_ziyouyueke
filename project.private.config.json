@@ -11,21 +11,21 @@
         {
           "name": "团课详情",
           "pathName": "pages/groupCourseDetail/groupCourseDetail",
-          "query": "id=8",
+          "query": "courseId=1",
           "scene": null,
           "launchMode": "default"
         },
         {
-          "name": "团课列表",
-          "pathName": "pages/groupCourses/groupCourses",
+          "name": "绑定教练",
+          "pathName": "/pages/bindCoach/bindCoach",
           "query": "coachId=27",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "绑定教练",
-          "pathName": "/pages/bindCoach/bindCoach",
-          "query": "coach_id=28",
+          "name": "团课列表",
+          "pathName": "pages/groupCourses/groupCourses",
+          "query": "coachId=27",
           "launchMode": "default",
           "scene": null
         },

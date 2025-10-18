@@ -72,9 +72,16 @@ const validatePhone = (phone) => {
 
 /**
  * 跳转到登录页面，并在登录成功后跳转回当前页面
- * @param {string} message 提示信息，默认为"此功能需要登录后才能使用，是否前往登录？"
+ * @param {Object} options 配置选项
+ * @param {string} options.message 提示信息，默认为"此功能需要登录后才能使用，是否前往登录？"
+ * @param {Object} options.redirectParams 自定义跳转参数，如果不传则使用当前页面参数
  */
-const navigateToLoginWithRedirect = (message = '此功能需要登录后才能使用，是否前往登录？') => {
+const navigateToLoginWithRedirect = (options = {}) => {
+  const {
+    message = '此功能需要登录后才能使用，是否前往登录？',
+    redirectParams = null
+  } = options;
+
   wx.showModal({
     title: '需要登录',
     content: message,
@@ -91,13 +98,18 @@ const navigateToLoginWithRedirect = (message = '此功能需要登录后才能�
         // 构建跳转URL，包含当前页面信息
         let loginUrl = '/pages/login/login?redirectUrl=' + encodeURIComponent('/' + currentRoute);
         
-        // 添加当前页面的参数
-        const paramKeys = Object.keys(currentOptions);
-        if (paramKeys.length > 0) {
-          const paramString = paramKeys
-            .map(key => `${key}=${encodeURIComponent(currentOptions[key])}`)
-            .join('&');
-          loginUrl += '&' + paramString;
+        // 使用自定义参数或当前页面参数
+        const finalParams = redirectParams || currentOptions;
+        
+        // 添加参数
+        if (finalParams && typeof finalParams === 'object') {
+          const paramKeys = Object.keys(finalParams);
+          if (paramKeys.length > 0) {
+            const paramString = paramKeys
+              .map(key => `${key}=${encodeURIComponent(finalParams[key])}`)
+              .join('&');
+            loginUrl += '&' + paramString;
+          }
         }
         
         console.log('跳转登录页面:', loginUrl);

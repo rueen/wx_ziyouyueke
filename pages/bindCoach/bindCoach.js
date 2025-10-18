@@ -5,6 +5,7 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
+const { navigateToLoginWithRedirect } = require('../../utils/util.js');
 
 Page({
   /**
@@ -22,9 +23,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    const { coach_id } = options;
-    
-    if (!coach_id) {
+    const { coachId } = options;
+
+    if (!coachId) {
       wx.showToast({
         title: '参数错误，请重新扫码',
         icon: 'none'
@@ -36,7 +37,7 @@ Page({
     }
 
     this.setData({
-      coachId: coach_id
+      coachId: coachId
     });
 
     // 检查登录状态
@@ -135,16 +136,12 @@ Page({
   goToLogin() {
     const { coachId } = this.data;
     
-    wx.showModal({
-      title: '需要登录',
-      content: '绑定教练需要先登录，是否立即登录？',
-      success: (res) => {
-        if (res.confirm) {
-          // 跳转到登录页面，携带回调参数
-          wx.redirectTo({
-            url: `/pages/login/login?from=bindCoach&coach_id=${coachId}`
-          });
-        }
+    navigateToLoginWithRedirect({
+      message: '绑定教练需要先登录，是否立即登录？',
+      redirectParams: {
+        isFixedRole: true,
+        selectedRole: 'student',
+        coachId
       }
     });
   },

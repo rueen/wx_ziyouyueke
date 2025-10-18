@@ -14,11 +14,7 @@ Page({
     hasUserInfo: false,
     agreedToTerms: false, // 是否同意用户协议
     selectedRole: 'student', // 选择的身份，默认为学员
-    // 邀请相关参数
-    inviteCode: '',
-    coachId: '',
-    isInvited: false,
-    fromBindCoach: false, // 是否从绑定教练页面跳转过来
+    isFixedRole: false,
     // 来源页面信息
     redirectUrl: '', // 登录成功后要跳转的页面
     redirectParams: {} // 跳转页面的参数
@@ -28,11 +24,15 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    const { isFixedRole, selectedRole } = options;
+    if(isFixedRole){
+      this.setData({
+        isFixedRole,
+        selectedRole
+      })
+    }
     // 检查用户是否已经登录
     this.checkLoginStatus();
-    
-    // 处理邀请码参数
-    this.handleInviteParams(options);
     
     // 处理来源页面参数
     this.handleRedirectParams(options);
@@ -164,11 +164,6 @@ Page({
         userInfo
       };
       
-      // 如果有邀请的教练ID，加入参数
-      if (this.data.isInvited && this.data.coachId) {
-        loginParams.coach_id = parseInt(this.data.coachId);
-      }
-      
       // 调用登录API
       const result = await api.auth.login(loginParams);
       
@@ -268,43 +263,6 @@ Page({
   },
 
   /**
-   * 处理邀请码参数和绑定教练回调
-   */
-  handleInviteParams(options) {
-    const { coach, invite, from, coach_id } = options;
-    
-    if (coach && invite) {
-      // 有邀请码，自动设置为学员身份
-      this.setData({
-        selectedRole: 'student',
-        coachId: coach,
-        inviteCode: invite,
-        isInvited: true
-      });
-      
-      wx.showToast({
-        title: '检测到教练邀请',
-        icon: 'none',
-        duration: 2000
-      });
-    } else if (from === 'bindCoach' && coach_id) {
-      // 从绑定教练页面跳转过来，保存回调信息
-      this.setData({
-        selectedRole: 'student',
-        coachId: coach_id,
-        isInvited: false,
-        fromBindCoach: true
-      });
-      
-      wx.showToast({
-        title: '请登录后绑定教练',
-        icon: 'none',
-        duration: 2000
-      });
-    }
-  },
-
-  /**
    * 处理来源页面参数
    */
   handleRedirectParams(options) {
@@ -313,7 +271,6 @@ Page({
     if (redirectUrl) {
       // 移除redirectUrl，剩下的都是页面参数
       delete params.coach;
-      delete params.invite;
       delete params.from;
       delete params.coach_id;
       
@@ -330,12 +287,7 @@ Page({
    * 处理登录成功后的跳转
    */
   handleLoginRedirect() {
-    if (this.data.fromBindCoach && this.data.coachId) {
-      // 从绑定教练页面来的，返回绑定教练页面
-      wx.redirectTo({
-        url: `/pages/bindCoach/bindCoach?coach_id=${this.data.coachId}`
-      });
-    } else if (this.data.redirectUrl) {
+    if (this.data.redirectUrl) {
       // 有来源页面，跳转回原页面
       let url = this.data.redirectUrl;
       

@@ -144,7 +144,20 @@ Page({
           // 填充表单数据
           this.setData({
             formData: {
-              ...course
+              title: course.title,
+              content: course.content,
+              course_date: course.course_date,
+              start_time: course.start_time,
+              end_time: course.end_time,
+              duration: course.duration,
+              max_participants: course.max_participants,
+              min_participants: course.min_participants,
+              price_type: course.price_type, // 1-扣课时，2-金额展示，3-免费
+              category_id: course.category_id, // 课程分类ID
+              lesson_cost: course.lesson_cost,
+              price_amount: course.price_amount,
+              enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人
+              address_id: course.address_id
             },
             cover_images: course.cover_images || [],
             images: course.images || [],
@@ -575,7 +588,7 @@ Page({
             // 跳转到预览页面
             const id = mode === 'add' ? res.data.id : courseId
             wx.redirectTo({
-              url: `/pages/groupCourseDetail/groupCourseDetail?id=${id}&mode=preview`
+              url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${id}&mode=preview`
             })
           } else {
             // 仅保存，不跳转，更新模式为编辑
