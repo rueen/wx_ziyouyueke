@@ -98,7 +98,20 @@ Component({
         // 异步加载时间模板和时间段数据
         this.loadTimeTemplate().then(() => {
           this.generateDateList(); // 重新生成日期列表
-          this.loadTimeSlots(this.data.currentDate); // 加载时间段
+          
+          // 确定初始日期：优先使用selectedTimeSlot.course_date，否则使用currentDate
+          let initialDate = this.data.currentDate;
+          if (this.properties.selectedTimeSlot && this.properties.selectedTimeSlot.course_date) {
+            initialDate = this.properties.selectedTimeSlot.course_date;
+            // 设置currentDate
+            this.setData({
+              currentDate: initialDate
+            });
+          }
+          
+          if (initialDate) {
+            this.loadTimeSlots(initialDate); // 加载时间段
+          }
         }).catch(error => {
           console.error('加载时间模板失败:', error);
           // 即使失败也显示基本的日期选择器
@@ -209,7 +222,7 @@ Component({
       this.setData({
         dateList: dateList
       });
-      if(dateList && dateList[0] && dateList[0].date){
+      if(!this.data.currentDate && dateList && dateList[0] && dateList[0].date){
         this.setData({
           currentDate: dateList[0].date
         });

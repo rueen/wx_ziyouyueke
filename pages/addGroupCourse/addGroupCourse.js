@@ -26,7 +26,6 @@ Page({
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
-      auto_confirm: 1,
       address_id: null
     },
     
@@ -144,11 +143,11 @@ Page({
             images: course.images || [],
             selectedAddress: course.address || null
           })
-          
           // 如果有选中的时间，构造时间选择器数据
           if (course.course_date && course.start_time && course.end_time) {
             this.setData({
               selectedTimeSlot: {
+                id: `${course.course_date}_${course.start_time}_${course.end_time}`,
                 course_date: course.course_date,
                 start_time: course.start_time,
                 end_time: course.end_time
