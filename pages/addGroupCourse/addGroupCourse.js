@@ -115,6 +115,9 @@ Page({
     }
   },
 
+  getTimeSlot(time) {
+    return `${time.split(':')[0]}:${time.split(':')[1]}`
+  },
   /**
    * 加载课程详情（编辑模式）
    */
@@ -132,12 +135,16 @@ Page({
     api.groupCourse.getDetail(courseId)
       .then(res => {
         if (res.success && res.data) {
-          const course = res.data
+          const course = {
+            ...res.data,
+            start_time: this.getTimeSlot(res.data.start_time),
+            end_time: this.getTimeSlot(res.data.end_time)
+          }
           
           // 填充表单数据
           this.setData({
             formData: {
-              ...course,
+              ...course
             },
             cover_images: course.cover_images || [],
             images: course.images || [],

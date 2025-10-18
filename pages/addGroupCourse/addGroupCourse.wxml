@@ -85,6 +85,7 @@ module.exports = {
         <view class="time-selector-container">
           <timeSelector 
             coachId="{{currentUserId}}"
+            courseId="{{courseId}}"
             mode="select"
             type="groupCourses"
             showBookingDetails="{{false}}"

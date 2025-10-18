@@ -15,6 +15,10 @@ Component({
       type: Number,
       value: null
     },
+    courseId: {
+      type: Number,
+      value: null
+    },
     // 组件模式：'view'(查看模式) 或 'select'(选择模式)
     mode: {
       type: String,
@@ -304,7 +308,7 @@ Component({
           const groupCoursesInSlot = groupCourses.filter(groupCourse => {
             const course_start_time = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
             const course_end_time = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
-            return course_start_time === slot.startTime && course_end_time === slot.endTime;
+            return (this.properties.type === 'groupCourses' && groupCourse.id !== this.properties.courseId) && course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
           // 计算个人课程名额统计
