@@ -115,7 +115,7 @@ page {
   gap: 20rpx;
 }
 
-.course-card:active {
+.course-card-wrap:active {
   transform: scale(0.98);
 }
 
@@ -198,8 +198,7 @@ page {
 /* 价格 */
 .price {
   font-size: 32rpx;
-  font-weight: 600;
-  color: #ea4f23;
+  color: #ff6b35;
 }
 
 .course-bottom{
@@ -234,6 +233,7 @@ page {
 .action-buttons {
   display: flex;
   align-items: center;
+  gap: 16rpx;
 }
 .action-btn {
   width: 158rpx!important;

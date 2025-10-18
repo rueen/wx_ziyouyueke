@@ -36,10 +36,12 @@
           wx:for="{{courses}}" 
           wx:key="id"
           class="course-card"
-          data-course="{{item}}"
-          bindtap="onCourseTap"
         >
-          <view class="course-card-wrap">
+          <view
+            class="course-card-wrap"
+            data-course="{{item}}"
+            bindtap="onCourseTap"
+          >
             <!-- 课程状态标签 -->
             <view class="status-tag status_{{item.status}}">
               <text wx:if="{{item.status === 0}}">未发布</text>
@@ -75,7 +77,11 @@
           </view>
           <view class="course-bottom">
             <!-- 参与者信息 -->
-            <view class="participants">
+            <view
+              class="participants"
+              data-course="{{item}}"
+              catch:tap="viewRegistrations"
+            >
               <view class="avatar-list">
                 <image src="{{applicant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" mode="aspectFill" wx:for="{{item.registrations}}" wx:key="*this" wx:for-item="applicant" wx:if="{{index < 6}}" class="avatar"/>
               </view>
@@ -84,6 +90,12 @@
 
             <!-- 课程所有者操作按钮 -->
             <view wx:if="{{isOwner}}" class="action-buttons">
+              <button
+                wx:if="{{item.status !== 0}}"
+                class="action-btn cancel"
+                data-course="{{item}}"
+                catch:tap="viewRegistrations"
+              >查看报名</button>
               <button
                 wx:if="{{item.status === 1}}"
                 class="action-btn cancel"

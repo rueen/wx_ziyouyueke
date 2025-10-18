@@ -71,8 +71,7 @@ page {
 }
 .price {
   font-size: 36rpx;
-  font-weight: 600;
-  color: #ea4f23;
+  color: #ff6b35;
 }
 /* 状态标签 */
 .status-tag {

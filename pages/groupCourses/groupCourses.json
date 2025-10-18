@@ -1,4 +1,5 @@
 {
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "ghostNav": "/components/ghostNav/ghostNav",
     "layout": "/components/layout/layout",

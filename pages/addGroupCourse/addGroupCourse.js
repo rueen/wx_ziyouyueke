@@ -525,6 +525,14 @@ Page({
       })
       return false
     }
+
+    if(formData.max_participants > 100) {
+      wx.showToast({
+        title: '最大参与人数不可超过100人',
+        icon: 'none'
+      })
+      return false;
+    }
     
     if (formData.price_type === 2 && formData.price_amount <= 0) {
       wx.showToast({
@@ -533,6 +541,8 @@ Page({
       })
       return false
     }
+
+
     
     return true
   },

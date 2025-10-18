@@ -875,6 +875,15 @@ module.exports = {
         method: 'PUT',
         data: params
       });
+    },
+
+    // 完成团课
+    complete: function(id, params = {}) {
+      return request({
+        url: `/api/h5/group-courses/${id}/complete`,
+        method: 'PUT',
+        data: params
+      });
     }
   },
 

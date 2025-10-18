@@ -21,7 +21,8 @@
     "pages/categoriesDetail/categoriesDetail",
     "pages/groupCourses/groupCourses",
     "pages/addGroupCourse/addGroupCourse",
-    "pages/groupCourseDetail/groupCourseDetail"
+    "pages/groupCourseDetail/groupCourseDetail",
+    "pages/groupCoursesRegistrations/groupCoursesRegistrations"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

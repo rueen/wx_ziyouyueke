@@ -1,0 +1,34 @@
+<!--pages/groupCoursesRegistrations/groupCoursesRegistrations.wxml-->
+<navBar title="报名列表" />
+<layout>
+  <view class="participant-list">
+    <view class="participant-item" wx:for="{{list}}" wx:key="*this">
+      <image 
+        class="participant-avatar" 
+        src="{{item.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" 
+        mode="aspectFill"
+      />
+      <view class="participant-info">
+        <text class="participant-name">{{item.student.nickname}}</text>
+        <text class="participant-time">{{item.created_at}}</text>
+      </view>
+      <view class="action-buttons">
+        <text class="check-in-text" wx:if="{{item.check_in_status === 1}}">已签到</text>
+        <button
+          wx:if="{{item.check_in_status === 0}}"
+          class="action-btn check-in"
+          bind:tap="handleCheckIn"
+          data-item="{{item}}"
+        >签到</button>
+      </view>
+    </view>
+  </view>
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions">
+    <view class="action-buttons">
+      <button class="action-btn complete" disabled="{{status === 2}}" bindtap="handleComplete">
+        {{status === 2 ? '团课已完成' : '完成团课'}}
+      </button>
+    </view>
+  </view>
+</layout>

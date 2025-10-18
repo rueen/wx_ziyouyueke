@@ -296,7 +296,7 @@ Component({
           
           // 获取该时间段的最大预约人数
           const maxAdvanceNums = timeTemplate.max_advance_nums || 1;
-          
+
           // 查找该时间段的所有个人课程（包括已取消的）
           const allCoursesInSlot = bookedCourses.filter(course => {
             const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
@@ -308,7 +308,10 @@ Component({
           const groupCoursesInSlot = groupCourses.filter(groupCourse => {
             const course_start_time = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
             const course_end_time = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
-            return (this.properties.type === 'groupCourses' && groupCourse.id !== this.properties.courseId) && course_start_time === slot.startTime && course_end_time === slot.endTime;
+            if(this.properties.type === 'groupCourses' && this.properties.courseId != null) {
+              return groupCourse.id !== this.properties.courseId && course_start_time === slot.startTime && course_end_time === slot.endTime;
+            }
+            return course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
           // 计算个人课程名额统计

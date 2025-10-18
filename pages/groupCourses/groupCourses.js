@@ -277,6 +277,18 @@ Page({
     })
   },
 
+  // 查看报名列表
+  viewRegistrations(e) {
+    const { isOwner } = this.data;
+    const { course } = e.currentTarget.dataset;
+    if(!isOwner){
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/groupCoursesRegistrations/groupCoursesRegistrations?courseId=${course.id}&price_type=${course.price_type}&status=${course.status}`
+    })
+  },
+
   onCancelCourse(e) {
     const { course } = e.currentTarget.dataset;
 
