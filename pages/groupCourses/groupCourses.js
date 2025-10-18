@@ -206,7 +206,7 @@ Page({
   onBindCoach() {
     const { coachId } = this.data;
     wx.navigateTo({
-      url: `/pages/bindCoach/bindCoach?coach_id=${coachId}`
+      url: `/pages/bindCoach/bindCoach?coachId=${coachId}`
     })
   },
   

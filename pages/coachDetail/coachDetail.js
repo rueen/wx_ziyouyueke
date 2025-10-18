@@ -91,6 +91,14 @@ Page({
     }
   },
 
+  // 打开团课
+  onGroupCourses() {
+    const { coachId } = this.data;
+    wx.navigateTo({
+      url: `/pages/groupCourses/groupCourses?coachId=${coachId}`
+    })
+  },
+
   /**
    * 处理日期选择事件
    */

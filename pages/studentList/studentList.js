@@ -238,7 +238,7 @@ Page({
     const { coachInfo } = this.data;
     return {
       title: `${coachInfo.nickname}邀请您成为学员`,
-      path: `/pages/bindCoach/bindCoach?coach_id=${coachInfo.id}`,
+      path: `/pages/bindCoach/bindCoach?coachId=${coachInfo.id}`,
       imageUrl: coachInfo.avatar_url
     };
   }

@@ -8,17 +8,20 @@ page {
   height: 100vh;
   background-color: #f5f5f5;
 }
+.iconfont.icon-arrow-r{
+  font-size: 26rpx;
+  color: #666;
+  padding-left: 10rpx;
+}
 
 .container {
-  padding-bottom: 160rpx;
+  padding-bottom: calc(150rpx + env(safe-area-inset-bottom));
 }
 
 /* 教练基础信息 */
 .coach-header {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 40rpx;
-  margin-bottom: 20rpx;
   display: flex;
   align-items: center;
 }
@@ -78,16 +81,28 @@ page {
 /* 信息区块 */
 .intro-section {
   background-color: #fff;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  margin-bottom: 20rpx;
+  padding: 32rpx;
+  margin-top: 24rpx;
+}
+
+.groupCourse-section{
+  background-color: #fff;
+  padding: 32rpx;
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 30rpx;
+  color: #333;
+}
+.groupCourse-section:active{
+  transform: scale(0.98);
 }
 
 .time-section {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 40rpx 0 20rpx 0;
-  margin-bottom: 20rpx;
+  margin-top: 20rpx;
 }
 
 .time-section .section-title {

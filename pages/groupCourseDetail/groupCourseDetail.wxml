@@ -114,11 +114,15 @@ module.exports = {
     <view class="section-title">报名信息</view>
     <view class="registration-details">
       <view class="registration-item">
+        <text class="registration-label">课程分类：</text>
+        <text class="registration-value">{{courseDetail.category_name}}</text>
+      </view>
+      <view class="registration-item">
         <text class="registration-label">报名范围：</text>
         <text class="registration-value">{{courseDetail.enrollment_scope === 1 ? '仅学员' : '所有人'}}</text>
       </view>
       <view class="registration-item">
-        <text class="registration-label">成团人数：</text>
+        <text class="registration-label">最小开课人数：</text>
         <text class="registration-value">{{courseDetail.min_participants}} 人</text>
       </view>
       <view class="registration-item" bindtap="onShowRegistrationModal">

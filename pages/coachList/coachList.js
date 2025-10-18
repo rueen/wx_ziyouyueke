@@ -115,7 +115,7 @@ Page({
   onCoachDetail(e) {
     const coach = e.currentTarget.dataset.coach;
     wx.navigateTo({
-      url: `/pages/coachDetail/coachDetail?relationId=${coach.relationId}&coachId=${coach.coachId}`
+      url: `/pages/coachDetail/coachDetail?relationId=${coach.relationId}&coachId=${coach.id}`
     });
   }
 }) 

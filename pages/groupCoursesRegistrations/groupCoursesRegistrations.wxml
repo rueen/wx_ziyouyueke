@@ -1,7 +1,7 @@
 <!--pages/groupCoursesRegistrations/groupCoursesRegistrations.wxml-->
 <navBar title="报名列表" />
 <layout>
-  <view class="participant-list">
+  <view class="participant-list" wx:if="{{list.length > 0}}">
     <view class="participant-item" wx:for="{{list}}" wx:key="*this">
       <image 
         class="participant-avatar" 
@@ -23,6 +23,12 @@
       </view>
     </view>
   </view>
+  <!-- 空状态 -->
+  <emptyState 
+    wx:else
+    title="暂无数据"
+    description="暂无报名记录">
+  </emptyState>
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
     <view class="action-buttons">

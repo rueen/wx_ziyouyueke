@@ -31,6 +31,12 @@
       </view>
     </view>
 
+    <!-- 团课 -->
+    <view class="groupCourse-section" bind:tap="onGroupCourses">
+      <text>团课</text>
+      <text class="iconfont icon-arrow-r"></text>
+    </view>
+
     <!-- 可约时间 -->
     <view class="time-section">
       <text class="section-title">可约时间</text>
