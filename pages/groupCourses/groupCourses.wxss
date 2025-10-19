@@ -3,7 +3,7 @@
 
 page {
   height: 100vh;
-  background-color: #cdcff8;
+  background-color: #fdbe38;
 }
 
 .user-section {
@@ -13,7 +13,7 @@ page {
   padding: 0 32rpx
 }
 .user-info{
-  height: 200rpx;
+  height: 180rpx;
   display: flex;
   align-items: center;
   flex: 1;
@@ -48,19 +48,19 @@ page {
 
 .username {
   font-size: 32rpx;
-  color: #333;
+  color: #000;
   font-weight: 600;
   margin-right: 16rpx;
 }
 
 .user-desc {
   font-size: 28rpx;
-  color: #999;
+  color: #000;
 }
 
 .container{
   background-color: #f5f5f5;
-  min-height: calc(100vh - 200rpx);
+  min-height: calc(100vh - 180rpx);
   border-radius: 32rpx 32rpx 0 0;
 }
 
@@ -92,7 +92,7 @@ page {
   transform: translateX(-50%);
   width: 30rpx;
   height: 6rpx;
-  background-color: #fae64f;
+  background-color: #fdbe38;
   border-radius: 2rpx;
 }
 
