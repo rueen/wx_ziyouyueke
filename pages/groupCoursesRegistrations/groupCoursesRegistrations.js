@@ -130,7 +130,7 @@ Page({
   handleComplete() {
     const { price_type, list } = this.data;
     let tips = '';
-    const notCheckIn = list.filter(item => {item.check_in_status === 0});
+    const notCheckIn = list.filter(item => (item.check_in_status === 0));
 
     if(notCheckIn.length) {
       // 存在未签到的学员

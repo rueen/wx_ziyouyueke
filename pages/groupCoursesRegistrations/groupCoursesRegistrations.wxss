@@ -57,7 +57,7 @@ page {
   display: flex;
   align-items: center;
 }
-.action-btn {
+.participant-item .action-btn {
   width: 120rpx!important;
   height: 60rpx;
   border-radius: 30rpx;
