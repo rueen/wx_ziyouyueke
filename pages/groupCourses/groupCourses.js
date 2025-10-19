@@ -19,7 +19,6 @@ Page({
       { status: 2, name: '已结束' }
     ],
     
-    // 筛选后的课程列表
     courses: [],
     isLoading: false, // 加载状态
     hasMore: true, // 是否还有更多数据
@@ -362,7 +361,7 @@ Page({
   onAddCourseTap() {
     // 跳转到新增团课页面
     wx.navigateTo({
-      url: `/pages/addGroupCourse/addGroupCourse?type=add`
+      url: `/pages/groupCourseAdd/groupCourseAdd?type=add`
     });
   },
 

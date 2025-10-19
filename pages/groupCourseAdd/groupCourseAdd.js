@@ -1,4 +1,4 @@
-// pages/addGroupCourse/addGroupCourse.js
+// pages/groupCourseAdd/groupCourseAdd.js
 const api = require('../../utils/api.js')
 
 Page({

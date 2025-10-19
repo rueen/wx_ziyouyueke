@@ -1,4 +1,4 @@
-<!--pages/addGroupCourse/addGroupCourse.wxml-->
+<!--pages/groupCourseAdd/groupCourseAdd.wxml-->
 <wxs module="_filters">
 module.exports = {
   show_price_type: function(priceTypes, price_type){

@@ -181,7 +181,8 @@ Page({
             wx.hideLoading();
             wx.showToast({
               title: error.message || '报名失败',
-              icon: 'error'
+              icon: 'none',
+              duration: 3000
             })
           }
         }
@@ -249,14 +250,13 @@ Page({
    * 查看地址详情
    */
   onAddressTap() {
-    const { courseDetail } = this.data
-    
+    const { courseDetail } = this.data;
+
     if (courseDetail.address) {
-      // 这里可以跳转到地图页面或地址详情页
-      wx.showModal({
-        title: courseDetail.address.name,
-        content: courseDetail.address.address,
-        showCancel: false
+      const { latitude, longitude } = courseDetail.address;
+      wx.openLocation({
+        latitude,
+        longitude
       })
     }
   },
@@ -390,7 +390,7 @@ Page({
     const { courseId } = this.data
     
     wx.navigateTo({
-      url: `/pages/addGroupCourse/addGroupCourse?id=${courseId}&mode=edit`
+      url: `/pages/groupCourseAdd/groupCourseAdd?id=${courseId}&mode=edit`
     })
   },
 

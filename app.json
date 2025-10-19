@@ -20,9 +20,10 @@
     "pages/categoriesList/categoriesList",
     "pages/categoriesDetail/categoriesDetail",
     "pages/groupCourses/groupCourses",
-    "pages/addGroupCourse/addGroupCourse",
+    "pages/groupCourseAdd/groupCourseAdd",
     "pages/groupCourseDetail/groupCourseDetail",
-    "pages/groupCoursesRegistrations/groupCoursesRegistrations"
+    "pages/groupCoursesRegistrations/groupCoursesRegistrations",
+    "pages/groupCourseStudent/groupCourseStudent"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

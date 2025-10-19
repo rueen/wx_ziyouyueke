@@ -1,4 +1,4 @@
-/* pages/addGroupCourse/addGroupCourse.wxss */
+/* pages/groupCourseAdd/groupCourseAdd.wxss */
 @import '/style/iconfont.wxss';
 
 /* 表单容器 */
