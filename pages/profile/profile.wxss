@@ -100,7 +100,7 @@ page {
 }
 .menu-content .new-tag{
   font-size: 18rpx;
-  background: #f1452d;
+  background: #feb020;
   color: #fff;
   width: 60rpx;
   height: 32rpx;
