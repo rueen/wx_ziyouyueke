@@ -247,18 +247,48 @@ Page({
   },
 
   /**
-   * 查看地址详情
+   * 查看地址详情 - 打开微信地图
    */
   onAddressTap() {
     const { courseDetail } = this.data;
 
-    if (courseDetail.address) {
-      const { latitude, longitude } = courseDetail.address;
-      wx.openLocation({
-        latitude,
-        longitude
+    if (!courseDetail || !courseDetail.address) {
+      wx.showToast({
+        title: '地址信息不完整',
+        icon: 'none'
       })
+      return
     }
+
+    const { latitude, longitude, name, address } = courseDetail.address
+
+    // 检查坐标是否有效
+    if (!latitude || !longitude) {
+      wx.showToast({
+        title: '地址坐标无效',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 打开微信地图
+    wx.openLocation({
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      name: name || courseDetail.title || '团课地址',
+      address: address || '',
+      scale: 18, // 地图缩放级别，18为街道级别
+      success: () => {
+        console.log('打开地图成功')
+      },
+      fail: (err) => {
+        console.error('打开地图失败:', err)
+        wx.showToast({
+          title: '打开地图失败',
+          icon: 'none'
+        })
+      }
+    })
   },
 
   /**
