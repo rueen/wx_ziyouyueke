@@ -1,6 +1,6 @@
 <!--pages/profile/profile.wxml-->
 <navBar />
-<layout class="container">
+<layout>
   <!-- 用户信息区域 -->
   <view class="user-section" bindtap="onEditProfile">
     <view class="user-info">

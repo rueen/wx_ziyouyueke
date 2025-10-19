@@ -30,9 +30,9 @@ page {
 
 .course-card {
   background-color: #fff;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   padding: 32rpx;
-  margin-bottom: 20rpx;
+  margin: 16rpx;
 }
 
 /* 人员信息 */

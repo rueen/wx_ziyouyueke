@@ -13,7 +13,7 @@ page {
 .student-list {
   display: flex;
   flex-direction: column;
-  padding: 20rpx 20rpx 160rpx;
+  padding: 24rpx 24rpx 160rpx;
 }
 
 .student-item {

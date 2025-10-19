@@ -11,8 +11,8 @@
 .form-section {
   background: #fff;
   border-radius: 16rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .section-title {

@@ -1,87 +1,89 @@
 <!--pages/studentDetail/studentDetail.wxml-->
 <navBar title="学员详情" />
-<layout class="container">
-  <!-- 学员信息 -->
-  <view class="student-header">
-    <view class="student-avatar">
-      <image src="{{studentData.student.avatar_url}}" class="avatar-img"></image>
+<layout>
+  <view class="container">
+    <!-- 学员信息 -->
+    <view class="student-header">
+      <view class="student-avatar">
+        <image src="{{studentData.student.avatar_url}}" class="avatar-img"></image>
+      </view>
+      <view class="student-info">
+        <text class="student-name">{{studentData.student.nickname}}</text>
+        <view class="student-intro">{{studentData.student.intro}}</view>
+      </view>
     </view>
-    <view class="student-info">
-      <text class="student-name">{{studentData.student.nickname}}</text>
-      <view class="student-intro">{{studentData.student.intro}}</view>
-    </view>
-  </view>
 
-  <!-- 课时信息 -->
-  <view class="info-section">
-    <view class="section-header">
-      <text class="section-title">
-        <text>剩余课时</text>
-      </text>
-      <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
-    </view>
+    <!-- 课时信息 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">
+          <text>剩余课时</text>
+        </text>
+        <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
+      </view>
+      
+      <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
+        <text class="info-label">{{item.category.name}}：</text>
+        <view wx:if="{{!isEditing}}" class="info-value">
+          <text class="lessons-count active">{{item.remaining_lessons}}节</text>
+        </view>
+        <view wx:else class="edit-value-container">
+          <input
+            class="edit-input" 
+            type="number" 
+            value="{{item.remaining_lessons}}" 
+            bindinput="onLessonsInput"
+            data-id="{{item.category.id}}"
+            placeholder="请输入课时数"></input>
+          <text class="edit-unit">节</text>
+        </view>
+      </view>
+      <view class="section-info">
+        <text>可在“我的”->“课程分类”添加更多课程</text>
+      </view>
     
-    <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
-      <text class="info-label">{{item.category.name}}：</text>
-      <view wx:if="{{!isEditing}}" class="info-value">
-        <text class="lessons-count active">{{item.remaining_lessons}}节</text>
+    </view>
+
+    <!-- 备注信息 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">教练备注</text>
       </view>
-      <view wx:else class="edit-value-container">
-        <input
-          class="edit-input" 
-          type="number" 
-          value="{{item.remaining_lessons}}" 
-          bindinput="onLessonsInput"
-          data-id="{{item.category.id}}"
-          placeholder="请输入课时数"></input>
-        <text class="edit-unit">节</text>
+      
+      <view class="remark-container">
+        <view wx:if="{{!isEditing}}" class="remark-display">
+          <text class="remark-text">{{studentData.coach_remark || '暂无备注'}}</text>
+        </view>
+        <textarea wx:else 
+                  class="remark-textarea" 
+                  placeholder="请输入学员备注" 
+                  value="{{studentRemark}}" 
+                  bindinput="onRemarkInput"
+                  maxlength="200"></textarea>
       </view>
     </view>
-    <view class="section-info">
-      <text>可在“我的”->“课程分类”添加更多课程</text>
+
+    <!-- 上课记录 -->
+    <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
+      <text>查看课程</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
     </view>
-  
-  </view>
 
-  <!-- 备注信息 -->
-  <view class="info-section">
-    <view class="section-header">
-      <text class="section-title">教练备注</text>
+    <!-- 编辑状态的操作按钮 -->
+    <view wx:if="{{isEditing}}" class="edit-actions">
+      <button class="cancel-btn" bindtap="onCancelEdit">取消</button>
+      <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
+        {{isSaving ? '保存中...' : '保存'}}
+      </button>
     </view>
-    
-    <view class="remark-container">
-      <view wx:if="{{!isEditing}}" class="remark-display">
-        <text class="remark-text">{{studentData.coach_remark || '暂无备注'}}</text>
-      </view>
-      <textarea wx:else 
-                class="remark-textarea" 
-                placeholder="请输入学员备注" 
-                value="{{studentRemark}}" 
-                bindinput="onRemarkInput"
-                maxlength="200"></textarea>
+
+    <!-- 操作按钮 -->
+    <view wx:if="{{!isEditing}}" class="action-buttons">
+      <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}">立即约课</button>
+      <button class="unbind-button" bindtap="onShowUnbindConfirm" disabled="{{isUnbinding}}">
+        {{isUnbinding ? '解除中...' : '解除绑定'}}
+      </button>
     </view>
-  </view>
-
-  <!-- 上课记录 -->
-  <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
-    <text>查看课程</text>
-    <text class="iconfont icon-arrow-r arrow"></text>
-  </view>
-
-  <!-- 编辑状态的操作按钮 -->
-  <view wx:if="{{isEditing}}" class="edit-actions">
-    <button class="cancel-btn" bindtap="onCancelEdit">取消</button>
-    <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
-      {{isSaving ? '保存中...' : '保存'}}
-    </button>
-  </view>
-
-  <!-- 操作按钮 -->
-  <view wx:if="{{!isEditing}}" class="action-buttons">
-    <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}">立即约课</button>
-    <button class="unbind-button" bindtap="onShowUnbindConfirm" disabled="{{isUnbinding}}">
-      {{isUnbinding ? '解除中...' : '解除绑定'}}
-    </button>
   </view>
 </layout>
 

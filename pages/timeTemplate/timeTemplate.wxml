@@ -1,75 +1,77 @@
 <!--pages/timeTemplate/timeTemplate.wxml-->
 <navBar title="时间模板" />
-<layout class="container">
-  <!-- 预约设置 -->
-  <view class="settings-section">
-    <view class="section-header">
-      <text class="section-title">预约设置</text>
-      <text class="edit-btn" bindtap="onShowSettingsForm">编辑</text>
-    </view>
-    <view class="settings-content">
-      <view class="setting-item">
-        <text class="setting-label">是否启用</text>
-        <switch 
-          class="setting-switch" 
-          checked="{{templateEnabled}}" 
-          bindchange="onTemplateToggle"
-        />
+<layout>
+  <view class="container">
+    <!-- 预约设置 -->
+    <view class="settings-section">
+      <view class="section-header">
+        <text class="section-title">预约设置</text>
+        <text class="edit-btn" bindtap="onShowSettingsForm">编辑</text>
       </view>
-      <!-- <view class="setting-item">
-        <text class="setting-label">最少提前天数</text>
-        <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
-      </view> -->
-      <view class="setting-item">
-        <text class="setting-label">最多可预约天数</text>
-        <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
-      </view>
-      <view class="setting-item">
-        <text class="setting-label">同时段最多可预约人数</text>
-        <text class="setting-value">{{bookingSettings.maxAdvanceNums}}人</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 时间段模板 -->
-  <view class="template-section">
-    <view class="section-header">
-      <text class="section-title">时间段模板</text>
-      <text class="add-btn" bindtap="onShowAddForm">添加</text>
-    </view>
-    
-    <!-- 模板状态提示 -->
-    <view class="template-status" wx:if="{{!templateEnabled && timeSlotTemplate.length > 0}}">
-      <text class="status-text">⚠️ 当前模板已禁用，学员无法预约</text>
-    </view>
-    
-    <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
-      <view class="time-slot {{!templateEnabled ? 'disabled' : ''}}" wx:for="{{timeSlotTemplate}}" wx:key="id">
-        <view class="time-info">
-          <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
+      <view class="settings-content">
+        <view class="setting-item">
+          <text class="setting-label">是否启用</text>
+          <switch 
+            class="setting-switch" 
+            checked="{{templateEnabled}}" 
+            bindchange="onTemplateToggle"
+          />
         </view>
-        <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
+        <!-- <view class="setting-item">
+          <text class="setting-label">最少提前天数</text>
+          <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
+        </view> -->
+        <view class="setting-item">
+          <text class="setting-label">最多可预约天数</text>
+          <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
+        </view>
+        <view class="setting-item">
+          <text class="setting-label">同时段最多可预约人数</text>
+          <text class="setting-value">{{bookingSettings.maxAdvanceNums}}人</text>
+        </view>
       </view>
     </view>
-    
-    <emptyState 
-      wx:else
-      type="no-data"
-      title="暂无时间段模板"
-      description="点击上方添加按钮创建时间段"
-      customClass="compact">
-    </emptyState>
-  </view>
 
-  <!-- 日期模板 -->
-  <view class="data-section">
-    <view class="section-header">
-      <text class="section-title">日期模板</text>
+    <!-- 时间段模板 -->
+    <view class="template-section">
+      <view class="section-header">
+        <text class="section-title">时间段模板</text>
+        <text class="add-btn" bindtap="onShowAddForm">添加</text>
+      </view>
+      
+      <!-- 模板状态提示 -->
+      <view class="template-status" wx:if="{{!templateEnabled && timeSlotTemplate.length > 0}}">
+        <text class="status-text">⚠️ 当前模板已禁用，学员无法预约</text>
+      </view>
+      
+      <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
+        <view class="time-slot {{!templateEnabled ? 'disabled' : ''}}" wx:for="{{timeSlotTemplate}}" wx:key="id">
+          <view class="time-info">
+            <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+          <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
+        </view>
+      </view>
+      
+      <emptyState 
+        wx:else
+        type="no-data"
+        title="暂无时间段模板"
+        description="点击上方添加按钮创建时间段"
+        customClass="compact">
+      </emptyState>
     </view>
-    <view class="date-slots">
-      <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
-        <text>{{ item.text }}</text>
-        <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchDateChange"/>
+
+    <!-- 日期模板 -->
+    <view class="data-section">
+      <view class="section-header">
+        <text class="section-title">日期模板</text>
+      </view>
+      <view class="date-slots">
+        <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
+          <text>{{ item.text }}</text>
+          <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchDateChange"/>
+        </view>
       </view>
     </view>
   </view>

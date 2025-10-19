@@ -1,6 +1,6 @@
 <!--pages/courseList/courseList.wxml-->
 <navBar title="{{pageFrom === 'studentDetail' ? student.nickname + '的课程' : '我的课程'}}" />
-<layout class="container">
+<layout>
   <!-- Tab切换 -->
   <view class="tab-container">
     <view class="tab-list">

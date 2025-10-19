@@ -1,48 +1,50 @@
 <!--pages/addressList/addressList.wxml-->
 <navBar title="常用地址" />
-<layout class="container">
+<layout>
+  <view class="container">
     <!-- 地址列表 -->
-  <view class="address-list" wx:if="{{addresses.length > 0}}">
-    <view class="address-item" 
-          wx:for="{{addresses}}" 
-          wx:key="id"
-          bindtap="onEditAddress" 
-          data-address="{{item}}">
-      <view class="address-content">
-        <view class="address-header">
-          <view class="address-name-row">
-            <text class="address-name">{{item.name}}</text>
-            <view class="default-tag" wx:if="{{item.isDefault}}">
-              <text class="default-text">默认</text>
+    <view class="address-list" wx:if="{{addresses.length > 0}}">
+      <view class="address-item" 
+            wx:for="{{addresses}}" 
+            wx:key="id"
+            bindtap="onEditAddress" 
+            data-address="{{item}}">
+        <view class="address-content">
+          <view class="address-header">
+            <view class="address-name-row">
+              <text class="address-name">{{item.name}}</text>
+              <view class="default-tag" wx:if="{{item.isDefault}}">
+                <text class="default-text">默认</text>
+              </view>
             </view>
           </view>
+          <view class="address-detail">
+            <text class="address-text">{{item.address}}</text>
+          </view>
         </view>
-        <view class="address-detail">
-          <text class="address-text">{{item.address}}</text>
-        </view>
+        <text class="iconfont icon-right address-arrow"></text>
       </view>
-      <text class="iconfont icon-right address-arrow"></text>
     </view>
-  </view>
 
-  <!-- 空状态 -->
-  <emptyState 
-    wx:if="{{addresses.length === 0 && !isLoading}}"
-    type="no-address"
-    title="暂无常用地址"
-    description="点击下方按钮添加常用地址">
-  </emptyState>
+    <!-- 空状态 -->
+    <emptyState 
+      wx:if="{{addresses.length === 0 && !isLoading}}"
+      type="no-address"
+      title="暂无常用地址"
+      description="点击下方按钮添加常用地址">
+    </emptyState>
 
-  <!-- 加载状态 -->
-  <view class="loading-state" wx:if="{{isLoading}}">
-    <text class="loading-text">加载中...</text>
-  </view>
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{isLoading}}">
+      <text class="loading-text">加载中...</text>
+    </view>
 
-  <!-- 新增地址按钮 -->
-  <view class="add-button-container">
-    <button class="add-button" bindtap="onAddAddress">
-      <text class="iconfont icon-add"></text>
-      <text class="add-text">新增地址</text>
-    </button>
+    <!-- 新增地址按钮 -->
+    <view class="add-button-container">
+      <button class="add-button" bindtap="onAddAddress">
+        <text class="iconfont icon-add"></text>
+        <text class="add-text">新增地址</text>
+      </button>
+    </view>
   </view>
 </layout> 

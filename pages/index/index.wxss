@@ -9,7 +9,7 @@ page {
 }
 
 .container{
-  padding: 40rpx;
+  padding: 24rpx;
 }
 
 /* 用户信息卡片 */

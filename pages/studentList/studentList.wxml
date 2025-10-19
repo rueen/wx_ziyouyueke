@@ -1,6 +1,6 @@
 <!--pages/studentList/studentList.wxml-->
 <navBar title="我的学员" />
-<layout class="container">
+<layout>
   <!-- 学员列表 -->
   <view class="student-list" wx:if="{{students.length > 0}}">
     <view class="student-item" wx:for="{{students}}" wx:key="id" bindtap="onStudentDetail" data-student="{{item}}">

@@ -12,9 +12,7 @@ page {
 /* 用户信息区域 */
 .user-section {
   background-color: #fff;
-  border-radius: 20rpx;
   padding: 40rpx;
-  margin-bottom: 30rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,9 +71,10 @@ page {
 /* 功能菜单 */
 .menu-section {
   background-color: #fff;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   overflow: hidden;
-  margin: 0 30rpx;
+  margin: 0 24rpx;
+  margin-top: 24rpx;
 }
 
 .menu-item {

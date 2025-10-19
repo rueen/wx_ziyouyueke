@@ -1,6 +1,6 @@
 <!--pages/bookCourse/bookCourse.wxml-->
 <navBar title="{{bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课'}}" />
-<layout class="container">
+<layout>
   <!-- 加载状态 -->
   <view class="loading-container" wx:if="{{isLoading}}">
     <text class="loading-text">加载中...</text>

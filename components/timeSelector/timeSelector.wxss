@@ -86,7 +86,7 @@ page {
 /* 时间段容器样式 */
 .time-slots-container {
   flex: 1;
-  padding: 20rpx;
+  padding: 16rpx;
 }
 
 /* 加载状态样式 */
@@ -121,8 +121,8 @@ page {
 
 .time-slot {
   background-color: #fff;
-  border-radius: 12rpx;
-  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
   display: flex;
   align-items: center;
   position: relative;

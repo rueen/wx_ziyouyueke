@@ -10,7 +10,7 @@ page {
 }
 
 .container {
-  padding-bottom: 140rpx;
+  padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
 }
 
 /* 学员基础信息 */
@@ -59,8 +59,9 @@ page {
 /* 信息区块 */
 .info-section {
   background-color: #fff;
-  padding: 40rpx;
-  margin-bottom: 20rpx;
+  padding: 32rpx;
+  margin: 0 16rpx 16rpx;
+  border-radius: 16rpx;
 }
 
 .section-header {
@@ -195,9 +196,11 @@ page {
   align-items: center;
   background: #fff;
   height: 100rpx;
-  padding: 0 40rpx;
+  padding: 0 32rpx;
   font-size: 30rpx;
   color: #333;
+  margin: 0 24rpx;
+  border-radius: 16rpx;
 }
 
 /* 编辑操作按钮 */

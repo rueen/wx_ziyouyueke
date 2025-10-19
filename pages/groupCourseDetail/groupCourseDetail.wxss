@@ -188,7 +188,7 @@ page {
 .registration-info {
   background: #fff;
   padding: 32rpx;
-  margin-top: 24rpx;
+  margin-top: 16rpx;
   border-radius: 16rpx;
 }
 .registration-details {

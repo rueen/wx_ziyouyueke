@@ -9,17 +9,17 @@ page {
 .list{
   display: flex;
   flex-direction: column;
-  padding: 20rpx 30rpx 160rpx;
+  padding: 16rpx 16rpx 160rpx;
 }
 .categorie-item{
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: #fff;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
   transition: transform 0.2s ease;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
 }
 .categorie-item:active {
   transform: scale(0.98);

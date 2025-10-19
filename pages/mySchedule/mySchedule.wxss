@@ -223,37 +223,3 @@
   margin-left: 16rpx;
   flex-shrink: 0;
 }
-
-/* 空状态样式已移至通用组件 */
-
-/* 响应式适配 */
-@media (max-width: 375px) {
-  .date-item {
-    margin-right: 20rpx;
-    padding: 12rpx 16rpx;
-  }
-  
-  .date-content {
-    min-width: 70rpx;
-  }
-  
-  .week-day {
-    font-size: 22rpx;
-  }
-  
-  .month-day {
-    font-size: 28rpx;
-  }
-  
-  .time-slot {
-    padding: 20rpx;
-  }
-  
-  .time-range {
-    font-size: 28rpx;
-  }
-  
-  .student-name {
-    font-size: 26rpx;
-  }
-} 

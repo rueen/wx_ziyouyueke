@@ -25,7 +25,7 @@ page {
 /* 区域样式 */
 .section {
   background-color: #fff;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
 }
