@@ -58,7 +58,7 @@ page {
   align-items: center;
 }
 .participant-item .action-btn {
-  width: 120rpx!important;
+  width: 150rpx!important;
   height: 60rpx;
   border-radius: 30rpx;
   font-size: 26rpx;

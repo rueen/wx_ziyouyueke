@@ -20,7 +20,7 @@
           class="action-btn check-in"
           bind:tap="handleCheckIn"
           data-item="{{item}}"
-        >签到</button>
+        >扫码签到</button>
       </view>
     </view>
   </view>
