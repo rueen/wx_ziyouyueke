@@ -110,7 +110,7 @@
               >删除</button>
             </view>
             <!-- 非课程所有者操作按钮 -->
-            <view class="action-buttons" wx:else>
+            <view class="action-buttons" data-course="{{item}}" bindtap="onCourseTap" wx:else>
               <button wx:if="{{item.status === 1}}" class="action-btn registration">立即报名</button>
             </view>
           </view>
