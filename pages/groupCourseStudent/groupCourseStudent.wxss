@@ -62,8 +62,8 @@ page {
 /* 状态标签 */
 .status-tag {
   position: absolute;
-  top: 20rpx;
-  left: 20rpx;
+  top: 16rpx;
+  left: 16rpx;
   padding: 8rpx 16rpx;
   border-radius: 8rpx;
   font-size: 24rpx;
