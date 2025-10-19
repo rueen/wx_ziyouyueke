@@ -1,0 +1,128 @@
+/* 模态框容器 */
+@import '/style/iconfont.wxss';
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 遮罩层 */
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 模态框内容 */
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  max-width: 90%;
+  max-height: 80%;
+  overflow: hidden;
+  animation: modalShow 0.3s ease-out;
+}
+
+/* 居中显示 */
+.modal-content.center{
+  width: 600rpx;
+}
+
+/* 底部显示 */
+.modal-content.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  max-height: 80%;
+  border-radius: 32rpx 32rpx 0 0;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+/* 模态框头部 */
+.modal-header {
+  position: relative;
+  height: 96rpx;
+  border-bottom: 1rpx solid #e5e5ea;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.modal-close {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 32rpx;
+  color: #86868b;
+}
+
+/* 模态框主体 */
+.modal-body {
+  padding: 32rpx;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* 底部显示时的头部调整 */
+.modal-content.bottom .modal-header {
+  padding: 24rpx 32rpx 16rpx;
+}
+
+.modal-content.bottom .modal-title {
+  font-size: 30rpx;
+}
+
+.modal-content.bottom .modal-close {
+  top: 24rpx;
+  right: 32rpx;
+  font-size: 30rpx;
+}
+
+.modal-content.bottom .modal-body {
+  padding: 24rpx 32rpx 32rpx;
+}
+
+/* 动画效果 */
+@keyframes modalShow {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

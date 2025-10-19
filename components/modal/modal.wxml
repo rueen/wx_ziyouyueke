@@ -1,0 +1,14 @@
+<view class="modal-container" wx:if="{{show}}">
+  <view class="modal-mask" bindtap="onMaskTap"></view>
+  <view class="modal-content {{position}}">
+    <view class="modal-header" wx:if="{{title}}">
+      <text class="modal-title">{{title}}</text>
+      <view class="modal-close" bindtap="onClose">
+        <text class="iconfont icon-close"></text>
+      </view>
+    </view>
+    <view class="modal-body">
+      <slot></slot>
+    </view>
+  </view>
+</view>
