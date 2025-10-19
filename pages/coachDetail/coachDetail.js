@@ -26,7 +26,7 @@ Page({
         relationId: options.relationId - 0
       }, () => {
         this.loadCoachDetail();
-        this.setTimeSelectorCoachId();
+        // this.setTimeSelectorCoachId();
       });
     }
   },
@@ -34,20 +34,20 @@ Page({
   /**
    * 设置时间选择器的教练ID
    */
-  setTimeSelectorCoachId() {
-    const { coachId } = this.data;
-    // 等待页面渲染完成后设置
-    setTimeout(() => {
-      const timeSelector = this.selectComponent('#timeSelector');
-      if (timeSelector) {
-        timeSelector.setData({
-          coachId: coachId
-        });
-        // 重新初始化组件
-        timeSelector.initializeComponent();
-      }
-    }, 100);
-  },
+  // setTimeSelectorCoachId() {
+  //   const { coachId } = this.data;
+  //   // 等待页面渲染完成后设置
+  //   setTimeout(() => {
+  //     const timeSelector = this.selectComponent('#timeSelector');
+  //     if (timeSelector) {
+  //       timeSelector.setData({
+  //         coachId: coachId
+  //       });
+  //       // 重新初始化组件
+  //       timeSelector.initializeComponent();
+  //     }
+  //   }, 100);
+  // },
 
   /**
    * 从API加载教练详情
@@ -102,29 +102,29 @@ Page({
   /**
    * 处理日期选择事件
    */
-  onDateSelected(e) {
-    const { date } = e.detail;
-    // 可以在这里添加日期选择的处理逻辑
-  },
+  // onDateSelected(e) {
+  //   const { date } = e.detail;
+  //   // 可以在这里添加日期选择的处理逻辑
+  // },
 
   /**
    * 处理时间段加载完成事件
    */
-  onTimeSlotsLoaded(e) {
-    const { date, timeSlots } = e.detail;
-    // 可以在这里添加时间段加载完成的处理逻辑
-  },
+  // onTimeSlotsLoaded(e) {
+  //   const { date, timeSlots } = e.detail;
+  //   // 可以在这里添加时间段加载完成的处理逻辑
+  // },
 
   /**
    * 处理错误事件
    */
-  onError(e) {
-    const { message } = e.detail;
-    wx.showToast({
-      title: message || '操作失败',
-      icon: 'none'
-    });
-  },
+  // onError(e) {
+  //   const { message } = e.detail;
+  //   wx.showToast({
+  //     title: message || '操作失败',
+  //     icon: 'none'
+  //   });
+  // },
 
   /**
    * 约课

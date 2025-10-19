@@ -38,9 +38,8 @@
     </view>
 
     <!-- 可约时间 -->
-    <view class="time-section">
+    <!-- <view class="time-section">
       <text class="section-title">可约时间</text>
-        <!-- 时间选择器组件 -->
         <timeSelector
           id="timeSelector"
           coachId="{{coachId}}"
@@ -50,7 +49,7 @@
           bind:timeSlotsLoaded="onTimeSlotsLoaded"
           bind:error="onError"
         />
-    </view>
+    </view> -->
 
     <!-- 约课按钮 -->
     <view class="book-button-container">
