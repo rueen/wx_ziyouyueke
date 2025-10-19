@@ -9,14 +9,14 @@ page {
 }
 
 .container{
-  padding: 24rpx;
+  padding: 16rpx;
 }
 
 /* 用户信息卡片 */
 .user-card {
   background: #f4f5f6;
-  border-radius: 24rpx;
-  padding: 10rpx;
+  border-radius: 16rpx;
+  padding: 16rpx;
 }
 
 .user-header {
