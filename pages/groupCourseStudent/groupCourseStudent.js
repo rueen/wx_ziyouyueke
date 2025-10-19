@@ -22,6 +22,7 @@ Page({
     showQrcodeModal: false,
     qrCodeImagePath: '', // 二维码图片路径
     pollingTimer: null, // 轮询定时器
+    pollingErrorCount: 0, // 轮询错误计数
   },
 
   /**
@@ -36,6 +37,22 @@ Page({
    */
   onShow() {
     
+  },
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {
+    // 页面隐藏时停止轮询
+    this.stopPollingCourseStatus();
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
+    // 页面卸载时停止轮询
+    this.stopPollingCourseStatus();
   },
 
   /**
@@ -200,7 +217,8 @@ Page({
     if (this.data.pollingTimer) {
       clearInterval(this.data.pollingTimer);
       this.setData({
-        pollingTimer: null
+        pollingTimer: null,
+        pollingErrorCount: 0 // 重置错误计数
       });
     }
   },
@@ -219,7 +237,8 @@ Page({
     }, 3000);
     
     this.setData({
-      pollingTimer: timer
+      pollingTimer: timer,
+      pollingErrorCount: 0 // 重置错误计数
     });
   },
   /**
@@ -234,15 +253,21 @@ Page({
       if(res.success && res.data && res.data.list){
         const course = res.data.list[0] || {};
         const currentStatus = course.check_in_status;
-        const originalStatus = this.data.list.find(item => item.registrationId === registrationId).check_in_status;
+        const originalItem = this.data.list.find(item => item.registrationId === registrationId);
+        if (!originalItem) {
+          console.warn('未找到对应的课程记录，停止轮询');
+          this.stopPollingCourseStatus();
+          return;
+        }
+        const originalStatus = originalItem.check_in_status;
         
         // 如果状态发生变化（特别是变为已完成），停止轮询并更新课程内容
         if (currentStatus !== originalStatus) {
           this.stopPollingCourseStatus();
           
-          // 隐藏课程码弹窗
+          // 隐藏二维码弹窗
           this.setData({
-            showCourseCodeModal: false,
+            showQrcodeModal: false,
             qrCodeImagePath: ''
           });
           
@@ -258,7 +283,22 @@ Page({
       }
     } catch (error) {
       console.error('检查课程状态失败:', error);
-      // 轮询失败不影响主要功能，只记录错误
+      // 连续失败3次后停止轮询
+      if (!this.data.pollingErrorCount) {
+        this.setData({ pollingErrorCount: 0 });
+      }
+      this.setData({ 
+        pollingErrorCount: this.data.pollingErrorCount + 1 
+      });
+      
+      if (this.data.pollingErrorCount >= 3) {
+        console.warn('轮询连续失败3次，停止轮询');
+        this.stopPollingCourseStatus();
+        wx.showToast({
+          title: '网络异常，请手动刷新',
+          icon: 'none'
+        });
+      }
     }
   },
   handleCheckIn(e) {
