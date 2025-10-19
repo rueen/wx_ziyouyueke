@@ -73,8 +73,8 @@ page {
   background-color: #fff;
   border-radius: 16rpx;
   overflow: hidden;
-  margin: 0 24rpx;
-  margin-top: 24rpx;
+  margin: 0 16rpx;
+  margin-top: 16rpx;
 }
 
 .menu-item {
