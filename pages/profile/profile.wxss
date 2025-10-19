@@ -98,6 +98,18 @@ page {
   display: flex;
   align-items: center;
 }
+.menu-content .new-tag{
+  font-size: 18rpx;
+  background: #f1452d;
+  color: #fff;
+  width: 60rpx;
+  height: 32rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6rpx;
+  margin-left: 8rpx;
+}
 
 .menu-icon {
   font-size: 40rpx;
