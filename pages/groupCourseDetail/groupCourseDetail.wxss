@@ -226,6 +226,9 @@ page {
   border-radius: 16rpx;
   margin-top: 24rpx;
 }
+.coach-info:active{
+  transform: scale(0.98);
+}
 
 .coach-avatar {
   width: 80rpx;

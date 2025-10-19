@@ -23,14 +23,14 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.loadData(true)
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadData(true)
+    
   },
 
   /**
@@ -70,7 +70,7 @@ Page({
     try {
       this.setData({ isLoading: true });
       if (isRefresh) {
-        this.setData({ 
+        this.setData({
           currentPage: 1,
           hasMore: true,
           isRefreshing: true
@@ -102,6 +102,7 @@ Page({
             weekday: this.getWeekday(item.course_date),
             time: this.getTime(item),
             price: this.getCoursePrice(item),
+            check_in_status: _item.check_in_status - 0
           }
         })
         this.setData({

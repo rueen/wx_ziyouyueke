@@ -142,29 +142,10 @@ page {
 }
 
 .course-bottom{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 0 30rpx 30rpx 30rpx;
 }
-/* 参与者信息 */
-.participants {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-}
-.participants .avatar-list{
-  display: flex;
-  align-items: center;
-}
-.participants .avatar-list .avatar{
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: 50%;
-  margin-left: -10rpx;
-  border: 1rpx solid #fff;
-}
-.participant-count {
+.check_in_status{
   font-size: 26rpx;
-  color: #666;
+  color: #ff6b35;
+  text-align: right;
 }

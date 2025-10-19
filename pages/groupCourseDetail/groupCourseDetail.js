@@ -11,7 +11,7 @@ Page({
     courseId: null,
     coachId: null,
     courseDetail: null,
-    isRegistered: false,
+    registeredInfo: {}, // 本人报名信息
     loginType: 'guest',
     mode: 'view', // view-查看，preview-预览
     isOwner: false, // 是否为课程创建者
@@ -81,16 +81,16 @@ Page({
           };
           
           // 检查是否已报名
-          let isRegistered = false
+          let registeredInfo = {}
           if (course.registrations && course.registrations.length > 0) {
             const userInfo = wx.getStorageSync('userInfo')
             if (userInfo && userInfo.id) {
-              isRegistered = course.registrations.some(reg => 
+              registeredInfo = course.registrations.find(reg => 
                 reg.student && reg.student.id === userInfo.id
               )
             }
           }
-          
+
           // 检查权限
           const userInfo = wx.getStorageSync('userInfo')
           const isOwner = userInfo && userInfo.id === course.coach_id
@@ -99,7 +99,7 @@ Page({
           
           this.setData({
             courseDetail: course,
-            isRegistered: isRegistered,
+            registeredInfo: registeredInfo,
             isOwner: isOwner,
             canEdit: canEdit,
             canPublish: canPublish,

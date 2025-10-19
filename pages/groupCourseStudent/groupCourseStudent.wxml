@@ -60,14 +60,10 @@
         </view>
         <view class="course-bottom">
           <!-- 参与者信息 -->
-          <view
-            class="participants"
-            data-course="{{item}}"
-          >
-            <view class="avatar-list">
-              <image src="{{applicant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" mode="aspectFill" wx:for="{{item.registrations}}" wx:key="*this" wx:for-item="applicant" wx:if="{{index < 6}}" class="avatar"/>
-            </view>
-            <text class="participant-count">{{item.current_participants}}人已报名</text>
+          <view class="check_in_status">
+            <text wx:if="{{item.check_in_status === 0}}">已报名</text>
+            <text wx:if="{{item.check_in_status === 1}}">已签到</text>
+            <text wx:if="{{item.check_in_status === 2}}">缺席</text>
           </view>
         </view>
       </view>
