@@ -289,10 +289,17 @@ Page({
 
   // 打开团课
   onGroupCourses() {
-    const { userInfo } = this.data;
-    wx.navigateTo({
-      url: `/pages/groupCourses/groupCourses?coachId=${userInfo.id}`
-    })
+    const { userInfo, userRole } = this.data;
+    if(userRole === 'coach'){
+      wx.navigateTo({
+        url: `/pages/groupCourses/groupCourses?coachId=${userInfo.id}`
+      })
+    } else {
+      // 学员视角
+      wx.navigateTo({
+        url: `/pages/groupCourseStudent/groupCourseStudent`
+      })
+    }
   },
 
   /**

@@ -1,0 +1,8 @@
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "navBar": "/components/navBar/navbar",
+    "layout": "/components/layout/layout",
+    "emptyState": "/components/emptyState/emptyState"
+  }
+}
