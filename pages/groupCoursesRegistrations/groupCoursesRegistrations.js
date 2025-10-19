@@ -66,36 +66,63 @@ Page({
   handleCheckIn(e) {
     const { currentTarget: { dataset: { item } } } = e;
 
-    wx.showModal({
-      title: '',
-      content: '确定签到吗？',
-      complete: async (res) => {
-        if (res.confirm) {
-          try {
-            wx.showLoading({
-              title: '签到中...'
-            });
-            const { courseId } = this.data;
-            const res = await api.groupCourse.checkIn(courseId, item.id);
-            if(res.success) {
-              wx.hideLoading();
-            
-              wx.showToast({
-                title: '签到成功',
-                icon: 'success'
-              });
-              this.loadList()
-            }
-          } catch (error) {
-            wx.hideLoading();
-            wx.showToast({
-              title: error.message || '签到失败，请重试',
-              icon: 'none'
-            });
-          }
+    wx.scanCode({
+      success: (res) => {
+        const scannedRegistrationsId = res.result;
+        let tips = '';
+        if(item.payment_type === 1) {
+          tips = '签到后会扣除相应课时，'
         }
+        
+        // 验证扫描的学员报名ID是否与当前报名ID匹配
+        if (scannedRegistrationsId === item.id.toString()) {
+          wx.showModal({
+            title: '确定签到吗？',
+            content: `${tips}此操作不可撤销`,
+            complete: async (res) => {
+              if (res.confirm) {
+                try {
+                  wx.showLoading({
+                    title: '签到中...'
+                  });
+                  const { courseId } = this.data;
+                  const res = await api.groupCourse.checkIn(courseId, item.id);
+                  if(res.success) {
+                    wx.hideLoading();
+                  
+                    wx.showToast({
+                      title: '签到成功',
+                      icon: 'success'
+                    });
+                    this.loadList()
+                  }
+                } catch (error) {
+                  wx.hideLoading();
+                  wx.showToast({
+                    title: error.message || '签到失败，请重试',
+                    icon: 'none'
+                  });
+                }
+              }
+            }
+          })
+        } else {
+          wx.showModal({
+            title: '扫码错误',
+            content: '扫描的二维码与当前课程不匹配，请确认后重试',
+            showCancel: false,
+            confirmText: '确定'
+          });
+        }
+      },
+      fail: (error) => {
+        console.error('扫码失败：', error);
+        wx.showToast({
+          title: '扫码失败',
+          icon: 'error'
+        });
       }
-    })
+    });
   },
 
   async complete() {

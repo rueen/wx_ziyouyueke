@@ -1,5 +1,7 @@
 // pages/groupCourseStudent/groupCourseStudent.js
 const api = require('../../utils/api.js');
+// 引入二维码生成工具
+const drawQrcode = require('../../utils/weapp-qrcode/weapp.qrcode.js');
 
 Page({
 
@@ -17,6 +19,9 @@ Page({
     hasMore: true, // 是否还有更多数据
     currentPage: 1, // 当前页码
     pageSize: 10, // 每页数量
+    showQrcodeModal: false,
+    qrCodeImagePath: '', // 二维码图片路径
+    pollingTimer: null, // 轮询定时器
   },
 
   /**
@@ -102,7 +107,8 @@ Page({
             weekday: this.getWeekday(item.course_date),
             time: this.getTime(item),
             price: this.getCoursePrice(item),
-            check_in_status: _item.check_in_status - 0
+            check_in_status: _item.check_in_status - 0,
+            registrationId: _item.id
           }
         })
         this.setData({
@@ -178,6 +184,153 @@ Page({
     wx.navigateTo({
       url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
     })
+  },
+  onQrcodeModalClose() {
+    // 停止轮询
+    this.stopPollingCourseStatus();
+    this.setData({
+      showQrcodeModal: false,
+      qrCodeImagePath: '' // 清除二维码图片路径
+    })
+  },
+    /**
+   * 停止轮询
+   */
+  stopPollingCourseStatus() {
+    if (this.data.pollingTimer) {
+      clearInterval(this.data.pollingTimer);
+      this.setData({
+        pollingTimer: null
+      });
+    }
+  },
+  /**
+   * 启动轮询检查课程状态
+   */
+  startPollingCourseStatus(registrationId) {
+    // 清除之前的定时器
+    if (this.data.pollingTimer) {
+      clearInterval(this.data.pollingTimer);
+    }
+    
+    // 每3秒检查一次课程状态
+    const timer = setInterval(() => {
+      this.checkCourseStatus(registrationId);
+    }, 3000);
+    
+    this.setData({
+      pollingTimer: timer
+    });
+  },
+  /**
+   * 检查课程状态
+   */
+  async checkCourseStatus(registrationId) {
+    try {
+      const res = await api.groupCourse.getMyRegistrations({
+        id: registrationId
+      })
+      
+      if(res.success && res.data && res.data.list){
+        const course = res.data.list[0] || {};
+        const currentStatus = course.check_in_status;
+        const originalStatus = this.data.list.find(item => item.registrationId === registrationId).check_in_status;
+        
+        // 如果状态发生变化（特别是变为已完成），停止轮询并更新课程内容
+        if (currentStatus !== originalStatus) {
+          this.stopPollingCourseStatus();
+          
+          // 隐藏课程码弹窗
+          this.setData({
+            showCourseCodeModal: false,
+            qrCodeImagePath: ''
+          });
+          
+          // 显示状态变化提示
+          if (currentStatus === 1) {
+            wx.showToast({
+              title: '签到成功',
+              icon: 'success'
+            });
+          }
+          this.loadData(true)
+        }
+      }
+    } catch (error) {
+      console.error('检查课程状态失败:', error);
+      // 轮询失败不影响主要功能，只记录错误
+    }
+  },
+  handleCheckIn(e) {
+    const { course } = e.currentTarget.dataset;
+    const { registrationId } = course;
+
+    this.setData({
+      showQrcodeModal: true
+    })
+    // 生成二维码
+    this.generateQRCode(registrationId.toString());
+    this.startPollingCourseStatus(registrationId);
+  },
+  /**
+   * 生成二维码
+   * @param {string} courseId 课程ID
+   */
+  generateQRCode(text) {
+    try {
+      // 使用weapp-qrcode生成二维码
+      drawQrcode({
+        width: 150, // 使用像素单位，300rpx约等于150px
+        height: 150,
+        canvasId: 'qrcode-canvas',
+        text,
+        typeNumber: -1,
+        correctLevel: 1, // L级别纠错
+        background: '#ffffff',
+        foreground: '#000000',
+        _this: this,
+        callback: (res) => {
+          // 延迟一下再转换图片，确保绘制完成
+          setTimeout(() => {
+            this.canvasToTempFilePath();
+          }, 100);
+        }
+      });
+    } catch (error) {
+      console.error('生成二维码失败:', error);
+      wx.showToast({
+        title: '生成二维码失败',
+        icon: 'error'
+      });
+    }
+  },
+
+    /**
+   * 将canvas转换为临时图片文件
+   */
+  canvasToTempFilePath() {
+    wx.canvasToTempFilePath({
+      x: 0,
+      y: 0,
+      width: 150,
+      height: 150,
+      destWidth: 300,
+      destHeight: 300,
+      canvasId: 'qrcode-canvas',
+      success: (res) => {
+        this.setData({
+          qrCodeImagePath: res.tempFilePath
+        });
+      },
+      fail: (error) => {
+        console.error('转换二维码图片失败:', error);
+        console.error('错误详情:', error);
+        wx.showToast({
+          title: '生成二维码图片失败',
+          icon: 'error'
+        });
+      }
+    }, this);
   },
 
 })

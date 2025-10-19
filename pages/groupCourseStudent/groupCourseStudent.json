@@ -3,6 +3,7 @@
   "usingComponents": {
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
-    "emptyState": "/components/emptyState/emptyState"
+    "emptyState": "/components/emptyState/emptyState",
+    "modal": "/components/modal/modal"
   }
 }

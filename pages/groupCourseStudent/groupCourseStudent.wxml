@@ -21,10 +21,12 @@
         class="course-card"
         wx:for="{{list}}" 
         wx:key="id"
-        bindtap="onCourseTap"
-        data-course="{{item}}"
       >
-        <view class="course-card-wrap">
+        <view
+          class="course-card-wrap"
+          bindtap="onCourseTap"
+          data-course="{{item}}"
+        >
           <!-- 课程状态标签 -->
           <view class="status-tag status_{{item.status}}">
             <text wx:if="{{item.status === 0}}">未发布</text>
@@ -65,6 +67,14 @@
             <text wx:if="{{item.check_in_status === 1}}">已签到</text>
             <text wx:if="{{item.check_in_status === 2}}">缺席</text>
           </view>
+          <view>
+            <button
+              wx:if="{{item.check_in_status === 0}}"
+              class="action-btn check-in"
+              bind:tap="handleCheckIn"
+              data-course="{{item}}"
+            >签到</button>
+          </view>
         </view>
       </view>
     </view>
@@ -80,3 +90,27 @@
     </view>
   </view>
 </layout>
+
+<!-- 签到二维码模态框 -->
+<modal 
+  show="{{showQrcodeModal}}" 
+  title="标题" 
+  position="center"
+  bind:close="onQrcodeModalClose"
+>
+  <view class="qrcode-modal">
+    <!-- 二维码Canvas -->
+    <canvas 
+      canvas-id="qrcode-canvas" 
+      class="qr-code-canvas">
+    </canvas>
+    <!-- 二维码图片显示 -->
+    <image 
+      wx:if="{{qrCodeImagePath}}"
+      src="{{qrCodeImagePath}}" 
+      class="qr-code-image"
+      mode="aspectFit">
+    </image>
+    <text class="qr-tips">请向教练出示此二维码进行签到</text>
+  </view>
+</modal>
