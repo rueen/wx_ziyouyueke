@@ -41,7 +41,6 @@
         coachId="{{userInfo.id}}"
         mode="view"
         show-booking-details="{{true}}"
-        bind:courseTap="onCourseTap"
       />
       <!-- 学员时间安排 -->
       <studentSchedule

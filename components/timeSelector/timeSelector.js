@@ -589,12 +589,11 @@ Component({
         });
         return;
       }
-      
-      // 个人课程的处理逻辑
-      this.triggerEvent('courseTap', {
-        course: course,
-        date: this.data.currentDate
-      });
+      if (course && course.id != null) {
+        wx.navigateTo({
+          url: `/pages/courseDetail/courseDetail?id=${course.id}`
+        });
+      }
     },
 
     /**

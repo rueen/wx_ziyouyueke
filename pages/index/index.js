@@ -284,18 +284,5 @@ Page({
       url: '/pages/courseList/courseList?tab=0'
     });
   },
-
-  /**
-   * 处理教练课表时间段点击事件
-   */
-  onCourseTap(e) {
-    const { course } = e.detail;
-    // 如果是已预约的时间段，跳转到课程详情
-    if (course && course.id != null) {
-      wx.navigateTo({
-        url: `/pages/courseDetail/courseDetail?id=${course.id}`
-      });
-    }
-  },
   
 })
