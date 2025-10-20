@@ -540,8 +540,8 @@ Page({
         width: 280
       });
 
-      // 2. 初始化Canvas
-      const { canvas, ctx, width, height } = await posterUtil.initCanvas(this);
+      // 2. 初始化Canvas（参考示例样式比例：750x1200，宽高比约1:1.6）
+      const { canvas, ctx, width, height } = await posterUtil.initCanvas(this, '#posterCanvas', 750, 1200);
 
       // 3. 准备海报数据
       const addressName = courseDetail.address && courseDetail.address.name ? courseDetail.address.name : '';
@@ -584,61 +584,182 @@ Page({
   async drawCourseDetailPoster(canvas, ctx, width, height, data) {
     const { title, subtitle, coverImage, qrcodeBase64 } = data;
 
-    // 绘制背景
+    // 布局参数（参考示例样式：宽高比约1:1.6）
+    const coverAreaHeight = Math.floor(height * 0.65); // 顶部大图区域高度，增加比例
+    const contentPadding = 40; // 左右内边距
+    const titleFontSize = 36; // 稍微减小标题字体
+    const infoFontSize = 26; // 稍微减小信息字体
+
+    // 背景
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // 1. 绘制封面图或默认背景
-    if (coverImage) {
-      try {
-        const coverImg = await posterUtil.loadImageFromUrl(canvas, coverImage);
-        ctx.drawImage(coverImg, 0, 0, width, 300);
-      } catch (error) {
-        console.error('加载封面图失败:', error);
-        this.drawDefaultBackground(ctx, width);
+    // 1) 绘制封面图（保持纵横比，短边完全显示，长边裁切）
+    try {
+      if (coverImage) {
+        const img = await posterUtil.loadImageFromUrl(canvas, coverImage);
+        
+        // 计算缩放比例，确保短边完全显示
+        const scaleX = width / img.width;
+        const scaleY = coverAreaHeight / img.height;
+        const scale = Math.min(scaleX, scaleY); // 取较小值，确保短边完全显示
+        
+        const drawW = img.width * scale;
+        const drawH = img.height * scale;
+        
+        // 计算居中位置
+        const x = (width - drawW) / 2;
+        const y = (coverAreaHeight - drawH) / 2;
+        
+        ctx.drawImage(img, x, y, drawW, drawH);
+      } else {
+        this.drawDefaultBackground(ctx, width, coverAreaHeight);
       }
-    } else {
-      this.drawDefaultBackground(ctx, width);
+    } catch (e) {
+      console.error('封面图绘制失败:', e);
+      this.drawDefaultBackground(ctx, width, coverAreaHeight);
     }
 
-    // 2. 绘制白色内容区域
+    // 2) 绘制右下角圆形小程序码（覆盖在大图上）
+    try {
+      const qr = await posterUtil.loadImageFromBase64(canvas, qrcodeBase64);
+      const qrOuter = Math.floor(width * 0.25); // 稍微减小二维码尺寸
+      const qrInnerPadding = 12;
+      const qrX = width - contentPadding - qrOuter;
+      const qrY = coverAreaHeight - Math.floor(qrOuter * 0.15) - qrOuter; // 调整位置
+
+      // 外层白色圆底
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrOuter / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.closePath();
+      ctx.restore();
+
+      // 圆形裁剪绘制二维码
+      const qrSize = qrOuter - qrInnerPadding * 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(qr, qrX + qrInnerPadding, qrY + qrInnerPadding, qrSize, qrSize);
+      ctx.restore();
+    } catch (e) {
+      console.error('小程序码绘制失败:', e);
+    }
+
+    // 3) 下方白色内容区域
+    const contentTop = coverAreaHeight + 32;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 280, width, height - 280);
+    ctx.fillRect(0, coverAreaHeight, width, height - coverAreaHeight);
 
-    // 3. 绘制标题
+    // 标题
     ctx.fillStyle = '#1d1d1f';
-    ctx.font = 'bold 24px sans-serif';
+    ctx.font = `bold ${titleFontSize}px sans-serif`;
     ctx.textAlign = 'left';
-    posterUtil.drawText(ctx, title, 24, 320, width - 48, 24, 2);
+    posterUtil.drawText(ctx, title, contentPadding, contentTop, width - contentPadding * 2, titleFontSize, 2);
 
-    // 4. 绘制副标题
-    ctx.fillStyle = '#86868b';
-    ctx.font = '16px sans-serif';
-    posterUtil.drawText(ctx, subtitle, 24, 360, width - 48, 16, 2);
+    // 信息行起始位置
+    const infoStartY = contentTop + titleFontSize * 2 + 20;
 
-    // 5. 绘制小程序码
-    const qrcodeImg = await posterUtil.loadImageFromBase64(canvas, qrcodeBase64);
-    const qrcodeSize = 120;
-    const qrcodeX = (width - qrcodeSize) / 2;
-    const qrcodeY = height - qrcodeSize - 60;
-    ctx.drawImage(qrcodeImg, qrcodeX, qrcodeY, qrcodeSize, qrcodeSize);
+    // 时间行
+    this.drawInfoRow(ctx, contentPadding, infoStartY, infoFontSize, '#86868b', 'time', subtitle.split('|')[0] || subtitle, width);
 
-    // 6. 绘制提示文字
-    ctx.fillStyle = '#86868b';
-    ctx.font = '14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('长按识别小程序码', width / 2, qrcodeY + qrcodeSize + 30);
+    // 地址行
+    const addressText = subtitle.includes('|') ? subtitle.split('|')[1].trim() : subtitle;
+    this.drawInfoRow(ctx, contentPadding, infoStartY + infoFontSize + 24, infoFontSize, '#86868b', 'location', addressText, width);
+  },
+
+  // 绘制信息行（带icon-time和location图标）
+  drawInfoRow(ctx, x, y, fontSize, color, type, text, width) {
+    const iconSize = fontSize + 6;
+    ctx.save();
+    ctx.translate(x, y - iconSize + 2);
+
+    // 绘制 icon
+    if (type === 'time') {
+      // icon-time 样式：圆形表盘
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2, iconSize / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#d1d1d6';
+      ctx.fill();
+      ctx.closePath();
+      
+      // 表盘边框
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2, iconSize / 2, 0, Math.PI * 2);
+      ctx.strokeStyle = '#c7c7cc';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // 指针
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      // 时针
+      ctx.beginPath();
+      ctx.moveTo(iconSize / 2, iconSize / 2);
+      ctx.lineTo(iconSize / 2, iconSize / 2 - iconSize * 0.25);
+      ctx.stroke();
+      // 分针
+      ctx.beginPath();
+      ctx.moveTo(iconSize / 2, iconSize / 2);
+      ctx.lineTo(iconSize / 2 + iconSize * 0.22, iconSize / 2);
+      ctx.stroke();
+      // 中心点
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+    } else if (type === 'location') {
+      // location 样式：定位图钉
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2 - 2, iconSize / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#d1d1d6';
+      ctx.fill();
+      ctx.closePath();
+      
+      // 外边框
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2 - 2, iconSize / 2, 0, Math.PI * 2);
+      ctx.strokeStyle = '#c7c7cc';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // 内圈
+      ctx.beginPath();
+      ctx.arc(iconSize / 2, iconSize / 2 - 2, iconSize * 0.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      
+      // 底部尖角
+      ctx.beginPath();
+      ctx.moveTo(iconSize / 2 - 3, iconSize - 2);
+      ctx.lineTo(iconSize / 2 + 3, iconSize - 2);
+      ctx.lineTo(iconSize / 2, iconSize + 4);
+      ctx.fillStyle = '#d1d1d6';
+      ctx.fill();
+    }
+
+    ctx.restore();
+
+    // 文本
+    ctx.fillStyle = color;
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.textAlign = 'left';
+    const textX = x + iconSize + 12;
+    posterUtil.drawText(ctx, text, textX, y, width - textX - 40, fontSize, 2);
   },
 
   /**
    * 绘制默认背景
    */
-  drawDefaultBackground(ctx, width) {
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+  drawDefaultBackground(ctx, width, height) {
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
     gradient.addColorStop(0, '#007aff');
     gradient.addColorStop(1, '#0051d5');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, 300);
+    ctx.fillRect(0, 0, width, height);
   },
 
   /**

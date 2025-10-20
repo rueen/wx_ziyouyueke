@@ -168,57 +168,32 @@ function initCanvas(context, selector = '#posterCanvas', width = 375, height = 6
 }
 
 /**
- * Canvas导出为临时文件，并转存到本地文件系统
+ * Canvas导出为临时文件
  * @param {Object} canvas - Canvas对象
  * @param {Object} options - 导出选项
  * @param {number} options.quality - 图片质量，0-1之间，默认0.8
  * @param {string} options.fileType - 文件类型，jpg或png，默认jpg
- * @returns {Promise<string>} - 返回本地文件路径
+ * @returns {Promise<string>} - 返回临时文件路径
  */
-async function canvasToTempFile(canvas, options = {}) {
+function canvasToTempFile(canvas, options = {}) {
   const { quality = 0.8, fileType = 'jpg' } = options;
   
-  try {
-    // 1. Canvas导出为临时文件
-    const tempFilePath = await new Promise((resolve, reject) => {
-      wx.canvasToTempFilePath({
-        canvas: canvas,
-        fileType: fileType,
-        quality: quality,
-        success: (res) => {
-          console.log('Canvas导出成功，临时路径:', res.tempFilePath);
-          resolve(res.tempFilePath);
-        },
-        fail: reject
-      });
+  return new Promise((resolve, reject) => {
+    wx.canvasToTempFilePath({
+      canvas: canvas,
+      fileType: fileType,
+      quality: quality,
+      success: (res) => {
+        console.log('Canvas导出成功，临时路径:', res.tempFilePath);
+        console.log('路径类型:', res.tempFilePath.startsWith('http://tmp/') ? 'http://tmp/' : 'other');
+        resolve(res.tempFilePath);
+      },
+      fail: (err) => {
+        console.error('Canvas导出失败:', err);
+        reject(err);
+      }
     });
-
-    // 2. 将临时文件保存到本地文件系统（解决 wx.showShareImageMenu 兼容性问题）
-    const localFilePath = `${wx.env.USER_DATA_PATH}/poster_${Date.now()}.${fileType}`;
-    const fs = wx.getFileSystemManager();
-    
-    await new Promise((resolve, reject) => {
-      fs.copyFile({
-        srcPath: tempFilePath,
-        destPath: localFilePath,
-        success: () => {
-          console.log('文件已保存到本地:', localFilePath);
-          resolve();
-        },
-        fail: (err) => {
-          console.error('保存本地文件失败:', err);
-          // 如果复制失败，降级使用原始临时路径
-          console.warn('降级使用临时路径:', tempFilePath);
-          reject(err);
-        }
-      });
-    });
-
-    return localFilePath;
-  } catch (error) {
-    console.error('Canvas导出失败:', error);
-    throw error;
-  }
+  });
 }
 
 /**
@@ -228,9 +203,22 @@ async function canvasToTempFile(canvas, options = {}) {
  */
 function showShareImageMenu(filePath) {
   return new Promise((resolve, reject) => {
-    console.log('准备显示分享图片菜单，文件路径:', filePath);
+    console.log('准备显示分享图片菜单');
+    console.log('文件路径:', filePath);
     
-    // 先检查文件是否存在并获取文件信息
+    // 检查基础库版本
+    const systemInfo = wx.getSystemInfoSync();
+    console.log('基础库版本:', systemInfo.SDKVersion);
+    
+    // 检查是否支持 showShareImageMenu
+    if (!wx.showShareImageMenu) {
+      const error = new Error('当前基础库版本过低，不支持 wx.showShareImageMenu');
+      console.error(error.message);
+      reject(error);
+      return;
+    }
+    
+    // 检查文件是否存在并获取文件信息
     const fs = wx.getFileSystemManager();
     try {
       fs.accessSync(filePath);
@@ -243,27 +231,30 @@ function showShareImageMenu(filePath) {
         console.warn('警告：文件大小超过 2MB，可能导致分享失败');
       }
       
-      console.log('开始调用分享菜单');
+      console.log('开始调用分享菜单...');
     } catch (e) {
       console.error('文件不存在或无法访问:', filePath, e);
       reject(new Error('文件不存在'));
       return;
     }
     
+    // 调用分享菜单
     wx.showShareImageMenu({
       path: filePath,
       success: (res) => {
-        console.log('分享操作完成:', res);
+        console.log('✅ 分享菜单显示成功:', res);
         resolve(res);
       },
       fail: (err) => {
+        console.error('❌ 分享菜单显示失败:', err);
+        console.error('错误信息:', err.errMsg);
+        console.error('文件路径:', filePath);
+        
         // 用户取消操作不算错误，静默处理
         if (err.errMsg && err.errMsg.includes('cancel')) {
           console.log('用户取消了分享操作');
           resolve({ cancelled: true });
         } else {
-          console.error('分享图片菜单显示失败:', err);
-          console.error('失败的文件路径:', filePath);
           reject(err);
         }
       }

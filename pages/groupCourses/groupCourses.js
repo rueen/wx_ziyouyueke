@@ -457,7 +457,7 @@ Page({
         break;
       case 'link':
         // 复制链接
-        // this.copyLink();
+        this.copyLink();
         break;
     }
   },
