@@ -141,10 +141,10 @@
 }
 
 .time-slot-time {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 500;
   color: #333;
-  width: 220rpx;
+  width: 200rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
