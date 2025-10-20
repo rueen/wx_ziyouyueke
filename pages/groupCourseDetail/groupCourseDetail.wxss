@@ -300,23 +300,8 @@ page {
 
 .action-buttons {
   width: 100%;
-}
-
-/* 课程所有者按钮组 */
-.owner-actions {
-  width: 100%;
-}
-
-.button-group {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-}
-
-/* 学员操作按钮 */
-.student-actions {
-  width: 100%;
-  display: flex;
   gap: 16rpx;
 }
 
