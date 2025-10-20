@@ -593,8 +593,9 @@ Page({
     // 布局参数（参考示例样式：宽高比约1:1.6）
     const coverAreaHeight = Math.floor(height * 0.65); // 顶部大图区域高度，增加比例
     const contentPadding = 40; // 左右内边距
-    const titleFontSize = 36; // 稍微减小标题字体
-    const infoFontSize = 26; // 稍微减小信息字体
+    const titleFontSize = 44; // 增大标题字体
+    const infoFontSize = 32; // 增大信息字体
+    const priceFontSize = 44; // 价格字体与标题一样大
 
     // 背景
     ctx.fillStyle = '#ffffff';
@@ -629,10 +630,10 @@ Page({
     // 2) 绘制右下角圆形小程序码（覆盖在大图上）
     try {
       const qr = await posterUtil.loadImageFromBase64(canvas, qrcodeBase64);
-      const qrOuter = Math.floor(width * 0.25); // 稍微减小二维码尺寸
-      const qrInnerPadding = 12;
+      const qrOuter = Math.floor(width * 0.375); // 扩大到1.5倍 (0.25 * 1.5 = 0.375)
+      const qrInnerPadding = 20;
       const qrX = width - contentPadding - qrOuter;
-      const qrY = coverAreaHeight - Math.floor(qrOuter * 0.15) - qrOuter; // 调整位置
+      const qrY = coverAreaHeight - Math.floor(qrOuter * 0.15) - qrOuter*0.75; // 调整位置
 
       // 外层白色圆底
       ctx.save();
@@ -656,15 +657,15 @@ Page({
     }
 
     // 3) 下方白色内容区域
-    const contentTop = coverAreaHeight + 32;
+    const contentTop = coverAreaHeight + 68; // 增加标题与顶部的距离
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, coverAreaHeight, width, height - coverAreaHeight);
+    ctx.fillRect(0, coverAreaHeight + 20, width, height - coverAreaHeight);
 
-    // 标题
+    // 标题（固定两行，超出显示省略号）
     ctx.fillStyle = '#1d1d1f';
     ctx.font = `bold ${titleFontSize}px sans-serif`;
     ctx.textAlign = 'left';
-    posterUtil.drawText(ctx, title, contentPadding, contentTop, width - contentPadding * 2, titleFontSize, 2);
+    this.drawTitleWithEllipsis(ctx, title, contentPadding, contentTop, width - contentPadding * 2, titleFontSize);
 
     // 信息行起始位置
     const infoStartY = contentTop + titleFontSize * 2 + 20;
@@ -674,12 +675,94 @@ Page({
 
     // 地址行
     const addressText = subtitle.includes('|') ? subtitle.split('|')[1].trim() : subtitle;
-    this.drawInfoRow(ctx, contentPadding, infoStartY + infoFontSize + 24, infoFontSize, '#86868b', 'location', addressText, width);
+    this.drawInfoRow(ctx, contentPadding, infoStartY + infoFontSize + 32, infoFontSize, '#86868b', 'location', addressText, width);
+
+    // 价格行
+    const priceText = this.getCoursePriceText();
+    if (priceText) {
+      this.drawPriceRow(ctx, contentPadding, infoStartY + infoFontSize * 2 + 80, priceFontSize, '#ff6b35', priceText, width);
+    }
+  },
+
+  // 绘制标题（固定两行，超出显示省略号）
+  drawTitleWithEllipsis(ctx, text, x, y, maxWidth, fontSize) {
+    const lineHeight = fontSize * 1.2;
+    const lines = [];
+    let currentLine = '';
+    
+    // 按字符分割文本
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const testLine = currentLine + char;
+      const metrics = ctx.measureText(testLine);
+      
+      if (metrics.width > maxWidth && currentLine !== '') {
+        lines.push(currentLine);
+        currentLine = char;
+        
+        // 如果已经有两行，停止处理
+        if (lines.length >= 2) {
+          break;
+        }
+      } else {
+        currentLine = testLine;
+      }
+    }
+    
+    // 添加最后一行
+    if (currentLine && lines.length < 2) {
+      lines.push(currentLine);
+    }
+    
+    // 绘制文本
+    lines.forEach((line, index) => {
+      let displayText = line;
+      
+      // 如果是第二行且文本被截断，添加省略号
+      if (index === 1 && lines.length === 2 && currentLine !== line) {
+        const ellipsis = '...';
+        const ellipsisWidth = ctx.measureText(ellipsis).width;
+        
+        // 确保省略号能放下
+        while (ctx.measureText(displayText + ellipsis).width > maxWidth && displayText.length > 0) {
+          displayText = displayText.slice(0, -1);
+        }
+        
+        displayText += ellipsis;
+      }
+      
+      ctx.fillText(displayText, x, y + index * lineHeight);
+    });
+  },
+
+  // 获取课程价格文本
+  getCoursePriceText() {
+    const { courseDetail } = this.data;
+    if (!courseDetail) return '';
+    
+    switch (courseDetail.price_type) {
+      case 1: // 扣课时
+        return `${courseDetail.lesson_cost}课时`;
+      case 2: // 金额展示
+        return `¥${courseDetail.price_amount}`;
+      case 3: // 免费
+        return '免费';
+      default:
+        return '';
+    }
+  },
+
+  // 绘制价格行
+  drawPriceRow(ctx, x, y, fontSize, color, text, width) {
+    ctx.fillStyle = color;
+    ctx.font = `bold ${fontSize}px sans-serif`; // 与标题字体大小一致
+    ctx.textAlign = 'left';
+    ctx.fillText(text, x, y);
   },
 
   // 绘制信息行（带icon-time和location图标）
   drawInfoRow(ctx, x, y, fontSize, color, type, text, width) {
-    const iconSize = fontSize + 6;
+    const iconSize = fontSize;
     ctx.save();
     ctx.translate(x, y - iconSize + 2);
 
@@ -692,16 +775,16 @@ Page({
       ctx.fill();
       ctx.closePath();
       
-      // 表盘边框
-      ctx.beginPath();
-      ctx.arc(iconSize / 2, iconSize / 2, iconSize / 2, 0, Math.PI * 2);
-      ctx.strokeStyle = '#c7c7cc';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      // // 表盘边框
+      // ctx.beginPath();
+      // ctx.arc(iconSize / 2, iconSize / 2, iconSize / 2, 0, Math.PI * 2);
+      // ctx.strokeStyle = '#c7c7cc';
+      // ctx.lineWidth = 1;
+      // ctx.stroke();
       
       // 指针
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       // 时针
       ctx.beginPath();
       ctx.moveTo(iconSize / 2, iconSize / 2);
@@ -725,12 +808,12 @@ Page({
       ctx.fill();
       ctx.closePath();
       
-      // 外边框
-      ctx.beginPath();
-      ctx.arc(iconSize / 2, iconSize / 2 - 2, iconSize / 2, 0, Math.PI * 2);
-      ctx.strokeStyle = '#c7c7cc';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      // // 外边框
+      // ctx.beginPath();
+      // ctx.arc(iconSize / 2, iconSize / 2 - 2, iconSize / 2, 0, Math.PI * 2);
+      // ctx.strokeStyle = '#c7c7cc';
+      // ctx.lineWidth = 1;
+      // ctx.stroke();
       
       // 内圈
       ctx.beginPath();
@@ -740,9 +823,9 @@ Page({
       
       // 底部尖角
       ctx.beginPath();
-      ctx.moveTo(iconSize / 2 - 3, iconSize - 2);
-      ctx.lineTo(iconSize / 2 + 3, iconSize - 2);
-      ctx.lineTo(iconSize / 2, iconSize + 4);
+      ctx.moveTo(iconSize / 2 - 5, iconSize - 2);
+      ctx.lineTo(iconSize / 2 + 5, iconSize - 2);
+      ctx.lineTo(iconSize / 2, iconSize + 5);
       ctx.fillStyle = '#d1d1d6';
       ctx.fill();
     }
