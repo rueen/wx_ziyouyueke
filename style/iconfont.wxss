@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 4937609 */
-  src: url('//at.alicdn.com/t/c/font_4937609_p6rm4744v7q.woff2?t=1760870606534') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4937609_p6rm4744v7q.woff?t=1760870606534') format('woff'),
-       url('//at.alicdn.com/t/c/font_4937609_p6rm4744v7q.ttf?t=1760870606534') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4937609_hviiilwv7wr.woff2?t=1760938686969') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4937609_hviiilwv7wr.woff?t=1760938686969') format('woff'),
+       url('//at.alicdn.com/t/c/font_4937609_hviiilwv7wr.ttf?t=1760938686969') format('truetype');
 }
 
 .iconfont {
@@ -13,6 +13,30 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-wechat:before {
+  content: "\e868";
+}
+
+.icon-moment:before {
+  content: "\e60e";
+}
+
+.icon-image:before {
+  content: "\e6cb";
+}
+
+.icon-collect:before {
+  content: "\e603";
+}
+
+.icon-download:before {
+  content: "\e6f6";
+}
+
+.icon-link:before {
+  content: "\e64e";
+}
+
 .icon-qrcode:before {
   content: "\e71d";
 }
@@ -21,7 +45,7 @@
   content: "\e6c7";
 }
 
-.icon-share-full:before {
+.icon-share:before {
   content: "\e60a";
 }
 
@@ -39,10 +63,6 @@
 
 .icon-del:before {
   content: "\e602";
-}
-
-.icon-share:before {
-  content: "\e86e";
 }
 
 .icon-quxiaoyuanyin:before {

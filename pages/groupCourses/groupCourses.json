@@ -4,6 +4,7 @@
     "ghostNav": "/components/ghostNav/ghostNav",
     "layout": "/components/layout/layout",
     "emptyState": "/components/emptyState/emptyState",
-    "modal": "/components/modal/modal"
+    "modal": "/components/modal/modal",
+    "shareModal": "/components/shareModal/shareModal"
   }
 }

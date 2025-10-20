@@ -1,5 +1,6 @@
 {
   "usingComponents": {
-    "ghostNav": "/components/ghostNav/ghostNav"
+    "ghostNav": "/components/ghostNav/ghostNav",
+    "shareModal": "/components/shareModal/shareModal"
   }
 }

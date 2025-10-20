@@ -1,19 +1,22 @@
 <!--pages/groupCourses/groupCourses.wxml-->
 <ghostNav />
 <layout>
-  <view class="user-section" bindtap="onBindCoach">
-    <view class="user-info">
+  <view class="user-section">
+    <view class="user-info" bindtap="onBindCoach">
       <view class="user-avatar">
         <image src="{{coachData.avatar_url}}" class="avatar-img"></image>
       </view>
       <view class="user-details">
         <view class="username-row">
           <text class="username">{{coachData.nickname}}</text>
+          <!-- <text class="iconfont icon-arrow-r arrow-icon"></text> -->
         </view>
         <text class="user-desc">{{coachData.intro}}</text>
       </view>
     </view>
-    <text class="iconfont icon-arrow-r arrow-icon"></text>
+    <view class="share-btn" bind:tap="onShare">
+      <text class="iconfont icon-share-line share-icon"></text>
+    </view>
   </view>
   <view class="container">
     <!-- 筛选标签 -->
@@ -165,4 +168,18 @@
       </view>
     </view>
   </modal>
+
+  <!-- 分享弹窗 -->
+  <shareModal 
+    show="{{showShareModal}}"
+    bind:close="onCloseShareModal"
+    bind:select="onSelectShareType"
+  />
+
+  <!-- 隐藏的Canvas，用于绘制海报 -->
+  <canvas 
+    type="2d" 
+    id="posterCanvas" 
+    style="position: fixed; left: -9999px; top: -9999px; width: 375px; height: 667px;"
+  ></canvas>
 </layout>

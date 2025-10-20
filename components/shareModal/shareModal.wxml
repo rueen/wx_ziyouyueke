@@ -1,0 +1,40 @@
+<!-- 分享弹窗组件 -->
+<view class="share-modal" wx:if="{{show}}">
+  <view class="modal-mask" bindtap="onMaskTap"></view>
+  <view class="modal-content">
+    <view class="share-options">
+      <view 
+        wx:for="{{shareOptions}}" 
+        wx:key="id"
+        class="share-option"
+      >
+        <!-- 发送好友使用 button open-type="share" -->
+        <button 
+          wx:if="{{item.id === 'friend'}}"
+          class="share-option-btn"
+          open-type="share"
+        >
+          <view class="option-icon-wrap">
+            <text class="iconfont {{item.icon}} option-icon"></text>
+          </view>
+          <text class="option-name">{{item.name}}</text>
+        </button>
+        
+        <!-- 其他选项使用普通点击 -->
+        <view 
+          wx:else
+          class="share-option-content"
+          data-type="{{item.id}}"
+          bindtap="onShareOptionTap"
+        >
+          <view class="option-icon-wrap">
+            <text class="iconfont {{item.icon}} option-icon"></text>
+          </view>
+          <text class="option-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="cancel-btn" bindtap="close">取消</view>
+  </view>
+</view>
+

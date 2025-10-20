@@ -895,6 +895,41 @@ module.exports = {
     // document: (filePath) => uploadImage(filePath, 'documents'),
     // temp: (filePath) => uploadImage(filePath, 'temp')
   },
+
+  // 小程序码模块
+  qrcode: {
+    /**
+     * 生成小程序码（返回Base64）
+     * @param {Object} params - 参数对象
+     * @param {string} params.scene - 场景值，最大32个可见字符
+     * @param {string} params.page - 页面路径
+     * @param {number} params.width - 二维码宽度，默认430
+     * @param {boolean} params.auto_color - 自动配置线条颜色，默认false
+     * @param {Object} params.line_color - 线条颜色
+     * @param {boolean} params.is_hyaline - 是否透明底色，默认false
+     * @returns {Promise}
+     */
+    generateBase64: function(params = {}) {
+      return request({
+        url: '/api/h5/qrcode/generate-base64',
+        method: 'POST',
+        data: params
+      });
+    },
+
+    /**
+     * 生成小程序码（返回图片）
+     * @param {Object} params - 参数对象
+     * @returns {Promise}
+     */
+    generate: function(params = {}) {
+      return request({
+        url: '/api/h5/qrcode/generate',
+        method: 'POST',
+        data: params
+      });
+    }
+  },
   
   // 其他
   healthCheck
