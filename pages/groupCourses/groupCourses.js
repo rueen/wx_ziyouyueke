@@ -33,6 +33,11 @@ Page({
 
     // 分享相关
     showShareModal: false,
+    shareOptions: [
+      { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
+      { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' },
+      { id: 'link', name: '复制链接', icon: 'icon-link' }
+    ],
   },
 
   /**
@@ -447,10 +452,6 @@ Page({
     this.onCloseShareModal();
 
     switch (type) {
-      case 'poster':
-        // 生成海报
-        this.generatePoster();
-        break;
       case 'qrcode':
         // 生成二维码
         this.generateQRCode();

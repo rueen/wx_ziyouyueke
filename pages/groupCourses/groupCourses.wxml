@@ -172,6 +172,7 @@
   <!-- 分享弹窗 -->
   <shareModal 
     show="{{showShareModal}}"
+    options="{{shareOptions}}"
     bind:close="onCloseShareModal"
     bind:select="onSelectShareType"
   />

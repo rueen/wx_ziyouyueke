@@ -10,6 +10,16 @@ Component({
     show: {
       type: Boolean,
       value: false
+    },
+    // 分享选项配置
+    options: {
+      type: Array,
+      value: [
+        { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
+        { id: 'poster', name: '生成海报', icon: 'icon-image' },
+        { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' },
+        { id: 'link', name: '复制链接', icon: 'icon-link' }
+      ]
     }
   },
 
@@ -17,12 +27,15 @@ Component({
    * 组件的初始数据
    */
   data: {
-    shareOptions: [
-      { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
-      { id: 'poster', name: '生成海报', icon: 'icon-image' },
-      { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' },
-      { id: 'link', name: '复制链接', icon: 'icon-link' }
-    ]
+    shareOptions: []
+  },
+
+  observers: {
+    'options': function(newOptions) {
+      this.setData({
+        shareOptions: newOptions
+      });
+    }
   },
 
   /**

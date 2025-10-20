@@ -40,13 +40,13 @@
 }
 
 .share-options {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 32rpx;
   padding: 48rpx 32rpx;
 }
 
 .share-option {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
