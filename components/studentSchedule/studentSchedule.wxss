@@ -1,0 +1,199 @@
+/* components/studentSchedule/studentSchedule.wxss */
+@import '/style/common.wxss';
+@import '/style/iconfont.wxss';
+
+.student-schedule {
+  width: 100%;
+}
+
+/* 日期选择器 */
+.date-selector {
+  width: 100%;
+  padding: 20rpx 0;
+  background: #ffffff;
+}
+
+.date-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.date-list {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 140rpx;
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.date-item.active {
+  background: #007aff;
+  color: #ffffff;
+}
+
+.date-weekday {
+  font-size: 28rpx;
+  color: #86868b;
+  margin-bottom: 8rpx;
+}
+
+.date-item.active .date-weekday {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.date-monthday {
+  font-size: 30rpx;
+  color: #1d1d1f;
+}
+
+.date-item.active .date-monthday {
+  color: #ffffff;
+}
+
+.today-indicator {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  padding: 4rpx 12rpx;
+  background: #ff3b30;
+  color: #ffffff;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+}
+
+.date-item.active .today-indicator {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 课程列表容器 */
+.schedule-container {
+  background: #ffffff;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* 课程列表 */
+.course-item {
+  display: flex;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f2f2f7;
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+/* 课程卡片 */
+.course-card {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 24rpx;
+  transition: all 0.3s ease;
+  border-left: 4rpx solid #007aff;
+}
+.personal-course .course-card {
+  border-left-color: #007aff;
+}
+
+.group-course .course-card {
+  border-left-color: #ff9500;
+}
+
+.course-item:active .course-card {
+  transform: scale(0.98);
+}
+
+/* 时间 */
+.time-column{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.time-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1d1d1f;
+}
+/* 团课标签 */
+.group-badge {
+  display: flex;
+  align-items: center;
+  background-color: #ff9500;
+  color: #fff;
+  padding: 6rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.group-badge .badge-text {
+  font-size: 22rpx;
+}
+
+.coach-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-top: 12rpx;
+}
+
+.course-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1d1d1f;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 12rpx;
+}
+
+.location-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 12rpx;
+}
+
+.location-text {
+  font-size: 28rpx;
+  color: #86868b;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

@@ -15,7 +15,7 @@
 
 .date-list {
   display: flex;
-  padding: 0 20rpx;
+  padding: 0 16rpx;
   white-space: nowrap;
 }
 
@@ -463,17 +463,17 @@
   margin-right: 12rpx;
 }
 
-.group-course-badge {
-  background-color: #ff6b35;
+.group-badge {
+  display: flex;
+  align-items: center;
+  background-color: #ff9500;
   color: #fff;
-  padding: 4rpx 8rpx;
-  border-radius: 8rpx;
-  font-size: 20rpx;
+  padding: 6rpx 12rpx;
+  border-radius: 10rpx;
 }
 
-.badge-text {
-  font-size: 20rpx;
-  font-weight: 500;
+.group-badge .badge-text {
+  font-size: 22rpx;
 }
 
 .group-course-details {

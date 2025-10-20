@@ -1,0 +1,88 @@
+<!--components/studentSchedule/studentSchedule.wxml-->
+<view class="student-schedule">
+  <!-- 日期选择器 -->
+  <view class="date-selector">
+    <scroll-view class="date-scroll" scroll-x="true" show-scrollbar="{{false}}">
+      <view class="date-list">
+        <view 
+          class="date-item {{item.date === currentDate ? 'active' : ''}}"
+          wx:for="{{dateList}}" 
+          wx:key="date"
+          data-date="{{item.date}}"
+          bindtap="onSelectDate"
+        >
+          <view class="date-weekday">{{item.weekDay}}</view>
+          <view class="date-monthday">{{item.monthDay}}</view>
+          <view wx:if="{{item.isToday}}" class="today-indicator">今天</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="schedule-container">
+    <!-- 加载状态 -->
+    <view wx:if="{{isLoading}}" class="loading-container">
+      <view class="loading-text">加载中...</view>
+    </view>
+
+    <!-- 课程列表 -->
+    <view wx:elif="{{scheduleData.length > 0}}" class="course-list">
+      <view 
+        class="course-item {{course.type}}-course"
+        wx:for="{{scheduleData}}" 
+        wx:for-item="course"
+        wx:key="id"
+        data-course="{{course}}"
+        bindtap="onCourseTap"
+      >
+        <!-- 课程信息卡片 -->
+        <view class="course-card">
+          <!-- 团课 -->
+          <view wx:if="{{course.type === 'group'}}" class="group-course-content">
+            <view class="time-column">
+              <text class="time-text">{{course.startTime}} - {{course.endTime}}</text>
+              <view class="group-badge">
+                <text class="badge-text">团课</text>
+              </view>
+            </view>
+            <view class="coach-name">{{course.coachName}}</view>
+            <view class="course-title">{{course.title}}</view>
+            <view class="location-info">
+              <text class="iconfont icon-locationfill"></text>
+              <text class="location-text">{{course.location}}</text>
+            </view>
+          </view>
+
+          <!-- 普通课程 -->
+          <view wx:else class="personal-course-content">
+            <view class="time-column">
+              <text class="time-text">{{course.startTime}} - {{course.endTime}}</text>
+              <view class="status-badge status-{{course.booking_status}}">
+                <text class="status-text">{{course.booking_status === 'pending' ? (
+                  course.isCreatedByCurrentUser ? (
+                    userRole === 'coach' ? '待学员确认' : '待教练确认'
+                  ) : '待确认'
+                ) : 
+                  course.booking_status === 'confirmed' ? '已确认' : 
+                  course.booking_status === 'completed' ? '已完成' : 
+                  course.booking_status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+              </view>
+            </view>
+            <view class="coach-name">{{course.coachName}}</view>
+            <view class="location-info">
+              <text class="iconfont icon-locationfill"></text>
+              <text class="location-text">{{course.location}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <text class="empty-text">暂无课程安排</text>
+    </view>
+  </view>
+</view>
+

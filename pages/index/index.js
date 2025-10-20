@@ -40,6 +40,12 @@ Page({
       if (timeSelector) {
         timeSelector.refresh();
       }
+      
+      // 刷新学员日程组件
+      const studentSchedule = this.selectComponent('#studentSchedule');
+      if (studentSchedule) {
+        studentSchedule.refresh();
+      }
     });
     
     // 检查是否需要刷新用户信息（从个人信息编辑页面返回时）

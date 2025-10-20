@@ -43,6 +43,12 @@
         show-booking-details="{{true}}"
         bind:courseTap="onCourseTap"
       />
+      <!-- 学员时间安排 -->
+      <studentSchedule
+        wx:if="{{userRole === 'student'}}"
+        id="studentSchedule"
+        studentId="{{userInfo.id}}"
+      />
     </view>
     
     <!-- 立即约课按钮 -->

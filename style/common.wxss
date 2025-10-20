@@ -16,7 +16,7 @@
   align-items: center;
   background-color: #f0f9ff;
   border: 1rpx solid #007aff;
-  border-radius: 16rpx;
+  border-radius: 10rpx;
   padding: 6rpx 12rpx;
 }
 
@@ -62,7 +62,7 @@
 }
 
 .icon-locationfill{
-  color: #e97b39;
+  color: #ff9500;
 }
 
 .icon-messagefill{

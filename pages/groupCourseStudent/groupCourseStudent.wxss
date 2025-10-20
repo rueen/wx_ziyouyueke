@@ -33,7 +33,7 @@ page {
   transform: translateX(-50%);
   width: 30rpx;
   height: 6rpx;
-  background-color: #fae64f;
+  background-color: #ff9500;
   border-radius: 2rpx;
 }
 

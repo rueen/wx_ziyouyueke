@@ -91,7 +91,7 @@
                 <view wx:elif="{{course.type === 'group'}}" class="group-course-info">
                   <view class="group-course-header">
                     <text class="group-course-title">{{course.title}}</text>
-                    <view class="group-course-badge">
+                    <view class="group-badge">
                       <text class="badge-text">团课</text>
                     </view>
                   </view>
