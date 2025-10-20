@@ -30,17 +30,17 @@
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
 
-    <view class="menu-item" bindtap="onCoursesCategories" wx:if="{{userRole === 'coach'}}">
-      <view class="menu-content">
-        <text class="menu-text">课程分类</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
-    </view>
-
     <view class="menu-item" bindtap="onGroupCourses">
       <view class="menu-content">
         <text class="menu-text">{{userRole === 'coach' ? '我的团课' : '我报名的团课'}}</text>
         <view class="new-tag">NEW</view>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="onCoursesCategories" wx:if="{{userRole === 'coach'}}">
+      <view class="menu-content">
+        <text class="menu-text">课程分类</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
@@ -63,13 +63,12 @@
     </view>
 
     <!-- 教练专用：我的时间 -->
-    <view class="menu-item" bindtap="onMySchedule" wx:if="{{userRole === 'coach'}}">
+    <!-- <view class="menu-item" bindtap="onMySchedule" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <!-- <text class="iconfont icon-timeline menu-icon"></text> -->
         <text class="menu-text">我的时间</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
-    </view>
+    </view> -->
 
     <!-- 教练专用：常用地址 -->
     <view class="menu-item" bindtap="onMyAddresses" wx:if="{{userRole === 'coach'}}">

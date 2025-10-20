@@ -319,16 +319,16 @@ Page({
   /**
    * 我的时间（教练专用）
    */
-  onMySchedule() {
-    // 检查是否需要登录
-    if (!this.checkLoginRequired()) {
-      return;
-    }
+  // onMySchedule() {
+  //   // 检查是否需要登录
+  //   if (!this.checkLoginRequired()) {
+  //     return;
+  //   }
     
-    wx.navigateTo({
-      url: '/pages/mySchedule/mySchedule'
-    });
-  },
+  //   wx.navigateTo({
+  //     url: '/pages/mySchedule/mySchedule'
+  //   });
+  // },
 
   /**
    * 常用地址
