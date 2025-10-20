@@ -9,10 +9,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    activeTab: '0',
+    activeTab: 0,
     tabs: [
-      { status: '0', name: '进行中' },
-      { status: '1,2', name: '已结束' }
+      { status: 0, name: '进行中' },
+      { status: 1, name: '已结束' }
     ],
     list: [],
     isLoading: false, // 加载状态
@@ -108,7 +108,7 @@ Page({
       const params = {
         page: currentPage,
         limit: pageSize,
-        check_in_status: activeTab
+        status: activeTab
       }
       // 调用API获取团课列表
       const res = await api.groupCourse.getMyRegistrations(params)

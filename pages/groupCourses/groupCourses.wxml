@@ -46,7 +46,10 @@
             <view class="status-tag status_{{item.status}}">
               <text wx:if="{{item.status === 0}}">未发布</text>
               <text wx:if="{{item.status === 1}}">报名中</text>
-              <text wx:if="{{item.status === 2}}">已结束</text>
+              <text wx:if="{{item.status === 2}}">
+                <text wx:if="{{!!item.cancel_reason}}">已取消</text>
+                <text wx:else>已结束</text>
+              </text>
             </view>
 
             <!-- 课程图片 -->
@@ -75,6 +78,7 @@
               </view>
             </view>
           </view>
+          
           <view class="course-bottom">
             <!-- 参与者信息 -->
             <view
@@ -97,7 +101,7 @@
                 catch:tap="viewRegistrations"
               >查看报名</button>
               <button
-                wx:if="{{item.status === 1}}"
+                wx:if="{{item.isCanCancel}}"
                 class="action-btn cancel"
                 data-course="{{item}}"
                 catch:tap="onCancelCourse"
@@ -114,6 +118,9 @@
               <button wx:if="{{item.status === 1}}" class="action-btn registration">立即报名</button>
             </view>
           </view>
+
+          <view class="cancel_reason" wx:if="{{!!item.cancel_reason}}">取消原因：{{item.cancel_reason}}</view>
+
         </view>
       </view>
 
@@ -133,4 +140,29 @@
       <button class="add-course-btn" bindtap="onAddCourseTap">新增团课</button>
     </view>
   </view>
+
+  <!-- 取消团课模态框 -->
+  <modal 
+    show="{{showCancelModal}}" 
+    title="取消原因"
+    position="bottom"
+    bind:close="onCloseCancelModal"
+  >
+    <view class="cancel-modal-content">
+      <view class="cancel-reason-section">
+        <textarea 
+          class="cancel-reason-input"
+          placeholder="请输入取消团课的原因"
+          value="{{cancelReason}}"
+          bindinput="onCancelReasonInput"
+          maxlength="200"
+          auto-height
+        ></textarea>
+      </view>
+      <view class="cancel-modal-actions">
+        <button class="cancel-btn" bindtap="onCloseCancelModal">取消</button>
+        <button class="confirm-btn" bindtap="onConfirmCancel">确认取消</button>
+      </view>
+    </view>
+  </modal>
 </layout>

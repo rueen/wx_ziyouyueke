@@ -24,6 +24,11 @@ Page({
     hasMore: true, // 是否还有更多数据
     currentPage: 1, // 当前页码
     pageSize: 10, // 每页数量
+
+    // 取消课程相关
+    showCancelModal: false,
+    cancelReason: '',
+    currentCancelCourse: null,
   },
 
   /**
@@ -181,6 +186,7 @@ Page({
           weekday: this.getWeekday(item.course_date),
           time: this.getTime(item),
           price: this.getCoursePrice(item),
+          isCanCancel: item.status === 1 && !item.registrations.filter(reg => reg.check_in_status ===1).length
         }))
         this.setData({
           courses: this.data.currentPage === 1 ? courses : [...this.data.courses, ...courses],
@@ -213,7 +219,8 @@ Page({
    * 切换标签
    */
   onTabChange(e) {
-    const { status } = e.currentTarget.dataset
+    const { currentTarget: { dataset: { status } } } = e;
+
     this.setData({
       activeTab: status
     },  () => {
@@ -288,38 +295,81 @@ Page({
     })
   },
 
+  /**
+   * 取消团课 - 显示取消原因输入框
+   */
   onCancelCourse(e) {
     const { course } = e.currentTarget.dataset;
+    this.setData({
+      currentCancelCourse: course,
+      showCancelModal: true,
+      cancelReason: ''
+    });
+  },
 
-    wx.showModal({
-      title: '',
-      content: '确定取消团课吗？',
-      complete: async (res) => {
-        if (res.confirm) {
-          try {
-            wx.showLoading({
-              title: '取消中...'
-            });
-            const res = await api.groupCourse.cancel(course.id)
-            if(res.success) {
-              wx.hideLoading();
-            
-              wx.showToast({
-                title: '取消成功',
-                icon: 'success'
-              });
-              this.loadGroupCourses(true)
-            }
-          } catch (error) {
-            wx.hideLoading();
-            wx.showToast({
-              title: error.message || '取消失败，请重试',
-              icon: 'none'
-            });
-          }
-        }
+  /**
+   * 取消原因输入
+   */
+  onCancelReasonInput(e) {
+    this.setData({
+      cancelReason: e.detail.value
+    });
+  },
+
+  /**
+   * 关闭取消模态框
+   */
+  onCloseCancelModal() {
+    this.setData({
+      showCancelModal: false,
+      cancelReason: '',
+      currentCancelCourse: null
+    });
+  },
+
+  /**
+   * 确认取消团课
+   */
+  async onConfirmCancel() {
+    const { cancelReason, currentCancelCourse } = this.data;
+    
+    if (!cancelReason.trim()) {
+      wx.showToast({
+        title: '请输入取消原因',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({
+        title: '取消中...'
+      });
+
+      const res = await api.groupCourse.cancel(currentCancelCourse.id, {
+        cancel_reason: cancelReason.trim()
+      });
+
+      if (res.success) {
+        wx.hideLoading();
+        wx.showToast({
+          title: '取消成功',
+          icon: 'success'
+        });
+        
+        // 关闭模态框并刷新数据
+        this.onCloseCancelModal();
+        this.loadGroupCourses(true);
+      } else {
+        throw new Error(res.message || '取消失败');
       }
-    })
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '取消失败，请重试',
+        icon: 'none'
+      });
+    }
   },
   onDeleteCourse(e) {
     const { course } = e.currentTarget.dataset;

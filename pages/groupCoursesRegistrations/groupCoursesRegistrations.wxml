@@ -33,8 +33,8 @@
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
     <view class="action-buttons">
-      <button class="action-btn complete" disabled="{{status === 2}}" bindtap="handleComplete">
-        {{status === 2 ? '团课已完成' : '完成团课'}}
+      <button class="action-btn complete" bindtap="handleComplete" wx:if="{{status === 1}}">
+        完成团课
       </button>
     </view>
   </view>

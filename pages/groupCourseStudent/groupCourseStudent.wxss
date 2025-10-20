@@ -170,13 +170,18 @@ page {
   background-color: #ff6b35;
   color: #fff;
 }
+.cancel_reason{
+  font-size: 28rpx;
+  color: #666;
+  padding: 0 30rpx 30rpx 30rpx;
+}
 /* 签到码模态框 */
 .qrcode-modal{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20rpx;
+  padding: 20rpx 0 40rpx;
 }
 .qr-code-canvas {
   width: 150px;

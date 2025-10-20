@@ -207,6 +207,11 @@ page {
   align-items: center;
   padding: 0 30rpx 30rpx 30rpx;
 }
+.cancel_reason{
+  font-size: 28rpx;
+  color: #666;
+  padding: 0 30rpx 30rpx 30rpx;
+}
 /* 参与者信息 */
 .participants {
   display: flex;
@@ -290,4 +295,64 @@ page {
   font-size: 32rpx;
   font-weight: 600;
   letter-spacing: 2rpx;
+}
+
+/* 取消团课模态框样式 */
+.cancel-modal-content {
+  padding: 32rpx;
+}
+
+.cancel-reason-section {
+  margin-bottom: 32rpx;
+}
+
+.cancel-reason-input {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 16rpx;
+  border: 2rpx solid #e5e5ea;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.cancel-reason-input:focus {
+  border-color: #007aff;
+}
+
+.cancel-modal-actions {
+  display: flex;
+  gap: 16rpx;
+  justify-content: flex-end;
+}
+
+.cancel-btn,
+.confirm-btn {
+  width: 160rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background-color: #f2f2f7;
+  color: #1d1d1f;
+}
+
+.confirm-btn {
+  background-color: #ff6b35;
+  color: #fff;
+}
+
+.cancel-btn:active,
+.confirm-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
