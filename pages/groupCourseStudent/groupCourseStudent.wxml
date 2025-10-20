@@ -94,7 +94,7 @@
 <!-- 签到二维码模态框 -->
 <modal 
   show="{{showQrcodeModal}}" 
-  title="标题" 
+  title="签到码" 
   position="center"
   bind:close="onQrcodeModalClose"
 >

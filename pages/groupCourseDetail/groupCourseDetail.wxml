@@ -175,7 +175,7 @@ module.exports = {
 
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
-    <view class="action-buttons" wx:if="{{courseDetail.status === 1}}">
+    <view class="action-buttons">
       <!-- 课程所有者操作按钮 -->
       <view wx:if="{{isOwner}}" class="owner-actions">
         <!-- 未发布课程：编辑、发布 -->
@@ -198,40 +198,42 @@ module.exports = {
       
       <!-- 非课程所有者：报名相关按钮 -->
       <view wx:else class="student-actions">
-        <!-- 分享按钮 -->
-        <button class="action-btn share" open-type="share">
-          <text class="iconfont icon-share-line share-icon"></text>
-          <text>分享</text>
-        </button>
-        <!-- 报名中 -->
-        <button 
-          wx:if="{{registeredInfo && registeredInfo.check_in_status === 1}}"
-          class="action-btn disabled"
-          disabled
-        >
-          已签到
-        </button>
-        <button 
-          wx:elif="{{courseDetail.current_participants >= courseDetail.max_participants}}"
-          class="action-btn disabled"
-          disabled
-        >
-          已满员
-        </button>
-        <button 
-          wx:elif="{{registeredInfo && registeredInfo.registration_status !== 1}}"
-          class="action-btn registration"
-          bindtap="onRegisterTap"
-        >
-          立即报名
-        </button>
-        <button 
-          wx:elif="{{registeredInfo && registeredInfo.registration_status === 1}}"
-          class="action-btn secondary"
-          bindtap="onUnregisterTap"
-        >
-          取消报名
-        </button>
+        <block wx:if="{{courseDetail.status === 1}}">
+          <!-- 分享按钮 -->
+          <button class="action-btn share" open-type="share">
+            <text class="iconfont icon-share-line share-icon"></text>
+            <text>分享</text>
+          </button>
+          <!-- 报名中 -->
+          <button 
+            wx:if="{{registeredInfo && registeredInfo.check_in_status === 1}}"
+            class="action-btn disabled"
+            disabled
+          >
+            已签到
+          </button>
+          <button 
+            wx:elif="{{courseDetail.current_participants >= courseDetail.max_participants}}"
+            class="action-btn disabled"
+            disabled
+          >
+            已满员
+          </button>
+          <button 
+            wx:elif="{{registeredInfo && registeredInfo.registration_status !== 1}}"
+            class="action-btn registration"
+            bindtap="onRegisterTap"
+          >
+            立即报名
+          </button>
+          <button 
+            wx:elif="{{registeredInfo && registeredInfo.registration_status === 1}}"
+            class="action-btn secondary"
+            bindtap="onUnregisterTap"
+          >
+            取消报名
+          </button>
+        </block>
       </view>
     </view>
   </view>

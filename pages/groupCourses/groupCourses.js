@@ -313,7 +313,7 @@ Page({
           } catch (error) {
             wx.hideLoading();
             wx.showToast({
-              title: '取消失败，请重试',
+              title: error.message || '取消失败，请重试',
               icon: 'none'
             });
           }

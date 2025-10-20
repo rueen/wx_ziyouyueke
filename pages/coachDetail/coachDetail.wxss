@@ -82,13 +82,15 @@ page {
 .intro-section {
   background-color: #fff;
   padding: 32rpx;
-  margin-top: 24rpx;
+  margin: 16rpx 16rpx 0;
+  border-radius: 16rpx;
 }
 
 .groupCourse-section{
   background-color: #fff;
   padding: 32rpx;
-  margin-top: 24rpx;
+  margin: 16rpx 16rpx 0;
+  border-radius: 16rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
