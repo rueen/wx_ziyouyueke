@@ -71,6 +71,37 @@ const validatePhone = (phone) => {
 }
 
 /**
+ * 解析微信小程序场景值参数
+ * @param {Object} options 页面参数对象
+ * @returns {Object} 解析后的参数对象
+ */
+const parseSceneParams = (options) => {
+  if (!options || !options.scene) {
+    return options || {};
+  }
+
+  try {
+    const params = {};
+    const pairs = decodeURIComponent(options.scene).split('&');
+    
+    for (const pair of pairs) {
+      const [key, value] = pair.split('=');
+      if (key && value !== undefined) {
+        params[key] = value;
+      }
+    }
+    
+    return {
+      ...options,
+      ...params
+    };
+  } catch (error) {
+    console.error('解析场景值参数失败:', error);
+    return options || {};
+  }
+}
+
+/**
  * 跳转到登录页面，并在登录成功后跳转回当前页面
  * @param {Object} options 配置选项
  * @param {string} options.message 提示信息，默认为"此功能需要登录后才能使用，是否前往登录？"
@@ -266,6 +297,7 @@ module.exports = {
   createCompatibleDate,
   safeParseDateTimeString,
   validatePhone,
+  parseSceneParams,
   navigateToLoginWithRedirect,
   compressImage,
   compressImages,

@@ -1,6 +1,6 @@
 // pages/groupCourseDetail/groupCourseDetail.js
 const api = require('../../utils/api.js')
-const { navigateToLoginWithRedirect } = require('../../utils/util.js')
+const { navigateToLoginWithRedirect, parseSceneParams } = require('../../utils/util.js')
 const posterUtil = require('../../utils/poster.js')
 
 Page({
@@ -35,7 +35,8 @@ Page({
    */
   onLoad(options) {
     console.log('团课详情页面参数:', options)
-    
+    // 解析场景值参数
+    options = parseSceneParams(options);
     if (options.courseId) {
       this.setData({
         courseId: parseInt(options.courseId),

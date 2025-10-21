@@ -1,7 +1,7 @@
 // pages/groupCourses/groupCourses.js
 const api = require('../../utils/api.js');
 const posterUtil = require('../../utils/poster.js');
-const { navigateToLoginWithRedirect } = require('../../utils/util.js');
+const { navigateToLoginWithRedirect, parseSceneParams } = require('../../utils/util.js');
 
 Page({
 
@@ -45,6 +45,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 解析场景值参数
+    options = parseSceneParams(options);
     const { coachId } = options;
     if(coachId == null){
       wx.showToast({
