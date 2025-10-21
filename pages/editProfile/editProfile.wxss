@@ -7,7 +7,7 @@
 page {
   height: 100vh;
   background-color: #f7f7f7;
-  padding: 40rpx 40rpx 140rpx 40rpx; /* 底部留更多空间给保存按钮 */
+  padding: 16rpx 16rpx 140rpx 16rpx; /* 底部留更多空间给保存按钮 */
 }
 
 /* 表单容器 */

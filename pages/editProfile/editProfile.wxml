@@ -1,6 +1,6 @@
 <!--pages/editProfile/editProfile.wxml-->
 <navBar title="个人信息" />
-<layout class="container">
+<layout>
   <view class="profile-form">
     <!-- 我的头像 -->
     <button class="form-item avatar-button" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
