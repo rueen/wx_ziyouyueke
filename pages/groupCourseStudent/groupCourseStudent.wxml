@@ -10,7 +10,8 @@
       data-tab="{{item}}"
       bindtap="onTabChange"
     >
-      {{item.name}}
+      <view class="tab-item-text">{{item.name}}</view>
+      <text class="iconfont icon-bishuamoji"></text>
     </view>
   </view>
 

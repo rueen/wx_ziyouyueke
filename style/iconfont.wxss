@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 4937609 */
-  src: url('//at.alicdn.com/t/c/font_4937609_6gz3cniqzmp.woff2?t=1760948524031') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4937609_6gz3cniqzmp.woff?t=1760948524031') format('woff'),
-       url('//at.alicdn.com/t/c/font_4937609_6gz3cniqzmp.ttf?t=1760948524031') format('truetype');
+  src: url('https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/iconfont/iconfont.woff2') format('woff2'),
+       url('https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/iconfont/iconfont.woff') format('woff'),
+       url('https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/iconfont/iconfont.ttf') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-bishuamoji:before {
+  content: "\e67c";
 }
 
 .icon-time:before {
