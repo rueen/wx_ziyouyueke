@@ -205,7 +205,8 @@ Page({
           weekday: this.getWeekday(item.course_date),
           time: this.getTime(item),
           price: this.getCoursePrice(item),
-          isCanCancel: item.status === 1 && !item.registrations.filter(reg => reg.check_in_status ===1).length
+          isCanCancel: item.status === 1 && !item.registrations.filter(reg => reg.check_in_status ===1).length,
+          registrations: item.registrations.filter(reg => reg.registration_status === 1).splice(0,6)
         }))
         this.setData({
           courses: this.data.currentPage === 1 ? courses : [...this.data.courses, ...courses],

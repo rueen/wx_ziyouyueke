@@ -12,7 +12,7 @@ Page({
     activeTab: 0,
     tabs: [
       { status: 0, name: '进行中' },
-      { status: 1, name: '已结束' }
+      { status: 1, name: '已完成' }
     ],
     list: [],
     isLoading: false, // 加载状态

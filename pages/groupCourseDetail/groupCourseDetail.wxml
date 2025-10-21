@@ -194,9 +194,14 @@ module.exports = {
         </block>
         
         <!-- 已发布课程：编辑 -->
-        <button wx:elif="{{courseDetail.status === 1}}" class="action-btn editable" bindtap="onEditCourse">
-          编辑课程
-        </button>
+        <block wx:elif="{{courseDetail.status === 1}}">
+          <button class="action-btn publish" bind:tap="viewRegistrations">
+            查看报名
+          </button>
+          <button class="action-btn editable" bindtap="onEditCourse">
+            编辑课程
+          </button>
+        </block>
       </block>
       
       <!-- 非课程所有者：报名相关按钮 -->

@@ -91,7 +91,7 @@
               catch:tap="viewRegistrations"
             >
               <view class="avatar-list">
-                <image src="{{applicant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" mode="aspectFill" wx:for="{{item.registrations}}" wx:key="*this" wx:for-item="applicant" wx:if="{{index < 6}}" class="avatar"/>
+                <image src="{{applicant.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'}}" mode="aspectFill" wx:for="{{item.registrations}}" wx:key="*this" wx:for-item="applicant" class="avatar"/>
               </view>
               <text class="participant-count">{{item.current_participants}}人已报名</text>
             </view>

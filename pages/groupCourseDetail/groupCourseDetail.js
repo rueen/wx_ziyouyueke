@@ -424,6 +424,15 @@ Page({
     return true
   },
 
+  // 查看报名列表
+  viewRegistrations(e) {
+    const { courseId, courseDetail } = this.data
+
+    wx.navigateTo({
+      url: `/pages/groupCoursesRegistrations/groupCoursesRegistrations?courseId=${courseId}&price_type=${courseDetail.price_type}&status=${courseDetail.status}`
+    })
+  },
+
   /**
    * 编辑课程
    */
