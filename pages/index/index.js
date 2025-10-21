@@ -30,6 +30,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    const phoneVerify = this.selectComponent('#phoneVerify');
+    if (phoneVerify) {
+      phoneVerify.onShow();
+    }
     // 总是重新加载用户信息（确保登录状态变化后能及时更新）
     this.loadUserInfo();
     
@@ -82,6 +86,12 @@ Page({
     wx.setStorageSync('isLoggedIn', true); // 设置为已登录状态，但是游客模式
     wx.setStorageSync('loginType', 'guest');
     wx.setStorageSync('userRole', 'student'); // 默认设置为学员角色
+  },
+
+  onNeedLogin() {
+    navigateToLoginWithRedirect({
+      message: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？'
+    });
   },
 
   /**

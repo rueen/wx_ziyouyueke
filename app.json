@@ -58,6 +58,9 @@
       }
     ]
   },
+  "usingComponents": {
+    "phone-verify": "/components/phoneVerify/phoneVerify"
+  },
   "style": "v2",
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",

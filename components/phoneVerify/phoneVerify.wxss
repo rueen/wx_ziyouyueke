@@ -1,0 +1,28 @@
+/* components/phoneVerify/phoneVerify.wxss */
+
+.phone-verify-wrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+.phone-verify-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  line-height: inherit;
+  font-size: inherit;
+  text-align: inherit;
+  color: inherit;
+  border-radius: 0;
+}
+
+.phone-verify-button::after {
+  border: none;
+}
+
+/* 移除 button 的默认样式 */
+.phone-verify-button[plain] {
+  border: none;
+}
+

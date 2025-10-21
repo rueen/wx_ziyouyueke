@@ -1,6 +1,7 @@
 // pages/groupCourses/groupCourses.js
 const api = require('../../utils/api.js');
 const posterUtil = require('../../utils/poster.js');
+const { navigateToLoginWithRedirect } = require('../../utils/util.js');
 
 Page({
 
@@ -64,11 +65,19 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    const phoneVerify = this.selectComponent('#phoneVerify');
+    if (phoneVerify) {
+      phoneVerify.onShow();
+    }
     if(this.data.coachId){
       this.loadUserInfo()
       this.loadCoachInfo();
       this.loadGroupCourses(true)
     }
+  },
+
+  onNeedLogin() {
+    navigateToLoginWithRedirect();
   },
 
   /**

@@ -141,7 +141,9 @@
 
     <!-- 新增团课按钮 -->
     <view class="add-course-btn-container" wx:if="{{isOwner}}">
-      <button class="add-course-btn" bindtap="onAddCourseTap">新增团课</button>
+      <phone-verify id="phoneVerify" bind:verified="onAddCourseTap" bind:needLogin="onNeedLogin">
+        <button class="add-course-btn">新增团课</button>
+      </phone-verify>
     </view>
   </view>
 

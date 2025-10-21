@@ -289,6 +289,11 @@ Page({
 
   // 打开团课
   onGroupCourses() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     const { userInfo, userRole } = this.data;
     if(userRole === 'coach'){
       wx.navigateTo({
@@ -315,20 +320,6 @@ Page({
       url: '/pages/timeTemplate/timeTemplate'
     });
   },
-
-  /**
-   * 我的时间（教练专用）
-   */
-  // onMySchedule() {
-  //   // 检查是否需要登录
-  //   if (!this.checkLoginRequired()) {
-  //     return;
-  //   }
-    
-  //   wx.navigateTo({
-  //     url: '/pages/mySchedule/mySchedule'
-  //   });
-  // },
 
   /**
    * 常用地址

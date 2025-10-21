@@ -57,6 +57,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    const phoneVerify = this.selectComponent('#phoneVerify');
+    if (phoneVerify) {
+      phoneVerify.onShow();
+    }
     // 获取用户角色和登录状态
     this.loadUserInfo()
   },
@@ -70,6 +74,17 @@ Page({
     this.setData({
       loginType: loginType,
     })
+  },
+
+  onNeedLogin() {
+    navigateToLoginWithRedirect({
+      message: '请先登录后再报名',
+      redirectParams: {
+        isFixedRole: true,
+        selectedRole: 'student',
+        courseId: this.data.courseId
+      }
+    });
   },
 
   /**
@@ -141,21 +156,7 @@ Page({
    * 报名团课
    */
   onRegisterTap() {
-    const { courseDetail, loginType } = this.data
-
-    // 检查登录状态
-    if (loginType === 'guest') {
-      navigateToLoginWithRedirect({
-        message: '请先登录后再报名',
-        redirectParams: {
-          isFixedRole: true,
-          selectedRole: 'student',
-          courseId: this.data.courseId
-        }
-      });
-      return
-    }
-    
+    const { courseDetail } = this.data;
     // 检查报名条件
     if (courseDetail.current_participants >= courseDetail.max_participants) {
       wx.showToast({

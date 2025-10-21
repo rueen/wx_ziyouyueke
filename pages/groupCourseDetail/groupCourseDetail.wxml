@@ -216,13 +216,19 @@ module.exports = {
         >
           已满员
         </button>
-        <button 
+        <phone-verify
           wx:elif="{{registeredInfo && registeredInfo.registration_status !== 1}}"
+          id="phoneVerify"
+          bind:verified="onRegisterTap"
+          bind:needLogin="onNeedLogin"
           class="action-btn registration"
-          bindtap="onRegisterTap"
         >
-          立即报名
-        </button>
+          <button
+            class="action-btn registration"
+          >
+            立即报名
+          </button>
+        </phone-verify>
         <button 
           wx:elif="{{registeredInfo && registeredInfo.registration_status === 1}}"
           class="action-btn secondary"

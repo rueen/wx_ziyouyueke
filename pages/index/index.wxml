@@ -52,7 +52,9 @@
     
     <!-- 立即约课按钮 -->
     <view class="book-button-container">
-      <button class="book-button" bindtap="onBookCourse">{{userRole === 'student' ? '约教练' : '约学员'}}</button>
+      <phone-verify id="phoneVerify" bind:verified="onBookCourse" bind:needLogin="onNeedLogin">
+        <button class="book-button">{{userRole === 'student' ? '约教练' : '约学员'}}</button>
+      </phone-verify>
     </view>
   </view>
 </layout>

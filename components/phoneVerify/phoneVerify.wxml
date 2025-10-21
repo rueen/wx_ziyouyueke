@@ -1,0 +1,18 @@
+<!--components/phoneVerify/phoneVerify.wxml-->
+<!-- 如果用户已有手机号，直接显示 slot 内容 -->
+<view wx:if="{{isNeedLogin || hasPhone}}" class="phone-verify-wrapper" bindtap="onVerifiedClick">
+  <slot></slot>
+</view>
+
+<!-- 如果用户没有手机号，用 button 包裹 slot 内容 -->
+<button 
+  wx:else
+  class="phone-verify-button"
+  open-type="getPhoneNumber"
+  bindgetphonenumber="onGetPhoneNumber"
+  disabled="{{disabled || isLoading}}"
+  loading="{{isLoading}}"
+>
+  <slot></slot>
+</button>
+
