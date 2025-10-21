@@ -438,7 +438,7 @@
 
 /* 团课样式 */
 .group-course {
-  border-left: 4rpx solid #ff6b35;
+  border-left: 4rpx solid #ff9500;
   background-color: #fff8f5;
 }
 
@@ -519,7 +519,7 @@
 
 /* 团课模式样式 */
 .booked-text {
-  color: #ff6b35;
+  color: #ff9500;
   font-weight: 500;
 }
 
@@ -529,7 +529,7 @@
 }
 
 .group-booked-text {
-  color: #ff6b35;
+  color: #ff9500;
   font-weight: 500;
   font-size: 28rpx;
 }

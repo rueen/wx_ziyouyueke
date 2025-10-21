@@ -73,12 +73,12 @@ page {
   transform: scale(0.98);
 }
 .action-btn.check-in {
-  background-color: #ff6b35;
+  background-color: #ff9500;
   color: #fff;
 }
 .check-in-text{
   font-size: 26rpx;
-  color: #ff6b35;
+  color: #ff9500;
 }
 .bottom-actions{
   position: fixed;
@@ -111,6 +111,6 @@ page {
   transform: scale(0.98);
 }
 .action-btn.complete{
-  background-color: #ff6b35;
+  background-color: #ff9500;
   color: #fff;
 }

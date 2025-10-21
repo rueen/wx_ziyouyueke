@@ -83,11 +83,11 @@ page {
 }
 
 .status-tag.status_0 {
-  background-color: #fa541c;
+  background-color: #ff9500;
   color: #fff;
 }
 .status-tag.status_1 {
-  background-color: #fae64f;
+  background-color: #cff632;
   color: #000;
 }
 .status-tag.status_2 {
@@ -127,8 +127,8 @@ page {
 }
 .time-tag{
   font-size: 24rpx;
-  color: #fff;
-  background-color: #13c2c2;
+  color: #000;
+  background-color: #cff632;
   border-radius: 6rpx;
   padding: 2rpx 10rpx;
   margin-left: 10rpx;
@@ -321,7 +321,7 @@ page {
   transform: scale(0.98);
 }
 .action-btn.registration{
-  background-color: #fae64f;
+  background-color: #cff632;
   color: #000;
 }
 .action-btn.editable {
@@ -330,7 +330,7 @@ page {
 }
 
 .action-btn.publish {
-  background-color: #fa541c;
+  background-color: #ff9500;
   color: #fff;
 }
 
@@ -356,7 +356,7 @@ page {
   width: 30rpx;
   height: 30rpx;
   border-radius: 15rpx;
-  background: #fae64f;
+  background: #cff632;
   position: absolute;
   z-index: -1;
   left: 50%;

@@ -71,11 +71,11 @@ page {
 }
 
 .status-tag.status_0 {
-  background-color: #fa541c;
+  background-color: #ff9500;
   color: #fff;
 }
 .status-tag.status_1 {
-  background-color: #fae64f;
+  background-color: #cff632;
   color: #000;
 }
 .status-tag.status_2 {
@@ -149,7 +149,7 @@ page {
 }
 .check_in_status{
   font-size: 26rpx;
-  color: #ff6b35;
+  color: #ff9500;
 }
 .action-btn {
   width: 158rpx!important;
@@ -167,7 +167,7 @@ page {
   transform: scale(0.98);
 }
 .action-btn.check-in {
-  background-color: #ff6b35;
+  background-color: #ff9500;
   color: #fff;
 }
 .cancel_reason{
