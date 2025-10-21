@@ -5,7 +5,7 @@
 @import '/style/iconfont.wxss';
 page {
   min-height: 100vh;
-  background-color: #fff;
+  background-color: #f5f5f5;
 }
 
 .container{
@@ -14,9 +14,9 @@ page {
 
 /* 用户信息卡片 */
 .user-card {
-  background: #f4f5f6;
+  background: #fff;
   border-radius: 16rpx;
-  padding: 16rpx;
+  padding: 24rpx;
 }
 
 .user-header {
@@ -73,7 +73,7 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: #f8f8f8;
   padding: 40rpx 0;
   border-radius: 20rpx;
 }
@@ -98,8 +98,11 @@ page {
 
 /* 我的课表 */
 .my-schedule {
-  margin-top: 40rpx;
+  margin-top: 16rpx;
   margin-bottom: 200rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
 }
 
 /* 立即约课按钮 */

@@ -8,9 +8,8 @@
 
 /* 日期选择器 */
 .date-selector {
-  width: 100%;
-  padding: 20rpx 0;
-  background: #ffffff;
+  background: #fff;
+  padding: 16rpx;
 }
 
 .date-scroll {
@@ -79,6 +78,7 @@
 /* 课程列表容器 */
 .schedule-container {
   background: #ffffff;
+  padding: 0 16rpx;
 }
 
 /* 加载状态 */

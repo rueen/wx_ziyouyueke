@@ -5,8 +5,7 @@
 /* 日期选择器样式 */
 .date-selector {
   background-color: #fff;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #eee;
+  padding: 16rpx;
 }
 
 .date-scroll {
@@ -15,7 +14,6 @@
 
 .date-list {
   display: flex;
-  padding: 0 16rpx;
   white-space: nowrap;
 }
 
