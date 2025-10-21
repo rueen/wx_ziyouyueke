@@ -26,7 +26,7 @@ Page({
       { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
       { id: 'poster', name: '生成海报', icon: 'icon-image' },
       { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' },
-      { id: 'link', name: '复制链接', icon: 'icon-link' }
+      // { id: 'link', name: '复制链接', icon: 'icon-link' }
     ],
   },
 
