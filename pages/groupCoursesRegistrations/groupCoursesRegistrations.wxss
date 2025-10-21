@@ -1,4 +1,5 @@
 /* pages/groupCoursesRegistrations/groupCoursesRegistrations.wxss */
+@import '/style/iconfont.wxss';
 
 page {
   height: 100vh;
@@ -40,12 +41,24 @@ page {
   display: flex;
   flex-direction: column;
 }
-
+.participant-info-top{
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
 .participant-name {
   font-size: 32rpx;
   font-weight: 500;
   color: #1d1d1f;
-  margin-bottom: 8rpx;
+}
+.participant-phone{
+  margin-left: 10rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+}
+.participant-phone .icon-call{
+  color: #666;
 }
 
 .participant-time {

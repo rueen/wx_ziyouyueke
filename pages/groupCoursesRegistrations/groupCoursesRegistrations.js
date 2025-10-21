@@ -176,5 +176,11 @@ Page({
         }
       }
     })
+  },
+  handleCall(e) {
+    const { currentTarget: { dataset: { phone } } } = e;
+    wx.makePhoneCall({
+      phoneNumber: phone
+    })
   }
 })

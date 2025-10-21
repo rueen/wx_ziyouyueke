@@ -9,7 +9,13 @@
         mode="aspectFill"
       />
       <view class="participant-info">
-        <text class="participant-name">{{item.student.nickname}}</text>
+        <view class="participant-info-top">
+          <text class="participant-name">{{item.student.nickname}}</text>
+          <text class="participant-phone" wx:if="{{item.student.phone}}" bind:tap="handleCall" data-phone="{{item.student.phone}}">
+            <text>{{item.student.phone}}</text>
+            <text class="iconfont icon-call"></text>
+          </text>
+        </view>
         <text class="participant-time">{{item.created_at}}</text>
       </view>
       <view class="action-buttons">
