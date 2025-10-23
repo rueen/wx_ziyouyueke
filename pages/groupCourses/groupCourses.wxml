@@ -2,14 +2,13 @@
 <ghostNav />
 <layout>
   <view class="user-section">
-    <view class="user-info" bindtap="onBindCoach">
+    <view class="user-info">
       <view class="user-avatar">
         <image src="{{coachData.avatar_url}}" class="avatar-img"></image>
       </view>
       <view class="user-details">
         <view class="username-row">
           <text class="username">{{coachData.nickname}}</text>
-          <!-- <text class="iconfont icon-arrow-r arrow-icon"></text> -->
         </view>
         <text class="user-desc">{{coachData.intro}}</text>
       </view>

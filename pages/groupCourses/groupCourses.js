@@ -229,13 +229,6 @@ Page({
       });
     }
   },
-
-  onBindCoach() {
-    const { coachId } = this.data;
-    wx.navigateTo({
-      url: `/pages/bindCoach/bindCoach?coachId=${coachId}`
-    })
-  },
   
   /**
    * 切换标签
