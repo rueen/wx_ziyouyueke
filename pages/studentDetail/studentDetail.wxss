@@ -42,12 +42,23 @@ page {
   display: flex;
   flex-direction: column;
 }
-
 .student-name {
   font-size: 36rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 12rpx;
+}
+.nickname{
+  font-size: 28rpx;
+  color: #666;
+}
+.student-name-input{
+  height: 60rpx;
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+  padding: 0 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  border: 1rpx solid #e9ecef;
 }
 
 .student-intro {
@@ -171,7 +182,7 @@ page {
   width: 100%;
   min-height: 120rpx;
   background-color: #f8f9fa;
-  border-radius: 12rpx;
+  border-radius: 8rpx;
   padding: 20rpx;
   font-size: 28rpx;
   color: #333;

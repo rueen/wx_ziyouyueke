@@ -15,6 +15,7 @@ Page({
     studentData: {},
     relationId: null,
     studentId: null,
+    studentName: '', // 学员姓名（教练备注姓名）
     studentRemark: '',   // 学员备注
     isEditing: false,    // 是否处于编辑状态
     isSaving: false,     // 是否正在保存
@@ -35,22 +36,6 @@ Page({
         this.loadStudentDetail();
       });
     }
-    // if (options.studentData) {
-    //   try {
-    //     const studentData = JSON.parse(decodeURIComponent(options.studentData));
-    //     this.setData({
-    //       studentData,
-    //       lessons: studentData.lessons,
-    //       studentRemark: studentData.coach_remark || ''
-    //     });
-    //   } catch (error) {
-    //     console.error('解析学员数据失败：', error);
-    //     wx.showToast({
-    //       title: '数据加载失败',
-    //       icon: 'none'
-    //     });
-    //   }
-    // }
   },
 
   /**
@@ -76,6 +61,7 @@ Page({
         this.setData({
           studentData: studentData,
           lessons: studentData.lessons,
+          studentName: studentData.student_name || studentData.student.nickname || '',
           studentRemark: studentData.coach_remark || ''
         });
       }
@@ -106,7 +92,15 @@ Page({
     const { studentData } = this.data;
     this.setData({
       isEditing: false,
+      studentName: studentData.student_name || '',
       studentRemark: studentData.coach_remark || ''
+    });
+  },
+
+  // 输入学员名称
+  onStudentNameInput(e) {
+    this.setData({
+      studentName: e.detail.value
     });
   },
 
@@ -139,7 +133,7 @@ Page({
    * 保存修改
    */
   async onSave() {
-    const { lessons, studentRemark, studentData, isSaving } = this.data;
+    const { lessons, studentRemark, studentName, studentData, isSaving } = this.data;
 
     if (isSaving) {
       return; // 防止重复提交
@@ -157,6 +151,7 @@ Page({
       // 调用API更新师生关系
       const updateData = {
         category_lessons: lessons,
+        student_name: studentName.trim(),
         coach_remark: studentRemark.trim()
       };
 
@@ -176,6 +171,7 @@ Page({
         const updatedStudentData = {
           ...studentData,
           category_lessons: new_category_lessons,
+          student_name: studentName.trim(),
           coach_remark: studentRemark.trim()
         };
 

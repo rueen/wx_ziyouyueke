@@ -9,7 +9,7 @@
       </view>
       <view class="student-info">
         <view class="student-main-info">
-          <text class="student-name">{{item.student.nickname}}</text>
+          <text class="student-name">{{item.student_name}}</text>
         </view>
         <view class="remaining-lessons">
           <text class="lessons-label">剩余课时：</text>
