@@ -19,14 +19,15 @@
         <text class="participant-time">{{item.created_at}}</text>
       </view>
       <view class="action-buttons">
-        <text class="check-in-text" wx:if="{{item.check_in_status === 1}}">已签到</text>
-        <text class="check-in-text" wx:if="{{item.check_in_status === 2}}">缺席</text>
-        <button
+        <text class="check-in-text checked" wx:if="{{item.check_in_status === 1}}">已签到</text>
+        <text class="check-in-text absent" wx:if="{{item.check_in_status === 2}}">缺席</text>
+        <text class="check-in-text" wx:if="{{status === 1 && item.check_in_status === 0}}">未签到</text>
+        <!-- <button
           wx:if="{{status === 1 && item.check_in_status === 0}}"
           class="action-btn check-in"
           bind:tap="handleCheckIn"
           data-item="{{item}}"
-        >扫码签到</button>
+        >扫码签到</button> -->
       </view>
     </view>
   </view>
@@ -38,8 +39,12 @@
   </emptyState>
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
-    <view class="action-buttons">
-      <button class="action-btn complete" bindtap="handleComplete" wx:if="{{status === 1}}">
+    <view class="action-buttons" wx:if="{{status === 1}}">
+      <button
+        class="action-btn check-in"
+        bind:tap="handleCheckIn"
+      >扫码签到</button>
+      <button class="action-btn complete" bindtap="handleComplete">
         完成团课
       </button>
     </view>

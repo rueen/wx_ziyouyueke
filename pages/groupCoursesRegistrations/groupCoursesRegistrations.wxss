@@ -93,6 +93,12 @@ page {
   font-size: 26rpx;
   color: #ff9500;
 }
+.check-in-text.checked{
+  color: #1AAD19;
+}
+.check-in-text.absent{
+  color: #E64340;
+}
 .bottom-actions{
   position: fixed;
   bottom: 0;
@@ -106,6 +112,7 @@ page {
 .bottom-actions .action-buttons{
   display: flex;
   width: 100%;
+  gap: 16rpx;
 }
 .action-btn{
   width: 100%;
@@ -124,6 +131,6 @@ page {
   transform: scale(0.98);
 }
 .action-btn.complete{
-  background-color: #ff9500;
+  background-color: #1AAD19;
   color: #fff;
 }

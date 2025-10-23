@@ -117,6 +117,7 @@ Page({
           const item = _item.groupCourse || {};
           return {
             ...item,
+            courseId: item.id,
             image: item.cover_images && item.cover_images.length > 0 
               ? item.cover_images[0] 
               : '',
@@ -125,7 +126,8 @@ Page({
             time: this.getTime(item),
             price: this.getCoursePrice(item),
             check_in_status: _item.check_in_status - 0,
-            registrationId: _item.id
+            registrationId: _item.id,
+            relationId: _item.relation_id
           }
         })
         this.setData({
@@ -303,13 +305,17 @@ Page({
   },
   handleCheckIn(e) {
     const { course } = e.currentTarget.dataset;
-    const { registrationId } = course;
+    const { courseId, relationId, registrationId } = course;
 
     this.setData({
       showQrcodeModal: true
     })
     // 生成二维码
-    this.generateQRCode(registrationId.toString());
+    this.generateQRCode(JSON.stringify({
+      courseId,
+      relationId,
+      registrationId
+    }));
     this.startPollingCourseStatus(registrationId);
   },
   /**
