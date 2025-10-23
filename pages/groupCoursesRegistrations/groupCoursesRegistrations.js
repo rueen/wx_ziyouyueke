@@ -77,7 +77,7 @@ Page({
               tips = '签到后会扣除相应课时，'
             }
             wx.showModal({
-              title: '确定签到吗？',
+              title: `确定为 [${item.student.nickname}] 签到吗？`,
               content: `${tips}此操作不可撤销`,
               complete: async (res) => {
                 if (res.confirm) {
