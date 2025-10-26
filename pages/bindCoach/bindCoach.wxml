@@ -47,7 +47,7 @@
           class="bind-button {{isBinding ? 'loading' : ''}}" 
           disabled="{{isBinding}}"
         >
-          <text wx:if="{{!isBinding}}">{{isLoggedIn ? '绑定教练' : '登录并绑定'}}</text>
+          <text wx:if="{{!isBinding}}">绑定教练</text>
           <text wx:else>绑定中...</text>
         </button>
       </phone-verify>

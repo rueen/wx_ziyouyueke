@@ -61,7 +61,12 @@ Page({
 
   onNeedLogin() {
     navigateToLoginWithRedirect({
-      message: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？'
+      message: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？',
+      redirectParams: {
+        isFixedRole: true,
+        selectedRole: 'student',
+        coachId: this.data.coachId
+      }
     });
   },
 
