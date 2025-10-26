@@ -160,7 +160,6 @@ page {
   padding: 30rpx 40rpx;
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
   background-color: #f7f7f7;
-  border-top: 1rpx solid #e0e0e0;
 }
 
 /* 保存按钮 */
