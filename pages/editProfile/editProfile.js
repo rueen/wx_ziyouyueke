@@ -11,11 +11,15 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userRole: '', // 用户身份
     userInfo: {
-      avatarUrl: '',
-      nickName: '',
-      phoneNumber: '',
-      gender: 0 // 0:未知 1:男 2:女
+      avatar_url: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
+      nickname: '',
+      phone: '',
+      gender: 0, // 0:未知 1:男 2:女
+      intro: '',
+      certification: '',
+      motto: ''
     },
     genderText: '未设置'
   },
@@ -39,17 +43,13 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    const userRole = wx.getStorageSync('userRole');
+    this.setData({
+      userRole: userRole
+    });
   },
 
   /**
@@ -62,9 +62,8 @@ Page({
       if (result && result.data) {
         const user = result.data;
         const userInfo = {
-          avatarUrl: user.avatar_url || '/images/defaultAvatar.png',
-          nickName: user.nickname || '未设置',
-          phoneNumber: user.phone || '',
+          ...user,
+          nickname: user.nickname || '未设置',
           gender: user.gender || 0,
           intro: user.intro || ''
         };
@@ -96,31 +95,32 @@ Page({
       });
 
       const { userInfo } = this.data;
-      
       // 准备更新数据
       const updateData = {
-        nickname: userInfo.nickName,
+        nickname: userInfo.nickname,
         gender: userInfo.gender,
-        intro: userInfo.intro || ''
+        intro: userInfo.intro || '',
+        certification: userInfo.certification || '',
+        motto: userInfo.motto || ''
       };
 
       // 如果有手机号，添加到更新数据中
-      if (userInfo.phoneNumber) {
-        updateData.phone = userInfo.phoneNumber;
+      if (userInfo.phone) {
+        updateData.phone = userInfo.phone;
       }
 
       // 处理头像逻辑
-      if (userInfo.avatarUrl) {
+      if (userInfo.avatar_url) {
         // 判断是否为本地临时文件（新选择的头像）
-        const isLocalFile = userInfo.avatarUrl.includes('tmp') || 
-                           userInfo.avatarUrl.startsWith('wxfile://') || 
-                           userInfo.avatarUrl.startsWith('http://tmp/') ||
-                           userInfo.avatarUrl.startsWith('store://');
+        const isLocalFile = userInfo.avatar_url.includes('tmp') || 
+                           userInfo.avatar_url.startsWith('wxfile://') || 
+                           userInfo.avatar_url.startsWith('http://tmp/') ||
+                           userInfo.avatar_url.startsWith('store://');
         
         if (isLocalFile) {
           try {
             // 上传头像文件
-            const uploadResult = await this.uploadAvatar(userInfo.avatarUrl);
+            const uploadResult = await this.uploadAvatar(userInfo.avatar_url);
             if (uploadResult && uploadResult.url) {
               updateData.avatar_url = uploadResult.url;
             }
@@ -135,7 +135,7 @@ Page({
           }
         } else {
           // 如果是网络URL（现有头像），直接传递
-          updateData.avatar_url = userInfo.avatarUrl;
+          updateData.avatar_url = userInfo.avatar_url;
         }
       }
       // 调用API更新用户信息
@@ -202,7 +202,7 @@ Page({
       
       const userInfo = {
         ...this.data.userInfo,
-        avatarUrl: avatarUrl
+        avatar_url: avatarUrl
       };
       this.setData({
         userInfo
@@ -217,7 +217,7 @@ Page({
       // 处理失败时使用原图
       const userInfo = {
         ...this.data.userInfo,
-        avatarUrl: avatarUrl
+        avatar_url: avatarUrl
       };
       this.setData({
         userInfo
@@ -237,7 +237,7 @@ Page({
   onNicknameInput(e) {
     const userInfo = {
       ...this.data.userInfo,
-      nickName: e.detail.value
+      nickname: e.detail.value
     };
     this.setData({
       userInfo
@@ -247,10 +247,11 @@ Page({
   /**
    * 个人介绍输入
    */
-  onIntroInput(e) {
+  onInput(e) {
+    const { target: { dataset: { type } } } = e;
     const userInfo = {
       ...this.data.userInfo,
-      intro: e.detail.value
+      [type]: e.detail.value
     };
     this.setData({
       userInfo
@@ -262,7 +263,7 @@ Page({
    */
   onSave() {
     // 验证必填项
-    if (!this.data.userInfo.nickName || this.data.userInfo.nickName.trim() === '') {
+    if (!this.data.userInfo.nickname || this.data.userInfo.nickname.trim() === '') {
       wx.showToast({
         title: '请输入昵称',
         icon: 'none'
@@ -291,8 +292,7 @@ Page({
         if (result && result.success && result.data && result.data.phone) {
           const userInfo = {
             ...this.data.userInfo,
-            phoneNumber: result.data.phone,
-            phoneCode: e.detail.code // 保存加密的手机号code备用
+            phone: result.data.phone
           };
           this.setData({
             userInfo

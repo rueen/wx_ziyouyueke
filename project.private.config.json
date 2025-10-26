@@ -9,11 +9,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "我报名的团课",
-          "pathName": "pages/groupCourseStudent/groupCourseStudent",
+          "name": "个人信息",
+          "pathName": "pages/editProfile/editProfile",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "我报名的团课",
+          "pathName": "pages/groupCourseStudent/groupCourseStudent",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "团课详情",
