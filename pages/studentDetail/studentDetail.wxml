@@ -8,7 +8,10 @@
         <image src="{{studentData.student.avatar_url}}" class="avatar-img"></image>
       </view>
       <view class="student-info">
-        <view class="student-name" wx:if="{{!isEditing}}">{{studentData.student_name}}</view>
+        <view class="student-name" wx:if="{{!isEditing}}">
+          <text>{{studentData.student_name}}</text>
+          <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text>
+        </view>
         <input wx:else class="student-name-input" type="text" value="{{studentName}}" bindinput="onStudentNameInput" />
         <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
         <view class="student-intro">{{studentData.student.intro}}</view>

@@ -42,14 +42,15 @@
 
     <!-- 绑定按钮 -->
     <view class="bind-button-container">
-      <button 
-        class="bind-button {{isBinding ? 'loading' : ''}}" 
-        bindtap="onBindCoach"
-        disabled="{{isBinding}}"
-      >
-        <text wx:if="{{!isBinding}}">{{isLoggedIn ? '绑定教练' : '登录并绑定'}}</text>
-        <text wx:else>绑定中...</text>
-      </button>
+      <phone-verify id="phoneVerify" bind:verified="onBindCoach" bind:needLogin="onNeedLogin">
+        <button 
+          class="bind-button {{isBinding ? 'loading' : ''}}" 
+          disabled="{{isBinding}}"
+        >
+          <text wx:if="{{!isBinding}}">{{isLoggedIn ? '绑定教练' : '登录并绑定'}}</text>
+          <text wx:else>绑定中...</text>
+        </button>
+      </phone-verify>
     </view>
 
   </view>

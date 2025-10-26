@@ -47,6 +47,24 @@ Page({
     this.loadCoachInfo();
   },
 
+    /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    // 页面显示时重新检查登录状态
+    this.checkLoginStatus();
+    const phoneVerify = this.selectComponent('#phoneVerify');
+    if (phoneVerify) {
+      phoneVerify.onShow();
+    }
+  },
+
+  onNeedLogin() {
+    navigateToLoginWithRedirect({
+      message: '游客用户名下没有已绑定的教练/学员，不能完成预约，是否前往登录？'
+    });
+  },
+
   /**
    * 检查用户登录状态
    */
@@ -115,35 +133,13 @@ Page({
    * 点击绑定教练按钮
    */
   async onBindCoach() {
-    const { isLoggedIn, isBinding } = this.data;
+    const { isBinding } = this.data;
     
     if (isBinding) {
       return; // 防止重复点击
     }
 
-    if (!isLoggedIn) {
-      // 用户未登录，先进行登录
-      this.goToLogin();
-    } else {
-      // 用户已登录，直接绑定
-      await this.bindCoachRelation();
-    }
-  },
-
-  /**
-   * 跳转到登录页面
-   */
-  goToLogin() {
-    const { coachId } = this.data;
-    
-    navigateToLoginWithRedirect({
-      message: '绑定教练需要先登录，是否立即登录？',
-      redirectParams: {
-        isFixedRole: true,
-        selectedRole: 'student',
-        coachId
-      }
-    });
+    this.bindCoachRelation();
   },
 
   /**
@@ -212,14 +208,6 @@ Page({
         duration: 3000
       });
     }
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-    // 页面显示时重新检查登录状态
-    this.checkLoginStatus();
   },
 
   /**
