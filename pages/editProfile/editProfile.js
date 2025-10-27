@@ -21,7 +21,8 @@ Page({
       certification: '',
       motto: ''
     },
-    genderText: '未设置'
+    genderText: '未设置',
+    isShowPoster: false, // 是否显示宣传海报入口
   },
 
   /**
@@ -40,6 +41,10 @@ Page({
    */
   onLoad(options) {
     this.loadUserInfo();
+    const appBaseInfo = wx.getAppBaseInfo()
+    this.setData({
+      isShowPoster: parseInt(appBaseInfo.SDKVersion.replace(/\./g, '')) >= 229
+    })
   },
 
   /**
@@ -351,5 +356,13 @@ Page({
         console.log('用户取消选择');
       }
     });
+  },
+
+  // 打开海报宣传页
+  openPoster() {
+    wx.navigateTo({
+      url: '/pages/poster/poster'
+    });
   }
+
 }) 

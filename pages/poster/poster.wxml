@@ -1,0 +1,31 @@
+<!--pages/poster/poster.wxml-->
+<nav-bar title="宣传海报" />
+<layout>
+  <view class="poster-image-wrap">
+    <view class="label">
+      <text class="label-text">海报图片</text>
+      <text class="label-desc">建议比例：1:1.5</text>
+    </view>
+    <view class="upload-container">
+      <!-- 如果没有海报图片，显示上传区域 -->
+      <view wx:if="{{!userInfo.poster_image}}" class="upload-area" bindtap="onChooseImage">
+        <view class="upload-icon">+</view>
+        <view class="upload-text">点击上传</view>
+      </view>
+      
+      <!-- 如果已有海报图片，显示预览 -->
+      <view wx:else class="image-preview" bindtap="onChooseImage">
+        <image src="{{userInfo.poster_image}}" mode="aspectFill" class="preview-image" />
+        <view class="replace-overlay">点击替换</view>
+      </view>
+    </view>
+  </view>
+  <view class="poster-list">
+    <view class="poster-item" style="width: 400rpx;">
+      <snapshot id="template1">
+        <poster-template1 userInfo="{{userInfo}}" width="400" />
+      </snapshot>
+      <view class="poster-buttons">下载海报</view>
+    </view>
+  </view>
+</layout>

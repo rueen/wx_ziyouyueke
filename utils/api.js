@@ -892,6 +892,7 @@ module.exports = {
     image: uploadImage,
     groupCourse: (filePath) => uploadImage(filePath, 'groupCourse'),
     avatar: (filePath) => uploadImage(filePath, 'avatar'),
+    poster: (filePath) => uploadImage(filePath, 'poster'),
     // document: (filePath) => uploadImage(filePath, 'documents'),
     // temp: (filePath) => uploadImage(filePath, 'temp')
   },

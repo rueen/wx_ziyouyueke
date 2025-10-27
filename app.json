@@ -23,7 +23,8 @@
     "pages/groupCourseAdd/groupCourseAdd",
     "pages/groupCourseDetail/groupCourseDetail",
     "pages/groupCoursesRegistrations/groupCoursesRegistrations",
-    "pages/groupCourseStudent/groupCourseStudent"
+    "pages/groupCourseStudent/groupCourseStudent",
+    "pages/poster/poster"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",
