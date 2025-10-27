@@ -7,6 +7,8 @@
 const api = require('../../utils/api.js');
 // 引入工具函数
 const { validatePhone } = require('../../utils/util.js');
+// 引入海报工具
+const posterUtil = require('../../utils/poster.js');
 
 Page({
   /**
@@ -23,61 +25,60 @@ Page({
     pageSize: 10,
     hasMore: true,
     isRefreshing: false,
-    showModal: false,
 
-    studentPhone: null
+    // 分享相关
+    showShareModal: false,
+    shareOptions: [
+      { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
+      { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' }
+    ]
   },
 
+  /**
+   * 点击添加学员按钮
+   */
   onAddStudent() {
     this.setData({
-      showModal: true
-    });
-  },
-  onHideModal() {
-    this.setData({
-      showModal: false
-    });
-  },
-  /**
-   * 手机号输入事件
-   * @param {Object} e 事件对象
-   */
-  onPhoneInput(e) {
-    this.setData({
-      studentPhone: e.detail.value
+      showShareModal: true
     });
   },
 
   /**
-   * 确认绑定学员
+   * 关闭分享弹窗
    */
-  onConfirmBind() {
-    const { studentPhone } = this.data;
-    
-    // 检查手机号是否已填写
-    if (!studentPhone || studentPhone.trim() === '') {
-      wx.showToast({
-        title: '请输入学员手机号',
-        icon: 'none'
-      });
-      return;
+  onCloseShareModal() {
+    this.setData({
+      showShareModal: false
+    });
+  },
+
+  /**
+   * 选择分享方式
+   * @param {Object} e 事件对象
+   */
+  onSelectShareType(e) {
+    const { type } = e.detail;
+
+    this.onCloseShareModal();
+
+    switch (type) {
+      case 'qrcode':
+        // 生成二维码
+        this.generateQRCode();
+        break;
     }
+  },
+
+  /**
+   * 生成二维码
+   */
+  async generateQRCode() {
+    const { coachInfo } = this.data;
     
-    // 检查手机号格式是否正确
-    if (!validatePhone(studentPhone)) {
-      wx.showToast({
-        title: '手机号格式不正确',
-        icon: 'none'
-      });
-      return;
-    }
-    
-    // 手机号验证通过，这里可以添加后续的绑定逻辑
-    console.log('手机号验证通过:', studentPhone);
-    // TODO: 调用绑定学员的API接口
-    
-    // 关闭弹窗
-    this.onHideModal();
+    await posterUtil.generateAndShareQRCode({
+      scene: `coachId=${coachInfo.id}`,
+      page: 'pages/bindCoach/bindCoach'
+    });
   },
 
   /**

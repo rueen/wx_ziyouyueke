@@ -51,30 +51,16 @@
 
   <!-- 添加学员按钮 -->
   <view class="add-button-container">
-    <!-- <button class="add-button" bindtap="onAddStudent">添加学员</button> -->
-    <button class="add-button" open-type="share">添加学员</button>
+    <button class="add-button" bindtap="onAddStudent">添加学员</button>
   </view>
 </layout>
-<!-- 添加学员弹窗 -->
-<view class="bottom-modal {{showModal ? 'show' : ''}}" wx:if="{{showModal}}">
-  <view class="modal-overlay" bindtap="onHideModal"></view>
-  <view class="modal-content">
-    <view class="modal-header">
-      <text class="modal-title">输入学员手机号</text>
-      <text class="modal-close" bindtap="onHideModal">✕</text>
-    </view>
-    <view class="modal-body">
-      <input type="number" placeholder="请输入学员手机号" class="phoneInput" bindinput="onPhoneInput"/>
-    </view>
-    <view class="modal-footer">
-      <button class="modal-btn cancel-modal-btn" open-type="share">
-        <text class="iconfont icon-share"></text>
-        <text>学员自行绑定</text>
-      </button>
-      <button class="modal-btn confirm-modal-btn active" 
-              bindtap="onConfirmBind">确认添加</button>
-    </view>
-  </view>
-</view>
+
+<!-- 分享弹窗 -->
+<shareModal 
+  show="{{showShareModal}}"
+  options="{{shareOptions}}"
+  bind:close="onCloseShareModal"
+  bind:select="onSelectShareType"
+/>
 
  

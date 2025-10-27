@@ -5,7 +5,7 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
-const { navigateToLoginWithRedirect } = require('../../utils/util.js');
+const { navigateToLoginWithRedirect, parseSceneParams } = require('../../utils/util.js');
 
 Page({
   /**
@@ -23,6 +23,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    options = parseSceneParams(options);
     const { coachId } = options;
 
     if (!coachId) {
