@@ -78,7 +78,7 @@ Page({
     const guestUserInfo = {
       id: null,
       nickname: '游客用户',
-      avatar_url: '/images/defaultAvatar.png',
+      avatar_url: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
       loginType: 'guest'
     };
 
@@ -123,7 +123,7 @@ Page({
         this.setData({
           userInfo: {
             name: (storedUserInfo && storedUserInfo.nickname) || '游客用户',
-            avatar: (storedUserInfo && storedUserInfo.avatar_url) || '/images/defaultAvatar.png'
+            avatar: (storedUserInfo && storedUserInfo.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
         return;
@@ -141,7 +141,7 @@ Page({
           userInfo: {
             ...user,
             name: user.nickname || '用户',
-            avatar: user.avatar_url || '/images/defaultAvatar.png',
+            avatar: user.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             gender: user.gender
           },
           currentUserId: user.id
@@ -159,7 +159,7 @@ Page({
         this.setData({
           userInfo: {
             name: storedUserInfo.nickName || storedUserInfo.nickname || '用户',
-            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || '/images/defaultAvatar.png'
+            avatar: storedUserInfo.avatarUrl || storedUserInfo.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       } else {
@@ -167,7 +167,7 @@ Page({
         this.setData({
           userInfo: {
             name: '用户',
-            avatar: '/images/defaultAvatar.png'
+            avatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png'
           }
         });
       }
