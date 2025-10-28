@@ -5,7 +5,7 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
-const { navigateToLoginWithRedirect, parseSceneParams } = require('../../utils/util.js');
+const { navigateToLoginWithRedirect, parseSceneParams, splitByLineBreak } = require('../../utils/util.js');
 
 Page({
   /**
@@ -102,11 +102,11 @@ Page({
       if (result && result.success && result.data) {
         const coach = result.data;
         const coachData = {
-          id: coach.id,
-          name: coach.nickname || '未知教练',
-          avatar: coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
-          intro: coach.intro || '暂无简介',
-          phone: coach.phone || ''
+          ...coach,
+          nickname: coach.nickname || '未知教练',
+          avatar_url: coach.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
+          certification: splitByLineBreak(coach.certification),
+          intro: splitByLineBreak(coach.intro)
         };
 
         this.setData({

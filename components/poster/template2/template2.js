@@ -6,6 +6,8 @@
  * @Description: 
  */
 // components/poster/template1/template1.js
+const { splitByLineBreak } = require('../../../utils/util.js')
+
 Component({
 
   /**
@@ -45,16 +47,6 @@ Component({
    * 组件的方法列表
    */
   methods: {
-    /**
-     * 将字符串按换行符分割成数组
-     * @param {string} str 原始字符串
-     * @returns {Array} 分割后的数组
-     */
-    splitByLineBreak(str) {
-      if (!str) return [];
-      // 处理各种换行符：\n, \r\n, \r
-      return str.split(/\r\n|\r|\n/).filter(item => item.trim() !== '');
-    },
 
     /**
      * 获取介绍列表
@@ -67,14 +59,14 @@ Component({
         introList.push({
           id: 1,
           title: '荣誉：',
-          content: this.splitByLineBreak(userInfo.certification)
+          content: splitByLineBreak(userInfo.certification)
         })
       }
       if(!!userInfo.intro) {
         introList.push({
           id: 2,
           title: '擅长：',
-          content: this.splitByLineBreak(userInfo.intro)
+          content: splitByLineBreak(userInfo.intro)
         })
       }
 

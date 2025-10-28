@@ -292,6 +292,17 @@ const compressImages = async (filePaths, options = {}) => {
   }
 };
 
+/**
+ * 将字符串按换行符分割成数组
+ * @param {string} str 原始字符串
+ * @returns {Array} 分割后的数组
+ */
+const splitByLineBreak = (str) => {
+  if (!str) return [];
+  // 处理各种换行符：\n, \r\n, \r
+  return str.split(/\r\n|\r|\n/).filter(item => item.trim() !== '');
+}
+
 module.exports = {
   formatTime,
   createCompatibleDate,
@@ -301,5 +312,6 @@ module.exports = {
   navigateToLoginWithRedirect,
   compressImage,
   compressImages,
-  IMAGE_COMPRESS_CONFIG
+  IMAGE_COMPRESS_CONFIG,
+  splitByLineBreak
 }

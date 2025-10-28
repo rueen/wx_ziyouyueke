@@ -1,6 +1,6 @@
 <!--pages/bindCoach/bindCoach.wxml-->
 <navBar title="绑定教练" showBack="{{true}}" bindback="onGoBack" />
-<layout class="container">
+<layout>
   
   <!-- 加载状态 -->
   <view class="loading-container" wx:if="{{isLoading}}">
@@ -11,46 +11,53 @@
 
   <!-- 教练信息展示 -->
   <view class="coach-info-container" wx:else>
-    
-    <!-- 教练头像和基本信息 -->
-    <view class="coach-header">
-      <view class="coach-avatar">
-        <image src="{{coachData.avatar}}" class="avatar-img" mode="aspectFill"></image>
-      </view>
-      <view class="coach-basic-info">
-        <text class="coach-name">{{coachData.name}}</text>
+    <image src="{{coachData.poster_image || coachData.avatar_url}}" mode="widthFix" class="poster_image"/>
+    <view class="poster-mask">
+      <image class="poster-mask-image" src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/poster/poster-mask.png" mode="widthFix"/>
+      <view class="nickname">
+        <text class="nickname-text">{{coachData.nickname}}</text>
       </view>
     </view>
-
-    <!-- 教练简介 -->
-    <view class="coach-intro-section">
-      <view class="section-title">
-        <text class="title-text">教练简介</text>
+    <view class="content">
+      <view class="motto" wx:if="{{coachData.motto}}">
+        <view class="motto-inner">
+          <text class="motto-text">{{coachData.motto}}</text>
+        </view>
       </view>
-      <view class="intro-content">
-        <text class="intro-text">{{coachData.intro}}</text>
-      </view>
-    </view>
+      <block wx:if="{{coachData.certification}}">
+        <view class="title">专业认证</view>
+        <view class="intro">
+          <text wx:for="{{coachData.certification}}" wx:key="*this" class="intro-text">{{item}}</text>
+        </view>
+      </block>
+      
+      <block wx:if="{{coachData.intro}}">
+        <view class="title">教学擅长</view>
+        <view class="intro">
+          <text wx:for="{{coachData.intro}}" wx:key="*this" class="intro-text">{{item}}</text>
+        </view>
+      </block>
 
-    <!-- 绑定提示 -->
-    <view class="bind-tips">
-      <view class="tips-content">
-        <text class="tips-title">绑定说明</text>
-        <text class="tips-desc">绑定后您可以预约该教练的课程，享受专业的教学服务</text>
+      <!-- 绑定提示 -->
+      <view class="bind-tips">
+        <view class="tips-content">
+          <text class="tips-title">绑定说明</text>
+          <text class="tips-desc">绑定后您可以预约该教练的课程，享受专业的教学服务</text>
+        </view>
       </view>
-    </view>
 
-    <!-- 绑定按钮 -->
-    <view class="bind-button-container">
-      <phone-verify id="phoneVerify" bind:verified="onBindCoach" bind:needLogin="onNeedLogin">
-        <button 
-          class="bind-button {{isBinding ? 'loading' : ''}}" 
-          disabled="{{isBinding}}"
-        >
-          <text wx:if="{{!isBinding}}">绑定教练</text>
-          <text wx:else>绑定中...</text>
-        </button>
-      </phone-verify>
+      <!-- 绑定按钮 -->
+      <view class="bind-button-container">
+        <phone-verify id="phoneVerify" bind:verified="onBindCoach" bind:needLogin="onNeedLogin">
+          <button 
+            class="bind-button {{isBinding ? 'loading' : ''}}" 
+            disabled="{{isBinding}}"
+          >
+            <text wx:if="{{!isBinding}}">绑定教练</text>
+            <text wx:else>绑定中...</text>
+          </button>
+        </phone-verify>
+      </view>
     </view>
 
   </view>
