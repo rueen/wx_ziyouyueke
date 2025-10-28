@@ -1,6 +1,5 @@
 {
   "renderer": "skyline",
-  "componentFramework": "glass-easel",
   "usingComponents": {
     "nav-bar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",

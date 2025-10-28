@@ -1,6 +1,7 @@
 <!--pages/poster/poster.wxml-->
 <nav-bar title="宣传海报" />
 <layout>
+<scroll-view scroll-y class="poster-page">
   <view class="poster-image-wrap">
     <view class="label">
       <text class="label-text">海报图片</text>
@@ -21,11 +22,15 @@
     </view>
   </view>
   <view class="poster-list">
-    <view class="poster-item" style="width: 400rpx;">
+    <view class="poster-item" style="width: 690rpx;">
       <snapshot id="template1">
-        <poster-template1 userInfo="{{userInfo}}" width="400" />
+        <poster-template1 userInfo="{{userInfo}}" qrcode="{{qrcode}}" width="690" />
       </snapshot>
-      <view class="poster-buttons">下载海报</view>
+      <view class="poster-buttons" bind:tap="handleDownLoad" data-id="template1">
+        <view class="download-button">下载海报</view>
+      </view>
     </view>
+
   </view>
+</scroll-view>
 </layout>

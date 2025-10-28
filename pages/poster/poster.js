@@ -1,5 +1,6 @@
 // pages/poster/poster.js
 const api = require('../../utils/api.js');
+const posterUtil = require('../../utils/poster.js');
 
 Page({
 
@@ -7,7 +8,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userInfo: {}
+    userInfo: {},
+    qrcode: null
   },
 
   /**
@@ -29,8 +31,28 @@ Page({
    */
   async loadUserInfo() {
     const storedUserInfo = wx.getStorageSync('userInfo');
+    storedUserInfo.poster_image = storedUserInfo.poster_image || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/poster/default_poster.png';
     this.setData({
       userInfo: storedUserInfo || {}
+    }, () => {
+      this.generateQRCode();
+    })
+  },
+
+   /**
+   * 生成二维码
+   */
+  async generateQRCode() {
+    const { userInfo } = this.data;
+    
+    const qrcodeBase64 = await posterUtil.generateQRCode({
+      scene: `coachId=${userInfo.id}`,
+      page: 'pages/bindCoach/bindCoach'
+    });
+    // 保存为临时文件
+    const filePath = await posterUtil.saveBase64ToFile(qrcodeBase64, 'qrcode.png');
+    this.setData({
+      qrcode: filePath
     })
   },
 
@@ -108,16 +130,35 @@ Page({
     }
   },
 
-  /**
-   * 预览图片
-   */
-  onPreviewImage() {
-    const { userInfo } = this.data;
-    if (userInfo.poster_image) {
-      wx.previewImage({
-        urls: [userInfo.poster_image],
-        current: userInfo.poster_image
-      });
-    }
+  handleDownLoad(e){
+    const { currentTarget: { dataset: {id} } } = e;
+
+    wx.showLoading({
+      title: '下载中...',
+      mask: true
+    });
+    this.createSelectorQuery().select(`#${id}`)
+      .node().exec(res => {
+        const node = res[0].node
+        node.takeSnapshot({
+          type: 'file',
+          format: 'png',
+          success: (res) => {
+            wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              complete(res) {
+                wx.showToast({
+                  title: '保存成功'
+                })
+              }
+            })
+          },
+          fail(res) {
+            wx.hideLoading();
+            console.log("takeSnapshot fail:", res)
+          }
+        })
+      })
   }
+
 })

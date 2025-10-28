@@ -19,6 +19,10 @@ Component({
     width: {
       type: Number,
       value: 750
+    },
+    qrcode: {
+      type: String,
+      value: ''
     }
   },
 
@@ -80,7 +84,7 @@ Component({
           content: this.splitByLineBreak(userInfo.motto)
         })
       }
-console.log(introList)
+
       this.setData({
         introList: introList
       })

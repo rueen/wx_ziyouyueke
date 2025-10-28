@@ -4,7 +4,7 @@
   <view class="intro" style="left: {{width * 0.06}}rpx; bottom: {{width * 0.35}}rpx;">
     <!-- 专业认证 -->
     <view wx:for="{{introList}}" wx:key="id">
-      <view class="title">
+      <view class="title" style="margin-top: {{width * 0.04}}rpx;margin-bottom: {{width * 0.01}}rpx;">
         <view class="title-icon" style="width: {{width * 0.01}}rpx;height: {{width * 0.01}}rpx;margin-right: {{width * 0.02}}rpx;"></view>
         <text class="title-text" style="font-size: {{width * 0.05}}rpx">{{item.title}}</text>
       </view>
@@ -13,8 +13,10 @@
       </view>
     </view>
   </view>
-  <view class="name-wrap" style="width: {{width * 0.4}}rpx; height: {{width * 0.14}}rpx; bottom: {{width * 0.1}}rpx;">
+  <view class="name-wrap" style="width: {{width * 0.4}}rpx; height: {{width * 0.12}}rpx; bottom: {{width * 0.1}}rpx;">
     <text class="nickname" style="font-size: {{width*0.06}}rpx;">{{userInfo.nickname}}</text>
   </view>
-  <view class="qrcode" style="width: {{width * 0.24}}rpx; height: {{width * 0.24}}rpx; bottom:{{width * 0.06}}rpx;right: {{width * 0.06}}rpx;"></view>
+  <view class="qrcode" style="width: {{width * 0.2}}rpx; height: {{width * 0.2}}rpx; bottom:{{width * 0.06}}rpx;right: {{width * 0.06}}rpx;">
+    <image src="{{qrcode}}" mode="aspectFit" class="qrcode-image"/>
+  </view>
 </view>
