@@ -24,14 +24,14 @@
           <text class="motto-text">{{coachData.motto}}</text>
         </view>
       </view>
-      <block wx:if="{{coachData.certification}}">
+      <block wx:if="{{coachData.certification && coachData.certification.length}}">
         <view class="title">专业认证</view>
         <view class="intro">
           <text wx:for="{{coachData.certification}}" wx:key="*this" class="intro-text">{{item}}</text>
         </view>
       </block>
       
-      <block wx:if="{{coachData.intro}}">
+      <block wx:if="{{coachData.intro && coachData.intro.length}}">
         <view class="title">教学擅长</view>
         <view class="intro">
           <text wx:for="{{coachData.intro}}" wx:key="*this" class="intro-text">{{item}}</text>

@@ -2,8 +2,8 @@
 <view class="poster-template1-container" style="width: {{width}}rpx; height: {{width * 1.5}}rpx;">
   <image src="{{userInfo.poster_image}}" mode="aspectFill" class="poster_image"/>
   <view class="intro" style="left: {{width * 0.06}}rpx; right:{{width * 0.06}}rpx; bottom: {{width * 0.2}}rpx;">
-    <view class="title" style="font-size: {{width * 0.06}}rpx;margin-left: -{{width * 0.03}}rpx;">【个人简介】</view>
-    <view class="motto" style="margin-top: {{width * 0.02}}rpx;margin-bottom: {{width * 0.02}}rpx;">
+    <view class="title" style="font-size: {{width * 0.06}}rpx;margin-left: -{{width * 0.03}}rpx;margin-bottom: {{width * 0.02}}rpx;">【个人简介】</view>
+    <view wx:if="{{userInfo.motto}}" class="motto" style="margin-bottom: {{width * 0.02}}rpx;">
       <text class="motto-text">{{userInfo.motto}}</text>
     </view>
     <!-- 专业认证 -->

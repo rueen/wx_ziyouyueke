@@ -1,6 +1,9 @@
 /* pages/bindCoach/bindCoach.wxss */
 @import '/style/iconfont.wxss';
 
+page{
+  background: #e4e3eb;
+}
 /* 加载状态 */
 .loading-container {
   display: flex;
