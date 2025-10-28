@@ -22,11 +22,21 @@
     </view>
   </view>
   <view class="poster-list">
+    <!-- 模板1 -->
     <view class="poster-item" style="width: 690rpx;">
       <snapshot id="template1">
         <poster-template1 userInfo="{{userInfo}}" qrcode="{{qrcode}}" width="690" />
       </snapshot>
       <view class="poster-buttons" bind:tap="handleDownLoad" data-id="template1">
+        <view class="download-button">下载海报</view>
+      </view>
+    </view>
+    <!-- 模板2 -->
+    <view class="poster-item" style="width: 690rpx;">
+      <snapshot id="template2">
+        <poster-template2 userInfo="{{userInfo}}" qrcode="{{qrcode}}" width="690" />
+      </snapshot>
+      <view class="poster-buttons" bind:tap="handleDownLoad" data-id="template2">
         <view class="download-button">下载海报</view>
       </view>
     </view>

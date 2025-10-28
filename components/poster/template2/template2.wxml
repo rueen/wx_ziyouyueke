@@ -1,0 +1,23 @@
+<!--components/poster/template1/template1.wxml-->
+<view class="poster-template1-container" style="width: {{width}}rpx; height: {{width * 1.5}}rpx;">
+  <image src="{{userInfo.poster_image}}" mode="aspectFill" class="poster_image"/>
+  <view class="intro" style="left: {{width * 0.06}}rpx; right:{{width * 0.06}}rpx; bottom: {{width * 0.2}}rpx;">
+    <view class="title" style="font-size: {{width * 0.06}}rpx;margin-left: -{{width * 0.03}}rpx;">【个人简介】</view>
+    <view class="motto" style="margin-top: {{width * 0.02}}rpx;margin-bottom: {{width * 0.02}}rpx;">
+      <text class="motto-text">{{userInfo.motto}}</text>
+    </view>
+    <!-- 专业认证 -->
+    <view wx:for="{{introList}}" wx:key="id">
+      <view class="content" style="font-size: {{width * 0.04}}rpx">
+        <text class="title-text">{{item.title}}</text>
+        <text wx:for="{{item.content}}" wx:key="index" wx:for-item="line" class="content-line" style="padding-right: {{width * 0.01}}rpx;">{{line}};</text>
+      </view>
+    </view>
+  </view>
+  <view class="name-wrap" style="bottom: {{width * 0.08}}rpx;">
+    <text class="nickname" style="font-size: {{width*0.06}}rpx;">@{{userInfo.nickname}}</text>
+  </view>
+  <view class="qrcode" style="width: {{width * 0.2}}rpx; height: {{width * 0.2}}rpx; bottom:{{width * 0.04}}rpx;right: {{width * 0.04}}rpx;">
+    <image src="{{qrcode}}" mode="aspectFit" class="qrcode-image"/>
+  </view>
+</view>

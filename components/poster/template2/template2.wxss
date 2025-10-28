@@ -1,0 +1,57 @@
+/* components/poster/template1/template1.wxss */
+.poster-template1-container{
+  position: relative;
+}
+.poster_image{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.title{
+  color: #3bffeb;
+  font-weight: 500;
+}
+.motto-text{
+  color: #fff;
+  font-weight: 500;
+}
+.intro{
+  position: absolute;
+  max-width: 100%;
+}
+.intro .title-text{
+  color: #3bffeb;
+  white-space: nowrap;
+}
+.intro .content{
+  color: #fff;
+  display: flex;
+  font-weight: 400;
+  flex-wrap: wrap;
+}
+.intro .content-line{
+  display: block;
+  line-height: 1.6;
+}
+.name-wrap{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: #3bffeb;
+  padding-left: 30rpx;
+}
+.nickname{
+  font-weight: 500;
+}
+.qrcode{
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  overflow: hidden;
+  padding: 10rpx;
+  box-sizing: border-box;
+}
+.qrcode-image{
+  width: 100%;
+  height: 100%;
+}

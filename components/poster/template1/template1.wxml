@@ -16,7 +16,7 @@
   <view class="name-wrap" style="width: {{width * 0.4}}rpx; height: {{width * 0.12}}rpx; bottom: {{width * 0.1}}rpx;">
     <text class="nickname" style="font-size: {{width*0.06}}rpx;">{{userInfo.nickname}}</text>
   </view>
-  <view class="qrcode" style="width: {{width * 0.2}}rpx; height: {{width * 0.2}}rpx; bottom:{{width * 0.06}}rpx;right: {{width * 0.06}}rpx;">
+  <view class="qrcode" style="width: {{width * 0.2}}rpx; height: {{width * 0.2}}rpx; bottom:{{width * 0.04}}rpx;right: {{width * 0.04}}rpx;">
     <image src="{{qrcode}}" mode="aspectFit" class="qrcode-image"/>
   </view>
 </view>
