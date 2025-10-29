@@ -58,6 +58,7 @@ Page({
           const coach = relation.coach || {};
           const lessonStats = relation.lesson_stats || {};
           return {
+            ...relation,
             id: coach.id,
             relationId: relation.id, // 师生关系ID
             name: coach.nickname || '未知教练',

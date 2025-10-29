@@ -137,7 +137,6 @@ page {
   color: #333;
 }
 .remaining-lessons{
-  margin-left: 12rpx;
   font-size: 30rpx;
   color: #007aff;
 }

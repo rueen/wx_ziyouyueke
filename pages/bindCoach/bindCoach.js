@@ -181,17 +181,17 @@ Page({
         // 绑定成功，设置用户角色为学员
         wx.setStorageSync('userRole', 'student');
         
-        wx.showToast({
+        wx.showModal({
           title: '绑定成功！',
-          icon: 'success'
-        });
-
-        // 延迟跳转到首页
-        setTimeout(() => {
-          wx.switchTab({
-            url: '/pages/index/index'
-          });
-        }, 1500);
+          content: '可以在“我的教练”模块查看教练信息',
+          showCancel: false,
+          confirmText: '我知道了',
+          success (res) {
+            wx.switchTab({
+              url: '/pages/index/index'
+            });
+          }
+        })
         
       } else {
         throw new Error(result.message || '绑定失败');

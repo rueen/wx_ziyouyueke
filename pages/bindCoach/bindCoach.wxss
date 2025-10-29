@@ -120,6 +120,14 @@ page{
   line-height: 1.5;
 }
 
+.categories{
+  margin-top: 10rpx;
+}
+.categories-name{
+  color: #ec3a1c;
+  margin-right: 10rpx;
+}
+
 /* 绑定按钮区域 */
 .bind-button-container {
   padding-top: 20rpx;

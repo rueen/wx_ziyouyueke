@@ -55,14 +55,12 @@ page {
 
 .coach-main-info {
   margin-bottom: 12rpx;
-}
-
-.coach-name {
+  display: flex;
+  align-items: center;
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
   margin-bottom: 8rpx;
-  display: block;
 }
 
 .remaining-lessons {
