@@ -1,0 +1,23 @@
+<!--pages/allCoachList/allCoachList.wxml-->
+<navBar title="教练大厅" />
+<layout>
+  <view wx:if="{{list.length > 0}}">
+    <view 
+      wx:for="{{list}}" 
+      wx:key="id"
+      class="item-card"
+    >
+      
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <emptyState 
+    wx:if="{{list.length === 0 && !isLoading}}">
+  </emptyState>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{isLoading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+</layout>

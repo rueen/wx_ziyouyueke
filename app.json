@@ -24,7 +24,8 @@
     "pages/groupCourseDetail/groupCourseDetail",
     "pages/groupCoursesRegistrations/groupCoursesRegistrations",
     "pages/groupCourseStudent/groupCourseStudent",
-    "pages/poster/poster"
+    "pages/poster/poster",
+    "pages/allCoachList/allCoachList"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

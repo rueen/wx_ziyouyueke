@@ -297,6 +297,11 @@ Page({
 
   // 找教练
   handleOpenAllCoachList() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/allCoachList/allCoachList'
     });

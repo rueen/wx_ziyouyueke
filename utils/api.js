@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -885,6 +885,17 @@ module.exports = {
         data: params
       });
     }
+  },
+
+  // 所有教练
+  coaches: {
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/coaches',
+        method: 'GET',
+        data: params
+      });
+    },
   },
 
   // 文件上传模块
