@@ -70,7 +70,7 @@ Page({
           ...user,
           nickname: user.nickname || '未设置',
           gender: user.gender || 0,
-          intro: user.intro || ''
+          intro: user.intro || '',
         };
         const genderText = this.getGenderText(userInfo.gender);
         this.setData({
@@ -106,7 +106,8 @@ Page({
         gender: userInfo.gender,
         intro: userInfo.intro || '',
         certification: userInfo.certification || '',
-        motto: userInfo.motto || ''
+        motto: userInfo.motto || '',
+        is_show: userInfo.is_show
       };
 
       // 如果有手机号，添加到更新数据中
@@ -355,6 +356,17 @@ Page({
       fail: function (res) {
         console.log('用户取消选择');
       }
+    });
+  },
+
+  // 是否在教练大厅展示
+  isShowSwitchChange(e) {
+    const userInfo = {
+      ...this.data.userInfo,
+      is_show: e.detail.value - 0
+    };
+    this.setData({
+      userInfo
     });
   },
 

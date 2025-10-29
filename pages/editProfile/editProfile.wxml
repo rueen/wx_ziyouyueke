@@ -62,8 +62,19 @@
         </view>
       </view>
     </view>
+    <!-- 是否在教练大厅展示 -->
+    <view class="wrap">
+      <view class="isShow-container">
+        <text class="label">是否在教练大厅展示</text>
+        <switch checked="{{userInfo.is_show}}" bindchange="isShowSwitchChange"/>
+      </view>
+      <view class="tips">
+        <text class="tips-text" wx:if="{{userInfo.is_show}}">所有学员均可在“教练大厅”查看到你的信息</text>
+        <text class="tips-text" wx:else>“教练大厅”不展示你的信息</text>
+      </view>
+    </view>
     <!-- 宣传海报 -->
-    <view class="poster-item" bind:tap="openPoster" wx:if="{{isShowPoster}}">
+    <view class="wrap poster-item" bind:tap="openPoster" wx:if="{{isShowPoster}}">
       <text class="label">宣传海报</text>
       <text class="iconfont icon-arrow-r"></text>
     </view>

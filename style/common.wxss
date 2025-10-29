@@ -172,6 +172,17 @@
   opacity: 0.9;
 }
 
+/* 提示文案 */
+.tips{
+  padding: 8rpx 12rpx;
+  border-radius: 8rpx;
+  background: #fff7e9;
+}
+.tips-text{
+  color: #d68100;
+  font-size: 26rpx;
+}
+
 /* 加载状态 */
 .loading-state {
   display: flex;

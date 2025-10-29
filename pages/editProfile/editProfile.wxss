@@ -158,14 +158,17 @@ page {
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
 }
 
-.poster-item{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.wrap{
   background-color: #fff;
   border-radius: 16rpx;
   margin-top: 16rpx;
   padding: 32rpx 24rpx;
+}
+
+.poster-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* 保存按钮 */
@@ -185,4 +188,11 @@ page {
 .save-btn:active {
   transform: translateY(2rpx);
   background-color: #222;
+}
+/* 是否在教练大厅展示 */
+.isShow-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
 }
