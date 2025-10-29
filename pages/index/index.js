@@ -294,5 +294,12 @@ Page({
       url: '/pages/courseList/courseList?tab=0'
     });
   },
+
+  // 找教练
+  handleOpenAllCoachList() {
+    wx.navigateTo({
+      url: '/pages/allCoachList/allCoachList'
+    });
+  }
   
 })

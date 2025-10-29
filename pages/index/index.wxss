@@ -136,3 +136,16 @@ page {
 .book-button::after {
   border: none;
 }
+
+/* 找教练 */
+.ad-container{
+  width: 100%;
+  height: 200rpx;
+  margin-top: 16rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.ad-image{
+  width: 100%;
+  height: 100%;
+}
