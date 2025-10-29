@@ -1,23 +1,102 @@
 <!--pages/allCoachList/allCoachList.wxml-->
 <navBar title="教练大厅" />
 <layout>
-  <view wx:if="{{list.length > 0}}">
+  <!-- 搜索框 -->
+  <view class="search-container">
+    <view class="search-box">
+      <input 
+        class="search-input"
+        type="text"
+        placeholder="课程类型/专业认证/教学擅长/教练昵称"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">
+        <text class="iconfont icon-close"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 教练列表 -->
+  <view class="coach-list" wx:if="{{list.length > 0}}">
     <view 
       wx:for="{{list}}" 
       wx:key="id"
-      class="item-card"
+      class="coach-card"
+      bindtap="onCoachTap"
+      data-coach="{{item}}"
     >
-      
+      <!-- 教练头部信息 -->
+      <view class="coach-header">
+        <view class="coach-avatar">
+          <image 
+            src="{{item.avatar_url || '/images/defaultAvatar.png'}}" 
+            class="avatar-img"
+            mode="aspectFill"
+          ></image>
+        </view>
+        <view class="coach-main-info">
+          <view class="coach-name-row">
+            <text class="coach-name">{{item.nickname || '未设置昵称'}}</text>
+          </view>
+          <view class="city-tag" wx:if="{{item.city}}">
+            <text class="iconfont icon-locationfill"></text>
+            <text class="city-text">{{item.city}}</text>
+          </view>
+          <view class="coach-stats">
+            <view class="stat-item">
+              <text class="stat-label">学员</text>
+              <text class="stat-value">{{item.student_count || 0}}人</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 课程分类标签 -->
+      <view class="course-categories" wx:if="{{item.course_categories && item.course_categories.length > 0}}">
+        <view 
+          class="category-tag" 
+          wx:for="{{item.course_categories}}" 
+          wx:key="id"
+          wx:for-item="category"
+        >
+          <text>{{category.name}}</text>
+        </view>
+      </view>
+
+      <!-- motto -->
+      <!-- <view class="motto" wx:if="{{item.motto}}">{{item.motto}}</view> -->
+      <view class="motto" wx:if="{{item.intro}}">{{item.intro}}</view>
+    </view>
+
+    <!-- 加载更多提示 -->
+    <view class="load-more-container" wx:if="{{hasMore || isLoading}}">
+      <view class="load-more-item" wx:if="{{isLoading}}">
+        <text class="loading-text">加载中...</text>
+      </view>
+      <view class="load-more-item" wx:elif="{{hasMore}}">
+        <text class="load-more-text">上拉加载更多</text>
+      </view>
+    </view>
+
+    <!-- 没有更多数据提示 -->
+    <view class="no-more-container" wx:if="{{!hasMore && !isLoading && list.length > 0}}">
+      <text class="no-more-text">已加载全部教练</text>
     </view>
   </view>
 
   <!-- 空状态 -->
   <emptyState 
-    wx:if="{{list.length === 0 && !isLoading}}">
+    wx:elif="{{list.length === 0 && !isLoading}}"
+    type="no-data"
+    title="{{keyword ? '未找到相关教练' : '暂无教练'}}"
+    description="{{keyword ? '试试其他关键词搜索' : '暂无可用教练，下拉可刷新'}}">
   </emptyState>
 
   <!-- 加载状态 -->
-  <view class="loading-state" wx:if="{{isLoading}}">
+  <view class="loading-state" wx:if="{{isLoading && list.length === 0}}">
     <text class="loading-text">加载中...</text>
   </view>
 </layout>

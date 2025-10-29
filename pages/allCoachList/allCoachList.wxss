@@ -1,5 +1,239 @@
-/* pages/allCoachList/allCoachList.wxss */
+/**
+ * pages/allCoachList/allCoachList.wxss
+ * 教练大厅页面样式
+ */
+@import '/style/iconfont.wxss';
+
 page {
   height: 100vh;
   background-color: #f5f5f5;
+}
+
+/* 搜索容器 */
+.search-container {
+  padding: 16rpx 16rpx 0 16rpx;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  height: 80rpx;
+  box-sizing: border-box;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  height: 100%;
+  line-height: 80rpx;
+}
+
+.search-input::placeholder {
+  color: #c7c7cc;
+}
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.search-clear .iconfont {
+  font-size: 24rpx;
+  color: #86868b;
+}
+
+/* 教练列表容器 */
+.coach-list {
+  display: flex;
+  flex-direction: column;
+  padding: 16rpx;
+}
+
+/* 教练卡片 */
+.coach-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+  transition: transform 0.2s ease;
+}
+
+.coach-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 教练头部 */
+.coach-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 教练头像 */
+.coach-avatar {
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-right: 24rpx;
+  background-color: #f2f2f7;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16rpx;
+}
+
+/* 教练主要信息 */
+.coach-main-info {
+  height: 130rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 教练名称行 */
+.coach-name-row {
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+.coach-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.4;
+}
+
+/* 城市标签 */
+.city-tag {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+
+.city-tag .iconfont {
+  font-size: 20rpx;
+  margin-right: 4rpx;
+}
+
+.city-text {
+  color: #86868b;
+  font-size: 24rpx;
+}
+
+/* 统计数据 */
+.coach-stats {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-label {
+  font-size: 26rpx;
+  color: #86868b;
+}
+
+.stat-value {
+  font-size: 26rpx;
+  color: #007aff;
+  font-weight: 600;
+}
+
+/* 课程分类标签 */
+.course-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  padding-top: 20rpx;
+}
+
+.category-tag {
+  background-color: #f2f2f7;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  color: #1d1d1f;
+  line-height: 1.4;
+}
+
+/* 加载更多提示 */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.load-more-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-text,
+.load-more-text {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* 没有更多数据提示 */
+.no-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.no-more-text {
+  font-size: 26rpx;
+  color: #c7c7cc;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80rpx 0;
+}
+
+.loading-state .loading-text {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* motto */
+.motto{
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+  font-size: 28rpx;
+  margin-top: 16rpx;
+  color: #333;
 }

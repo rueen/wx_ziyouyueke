@@ -63,7 +63,7 @@
       </view>
     </view>
     <!-- 是否在教练大厅展示 -->
-    <view class="wrap">
+    <view class="wrap" wx:if="{{userRole === 'coach'}}">
       <view class="isShow-container">
         <text class="label">是否在教练大厅展示</text>
         <switch checked="{{userInfo.is_show}}" bindchange="isShowSwitchChange"/>
