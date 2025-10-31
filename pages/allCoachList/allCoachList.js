@@ -147,6 +147,17 @@ Page({
     wx.navigateTo({
       url: `/pages/bindCoach/bindCoach?coachId=${coach.id}`
     });
-  }
+  },
+  
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+    return {
+      title: '找教练 上自由约课',
+      // imageUrl: '',
+      path: '/pages/allCoachList/allCoachList'
+    }
+  },
 
 })
