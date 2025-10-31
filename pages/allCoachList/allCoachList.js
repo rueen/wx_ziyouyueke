@@ -154,8 +154,8 @@ Page({
    */
   onShareAppMessage() {
     return {
-      title: '找教练 上自由约课',
-      // imageUrl: '',
+      title: '精选教练推荐',
+      imageUrl: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/share_allCoachList.png',
       path: '/pages/allCoachList/allCoachList'
     }
   },
