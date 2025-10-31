@@ -137,7 +137,7 @@ Page({
           let displayName, displayAvatar;
           if (userRole === 'coach') {
             // 教练视角：显示学员信息
-            displayName = course.student ? course.student.nickname : '未知学员';
+            displayName = course.relation.student_name || course.student.nickname || '未知学员';
             displayAvatar = course.student ? (course.student.avatar_url || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png') : 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png';
           } else {
             // 学员视角：显示教练信息
