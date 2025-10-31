@@ -35,24 +35,15 @@ Component({
    */
   methods: {
     /**
-     * 获取导航栏高度
+     * 获取导航栏高度（使用全局方法）
      */
-    getNavBarHeight(){
-      try {
-        const systemInfo = wx.getSystemInfoSync(); // TODO: 升级到 wx.getSystemInfo
-        const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
-        const navBarHeight = systemInfo.statusBarHeight + menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
-        this.setData({
-          navBarHeight,
-          contentHeight: menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2
-        })
-      } catch (error) {
-        console.warn('获取系统信息失败，使用默认高度', error);
-        this.setData({
-          navBarHeight: 88,
-          contentHeight: 44
-        });
-      }
+    getNavBarHeight() {
+      const app = getApp();
+      const { navBarHeight, contentHeight } = app.getNavBarInfo();
+      this.setData({
+        navBarHeight,
+        contentHeight
+      });
     },
 
     /**

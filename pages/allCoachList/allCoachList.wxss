@@ -11,7 +11,12 @@ page {
 
 /* 搜索容器 */
 .search-container {
-  padding: 16rpx 16rpx 0 16rpx;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  padding: 16rpx;
+  background-color: #f5f5f5;
 }
 
 .search-box {
@@ -55,7 +60,7 @@ page {
 .coach-list {
   display: flex;
   flex-direction: column;
-  padding: 16rpx;
+  padding: 102rpx 16rpx 16rpx;
 }
 
 /* 教练卡片 */
@@ -216,7 +221,7 @@ page {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 80rpx 0;
+  padding: 102rpx 0;
 }
 
 .loading-state .loading-text {
