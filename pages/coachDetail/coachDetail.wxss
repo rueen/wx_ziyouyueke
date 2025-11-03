@@ -130,15 +130,28 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60rpx;
+  height: 80rpx;
+  background: #fafafa;
+  padding: 0 16rpx;
+  margin-top: 16rpx;
 }
 .categorie-name{
   font-size: 30rpx;
   color: #333;
 }
+.remaining-lessons-wrap{
+  display: flex;
+  align-items: center;
+}
 .remaining-lessons{
   font-size: 30rpx;
   color: #007aff;
+}
+.expire-date{
+  color: #999;
+  font-weight: normal;
+  font-size: 26rpx;
+  margin-right: 8rpx;
 }
 
 /* 约课按钮 */

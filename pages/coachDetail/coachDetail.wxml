@@ -30,7 +30,13 @@
       <text class="section-title">课时信息</text>
       <view class="lessons-item" wx:for="{{coachData.category_lessons}}" wx:key="index">
         <text class="categorie-name">{{item.category.name}}</text>
-        <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+        <view class="remaining-lessons-wrap">
+          <text class="expire-date">
+            <text wx:if="{{item.expire_date}}">{{item.expire_date}}到期</text>
+            <text wx:else>永久有效</text>
+          </text>
+          <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+        </view>
       </view>
     </view>
 

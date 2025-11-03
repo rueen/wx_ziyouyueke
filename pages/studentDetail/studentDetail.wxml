@@ -16,6 +16,7 @@
         <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
         <view class="student-intro">{{studentData.student.intro}}</view>
       </view>
+      <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
     </view>
 
     <!-- 课时信息 -->
@@ -24,23 +25,46 @@
         <text class="section-title">
           <text>剩余课时</text>
         </text>
-        <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
+        <text class="expire-date-title">到期时间</text>
       </view>
       
       <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
-        <text class="info-label">{{item.category.name}}：</text>
-        <view wx:if="{{!isEditing}}" class="info-value">
-          <text class="lessons-count active">{{item.remaining_lessons}}节</text>
-        </view>
-        <view wx:else class="edit-value-container">
-          <input
-            class="edit-input" 
-            type="number" 
-            value="{{item.remaining_lessons}}" 
-            bindinput="onLessonsInput"
-            data-id="{{item.category.id}}"
-            placeholder="请输入课时数"></input>
-          <text class="edit-unit">节</text>
+        <view class="info-label">{{item.category.name}}：</view>
+        <view class="course-item">
+          <view wx:if="{{!isEditing}}" class="info-value">
+            <text class="lessons-count active">{{item.remaining_lessons}}节</text>
+          </view>
+          <view wx:else class="edit-value-container">
+            <input
+              class="edit-input" 
+              type="number" 
+              value="{{item.remaining_lessons}}" 
+              bindinput="onLessonsInput"
+              data-id="{{item.category.id}}"
+              placeholder="请输入课时数"></input>
+            <text class="edit-unit">节</text>
+          </view>
+          <!-- 到期时间 -->
+          <view wx:if="{{!isEditing}}" class="info-value">
+            <text class="expire-date-text" wx:if="{{item.expire_date}}">{{item.expire_date}}</text>
+            <text class="expire-date-text" wx:else>永久</text>
+          </view>
+          <view wx:else class="edit-value-container">
+            <picker
+              mode="date"
+              bindchange="bindPickerChange"
+              data-id="{{item.category.id}}"
+            >
+              <text class="expire-date-text" wx:if="{{lessons[index].expire_date}}">
+                <text>{{lessons[index].expire_date}}</text>
+                <text class="iconfont icon-arrow-r"></text>
+              </text>
+              <text class="expire-date-text" wx:else>
+                <text>请选择</text>
+                <text class="iconfont icon-arrow-r"></text>
+              </text>
+            </picker>
+          </view>
         </view>
       </view>
       <view class="section-info">

@@ -120,6 +120,20 @@ Page({
     })
   },
 
+  // 选择到期时间
+  bindPickerChange(e) {
+    const { currentTarget: { dataset: { id } }, detail: { value } } = e;
+    const lessons = [...this.data.lessons];
+    lessons.map(item => {
+      if(item.category_id === id) {
+        item.expire_date = value;
+      }
+    })
+    this.setData({
+      lessons: lessons
+    })
+  },
+
   /**
    * 输入备注
    */
@@ -160,23 +174,7 @@ Page({
       wx.hideLoading();
 
       if (result && result.success) {
-        // 更新本地数据
-        const new_category_lessons = studentData.category_lessons.map(item => {
-          const _item = lessons.find(i => i.category_id === item.category.id);
-          return {
-            category:item.category,
-            remaining_lessons:_item.remaining_lessons
-          }
-        });
-        const updatedStudentData = {
-          ...studentData,
-          category_lessons: new_category_lessons,
-          student_name: studentName.trim(),
-          coach_remark: studentRemark.trim()
-        };
-
         this.setData({
-          studentData: updatedStudentData,
           isEditing: false,
           isSaving: false
         });
@@ -186,6 +184,9 @@ Page({
           icon: 'success',
           duration: 1500
         });
+        setTimeout(() => {
+          this.loadStudentDetail();
+        }, 1500)
       } else {
         throw new Error(result.message || '保存失败');
       }

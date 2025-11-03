@@ -87,6 +87,10 @@ page {
   color: #333;
   font-weight: 600;
 }
+.expire-date-title{
+  color: #333;
+  font-size: 28rpx;
+}
 .section-info{
   font-size: 24rpx;
   color: #b6623e;
@@ -104,15 +108,20 @@ page {
 
 /* 信息项 */
 .info-item {
+  
+}
+.info-label {
+  font-size: 28rpx;
+  color: #000;
+  padding: 12rpx 0;
+}
+.course-item{
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 80rpx;
-}
-
-.info-label {
-  font-size: 28rpx;
-  color: #333;
+  background: #f5faff;
+  padding: 0 16rpx;
 }
 
 .info-value {
@@ -133,6 +142,11 @@ page {
   color: #ff3b30;
 }
 
+.expire-date-text{
+  font-size: 28rpx;
+  color: #333;
+}
+
 /* 编辑状态 */
 .edit-value-container {
   display: flex;
@@ -142,7 +156,7 @@ page {
 .edit-input {
   width: 120rpx;
   height: 60rpx;
-  background-color: #f8f9fa;
+  background-color: #fff;
   border-radius: 8rpx;
   padding: 0 16rpx;
   font-size: 28rpx;
