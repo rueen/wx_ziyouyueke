@@ -21,7 +21,8 @@ Page({
     isSaving: false,     // 是否正在保存
     showUnbindModal: false, // 是否显示解除绑定确认弹窗
     isUnbinding: false,   // 是否正在解除绑定
-    lessons: []
+    lessons: [],
+    bookingStatus: true
   },
 
   /**
@@ -62,7 +63,8 @@ Page({
           studentData: studentData,
           lessons: studentData.lessons,
           studentName: studentData.student_name || studentData.student.nickname || '',
-          studentRemark: studentData.coach_remark || ''
+          studentRemark: studentData.coach_remark || '',
+          bookingStatus: studentData.booking_status
         });
       }
     } catch (error) {
@@ -73,6 +75,63 @@ Page({
         title: '加载失败，请重试',
         icon: 'none'
       });
+    }
+  },
+
+  bookingStatusSwitchChange(e) {
+    if(e.detail.value){
+      // 开启
+      wx.showModal({
+        content: '开启后，课程到期时间会重新计算，确定开启约课状态吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.switchBookingStatus(e.detail.value)
+          } else if (res.cancel) {
+            this.setData({
+              bookingStatus: false
+            })
+          }
+        }
+      })
+    } else {
+      // 关闭
+      wx.showModal({
+        content: '关闭后，无法预约该学员的所有课程；课程到期时间会在重新开启后顺延，确定关闭约课状态吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.switchBookingStatus(e.detail.value)
+          } else if (res.cancel) {
+            this.setData({
+              bookingStatus: true
+            })
+          }
+        }
+      })
+    }
+  },
+
+  async switchBookingStatus(value) {
+    const { studentData } = this.data;
+    try{
+      wx.showLoading();
+      const result = await api.relation.switchBookingStatus(studentData.id, {
+        booking_status: value - 0
+      });
+      wx.hideLoading();
+      if (result && result.success) {
+        this.setData({
+          bookingStatus: value
+        })
+        this.loadStudentDetail();
+      } else {
+        this.setData({
+          bookingStatus: !value
+        })
+      }
+    } catch (e) {
+      this.setData({
+        bookingStatus: !value
+      })
     }
   },
 

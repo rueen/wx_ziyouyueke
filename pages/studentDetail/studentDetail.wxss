@@ -46,6 +46,9 @@ page {
   font-size: 36rpx;
   color: #333;
   font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .nickname{
   font-size: 28rpx;
@@ -62,16 +65,27 @@ page {
 }
 
 .student-intro {
-  font-size: 26rpx;
-  color: #999;
-  line-height: 1.4;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 8rpx;
+}
+
+/* 约课状态 */
+.booking-status{
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+}
+.booking-status-text{
+  color: #666;
+  font-size: 28rpx;
 }
 
 /* 信息区块 */
 .info-section {
   background-color: #fff;
   padding: 32rpx;
-  margin: 0 16rpx 16rpx;
+  margin: 16rpx;
   border-radius: 16rpx;
 }
 
@@ -107,9 +121,6 @@ page {
 }
 
 /* 信息项 */
-.info-item {
-  
-}
 .info-label {
   font-size: 28rpx;
   color: #000;

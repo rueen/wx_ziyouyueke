@@ -9,14 +9,20 @@
       </view>
       <view class="student-info">
         <view class="student-name" wx:if="{{!isEditing}}">
-          <text>{{studentData.student_name}}</text>
-          <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text>
+          <view>
+            <text>{{studentData.student_name}}</text>
+            <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text>
+          </view>
+          <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing && !!bookingStatus}}" bindtap="onStartEdit"></text>
         </view>
         <input wx:else class="student-name-input" type="text" value="{{studentName}}" bindinput="onStudentNameInput" />
         <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
         <view class="student-intro">{{studentData.student.intro}}</view>
+        <view class="booking-status">
+          <text class="booking-status-text">约课状态：</text>
+          <switch checked="{{bookingStatus}}" bindchange="bookingStatusSwitchChange"/>
+        </view>
       </view>
-      <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
     </view>
 
     <!-- 课时信息 -->
@@ -26,6 +32,9 @@
           <text>剩余课时</text>
         </text>
         <text class="expire-date-title">到期时间</text>
+      </view>
+      <view class="tips" wx:if="{{!studentData.booking_status}}">
+        <text class="tips-text">课程到期时间会在约课状态重新开启后顺延</text>
       </view>
       
       <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
@@ -108,7 +117,7 @@
 
     <!-- 操作按钮 -->
     <view wx:if="{{!isEditing}}" class="action-buttons">
-      <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}">立即约课</button>
+      <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}" wx:if="{{!!bookingStatus}}">立即约课</button>
       <button class="unbind-button" bindtap="onShowUnbindConfirm" disabled="{{isUnbinding}}">
         {{isUnbinding ? '解除中...' : '解除绑定'}}
       </button>

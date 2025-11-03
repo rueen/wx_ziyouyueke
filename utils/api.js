@@ -705,7 +705,15 @@ module.exports = {
       });
     },
     update: updateRelation,
-    delete: deleteRelation
+    delete: deleteRelation,
+    // 切换约课状态
+    switchBookingStatus: function(id, params = {}) {
+      return request({
+        url: `/api/h5/relations/${id}/booking-status`,
+        method: 'PUT',
+        data: params
+      });
+    }
   },
 
   // 课程管理模块

@@ -11,6 +11,9 @@
         <view class="student-main-info">
           <text class="student-name">{{item.student_name}}</text>
           <text wx:if="{{item.student.phone}}"> - {{item.student.phone}}</text>
+          <view class="status-badge status-cancelled" wx:if="{{!item.booking_status}}">
+            <text class="status-text">已关闭</text>
+          </view>
         </view>
         <view class="remaining-lessons">
           <text class="lessons-label">剩余课时：</text>

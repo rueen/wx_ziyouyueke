@@ -20,7 +20,12 @@
           <image src="{{selectedOption.avatar}}" class="avatar-img"></image>
         </view>
         <view class="option-info">
-          <text class="option-name">{{selectedOption.name}}</text>
+          <view class="option-name">
+            <text class="option-name-text">{{selectedOption.name}}</text>
+            <view class="status-badge status-cancelled" wx:if="{{!selectedOption.booking_status}}">
+              <text class="status-text">已关闭</text>
+            </view>
+          </view>
           <text class="option-lessons">剩余课时：{{selectedOption.remainingLessons}}节</text>
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
@@ -143,7 +148,12 @@
             <image src="{{item.avatar}}" class="avatar-img"></image>
           </view>
           <view class="option-info">
-            <text class="option-name">{{item.name}}</text>
+            <view class="option-name">
+              <text class="option-name-text">{{item.name}}</text>
+              <view class="status-badge status-cancelled" wx:if="{{!item.booking_status}}">
+                <text class="status-text">已关闭</text>
+              </view>
+            </view>
             <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
           </view>
           <text class="iconfont icon-selected select-icon {{selectedOption && selectedOption.id === item.id ? 'selected' : ''}}"></text>

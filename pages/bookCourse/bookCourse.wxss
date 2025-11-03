@@ -76,11 +76,19 @@ page {
   flex-direction: column;
 }
 
-.option-name {
+.option-name{
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.option-name-text {
   font-size: 30rpx;
   color: #333;
   font-weight: 600;
-  margin-bottom: 8rpx;
+}
+.option-name .status-badge{
+  margin-left: 8rpx;
+  padding: 3rpx 6rpx;
 }
 
 .option-lessons {

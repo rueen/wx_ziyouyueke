@@ -62,7 +62,10 @@ page {
   font-weight: 600;
   margin-bottom: 8rpx;
 }
-
+.status-badge{
+  margin-left: 8rpx;
+  padding: 3rpx 6rpx;
+}
 .remaining-lessons {
   display: flex;
   align-items: center;

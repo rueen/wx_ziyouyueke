@@ -140,8 +140,8 @@ Page({
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
           const students = dataArray.map(item => ({
-            id: item.id,
-            name: (item.student && item.student.nickname) || '未知学员',
+            ...item,
+            name: item.student_name || item.student.nickname || '未知学员',
             avatar: (item.student && item.student.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             remainingLessons: item.remaining_lessons || 0,
             phone: (item.student && item.student.phone) || '',

@@ -67,6 +67,10 @@ page {
   margin-bottom: 8rpx;
   display: block;
 }
+.status-badge{
+  margin-left: 8rpx;
+  padding: 3rpx 6rpx;
+}
 
 .student-level {
   font-size: 28rpx;
