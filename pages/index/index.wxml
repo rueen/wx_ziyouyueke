@@ -39,7 +39,7 @@
 
     <!-- 活动大厅 -->
     <view class="active ad-container" bind:tap="handleOpenAllGroupCourses">
-      <image src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/ad1.png" mode="aspectFill" class="ad-image" />
+      <image src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/ad-allGroupCourses.png" mode="aspectFill" class="ad-image" />
     </view>
 
     <!-- 我的课表 -->

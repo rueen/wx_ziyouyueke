@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000',
-  // baseUrl: 'https://api.rueen.cn',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 

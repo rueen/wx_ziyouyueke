@@ -27,7 +27,7 @@ Page({
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
       address_id: null,
-      is_show: null,
+      is_show: 1,
     },
     
     // 图片相关

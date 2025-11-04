@@ -58,7 +58,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '精选活动/团课推荐',
-      imageUrl: '',
+      imageUrl: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/share-allGroupCourses.png',
       path: `/pages/allGroupCourses/allGroupCourses`
     }
   },
