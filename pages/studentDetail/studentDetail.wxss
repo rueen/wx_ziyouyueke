@@ -162,7 +162,20 @@ page {
   display: flex;
   align-items: center;
 }
-
+.clear-expire{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background: #ccc;
+  margin-right: 10rpx;
+}
+.clear-expire .icon-close{
+  font-size: 18rpx;
+  color: #fff;
+}
 .edit-input {
   width: 120rpx;
   height: 60rpx;

@@ -179,6 +179,20 @@ Page({
     })
   },
 
+  // 清除到期时间
+  handleClearExpireDate(e) {
+    const { currentTarget: { dataset: { id } } } = e;
+    const lessons = [...this.data.lessons];
+    lessons.map(item => {
+      if(item.category_id === id) {
+        item.expire_date = null;
+      }
+    })
+    this.setData({
+      lessons: lessons
+    })
+  },
+
   // 选择到期时间
   bindPickerChange(e) {
     const { currentTarget: { dataset: { id } }, detail: { value } } = e;

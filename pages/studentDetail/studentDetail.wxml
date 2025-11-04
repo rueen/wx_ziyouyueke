@@ -60,6 +60,14 @@
             <text class="expire-date-text" wx:else>永久</text>
           </view>
           <view wx:else class="edit-value-container">
+            <view
+              class="clear-expire"
+              wx:if="{{lessons[index].expire_date}}"
+              bind:tap="handleClearExpireDate"
+              data-id="{{item.category.id}}"
+            >
+              <text class="iconfont icon-close"></text>
+            </view>
             <picker
               mode="date"
               bindchange="bindPickerChange"
@@ -70,7 +78,7 @@
                 <text class="iconfont icon-arrow-r"></text>
               </text>
               <text class="expire-date-text" wx:else>
-                <text>请选择</text>
+                <text>永久</text>
                 <text class="iconfont icon-arrow-r"></text>
               </text>
             </picker>
