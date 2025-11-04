@@ -56,7 +56,11 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    return {
+      title: '精选活动/团课推荐',
+      imageUrl: '',
+      path: `/pages/allGroupCourses/allGroupCourses`
+    }
   },
 
     /**
