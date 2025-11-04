@@ -303,6 +303,76 @@ const splitByLineBreak = (str) => {
   return str.split(/\r\n|\r|\n/).filter(item => item.trim() !== '');
 }
 
+/**
+ * 格式化日期为 MM.DD 格式
+ * @param {string} dateStr 日期字符串
+ * @returns {string} 格式化后的日期字符串，如 "01.15"
+ */
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const date = createCompatibleDate(dateStr);
+  if (isNaN(date.getTime())) {
+    console.warn('无效的日期字符串:', dateStr);
+    return '';
+  }
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${month}.${day}`;
+};
+
+/**
+ * 获取星期几
+ * @param {string} dateStr 日期字符串
+ * @returns {string} 星期几，如 "周一"、"周二"
+ */
+const getWeekday = (dateStr) => {
+  if (!dateStr) return '';
+  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  const date = createCompatibleDate(dateStr);
+  if (isNaN(date.getTime())) {
+    console.warn('无效的日期字符串:', dateStr);
+    return '';
+  }
+  return weekdays[date.getDay()];
+};
+
+/**
+ * 格式化时间范围为 HH:mm - HH:mm 格式
+ * @param {Object} item 包含 start_time 和 end_time 的对象
+ * @returns {string} 格式化后的时间范围，如 "09:00 - 10:30"
+ */
+const formatTimeRange = (item) => {
+  if (!item || !item.start_time || !item.end_time) {
+    return '';
+  }
+  const start_time = `${item.start_time.split(':')[0]}:${item.start_time.split(':')[1]}`;
+  const end_time = `${item.end_time.split(':')[0]}:${item.end_time.split(':')[1]}`;
+  return `${start_time} - ${end_time}`;
+};
+
+/**
+ * 获取课程价格显示文本
+ * @param {Object} course 课程对象
+ * @param {number} course.price_type 价格类型：1-扣课时，2-金额，3-免费
+ * @param {number} course.lesson_cost 课时数（price_type为1时）
+ * @param {number} course.price_amount 金额（price_type为2时）
+ * @returns {string} 价格显示文本，如 "5课时"、"¥100"、"免费"
+ */
+const getCoursePriceText = (course) => {
+  if (!course) return '--';
+  
+  switch (course.price_type) {
+    case 1: // 扣课时
+      return `${course.lesson_cost || 0}课时`;
+    case 2: // 金额展示
+      return `¥${course.price_amount || 0}`;
+    case 3: // 免费
+      return '免费';
+    default:
+      return '--';
+  }
+};
+
 module.exports = {
   formatTime,
   createCompatibleDate,
@@ -313,5 +383,9 @@ module.exports = {
   compressImage,
   compressImages,
   IMAGE_COMPRESS_CONFIG,
-  splitByLineBreak
+  splitByLineBreak,
+  formatDate,
+  getWeekday,
+  formatTimeRange,
+  getCoursePriceText
 }

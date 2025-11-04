@@ -317,6 +317,12 @@ module.exports = {
         </view>
       </view>
     </view>
+
+    <!-- 是否在活动大厅展示 -->
+    <view class="form-section isShow">
+      <text class="form-label">是否在活动大厅展示</text>
+      <switch checked="{{formData.is_show}}" bindchange="isShowChange"/>
+    </view>
   </view>
 
   <!-- 底部按钮 -->

@@ -32,11 +32,16 @@
       </view>
     </view>
 
-    <!-- 找教练 -->
+    <!-- 教练大厅 -->
     <view wx:if="{{userRole === 'student'}}" class="active ad-container" bind:tap="handleOpenAllCoachList">
       <image src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/ad1.png" mode="aspectFill" class="ad-image" />
     </view>
-    
+
+    <!-- 活动大厅 -->
+    <view class="active ad-container" bind:tap="handleOpenAllGroupCourses">
+      <image src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/ad1.png" mode="aspectFill" class="ad-image" />
+    </view>
+
     <!-- 我的课表 -->
     <view class="my-schedule">
       <!-- 教练时间安排 -->

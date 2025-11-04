@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 // 引入二维码生成工具
 const drawQrcode = require('../../utils/weapp-qrcode/weapp.qrcode.js');
+const { formatDate, getWeekday, formatTimeRange, getCoursePriceText } = require('../../utils/util.js');
 
 Page({
 
@@ -151,46 +152,27 @@ Page({
   },
 
   /**
-   * 格式化日期
+   * 格式化日期（使用工具方法）
    */
-  formatDate(dateStr) {
-    if (!dateStr) return ''
-    const date = new Date(dateStr)
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    return `${month}.${day}`
-  },
+  formatDate,
 
   /**
-   * 获取星期几
+   * 获取星期几（使用工具方法）
    */
-  getWeekday(dateStr) {
-    if (!dateStr) return ''
-    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    const date = new Date(dateStr)
-    return weekdays[date.getDay()]
-  },
+  getWeekday,
 
+  /**
+   * 格式化时间范围（使用工具方法）
+   */
   getTime(item) {
-    const start_time = `${item.start_time.split(':')[0]}:${item.start_time.split(':')[1]}`;
-    const end_time = `${item.end_time.split(':')[0]}:${item.end_time.split(':')[1]}`;
-    return `${start_time} - ${end_time}`
+    return formatTimeRange(item);
   },
 
   /**
-   * 获取课程价格显示
+   * 获取课程价格显示（使用工具方法）
    */
   getCoursePrice(course) {
-    switch (course.price_type) {
-      case 1: // 扣课时
-        return `${course.lesson_cost}课时`
-      case 2: // 金额展示
-        return `¥${course.price_amount}`
-      case 3: // 免费
-        return '免费'
-      default:
-        return '--'
-    }
+    return getCoursePriceText(course);
   },
 
   /**

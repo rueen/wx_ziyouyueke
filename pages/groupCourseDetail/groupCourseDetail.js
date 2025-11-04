@@ -1,6 +1,6 @@
 // pages/groupCourseDetail/groupCourseDetail.js
 const api = require('../../utils/api.js')
-const { navigateToLoginWithRedirect, parseSceneParams } = require('../../utils/util.js')
+const { navigateToLoginWithRedirect, parseSceneParams, formatDate, getWeekday, formatTimeRange, getCoursePriceText } = require('../../utils/util.js')
 const posterUtil = require('../../utils/poster.js')
 
 Page({
@@ -304,50 +304,34 @@ Page({
   },
 
   /**
-   * 格式化日期
+   * 格式化日期（使用工具方法）
    */
-  formatDate(dateStr) {
-    if (!dateStr) return ''
-    const date = new Date(dateStr)
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    return `${month}.${day}`
-  },
+  formatDate,
 
   /**
-   * 获取星期几
+   * 获取星期几（使用工具方法）
    */
-  getWeekday(dateStr) {
-    if (!dateStr) return ''
-    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    const date = new Date(dateStr)
-    return weekdays[date.getDay()]
-  },
+  getWeekday,
 
+  /**
+   * 格式化时间范围（使用工具方法）
+   */
   getTime(courseDetail) {
-    const start_time = `${courseDetail.start_time.split(':')[0]}:${courseDetail.start_time.split(':')[1]}`;
-    const end_time = `${courseDetail.end_time.split(':')[0]}:${courseDetail.end_time.split(':')[1]}`;
-    return `${start_time} - ${end_time}`
-  },
-
-  getshowTime(courseDetail) {
-    return `${this.formatDate(courseDetail.course_date)} ${this.getWeekday(courseDetail.course_date)} ${this.getTime(courseDetail)}`
+    return formatTimeRange(courseDetail);
   },
 
   /**
-   * 获取价格显示文本
+   * 获取完整的课程时间显示
+   */
+  getshowTime(courseDetail) {
+    return `${formatDate(courseDetail.course_date)} ${getWeekday(courseDetail.course_date)} ${formatTimeRange(courseDetail)}`
+  },
+
+  /**
+   * 获取价格显示文本（使用工具方法）
    */
   getPriceText(course) {
-    switch (course.price_type) {
-      case 1:
-        return `${course.lesson_cost}课时`
-      case 2:
-        return `¥${course.price_amount}`
-      case 3:
-        return '免费'
-      default:
-        return '免费'
-    }
+    return getCoursePriceText(course);
   },
 
   /**
@@ -746,21 +730,13 @@ Page({
     });
   },
 
-  // 获取课程价格文本
+  /**
+   * 获取课程价格文本（使用工具方法）
+   */
   getCoursePriceText() {
     const { courseDetail } = this.data;
     if (!courseDetail) return '';
-    
-    switch (courseDetail.price_type) {
-      case 1: // 扣课时
-        return `${courseDetail.lesson_cost}课时`;
-      case 2: // 金额展示
-        return `¥${courseDetail.price_amount}`;
-      case 3: // 免费
-        return '免费';
-      default:
-        return '';
-    }
+    return getCoursePriceText(courseDetail);
   },
 
   // 绘制价格行

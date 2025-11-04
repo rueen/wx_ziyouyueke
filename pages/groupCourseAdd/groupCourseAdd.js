@@ -26,7 +26,8 @@ Page({
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
-      address_id: null
+      address_id: null,
+      is_show: null,
     },
     
     // 图片相关
@@ -157,7 +158,8 @@ Page({
               lesson_cost: course.lesson_cost,
               price_amount: course.price_amount,
               enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人
-              address_id: course.address_id
+              address_id: course.address_id,
+              is_show: course.is_show
             },
             cover_images: course.cover_images || [],
             images: course.images || [],
@@ -542,9 +544,13 @@ Page({
       return false
     }
 
-
-    
     return true
+  },
+
+  isShowChange(e) {
+    this.setData({
+      'formData.is_show': e.detail.value - 0
+    })
   },
 
   /**

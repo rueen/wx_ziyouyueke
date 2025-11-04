@@ -300,6 +300,13 @@ Page({
     wx.navigateTo({
       url: '/pages/allCoachList/allCoachList'
     });
+  },
+
+  // 活动大厅
+  handleOpenAllGroupCourses() {
+    wx.navigateTo({
+      url: '/pages/allGroupCourses/allGroupCourses'
+    });
   }
   
 })
