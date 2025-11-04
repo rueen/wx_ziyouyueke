@@ -585,76 +585,48 @@ Page({
   async drawCourseDetailPoster(canvas, ctx, width, height, data) {
     const { title, subtitle, coverImage, qrcodeBase64 } = data;
 
-    // 布局参数（参考示例样式：宽高比约1:1.6）
-    const coverAreaHeight = Math.floor(height * 0.65); // 顶部大图区域高度，增加比例
+    // 布局参数（封面图为正方形1:1）
+    const coverAreaSize = width; // 封面图区域为正方形（width x width）
     const contentPadding = 40; // 左右内边距
-    const titleFontSize = 44; // 增大标题字体
-    const infoFontSize = 32; // 增大信息字体
-    const priceFontSize = 44; // 价格字体与标题一样大
+    const titleFontSize = 44; // 标题字体
+    const infoFontSize = 32; // 信息字体
+    const priceFontSize = 44; // 价格字体
 
     // 背景
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // 1) 绘制封面图（保持纵横比，短边完全显示，长边裁切）
+    // 1) 绘制封面图（正方形1:1，填充整个区域）
     try {
       if (coverImage) {
         const img = await posterUtil.loadImageFromUrl(canvas, coverImage);
         
-        // 计算缩放比例，确保短边完全显示
-        const scaleX = width / img.width;
-        const scaleY = coverAreaHeight / img.height;
-        const scale = Math.min(scaleX, scaleY); // 取较小值，确保短边完全显示
+        // 计算缩放比例，填充整个正方形区域（可能会裁切）
+        const scaleX = coverAreaSize / img.width;
+        const scaleY = coverAreaSize / img.height;
+        const scale = Math.max(scaleX, scaleY); // 取较大值，确保填满正方形
         
         const drawW = img.width * scale;
         const drawH = img.height * scale;
         
         // 计算居中位置
-        const x = (width - drawW) / 2;
-        const y = (coverAreaHeight - drawH) / 2;
+        const x = (coverAreaSize - drawW) / 2;
+        const y = (coverAreaSize - drawH) / 2;
         
         ctx.drawImage(img, x, y, drawW, drawH);
       } else {
-        this.drawDefaultBackground(ctx, width, coverAreaHeight);
+        this.drawDefaultBackground(ctx, coverAreaSize, coverAreaSize);
       }
     } catch (e) {
       console.error('封面图绘制失败:', e);
-      this.drawDefaultBackground(ctx, width, coverAreaHeight);
+      this.drawDefaultBackground(ctx, coverAreaSize, coverAreaSize);
     }
 
-    // 2) 绘制右下角圆形小程序码（覆盖在大图上）
-    try {
-      const qr = await posterUtil.loadImageFromBase64(canvas, qrcodeBase64);
-      const qrOuter = Math.floor(width * 0.375); // 扩大到1.5倍 (0.25 * 1.5 = 0.375)
-      const qrInnerPadding = 20;
-      const qrX = width - contentPadding - qrOuter;
-      const qrY = coverAreaHeight - Math.floor(qrOuter * 0.15) - qrOuter*0.75; // 调整位置
-
-      // 外层白色圆底
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrOuter / 2, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
-      ctx.closePath();
-      ctx.restore();
-
-      // 圆形裁剪绘制二维码
-      const qrSize = qrOuter - qrInnerPadding * 2;
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(qr, qrX + qrInnerPadding, qrY + qrInnerPadding, qrSize, qrSize);
-      ctx.restore();
-    } catch (e) {
-      console.error('小程序码绘制失败:', e);
-    }
-
-    // 3) 下方白色内容区域
-    const contentTop = coverAreaHeight + 68; // 增加标题与顶部的距离
+    // 2) 下方白色内容区域
+    const contentTop = coverAreaSize + 80; // 内容区域起始位置
+    const remainingHeight = height - coverAreaSize;
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, coverAreaHeight + 20, width, height - coverAreaHeight);
+    ctx.fillRect(0, coverAreaSize, width, remainingHeight);
 
     // 标题（固定两行，超出显示省略号）
     ctx.fillStyle = '#1d1d1f';
@@ -676,6 +648,35 @@ Page({
     const priceText = this.getCoursePriceText();
     if (priceText) {
       this.drawPriceRow(ctx, contentPadding, infoStartY + infoFontSize * 2 + 80, priceFontSize, '#ff6b35', priceText, width);
+    }
+
+    // 3) 最后绘制右下角圆形小程序码（放在整张海报的右下角，确保在最上层）
+    try {
+      const qr = await posterUtil.loadImageFromBase64(canvas, qrcodeBase64);
+      const qrOuter = Math.floor(width * 0.25); // 二维码外圈大小
+      const qrInnerPadding = 0;
+      const qrX = width - contentPadding - qrOuter;
+      const qrY = height - contentPadding - qrOuter; // 整张海报的右下角位置
+
+      // 外层白色圆底
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrOuter / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.closePath();
+      ctx.restore();
+
+      // 圆形裁剪绘制二维码
+      const qrSize = qrOuter - qrInnerPadding * 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(qrX + qrOuter / 2, qrY + qrOuter / 2, qrSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(qr, qrX + qrInnerPadding, qrY + qrInnerPadding, qrSize, qrSize);
+      ctx.restore();
+    } catch (e) {
+      console.error('小程序码绘制失败:', e);
     }
   },
 
