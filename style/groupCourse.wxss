@@ -47,8 +47,8 @@
 
 /* 课程图片 */
 .course-image {
-  width: 260rpx;
-  height: 220rpx;
+  width: 240rpx;
+  height: 240rpx;
   border-radius: 20rpx;
   overflow: hidden;
 }
@@ -62,7 +62,7 @@
 /* 课程信息 */
 .course-info {
   flex: 1;
-  height: 220rpx;
+  height: 240rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

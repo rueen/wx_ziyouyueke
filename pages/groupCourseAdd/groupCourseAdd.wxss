@@ -43,6 +43,11 @@ page {
   margin-bottom: 16rpx;
   font-weight: 500;
 }
+.form-label .ratio-tips{
+  font-size: 24rpx;
+  color: #999;
+  font-weight: normal;
+}
 
 .required {
   color: #ff3b30;
