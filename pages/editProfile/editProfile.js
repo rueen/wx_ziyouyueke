@@ -375,6 +375,13 @@ Page({
     wx.navigateTo({
       url: '/pages/poster/poster'
     });
+  },
+
+  openBindPage() {
+    const { userInfo } = this.data;
+    wx.navigateTo({
+      url: `/pages/bindCoach/bindCoach?coachId=${userInfo.id}`
+    });
   }
 
 }) 

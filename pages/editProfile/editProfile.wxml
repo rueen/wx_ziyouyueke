@@ -73,6 +73,13 @@
         <text class="tips-text" wx:else>“教练大厅”不展示你的信息</text>
       </view>
     </view>
+
+    <!-- 宣传页面 -->
+    <view class="wrap poster-item" bind:tap="openBindPage">
+      <text class="label">查看我的宣传页面</text>
+      <text class="iconfont icon-arrow-r"></text>
+    </view>
+
     <!-- 宣传海报 -->
     <view class="wrap poster-item" bind:tap="openPoster" wx:if="{{isShowPoster}}">
       <text class="label">宣传海报</text>
