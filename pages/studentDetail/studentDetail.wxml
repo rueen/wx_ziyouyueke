@@ -13,7 +13,7 @@
             <text>{{studentData.student_name}}</text>
             <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text>
           </view>
-          <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing && !!bookingStatus}}" bindtap="onStartEdit"></text>
+          <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
         </view>
         <input wx:else class="student-name-input" type="text" value="{{studentName}}" bindinput="onStudentNameInput" />
         <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
@@ -117,7 +117,7 @@
 
     <!-- 操作按钮 -->
     <view wx:if="{{!isEditing}}" class="action-buttons">
-      <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}" wx:if="{{!!bookingStatus}}">立即约课</button>
+      <button class="book-button" bindtap="onBookStudent" disabled="{{isUnbinding}}">立即约课</button>
       <button class="unbind-button" bindtap="onShowUnbindConfirm" disabled="{{isUnbinding}}">
         {{isUnbinding ? '解除中...' : '解除绑定'}}
       </button>

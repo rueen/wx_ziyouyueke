@@ -223,7 +223,11 @@ Page({
 
       // 调用API更新师生关系
       const updateData = {
-        category_lessons: lessons,
+        category_lessons: lessons.map(lesson => ({
+          category_id: lesson.category_id,
+          expire_date: lesson.expire_date,
+          remaining_lessons: lesson.remaining_lessons
+        })),
         student_name: studentName.trim(),
         coach_remark: studentRemark.trim()
       };
