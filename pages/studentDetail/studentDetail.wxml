@@ -18,7 +18,7 @@
         <input wx:else class="student-name-input" type="text" value="{{studentName}}" bindinput="onStudentNameInput" />
         <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
         <view class="student-intro">{{studentData.student.intro}}</view>
-        <view class="booking-status">
+        <view class="booking-status" wx:if="{{!isEditing}}">
           <text class="booking-status-text">约课状态：</text>
           <switch checked="{{bookingStatus}}" bindchange="bookingStatusSwitchChange"/>
         </view>
@@ -33,8 +33,9 @@
         </text>
         <text class="expire-date-title">到期时间</text>
       </view>
-      <view class="tips" wx:if="{{!studentData.booking_status}}">
-        <text class="tips-text">课程到期时间会在约课状态重新开启后顺延</text>
+      <view class="tips">
+        <text class="tips-text" wx:if="{{!studentData.booking_status}}">课程到期时间会在约课状态重新开启后顺延</text>
+        <text class="tips-text" wx:else>到期时间 23:59:59 过后，课程剩余课时会自动清零</text>
       </view>
       
       <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
@@ -76,8 +77,8 @@
           </view>
         </view>
       </view>
-      <view class="section-info">
-        <text>可在“我的”->“课程分类”添加更多课程</text>
+      <view class="tips section-info">
+        <text class="tips-text">可在“我的”->“课程分类”添加更多课程</text>
       </view>
     
     </view>

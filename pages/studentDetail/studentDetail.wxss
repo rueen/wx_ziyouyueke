@@ -88,7 +88,10 @@ page {
   margin: 16rpx;
   border-radius: 16rpx;
 }
-
+.info-section .tips{
+  display: flex;
+  justify-content: center;
+}
 .section-header {
   display: flex;
   align-items: center;
@@ -106,10 +109,6 @@ page {
   font-size: 28rpx;
 }
 .section-info{
-  font-size: 24rpx;
-  color: #b6623e;
-  height: 50rpx;
-  background-color: #ffeee7;
   display: flex;
   align-items: center;
   justify-content: center;
