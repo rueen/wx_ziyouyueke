@@ -168,7 +168,7 @@ page {
   font-weight: 600;
 }
 
-/* 课程分类标签 */
+/* 课程类型标签 */
 .course-categories {
   display: flex;
   flex-wrap: wrap;

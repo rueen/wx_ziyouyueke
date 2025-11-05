@@ -26,7 +26,7 @@
         </view>
         
         <view class="stat-item" bindtap="onPendingCoursesClick">
-          <text class="stat-label">我的课程</text>
+          <text class="stat-label">上课记录</text>
           <text class="iconfont icon-arrow-r stat-arrow"></text>
         </view>
       </view>

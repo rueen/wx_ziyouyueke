@@ -262,7 +262,7 @@ Page({
   },
 
   /**
-   * 我的课程
+   * 上课记录
    */
   onMyCourses() {
     // 检查是否需要登录
@@ -275,7 +275,7 @@ Page({
     })
   },
 
-  // 课程分类
+  // 我的课程
   onCoursesCategories(){
     // 检查是否需要登录
     if (!this.checkLoginRequired()) {

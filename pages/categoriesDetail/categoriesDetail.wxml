@@ -1,5 +1,5 @@
 <!--pages/categoriesDetail/categoriesDetail.wxml-->
-<navBar title="课程分类" />
+<navBar title="课程详情" />
 <layout>
   <view class="container">
     <view class="info-section">

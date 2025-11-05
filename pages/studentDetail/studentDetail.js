@@ -411,7 +411,7 @@ Page({
     }
   },
 
-  // 查看课程
+  // 查看上课记录
   handleViewCourseList() {
     const { studentData } = this.data;
     const student = {

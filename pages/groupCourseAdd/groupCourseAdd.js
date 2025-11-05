@@ -22,7 +22,7 @@ Page({
       max_participants: 10,
       min_participants: 1,
       price_type: 1, // 1-扣课时，2-金额展示，3-免费
-      category_id: 0, // 课程分类ID
+      category_id: 0, // 课程类型ID
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
@@ -46,7 +46,7 @@ Page({
       { value: 2, label: '所有人' }
     ],
 
-    // 课程分类
+    // 课程类型
     categoryList: [],
     
     // 地址列表
@@ -84,7 +84,7 @@ Page({
     
     // 加载地址列表
     this.loadAddresses()
-    // 加载课程分类列表
+    // 加载课程类型列表
     this.loadCategoryList()
     // 获取当前用户ID
     this.getCurrentUserId()
@@ -154,7 +154,7 @@ Page({
               max_participants: course.max_participants,
               min_participants: course.min_participants,
               price_type: course.price_type, // 1-扣课时，2-金额展示，3-免费
-              category_id: course.category_id, // 课程分类ID
+              category_id: course.category_id, // 课程类型ID
               lesson_cost: course.lesson_cost,
               price_amount: course.price_amount,
               enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人

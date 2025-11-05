@@ -86,7 +86,7 @@
         </view>
       </view>
       <view class="tips section-info">
-        <text class="tips-text">可在“我的”->“课程分类”添加更多课程</text>
+        <text class="tips-text">可在“我的”->“我的课程”添加更多课程</text>
       </view>
     
     </view>
@@ -112,7 +112,7 @@
 
     <!-- 上课记录 -->
     <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
-      <text>查看课程</text>
+      <text>查看上课记录</text>
       <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 

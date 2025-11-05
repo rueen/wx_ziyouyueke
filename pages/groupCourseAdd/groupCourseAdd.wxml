@@ -188,9 +188,9 @@ module.exports = {
         </picker>
       </view>
       
-      <!-- 课程分类 -->
+      <!-- 课程类型 -->
       <view wx:if="{{formData.price_type === 1}}" class="form-item">
-        <view class="form-label">课程分类</view>
+        <view class="form-label">课程类型</view>
         <picker 
           mode="selector" 
           range="{{categoryList}}" 

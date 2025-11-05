@@ -736,7 +736,7 @@ module.exports = {
     delete: deleteAddress
   },
 
-  // 课程分类
+  // 课程类型
   categories: {
     getList: function(params = {}) {
       return request({

@@ -25,7 +25,7 @@
     <view class="menu-item" bindtap="onMyCourses">
       <view class="menu-content">
         <!-- <text class="iconfont icon-yuyuekecheng menu-icon"></text> -->
-        <text class="menu-text">我的课程</text>
+        <text class="menu-text">上课记录</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
@@ -40,7 +40,7 @@
 
     <view class="menu-item" bindtap="onCoursesCategories" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <text class="menu-text">课程分类</text>
+        <text class="menu-text">我的课程</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>

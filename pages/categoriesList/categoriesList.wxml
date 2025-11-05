@@ -1,5 +1,5 @@
 <!--pages/categoriesList/categoriesList.wxml-->
-<navBar title="课程分类" />
+<navBar title="我的课程" />
 <layout>
   <view class="list" wx:if="{{list.length > 0}}">
     <view class="categorie-item" wx:for="{{list}}" wx:key="id" bindtap="openDetail" data-item="{{item}}">
@@ -17,12 +17,12 @@
   <emptyState 
     wx:else
     type="no-data"
-    title="暂无课程分类"
-    description="您还没有添加课程分类，下拉可刷新">
+    title="暂无课程"
+    description="您还没有添加课程，下拉可刷新">
   </emptyState>
 
-  <!-- 添加课程分类按钮 -->
+  <!-- 添加课程按钮 -->
   <view class="add-button-container">
-    <button class="add-button" bindtap="handleAdd">添加课程分类</button>
+    <button class="add-button" bindtap="handleAdd">添加课程</button>
   </view>
 </layout>

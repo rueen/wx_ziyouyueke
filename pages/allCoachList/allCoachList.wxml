@@ -54,7 +54,7 @@
         </view>
       </view>
 
-      <!-- 课程分类标签 -->
+      <!-- 课程类型标签 -->
       <view class="course-categories" wx:if="{{item.course_categories && item.course_categories.length > 0}}">
         <view 
           class="category-tag" 

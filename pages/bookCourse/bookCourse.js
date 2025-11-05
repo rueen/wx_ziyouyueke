@@ -26,10 +26,10 @@ Page({
     selectedOption: null, // 已选择的教练或学员
     showOptionSelection: false, // 是否显示选择弹窗
 
-    // 课程分类
+    // 课程类型
     categoriesList: [],
-    selectedCategorie: null, // 已选中的课程分类
-    showCategorieSelection: false, // 是否显示课程分类选择
+    selectedCategorie: null, // 已选中的课程类型
+    showCategorieSelection: false, // 是否显示课程类型选择
     
     // 时间选择相关
     selectedCoachId: '', // 用于时间选择器的教练ID
@@ -389,7 +389,7 @@ Page({
     });
   },
 
-  // 选择课程分类
+  // 选择课程类型
   onShowCategorieSelection() {
     this.setData({
       showCategorieSelection: true

@@ -38,9 +38,9 @@
         </view>
       </block>
 
-      <!-- 课程分类 -->
+      <!-- 课程类型 -->
       <block wx:if="{{coachData.course_categories && coachData.course_categories.length}}">
-        <view class="title">课程分类</view>
+        <view class="title">课程类型</view>
         <view class="categories" wx:for="{{coachData.course_categories}}" wx:key="id">
           <text class="categories-name">{{item.name}}:</text>
           <text class="categories-desc">{{item.desc}}</text>

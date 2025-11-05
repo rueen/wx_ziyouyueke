@@ -38,13 +38,13 @@
       </view>
     </view>
 
-    <!-- 选择课程分类区域 -->
+    <!-- 选择课程类型区域 -->
     <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
-        <text class="section-title">选择课程分类</text>
+        <text class="section-title">选择课程类型</text>
       </view>
       
-      <!-- 已选择的课程分类 -->
+      <!-- 已选择的课程类型 -->
       <view class="selected-address" wx:if="{{selectedCategorie}}" bindtap="onShowCategorieSelection">
         <view class="categorie-info">
           <text>{{selectedCategorie.category.name}}</text>
@@ -53,9 +53,9 @@
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>
       
-      <!-- 课程分类按钮 -->
+      <!-- 课程类型按钮 -->
       <view class="select-address-btn" wx:else bindtap="onShowCategorieSelection">
-        <text class="btn-text">选择课程分类</text>
+        <text class="btn-text">选择课程类型</text>
         <text class="iconfont icon-arrow-r"></text>
       </view>
     </view>
@@ -170,11 +170,11 @@
   </view>
 </view>
 
-<!-- 课程分类弹窗 -->
+<!-- 课程类型弹窗 -->
 <view class="modal-mask" wx:if="{{showCategorieSelection}}" bindtap="onHideCategorieSelection">
   <view class="modal-container">
     <view class="modal-header">
-      <text class="modal-title">选择课程分类</text>
+      <text class="modal-title">选择课程类型</text>
       <text class="modal-close" bindtap="onHideCategorieSelection">×</text>
     </view>
     <view class="modal-content">

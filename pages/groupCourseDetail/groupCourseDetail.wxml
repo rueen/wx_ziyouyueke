@@ -114,7 +114,7 @@ module.exports = {
     <view class="section-title">报名信息</view>
     <view class="registration-details">
       <view class="registration-item">
-        <text class="registration-label">课程分类：</text>
+        <text class="registration-label">课程类型：</text>
         <text class="registration-value">{{courseDetail.category_name}}</text>
       </view>
       <view class="registration-item">

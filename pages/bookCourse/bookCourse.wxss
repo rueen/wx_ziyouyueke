@@ -129,7 +129,7 @@ page {
   background-color: #f8f9fa;
 }
 
-/* 课程分类 */
+/* 课程类型 */
 .categorie-name{
   font-size: 30rpx;
   color: #333;

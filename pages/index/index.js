@@ -282,7 +282,7 @@ Page({
   },
 
   /**
-   * 我的课程点击事件
+   * 上课记录点击事件
    */
   onPendingCoursesClick: function() {
     // 检查是否需要登录
