@@ -161,7 +161,7 @@ Page({
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
           const coaches = dataArray.map(item => ({
-            id: item.id,
+            ...item,
             name: (item.coach && item.coach.nickname) || '未知教练',
             avatar: (item.coach && item.coach.avatar_url) || 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
             remainingLessons: item.remaining_lessons || 0,
