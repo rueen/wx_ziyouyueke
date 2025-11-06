@@ -775,9 +775,9 @@ module.exports = {
     }
   },
 
-  // 团课管理模块
+  // 活动管理模块
   groupCourse: {
-    // 获取团课列表
+    // 获取活动列表
     getList: function(params = {}) {
       return request({
         url: '/api/h5/group-courses',
@@ -786,7 +786,7 @@ module.exports = {
       });
     },
     
-    // 创建团课
+    // 创建活动
     create: function(params = {}) {
       return request({
         url: '/api/h5/group-courses',
@@ -795,7 +795,7 @@ module.exports = {
       });
     },
     
-    // 获取团课详情
+    // 获取活动详情
     getDetail: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}`,
@@ -804,7 +804,7 @@ module.exports = {
       });
     },
     
-    // 更新团课
+    // 更新活动
     update: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}`,
@@ -813,7 +813,7 @@ module.exports = {
       });
     },
     
-    // 报名团课
+    // 报名活动
     register: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}/register`,
@@ -831,7 +831,7 @@ module.exports = {
       });
     },
     
-    // 获取我的团课报名列表（学员视角）
+    // 获取我的活动报名列表（学员视角）
     getMyRegistrations: function(params = {}) {
       return request({
         url: '/api/h5/group-courses/my-registrations',
@@ -840,7 +840,7 @@ module.exports = {
       });
     },
     
-    // 获取团课报名列表（教练视角）
+    // 获取活动报名列表（教练视角）
     getRegistrations: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}/registrations`,
@@ -849,7 +849,7 @@ module.exports = {
       });
     },
     
-    // 签到团课
+    // 签到活动
     checkIn: function(courseId, registrationId, params = {}) {
       return request({
         url: `/api/h5/group-courses/${courseId}/registrations/${registrationId}/check-in`,
@@ -858,7 +858,7 @@ module.exports = {
       });
     },
 
-    // 取消团课
+    // 取消活动
     cancel: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}/cancel`,
@@ -867,7 +867,7 @@ module.exports = {
       });
     },
 
-    // 删除团课
+    // 删除活动
     del: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}`,
@@ -876,7 +876,7 @@ module.exports = {
       });
     },
 
-    // 发布团课
+    // 发布活动
     publish: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}/publish`,
@@ -885,7 +885,7 @@ module.exports = {
       });
     },
 
-    // 完成团课
+    // 完成活动
     complete: function(id, params = {}) {
       return request({
         url: `/api/h5/group-courses/${id}/complete`,

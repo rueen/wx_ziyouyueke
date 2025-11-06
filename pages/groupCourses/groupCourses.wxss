@@ -118,7 +118,7 @@ page {
   opacity: 1;
 }
 
-/* 新增团课按钮 */
+/* 新增活动按钮 */
 .add-course-btn-container{
   position: fixed;
   bottom: 100rpx;
@@ -151,7 +151,7 @@ page {
   letter-spacing: 2rpx;
 }
 
-/* 取消团课模态框样式 */
+/* 取消活动模态框样式 */
 .cancel-modal-content {
   padding: 32rpx;
 }

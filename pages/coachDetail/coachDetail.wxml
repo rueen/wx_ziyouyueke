@@ -40,9 +40,9 @@
       </view>
     </view>
 
-    <!-- 团课 -->
+    <!-- 活动 -->
     <view class="groupCourse-section" bind:tap="onGroupCourses">
-      <text>团课</text>
+      <text>活动</text>
       <text class="iconfont icon-arrow-r"></text>
     </view>
 

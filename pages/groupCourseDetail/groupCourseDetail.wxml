@@ -186,10 +186,10 @@ module.exports = {
         <!-- 未发布课程：编辑、发布 -->
         <block wx:if="{{courseDetail.status === 0}}">
           <button class="action-btn editable" bindtap="onEditCourse">
-            编辑课程
+            编辑
           </button>
           <button class="action-btn publish" bindtap="onPublishCourse">
-            发布课程
+            发布
           </button>
         </block>
         
@@ -199,7 +199,7 @@ module.exports = {
             查看报名
           </button>
           <button class="action-btn editable" bindtap="onEditCourse">
-            编辑课程
+            编辑
           </button>
         </block>
       </block>

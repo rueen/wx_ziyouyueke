@@ -91,7 +91,7 @@ Page({
     }
   },
 
-  // 打开团课
+  // 打开活动
   onGroupCourses() {
     const { coachId } = this.data;
     wx.navigateTo({

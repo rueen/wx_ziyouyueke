@@ -1,5 +1,5 @@
 <!--pages/groupCourseStudent/groupCourseStudent.wxml-->
-<navBar title="我报名的团课" />
+<navBar title="我报名的活动" />
 <layout>
   <!-- 筛选标签 -->
   <view class="tabs">

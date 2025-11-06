@@ -39,7 +39,7 @@
         bind:tap="handleCheckIn"
       >扫码签到</button>
       <button class="action-btn complete" bindtap="handleComplete">
-        完成团课
+        完成活动
       </button>
     </view>
   </view>

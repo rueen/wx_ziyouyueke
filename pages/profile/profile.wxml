@@ -32,7 +32,7 @@
 
     <view class="menu-item" bindtap="onGroupCourses">
       <view class="menu-content">
-        <text class="menu-text">{{userRole === 'coach' ? '我的团课' : '我报名的团课'}}</text>
+        <text class="menu-text">{{userRole === 'coach' ? '我的活动' : '我报名的活动'}}</text>
         <view class="new-tag">NEW</view>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>

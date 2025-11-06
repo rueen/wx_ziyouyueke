@@ -57,7 +57,7 @@ Page({
    */
   onShareAppMessage() {
     return {
-      title: '精选活动/团课推荐',
+      title: '精选活动/活动推荐',
       imageUrl: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/share-allGroupCourses.png',
       path: `/pages/allGroupCourses/allGroupCourses`
     }
@@ -77,7 +77,7 @@ Page({
   },
 
   /**
-   * 加载团课数据
+   * 加载活动数据
    */
   async loadGroupCourses(isRefresh = false) {
     if (this.data.isLoading) return;
@@ -105,7 +105,7 @@ Page({
         status: activeTab,
         is_show: 1
       }
-      // 调用API获取团课列表
+      // 调用API获取活动列表
       const res = await api.groupCourse.getList(params)
 
       if(res.success && res.data && res.data.list){
@@ -171,7 +171,7 @@ Page({
   onCourseTap(e) {
     const { course } = e.currentTarget.dataset
     
-    // 跳转到团课详情页
+    // 跳转到活动详情页
     wx.navigateTo({
       url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
     })

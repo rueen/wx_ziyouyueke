@@ -287,7 +287,7 @@ Page({
     })
   },
 
-  // 打开团课
+  // 打开活动
   onGroupCourses() {
     // 检查是否需要登录
     if (!this.checkLoginRequired()) {

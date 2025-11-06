@@ -128,7 +128,7 @@ Page({
   onShareAppMessage() {
     const { coachId, coachData } = this.data;
     return {
-      title: coachData.nickname ? `${coachData.nickname}的团课` : '自由约课 - 团课列表',
+      title: coachData.nickname ? `${coachData.nickname}的活动` : '自由约课 - 活动列表',
       imageUrl: coachData.avatar_url || '',
       path: `/pages/groupCourses/groupCourses?coachId=${coachId}`
     }
@@ -166,7 +166,7 @@ Page({
     }
   },
   /**
-   * 加载团课数据
+   * 加载活动数据
    */
   async loadGroupCourses(isRefresh = false) {
     if (this.data.isLoading) return;
@@ -194,7 +194,7 @@ Page({
         status: activeTab,
         coach_id: coachId
       }
-      // 调用API获取团课列表
+      // 调用API获取活动列表
       const res = await api.groupCourse.getList(params)
 
       if(res.success && res.data && res.data.list){
@@ -273,7 +273,7 @@ Page({
   onCourseTap(e) {
     const { course } = e.currentTarget.dataset
     
-    // 跳转到团课详情页
+    // 跳转到活动详情页
     wx.navigateTo({
       url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
     })
@@ -292,7 +292,7 @@ Page({
   },
 
   /**
-   * 取消团课 - 显示取消原因输入框
+   * 取消活动 - 显示取消原因输入框
    */
   onCancelCourse(e) {
     const { course } = e.currentTarget.dataset;
@@ -324,7 +324,7 @@ Page({
   },
 
   /**
-   * 确认取消团课
+   * 确认取消活动
    */
   async onConfirmCancel() {
     const { cancelReason, currentCancelCourse } = this.data;
@@ -372,7 +372,7 @@ Page({
 
     wx.showModal({
       title: '',
-      content: '确定删除团课吗？',
+      content: '确定删除活动吗？',
       complete: async (res) => {
         if (res.confirm) {
           try {
@@ -402,10 +402,10 @@ Page({
   },
 
   /**
-   * 点击新增团课按钮
+   * 点击新增活动按钮
    */
   onAddCourseTap() {
-    // 跳转到新增团课页面
+    // 跳转到新增活动页面
     wx.navigateTo({
       url: `/pages/groupCourseAdd/groupCourseAdd?type=add`
     });

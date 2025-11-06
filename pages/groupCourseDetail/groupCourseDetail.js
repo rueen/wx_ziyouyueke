@@ -34,7 +34,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    console.log('团课详情页面参数:', options)
+    console.log('活动详情页面参数:', options)
     // 解析场景值参数
     options = parseSceneParams(options);
     if (options.courseId) {
@@ -89,7 +89,7 @@ Page({
   },
 
   /**
-   * 加载团课详情
+   * 加载活动详情
    */
   loadCourseDetail() {
     const { courseId } = this.data
@@ -134,7 +134,7 @@ Page({
         }
       })
       .catch(err => {
-        console.error('加载团课详情失败:', err)
+        console.error('加载活动详情失败:', err)
         wx.showToast({
           title: '加载失败',
           icon: 'error'
@@ -145,7 +145,7 @@ Page({
       })
   },
 
-  // 打开团课
+  // 打开活动
   onGroupCourses() {
     const { coachId } = this.data;
     wx.navigateTo({
@@ -154,7 +154,7 @@ Page({
   },
   
   /**
-   * 报名团课
+   * 报名活动
    */
   onRegisterTap() {
     const { courseDetail } = this.data;
@@ -287,7 +287,7 @@ Page({
     wx.openLocation({
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
-      name: name || courseDetail.title || '团课地址',
+      name: name || courseDetail.title || '活动地址',
       address: address || '',
       scale: 18, // 地图缩放级别，18为街道级别
       success: () => {
@@ -451,7 +451,7 @@ Page({
                 title: '发布成功',
                 icon: 'success'
               });
-              // 返回团课列表页
+              // 返回活动列表页
               setTimeout(() => {
                 wx.navigateBack({
                   delta: 2
@@ -477,7 +477,7 @@ Page({
     const { courseDetail } = this.data
     
     return {
-      title: courseDetail ? courseDetail.title : '团课详情',
+      title: courseDetail ? courseDetail.title : '活动详情',
       imageUrl: courseDetail.cover_images[0] || courseDetail.images[0],
       path: `/pages/groupCourseDetail/groupCourseDetail?courseId=${this.data.courseId}`
     }
@@ -549,9 +549,9 @@ Page({
       const coverImage = (courseDetail.cover_images && courseDetail.cover_images[0]) || 
                          (courseDetail.images && courseDetail.images[0]) || '';
 
-      // 4. 绘制团课详情页海报
+      // 4. 绘制活动详情页海报
       await this.drawCourseDetailPoster(canvas, ctx, width, height, {
-        title: courseDetail.title || '团课详情',
+        title: courseDetail.title || '活动详情',
         subtitle: `${courseDetail.showTime} | ${addressName}`,
         coverImage,
         qrcodeBase64
@@ -580,7 +580,7 @@ Page({
   },
 
   /**
-   * 绘制团课详情页海报
+   * 绘制活动详情页海报
    */
   async drawCourseDetailPoster(canvas, ctx, width, height, data) {
     const { title, subtitle, coverImage, qrcodeBase64 } = data;

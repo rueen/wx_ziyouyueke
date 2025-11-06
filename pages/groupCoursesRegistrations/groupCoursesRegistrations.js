@@ -179,7 +179,7 @@ Page({
 
     wx.showModal({
       title: '',
-      content: `${tips}确定完成团课吗？`,
+      content: `${tips}确定完成活动吗？`,
       complete: async (res) => {
         if (res.confirm) {
           this.complete()

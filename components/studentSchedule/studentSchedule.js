@@ -127,7 +127,7 @@ Component({
           return;
         }
 
-        // 并行加载普通课程和团课数据
+        // 并行加载普通课程和活动数据
         const [courseResult, groupCourseResult] = await Promise.all([
           this.loadPersonalCourses(date, studentId),
           this.loadGroupCourses(date, studentId)
@@ -194,20 +194,20 @@ Component({
     },
 
     /**
-     * 加载团课
+     * 加载活动
      */
     async loadGroupCourses(date, studentId) {
       try {
-        // 使用 getMyRegistrations API 获取学员报名的团课
+        // 使用 getMyRegistrations API 获取学员报名的活动
         const params = {
-          status: 0, // 只获取进行中中的团课
+          status: 0, // 只获取进行中中的活动
           limit: 100
         };
         
         const result = await api.groupCourse.getMyRegistrations(params);
         const registrations = result.data ? result.data.list : [];
 
-        // 筛选出指定日期的团课
+        // 筛选出指定日期的活动
         const studentGroupCourses = registrations
           .map(reg => reg.groupCourse)
           .filter(course => course && course.course_date === date);
@@ -226,13 +226,13 @@ Component({
           courseData: course
         }));
       } catch (error) {
-        console.error('加载团课失败:', error);
+        console.error('加载活动失败:', error);
         return [];
       }
     },
 
     /**
-     * 获取团课价格显示文本
+     * 获取活动价格显示文本
      */
     getGroupCoursePrice(course) {
       switch (course.price_type) {

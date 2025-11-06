@@ -38,12 +38,12 @@
       >
         <!-- 课程信息卡片 -->
         <view class="course-card">
-          <!-- 团课 -->
+          <!-- 活动 -->
           <view wx:if="{{course.type === 'group'}}" class="group-course-content">
             <view class="time-column">
               <text class="time-text">{{course.startTime}} - {{course.endTime}}</text>
               <view class="group-badge">
-                <text class="badge-text">团课</text>
+                <text class="badge-text">活动</text>
               </view>
             </view>
             <view class="coach-name">{{course.coachName}}</view>

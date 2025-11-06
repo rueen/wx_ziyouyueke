@@ -111,7 +111,7 @@ Page({
         limit: pageSize,
         status: activeTab
       }
-      // 调用API获取团课列表
+      // 调用API获取活动列表
       const res = await api.groupCourse.getMyRegistrations(params)
       if(res.success && res.data && res.data.list){
         const list = res.data.list.map(_item => {
@@ -181,7 +181,7 @@ Page({
   onCourseTap(e) {
     const { course } = e.currentTarget.dataset
     
-    // 跳转到团课详情页
+    // 跳转到活动详情页
     wx.navigateTo({
       url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${course.id}`
     })

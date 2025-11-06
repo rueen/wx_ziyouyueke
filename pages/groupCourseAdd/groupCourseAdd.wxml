@@ -43,7 +43,7 @@ module.exports = {
   }
 }
 </wxs>
-<navBar title="{{mode === 'add' ? '新增团课' : '编辑团课'}}" />
+<navBar title="{{mode === 'add' ? '新增活动' : '编辑活动'}}" />
 <layout>
   <view class="form-container">
     <!-- 基本信息 -->
@@ -163,7 +163,7 @@ module.exports = {
         />
       </view>
       <view class="tips">
-        <text class="tips-text">开始前1小时，如果报名人数不足{{formData.min_participants}}人，团课自动取消!</text>
+        <text class="tips-text">开始前1小时，如果报名人数不足{{formData.min_participants}}人，活动自动取消!</text>
       </view>
     </view>
 

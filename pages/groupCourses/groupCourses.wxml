@@ -138,15 +138,15 @@
       </view>
     </view>
 
-    <!-- 新增团课按钮 -->
+    <!-- 新增活动按钮 -->
     <view class="add-course-btn-container" wx:if="{{isOwner}}">
       <phone-verify id="phoneVerify" bind:verified="onAddCourseTap" bind:needLogin="onNeedLogin">
-        <button class="add-course-btn">新增团课</button>
+        <button class="add-course-btn">新增活动</button>
       </phone-verify>
     </view>
   </view>
 
-  <!-- 取消团课模态框 -->
+  <!-- 取消活动模态框 -->
   <modal 
     show="{{showCancelModal}}" 
     title="取消原因"
@@ -157,7 +157,7 @@
       <view class="cancel-reason-section">
         <textarea 
           class="cancel-reason-input"
-          placeholder="请输入取消团课的原因"
+          placeholder="请输入取消活动的原因"
           value="{{cancelReason}}"
           bindinput="onCancelReasonInput"
           maxlength="200"

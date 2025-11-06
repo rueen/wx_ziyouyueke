@@ -16,14 +16,14 @@
           "launchMode": "default"
         },
         {
-          "name": "我报名的团课",
+          "name": "我报名的活动",
           "pathName": "pages/groupCourseStudent/groupCourseStudent",
           "query": "",
           "launchMode": "default",
           "scene": null
         },
         {
-          "name": "团课详情",
+          "name": "活动详情",
           "pathName": "pages/groupCourseDetail/groupCourseDetail",
           "query": "courseId=1",
           "launchMode": "default",
@@ -37,7 +37,7 @@
           "scene": null
         },
         {
-          "name": "团课列表",
+          "name": "活动列表",
           "pathName": "pages/groupCourses/groupCourses",
           "query": "coachId=27",
           "launchMode": "default",
