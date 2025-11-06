@@ -1,0 +1,36 @@
+export const weekSlotTemplateDefault = [{
+  id: 0,
+  text: '周日',
+  checked: true,
+  time_slots: []
+}, {
+  id: 1,
+  text: '周一',
+  checked: true,
+  time_slots: []
+}, {
+  id: 2,
+  text: '周二',
+  checked: true,
+  time_slots: []
+}, {
+  id: 3,
+  text: '周三',
+  checked: true,
+  time_slots: []
+}, {
+  id: 4,
+  text: '周四',
+  checked: true,
+  time_slots: []
+}, {
+  id: 5,
+  text: '周五',
+  checked: true,
+  time_slots: []
+}, {
+  id: 6,
+  text: '周六',
+  checked: true,
+  time_slots: []
+}];

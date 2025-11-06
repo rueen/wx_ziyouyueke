@@ -89,20 +89,19 @@
             <view wx:for="{{weekSlotTemplate}}" wx:key="id">
               <view class="date-slot">
                 <text>{{ item.text }}</text>
-                <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchWeekSlotChange"/>
+                <switch checked="{{item.checked}}" data-index="{{index}}" disabled="{{!isEditTimeType}}" bindchange="switchWeekSlotChange"/>
               </view>
               <view class="template-section" wx:if="{{item.checked}}">
-                <view class="section-header">
-                  <text class="section-title">时间段</text>
-                  <text class="add-btn" bindtap="onShowAddForm">添加</text>
-                </view>
                 <view class="time-slots" wx:if="{{item.time_slots.length > 0}}">
-                  <view class="time-slot" wx:for="{{item.time_slots}}" wx:key="id">
+                  <view class="time-slot" wx:for="{{item.time_slots}}" wx:key="id" wx:for-item="timeSlot" wx:for-index="slotIndex">
                     <view class="time-info">
-                      <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
+                      <text class="time-text">{{timeSlot.startTime}} - {{timeSlot.endTime}}</text>
                     </view>
-                    <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
+                    <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{slotIndex}}" data-week-index="{{index}}" wx:if="{{isEditTimeType}}">删除</text>
                   </view>
+                </view>
+                <view class="section-header" wx:if="{{isEditTimeType}}">
+                  <text class="add-btn" bindtap="onShowAddForm" data-week-index="{{index}}">+ 时间段</text>
                 </view>
               </view>
             </view>

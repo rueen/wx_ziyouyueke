@@ -107,9 +107,6 @@ page {
   background-color: #f8f9fa;
   border-radius: 16rpx;
 }
-.date-slots .template-section{
-  padding: 24rpx;
-}
 
 /* 时间段模板区域 */
 .template-section {
