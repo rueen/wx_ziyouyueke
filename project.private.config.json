@@ -12,8 +12,8 @@
           "name": "时间模板",
           "pathName": "pages/timeTemplate/timeTemplate",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "个人信息",
@@ -53,13 +53,6 @@
         {
           "name": "我的",
           "pathName": "pages/profile/profile",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "我的时间",
-          "pathName": "pages/mySchedule/mySchedule",
           "query": "",
           "launchMode": "default",
           "scene": null

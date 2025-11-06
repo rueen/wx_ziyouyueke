@@ -62,14 +62,6 @@
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
 
-    <!-- 教练专用：我的时间 -->
-    <!-- <view class="menu-item" bindtap="onMySchedule" wx:if="{{userRole === 'coach'}}">
-      <view class="menu-content">
-        <text class="menu-text">我的时间</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
-    </view> -->
-
     <!-- 教练专用：常用地址 -->
     <view class="menu-item" bindtap="onMyAddresses" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">

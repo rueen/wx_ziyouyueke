@@ -46,20 +46,6 @@
       <text class="iconfont icon-arrow-r"></text>
     </view>
 
-    <!-- 可约时间 -->
-    <!-- <view class="time-section">
-      <text class="section-title">可约时间</text>
-        <timeSelector
-          id="timeSelector"
-          coachId="{{coachId}}"
-          mode="view"
-          showBookingDetails="{{false}}"
-          bind:dateSelected="onDateSelected"
-          bind:timeSlotsLoaded="onTimeSlotsLoaded"
-          bind:error="onError"
-        />
-    </view> -->
-
     <!-- 约课按钮 -->
     <view class="book-button-container">
       <button class="book-button" bindtap="onBookCoach">立即约课</button>
