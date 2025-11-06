@@ -17,10 +17,6 @@
             bindchange="onTemplateToggle"
           />
         </view>
-        <!-- <view class="setting-item">
-          <text class="setting-label">最少提前天数</text>
-          <text class="setting-value">{{bookingSettings.minAdvanceDays}}天</text>
-        </view> -->
         <view class="setting-item">
           <text class="setting-label">最多可预约天数</text>
           <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
@@ -32,49 +28,103 @@
       </view>
     </view>
 
-    <!-- 时间段模板 -->
-    <view class="template-section">
-      <view class="section-header">
-        <text class="section-title">时间段模板</text>
-        <text class="add-btn" bindtap="onShowAddForm">添加</text>
-      </view>
-      
-      <!-- 模板状态提示 -->
-      <view class="template-status" wx:if="{{!templateEnabled && timeSlotTemplate.length > 0}}">
-        <text class="status-text">⚠️ 当前模板已禁用，学员无法预约</text>
-      </view>
-      
-      <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
-        <view class="time-slot {{!templateEnabled ? 'disabled' : ''}}" wx:for="{{timeSlotTemplate}}" wx:key="id">
-          <view class="time-info">
-            <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
-          </view>
-          <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
-        </view>
-      </view>
-      
-      <emptyState 
-        wx:else
-        type="no-data"
-        title="暂无时间段模板"
-        description="点击上方添加按钮创建时间段"
-        customClass="compact">
-      </emptyState>
+    <!-- 模板状态提示 -->
+    <view class="template-status" wx:if="{{!templateEnabled && timeSlotTemplate.length > 0}}">
+      <text class="status-text">⚠️ 当前模板已禁用，学员无法预约</text>
     </view>
 
-    <!-- 日期模板 -->
-    <view class="data-section">
+    <view class="settings-section">
       <view class="section-header">
-        <text class="section-title">日期模板</text>
+        <text class="section-title">时间段类型</text>
+        <text class="edit-btn" bind:tap="handleEditTimeType" wx:if="{{!isEditTimeType}}">编辑</text>
       </view>
-      <view class="date-slots">
-        <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
-          <text>{{ item.text }}</text>
-          <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchDateChange"/>
+      <view class="time-type">
+        <radio-group
+          class="time-type-radio-group"
+          bindchange="timeTypeRadioChange">
+          <label wx:for="{{timeTypeArr}}" wx:key="type">
+            <radio value="{{item.type}}" checked="{{item.type === time_type}}" disabled="{{!isEditTimeType}}" />
+            <text class="setting-value">{{item.text}}</text>
+          </label>
+        </radio-group>
+      </view>
+      <!-- 全日程统一模板 -->
+      <block wx:if="{{time_type === 0}}">
+        <!-- 时间段模板 -->
+        <view class="template-section">
+          <view class="section-header">
+            <text class="section-title-small">时间段</text>
+            <text class="add-btn" bindtap="onShowAddForm" wx:if="{{isEditTimeType}}">添加</text>
+          </view>
+          <view class="time-slots" wx:if="{{timeSlotTemplate.length > 0}}">
+            <view class="time-slot" wx:for="{{timeSlotTemplate}}" wx:key="id">
+              <view class="time-info">
+                <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
+              </view>
+              <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}" wx:if="{{isEditTimeType}}">删除</text>
+            </view>
+          </view>
         </view>
-      </view>
+        <!-- 日期模板 -->
+        <view class="data-section">
+          <view class="section-header">
+            <text class="section-title-small">周历</text>
+          </view>
+          <view class="date-slots">
+            <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
+              <text>{{ item.text }}</text>
+              <switch checked="{{item.checked}}" data-index="{{index}}" disabled="{{!isEditTimeType}}" bindchange="switchDateChange" />
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 按周历循环模板 -->
+      <block wx:if="{{time_type === 1}}">
+        <view class="data-section">
+          <view class="section-header">
+            <text class="section-title-small">周历</text>
+          </view>
+          <view class="date-slots">
+            <view wx:for="{{weekSlotTemplate}}" wx:key="id">
+              <view class="date-slot">
+                <text>{{ item.text }}</text>
+                <switch checked="{{item.checked}}" data-index="{{index}}" bindchange="switchWeekSlotChange"/>
+              </view>
+              <view class="template-section" wx:if="{{item.checked}}">
+                <view class="section-header">
+                  <text class="section-title">时间段</text>
+                  <text class="add-btn" bindtap="onShowAddForm">添加</text>
+                </view>
+                <view class="time-slots" wx:if="{{item.time_slots.length > 0}}">
+                  <view class="time-slot" wx:for="{{item.time_slots}}" wx:key="id">
+                    <view class="time-info">
+                      <text class="time-text">{{item.startTime}} - {{item.endTime}}</text>
+                    </view>
+                    <text class="delete-btn" bindtap="onDeleteTimeSlot" data-slot-index="{{index}}">删除</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+
+          </view>
+        </view>
+      </block>
+
+      <!-- 自由日程模板 -->
+      <block wx:if="{{time_type === 2}}">
+        
+      </block>
+      
     </view>
   </view>
+
+  <!-- 操作按钮 -->
+  <view wx:if="{{isEditTimeType}}" class="action-buttons">
+    <button class="cancel-button" bindtap="handleCancelTimeType">取消</button>
+    <button class="save-button" bindtap="handleSaveTimeType" loading="{{isSaving}}" disabled="{{isSaving}}">{{isSaving ? '保存中...' : '保存'}}</button>
+  </view>
+
 </layout>
 
 <!-- 预约设置弹窗 -->
@@ -85,14 +135,6 @@
       <text class="modal-close" bindtap="onHideSettingsForm">×</text>
     </view>
     <view class="modal-content">
-      <!-- <view class="form-item">
-        <text class="form-label">最少提前天数</text>
-        <input class="form-input" 
-               type="number" 
-               value="{{tempMinAdvanceDays}}" 
-               bindinput="onMinAdvanceDaysChange" 
-               placeholder="请输入天数" />
-      </view> -->
       <view class="form-item">
         <text class="form-label">最多可预约天数</text>
         <input class="form-input" 

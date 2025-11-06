@@ -9,11 +9,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "个人信息",
-          "pathName": "pages/editProfile/editProfile",
+          "name": "时间模板",
+          "pathName": "pages/timeTemplate/timeTemplate",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "个人信息",
+          "pathName": "pages/editProfile/editProfile",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "我报名的活动",

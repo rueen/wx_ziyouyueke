@@ -11,6 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    template: {}, // 存储原始数据
     // 预约设置
     bookingSettings: {
       minAdvanceDays: 1, // 最少需要提前几天预约
@@ -65,7 +66,59 @@ Page({
     showSettingsForm: false,
     tempMinAdvanceDays: 1,
     tempMaxAdvanceDays: 30,
-    tempMaxAdvanceNums: 1
+    tempMaxAdvanceNums: 1,
+
+    // 时间类型
+    timeTypeArr: [{
+      type: 0,
+      text: '全日程统一模板(每天一样)'
+    }, {
+      type: 1,
+      text: '按周历循环模板(每周几一样)'
+    }, {
+      type: 2,
+      text: '自由日程模板(每个日期都可以不一样)'
+    }],
+    time_type: 0,
+    isEditTimeType: false,
+    // 按周历循环模板
+    weekSlotTemplate: [{
+      id: 0,
+      text: '周日',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 1,
+      text: '周一',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 2,
+      text: '周二',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 3,
+      text: '周三',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 4,
+      text: '周四',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 5,
+      text: '周五',
+      checked: true,
+      time_slots: []
+    }, {
+      id: 6,
+      text: '周六',
+      checked: true,
+      time_slots: []
+    }],
+    isSaving: false
   },
 
   /**
@@ -116,6 +169,7 @@ Page({
         }));
         
         this.setData({
+          template: template,
           bookingSettings: {
             minAdvanceDays: template.min_advance_days,
             maxAdvanceDays: template.max_advance_days,
@@ -277,17 +331,10 @@ Page({
         title: '保存中...'
       });
 
-      // 准备时间段数据
-      const timeSlots = timeSlotTemplate.map(slot => ({
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      }));
-
       const templateData = {
         min_advance_days: tempMinAdvanceDays,
         max_advance_days: tempMaxAdvanceDays,
         max_advance_nums: tempMaxAdvanceNums,
-        time_slots: timeSlots,
         is_active: 1
       };
 
@@ -305,6 +352,7 @@ Page({
           maxAdvanceDays: tempMaxAdvanceDays,
           maxAdvanceNums: tempMaxAdvanceNums
         },
+        templateEnabled: true,
         showSettingsForm: false
       });
       
@@ -368,7 +416,7 @@ Page({
    * 确认添加时间段
    */
   async onConfirmAdd() {
-    const { newStartTime, newEndTime, timeSlotTemplate } = this.data;
+    const { newStartTime, newEndTime, time_type } = this.data;
     
     if (!newStartTime || !newEndTime) {
       wx.showToast({
@@ -386,21 +434,19 @@ Page({
       return;
     }
 
-    // 检查时间重叠
-    const hasOverlap = this.checkTimeOverlap(newStartTime, newEndTime, timeSlotTemplate);
-    
-    if (hasOverlap) {
-      wx.showToast({
-        title: '时间段重叠，请重新选择',
-        icon: 'none'
-      });
-      return;
-    }
+    if(time_type === 0) {
+      const { timeSlotTemplate } = this.data;
 
-    try {
-      wx.showLoading({
-        title: '添加中...'
-      });
+      // 检查时间重叠
+      const hasOverlap = this.checkTimeOverlap(newStartTime, newEndTime, timeSlotTemplate);
+      
+      if (hasOverlap) {
+        wx.showToast({
+          title: '时间段重叠，请重新选择',
+          icon: 'none'
+        });
+        return;
+      }
 
       // 生成新的时间段
       const newTimeSlot = {
@@ -415,32 +461,17 @@ Page({
       // 按时间排序
       updatedTemplate.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-      // 调用API保存到后端
-      await this.saveTimeTemplate(updatedTemplate);
-
       this.setData({
         timeSlotTemplate: updatedTemplate,
         showAddForm: false,
         newStartTime: '',
         newEndTime: ''
       });
-
-      wx.hideLoading();
-      
-      wx.showToast({
-        title: '添加成功',
-        icon: 'success'
-      });
-      
-    } catch (error) {
-      wx.hideLoading();
-      console.error('添加时间段失败:', error);
-      
-      wx.showToast({
-        title: '添加失败，请重试',
-        icon: 'none'
-      });
+    } else if(time_type === 1) {
+      const { weekSlotTemplate } = this.data;
+      console.log(weekSlotTemplate)
     }
+    
   },
 
   /**
@@ -486,7 +517,7 @@ Page({
             updatedTemplate.splice(slotIndex, 1)[0];
             
             // 调用API保存到后端
-            await this.saveTimeTemplate(updatedTemplate);
+            // await this.saveTimeTemplate(updatedTemplate);
             
             this.setData({
               timeSlotTemplate: updatedTemplate
@@ -514,34 +545,6 @@ Page({
   },
 
   /**
-   * 保存时间模板到后端
-   * @param {Array} timeSlots 时间段数组
-   */
-  async saveTimeTemplate(timeSlots) {
-    const { bookingSettings, templateId } = this.data;
-    
-    // 准备时间段数据（移除ID字段，只保留时间）
-    const timeSlotData = timeSlots.map(slot => ({
-      startTime: slot.startTime,
-      endTime: slot.endTime
-    }));
-
-    const templateData = {
-      min_advance_days: bookingSettings.minAdvanceDays,
-      max_advance_days: bookingSettings.maxAdvanceDays,
-      max_advance_nums: bookingSettings.maxAdvanceNums,
-      time_slots: timeSlotData,
-      is_active: 1
-    };
-
-    // 调用API保存
-    if (templateId) {
-      // 更新现有模板
-      await api.timeTemplate.update(templateId, templateData);
-    }
-  },
-
-  /**
    * 日期模板
    */
   switchDateChange(e) {
@@ -550,11 +553,74 @@ Page({
     _dateSlotTemplate[index].checked = value;
     this.setData({
       dateSlotTemplate: _dateSlotTemplate
-    }, () => {
-      const { templateId, dateSlotTemplate } = this.data;
-      api.timeTemplate.update(templateId, {
-        date_slots: dateSlotTemplate
-      });
     })
-  }
+  },
+
+  // 时间类型
+  timeTypeRadioChange(e) {
+    this.setData({
+      time_type: e.detail.value - 0
+    })
+  },
+  handleEditTimeType() {
+    this.setData({
+      isEditTimeType: true
+    })
+  },
+  handleCancelTimeType() {
+    const { template } = this.data;
+    this.setData({
+      time_type: template.time_type,
+      isEditTimeType: false
+    })
+  },
+  async handleSaveTimeType() {
+    const { templateId, time_type, timeSlotTemplate, dateSlotTemplate } = this.data;
+    
+    try {
+      wx.showLoading({
+        title: '保存中...'
+      });
+      this.setData({
+        isSaving: true
+      })
+      // 准备时间段数据（移除ID字段，只保留时间）
+      const timeSlotData = timeSlotTemplate.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      }));
+
+      const templateData = {
+        time_type,
+        time_slots: timeSlotData,
+        date_slots: dateSlotTemplate
+      };
+      if (templateId) {
+        // 更新现有模板
+        await api.timeTemplate.update(templateId, templateData);
+      }
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success'
+      });
+      this.setData({
+        'template.time_type': time_type,
+        isSaving: false
+      })
+    } catch (e) {
+      console.log(e)
+    }
+    this.setData({
+      isEditTimeType: false
+    })
+  },
+  switchWeekSlotChange(e) {
+    const { target: { dataset: { index } }, detail: { value } } = e;
+    const _weekSlotTemplate = [...this.data.weekSlotTemplate];
+    _weekSlotTemplate[index].checked = value;
+    this.setData({
+      weekSlotTemplate: _weekSlotTemplate
+    })
+  },
+  
 }) 

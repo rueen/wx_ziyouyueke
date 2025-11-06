@@ -12,7 +12,7 @@ page {
   padding: 0;
   box-sizing: border-box;
 }
-switch {
+switch, radio {
   transform: scale(0.8);
 }
 .iconfont.icon-arrow-r{
