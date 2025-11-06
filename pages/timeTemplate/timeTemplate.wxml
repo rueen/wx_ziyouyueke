@@ -35,8 +35,13 @@
 
     <view class="settings-section">
       <view class="section-header">
-        <text class="section-title">时间段类型</text>
+        <text class="section-title">
+          <text>时间段类型</text>
+        </text>
         <text class="edit-btn" bind:tap="handleEditTimeType" wx:if="{{!isEditTimeType}}">编辑</text>
+      </view>
+      <view class="tips">
+        <text class="tips-text">切换时间段类型可能导致部分课程在课表中不显示</text>
       </view>
       <view class="time-type">
         <radio-group

@@ -83,6 +83,9 @@ page {
   color: #666;
 }
 
+.time-type{
+  margin-top: 16rpx;
+}
 .time-type-radio-group{
   display: flex;
   flex-direction: column;
