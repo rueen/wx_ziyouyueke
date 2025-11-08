@@ -58,6 +58,8 @@ Component({
     maxAdvanceDays: 30, // 最大可预约天数，默认30天
     userRole: '',
     currentUserId: null,
+    timeType: 0, // 时间模板类型：0-全日程统一模板，1-按周历循环模板
+    weekSlots: [], // 按周历循环模板数据
   },
 
   /**
@@ -141,12 +143,18 @@ Component({
 
         if (result.data && result.data.length > 0) {
           const template = result.data[0]; // 使用第一个激活的模板
-          this.setData({
-            timeTemplate: template
-          });
+          
+          // 获取时间模板类型
+          const timeType = template.time_type !== undefined ? template.time_type : 0;
+          
+          // 获取按周历循环模板数据
+          const weekSlots = template.week_slots || [];
           
           this.setData({
-            maxAdvanceDays: template.max_advance_days || 30
+            timeTemplate: template,
+            maxAdvanceDays: template.max_advance_days || 30,
+            timeType: timeType,
+            weekSlots: weekSlots
           });
         }
       } catch (error) {
@@ -154,7 +162,9 @@ Component({
         // 使用默认配置
         const defaultMaxDays = this.properties && this.properties.maxAdvanceDays ? this.properties.maxAdvanceDays : 30;
         this.setData({
-          maxAdvanceDays: defaultMaxDays
+          maxAdvanceDays: defaultMaxDays,
+          timeType: 0,
+          weekSlots: []
         });
       }
     },
@@ -189,9 +199,10 @@ Component({
     generateDateList() {
       const dateList = [];
       const today = new Date();
+      const { timeType, timeTemplate, weekSlots } = this.data;
+      
       // 获取最大可预约天数，优先使用data中的值，然后是properties中的值，最后是默认值
       let maxDays = 30;
-      const { date_slots } = this.data.timeTemplate
       if (this.data && this.data.maxAdvanceDays) {
         maxDays = this.data.maxAdvanceDays;
       } else if (this.properties && this.properties.maxAdvanceDays) {
@@ -205,33 +216,83 @@ Component({
         const dateStr = this.formatDate(date);
         const weekDay = this.getWeekDay(date);
         const monthDay = this.getMonthDay(date);
+        const dayOfWeek = date.getDay(); // 0-6，对应周日到周六
+        
+        // 根据时间模板类型判断日期是否可用
         let isChecked = true;
-        const weekDayJson = date_slots.find(item => item.text === weekDay) || {};
-
-        if(weekDayJson.checked != null){
-          isChecked = weekDayJson.checked
-        } else {
-          isChecked = true;
+        
+        if (timeType === 0) {
+          // 全日程统一模板：使用 date_slots
+          const date_slots = (timeTemplate && timeTemplate.date_slots) ? timeTemplate.date_slots : [];
+          const weekDayJson = date_slots.find(item => item.text === weekDay) || {};
+          if (weekDayJson.checked != null) {
+            isChecked = weekDayJson.checked;
+          } else {
+            isChecked = true;
+          }
+        } else if (timeType === 1) {
+          // 按周历循环模板：使用 weekSlots
+          const weekSlot = weekSlots.find(item => item.id === dayOfWeek);
+          if (weekSlot) {
+            isChecked = weekSlot.checked !== undefined ? weekSlot.checked : true;
+          } else {
+            isChecked = true;
+          }
         }
-        if(isChecked) {
+        
+        if (isChecked) {
           dateList.push({
             date: dateStr,
             weekDay: weekDay,
             monthDay: monthDay,
+            dayOfWeek: dayOfWeek, // 添加星期几的数字表示
             isToday: i === 0,
             status: 'available' // 默认状态为可约
           });
         }
       }
+      
       this.setData({
         dateList: dateList
       });
-      if(!this.data.currentDate && dateList && dateList[0] && dateList[0].date){
+      
+      if (!this.data.currentDate && dateList && dateList[0] && dateList[0].date) {
         this.setData({
           currentDate: dateList[0].date
         });
       }
     },
+
+  /**
+   * 根据日期和时间模板类型获取该日期的时间段模板
+   * @param {string} date - 日期字符串 YYYY-MM-DD
+   * @returns {Array} 时间段模板数组
+   */
+  getTemplateSlotsForDate(date) {
+    const { timeType, timeTemplate, weekSlots } = this.data;
+    
+    if (timeType === 0) {
+      // 全日程统一模板：使用 time_slots
+      if (!timeTemplate || !timeTemplate.time_slots) {
+        console.warn('全日程统一模板未配置');
+        return [];
+      }
+      return timeTemplate.time_slots;
+    } else if (timeType === 1) {
+      // 按周历循环模板：根据星期几获取对应的 time_slots
+      const dateObj = new Date(date);
+      const dayOfWeek = dateObj.getDay(); // 0-6，对应周日到周六
+      
+      const weekSlot = weekSlots.find(item => item.id === dayOfWeek);
+      if (!weekSlot || !weekSlot.time_slots) {
+        console.warn(`周${dayOfWeek}的时间模板未配置`);
+        return [];
+      }
+      return weekSlot.time_slots;
+    }
+    
+    return [];
+  },
 
   /**
    * 加载指定日期的时间段
@@ -244,28 +305,20 @@ Component({
         isLoading: true
       });
 
-      // 获取时间模板的时间段
+      // 根据日期和时间模板类型获取该日期的时间段模板
+      const templateSlots = this.getTemplateSlotsForDate(date);
+      
+      if (!templateSlots || templateSlots.length === 0) {
+        console.warn('该日期的时间模板未配置，显示空状态');
+        this.setData({
+          isLoading: false,
+          timeSlots: []
+        });
+        return;
+      }
+      
+      // 获取时间模板配置
       const timeTemplate = this.data.timeTemplate;
-      if (!timeTemplate || !timeTemplate.time_slots) {
-        console.warn('时间模板未配置，显示空状态');
-        this.setData({
-          isLoading: false,
-          timeSlots: []
-        });
-        return;
-      }
-
-      let templateSlots;
-      try {
-        templateSlots = timeTemplate.time_slots;
-      } catch (parseError) {
-        console.error('解析时间模板失败:', parseError);
-        this.setData({
-          isLoading: false,
-          timeSlots: []
-        });
-        return;
-      }
       
       // 获取该日期的预约情况
       const queryParams = {
