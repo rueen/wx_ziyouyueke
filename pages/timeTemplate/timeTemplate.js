@@ -553,9 +553,6 @@ Page({
       success: async (res) => {
         if (res.confirm) {
           try {
-            wx.showLoading({
-              title: '删除中...'
-            });
 
             if (time_type === 0) {
               // 全日程统一模板
@@ -591,13 +588,6 @@ Page({
                 weekSlotTemplate: updatedWeekSlotTemplate
               });
             }
-
-            wx.hideLoading();
-            
-            wx.showToast({
-              title: '删除成功',
-              icon: 'success'
-            });
             
           } catch (error) {
             wx.hideLoading();
@@ -682,7 +672,6 @@ Page({
         }));
         templateData.week_slots = weekSlotData;
       }
-      console.log(JSON.stringify(templateData.week_slots))
 
       if (templateId) {
         // 更新现有模板
