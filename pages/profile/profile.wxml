@@ -24,15 +24,15 @@
 
   <!-- 公共菜单 -->
   <view class="public-menu-section" bind:tap="openSubscribeMessage">
-    <view class="public-menu-item">
+    <view class="public-menu-item subscribe">
       <text class="iconfont icon-xiaoxidingyue"></text>
       <text class="public-menu-item-text">消息订阅</text>
     </view>
-    <view class="public-menu-item" bind:tap="handleOpenAllCoachList">
+    <view class="public-menu-item coach" bind:tap="handleOpenAllCoachList">
       <text class="iconfont icon-users"></text>
       <text class="public-menu-item-text">教练大厅</text>
     </view>
-    <view class="public-menu-item" bind:tap="handleOpenAllGroupCourses">
+    <view class="public-menu-item activity" bind:tap="handleOpenAllGroupCourses">
       <text class="iconfont icon-huodong"></text>
       <text class="public-menu-item-text">活动大厅</text>
     </view>

@@ -84,6 +84,22 @@ page {
   justify-content: center;
   align-items: center;
   padding: 10rpx 0;
+  position: relative;
+}
+.public-menu-item::after{
+  content: '';
+  display: block;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  margin-left: -5rpx;
+  z-index: 0;
+}
+.public-menu-item.subscribe::after{
+  background-color: #ffd60a;
 }
 .public-menu-item .iconfont{
   font-size: 50rpx;
@@ -91,6 +107,8 @@ page {
   height: 60rpx;
   text-align: center;
   line-height: 60rpx;
+  position: relative;
+  z-index: 1;
 }
 .public-menu-item-text{
   font-size: 24rpx;

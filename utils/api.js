@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000',
-  // baseUrl: 'https://api.rueen.cn',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -289,6 +289,43 @@ function toggleTimeTemplate(id) {
   return request({
     url: `/api/h5/time-templates/${id}/toggle`,
     method: 'PUT'
+  });
+}
+
+/**
+ * 获取订阅消息模板列表
+ * @returns {Promise}
+ */
+function getSubscribeTemplates() {
+  return request({
+    url: '/api/h5/wechat/subscribe-templates',
+    method: 'GET'
+  });
+}
+
+/**
+ * 获取订阅消息配额信息
+ * @returns {Promise}
+ */
+function getSubscribeQuotas() {
+  return request({
+    url: '/api/h5/wechat/subscribe-quotas',
+    method: 'GET'
+  });
+}
+
+/**
+ * 上报订阅消息授权结果
+ * @param {Array<Object>} results 授权结果列表
+ * @returns {Promise}
+ */
+function reportSubscribeResults(results = []) {
+  return request({
+    url: '/api/h5/wechat/subscribe-quotas',
+    method: 'POST',
+    data: {
+      results
+    }
   });
 }
 
@@ -683,6 +720,13 @@ module.exports = {
     getList: getTimeTemplates,
     update: updateTimeTemplate,
     toggle: toggleTimeTemplate
+  },
+
+  // 订阅消息模块
+  subscribeMessage: {
+    getTemplates: getSubscribeTemplates,
+    getQuotas: getSubscribeQuotas,
+    reportResults: reportSubscribeResults
   },
   
   // 师生关系模块
