@@ -572,18 +572,24 @@ Page({
       wx.hideLoading();
       
       if (result && result.success) {
-        wx.showToast({
+        wx.showModal({
           title: '约课成功',
-          icon: 'success',
-          duration: 1500,
-          success: () => {
-            setTimeout(() => {
+          content: '为避免遗漏重要通知，需要手动增加消息提醒次数',
+          complete: (res) => {
+            if (res.cancel) {
               wx.navigateBack({
                 delta: 1
               });
-            }, 1500);
+            }
+        
+            if (res.confirm) {
+              wx.redirectTo({
+                url: '/pages/subscribeMessage/subscribeMessage'
+              });
+            }
           }
-        });
+        })
+        
       } else {
         throw new Error(result.message || '约课失败');
       }
