@@ -1,0 +1,5 @@
+<!--pages/subscribeMessage/subscribeMessage.wxml-->
+<navBar title="订阅消息" />
+<layout>
+
+</layout>

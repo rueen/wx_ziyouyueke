@@ -11,8 +11,7 @@ page {
 
 /* 用户信息区域 */
 .user-section {
-  background-color: #fff;
-  padding: 40rpx;
+  padding: 30rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,8 +24,8 @@ page {
 }
 
 .user-avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 120rpx;
+  height: 120rpx;
   border-radius: 50%;
   overflow: hidden;
   margin-right: 24rpx;
@@ -68,13 +67,43 @@ page {
   font-size: 24rpx;
 }
 
+/* 公共菜单 */
+.public-menu-section{
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin: 0 16rpx 16rpx 16rpx;
+  display: flex;
+  align-items: center;
+  padding: 30rpx 0;
+}
+.public-menu-item{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10rpx 0;
+}
+.public-menu-item .iconfont{
+  font-size: 50rpx;
+  width: 60rpx;
+  height: 60rpx;
+  text-align: center;
+  line-height: 60rpx;
+}
+.public-menu-item-text{
+  font-size: 24rpx;
+  color: #000;
+  margin-top: 5rpx;
+}
+
 /* 功能菜单 */
 .menu-section {
   background-color: #fff;
   border-radius: 16rpx;
   overflow: hidden;
   margin: 0 16rpx;
-  margin-top: 16rpx;
 }
 
 .menu-item {

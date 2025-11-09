@@ -16,6 +16,6 @@ switch, radio {
   transform: scale(0.8);
 }
 .iconfont.icon-arrow-r{
-  font-size: 24rpx;
-  color: #ccc;
+  font-size: 26rpx;
+  color: #666;
 }

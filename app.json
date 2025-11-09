@@ -25,7 +25,8 @@
     "pages/groupCourseStudent/groupCourseStudent",
     "pages/poster/poster",
     "pages/allCoachList/allCoachList",
-    "pages/allGroupCourses/allGroupCourses"
+    "pages/allGroupCourses/allGroupCourses",
+    "pages/subscribeMessage/subscribeMessage"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

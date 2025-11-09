@@ -1,5 +1,5 @@
 <!--pages/profile/profile.wxml-->
-<navBar />
+<ghostNav />
 <layout>
   <!-- 用户信息区域 -->
   <view class="user-section" bindtap="onEditProfile">
@@ -14,17 +14,34 @@
             <text class="role-text">{{roleNames[userRole]}}</text>
           </view>
         </view>
-        <text class="user-desc">{{userInfo.intro || '点击编辑个人资料'}}</text>
+        <text>
+          <text class="user-desc">完善个人资料</text>
+          <text class="iconfont icon-arrow-r arrow-icon"></text>
+        </text>
       </view>
     </view>
-    <text class="iconfont icon-arrow-r arrow-icon"></text>
+  </view>
+
+  <!-- 公共菜单 -->
+  <view class="public-menu-section" bind:tap="openSubscribeMessage">
+    <view class="public-menu-item">
+      <text class="iconfont icon-xiaoxidingyue"></text>
+      <text class="public-menu-item-text">消息订阅</text>
+    </view>
+    <view class="public-menu-item" bind:tap="handleOpenAllCoachList">
+      <text class="iconfont icon-users"></text>
+      <text class="public-menu-item-text">教练大厅</text>
+    </view>
+    <view class="public-menu-item" bind:tap="handleOpenAllGroupCourses">
+      <text class="iconfont icon-huodong"></text>
+      <text class="public-menu-item-text">活动大厅</text>
+    </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-item" bindtap="onMyCourses">
       <view class="menu-content">
-        <!-- <text class="iconfont icon-yuyuekecheng menu-icon"></text> -->
         <text class="menu-text">上课记录</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -33,7 +50,7 @@
     <view class="menu-item" bindtap="onGroupCourses">
       <view class="menu-content">
         <text class="menu-text">{{userRole === 'coach' ? '我的活动' : '我报名的活动'}}</text>
-        <view class="new-tag">NEW</view>
+        <!-- <view class="new-tag">NEW</view> -->
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
@@ -47,7 +64,6 @@
     
     <view class="menu-item" bindtap="onMyCoachesOrStudents">
       <view class="menu-content">
-        <!-- <text class="iconfont {{userRole === 'student' ? 'icon-jiaolian' : 'icon-users'}} menu-icon"></text> -->
         <text class="menu-text">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -56,7 +72,6 @@
     <!-- 教练专用：时间模板 -->
     <view class="menu-item" bindtap="onMyTimeTemplate" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <!-- <text class="iconfont icon-shijianmoban menu-icon"></text> -->
         <text class="menu-text">时间模板</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
@@ -65,7 +80,6 @@
     <!-- 教练专用：常用地址 -->
     <view class="menu-item" bindtap="onMyAddresses" wx:if="{{userRole === 'coach'}}">
       <view class="menu-content">
-        <!-- <text class="iconfont icon-location menu-icon"></text> -->
         <text class="menu-text">常用地址</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
