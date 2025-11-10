@@ -13,17 +13,16 @@ page {
 .student-list {
   display: flex;
   flex-direction: column;
-  padding: 24rpx 24rpx 160rpx;
+  padding: 16rpx 16rpx 160rpx;
+  gap: 16rpx;
 }
 
 .student-item {
   display: flex;
   align-items: center;
   background-color: #fff;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-  transition: transform 0.2s ease;
-  border-radius: 20rpx;
+  padding: 24rpx;
+  border-radius: 16rpx;
 }
 
 .student-item:active {
