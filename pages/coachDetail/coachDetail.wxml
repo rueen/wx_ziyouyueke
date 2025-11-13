@@ -40,6 +40,14 @@
       </view>
     </view>
 
+    <!-- 教练权限 -->
+    <view class="intro-section">
+      <view class="permission-item">
+        <text class="label">该教练发起的课程预约自动确认</text>
+        <switch checked="{{auto_confirm_by_coach}}" bindchange="autoConfirmByCoachChange"/>
+      </view>
+    </view>
+
     <!-- 活动 -->
     <view class="groupCourse-section" bind:tap="onGroupCourses">
       <text>活动</text>

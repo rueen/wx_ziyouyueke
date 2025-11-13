@@ -757,7 +757,15 @@ module.exports = {
         method: 'PUT',
         data: params
       });
-    }
+    },
+    // 编辑师生关系权限
+    permissions: function(id, params = {}) {
+      return request({
+        url: `/api/h5/relations/${id}/permissions`,
+        method: 'PATCH',
+        data: params
+      });
+    },
   },
 
   // 课程管理模块

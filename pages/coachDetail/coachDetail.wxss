@@ -215,3 +215,14 @@ page {
 .time-section time-selector .time-slot.free {
   background-color: #f0f0f0;
 } 
+
+/* 教练权限 */
+.permission-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.permission-item .label{
+  color: #333;
+  font-size: 30rpx;
+}

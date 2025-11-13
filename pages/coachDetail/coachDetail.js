@@ -13,7 +13,8 @@ Page({
   data: {
     coachData: {},
     relationId: null,
-    coachId: null
+    coachId: null,
+    auto_confirm_by_coach: 0 // 该教练发起的课程预约自动确认
   },
 
   /**
@@ -32,24 +33,6 @@ Page({
   },
 
   /**
-   * 设置时间选择器的教练ID
-   */
-  // setTimeSelectorCoachId() {
-  //   const { coachId } = this.data;
-  //   // 等待页面渲染完成后设置
-  //   setTimeout(() => {
-  //     const timeSelector = this.selectComponent('#timeSelector');
-  //     if (timeSelector) {
-  //       timeSelector.setData({
-  //         coachId: coachId
-  //       });
-  //       // 重新初始化组件
-  //       timeSelector.initializeComponent();
-  //     }
-  //   }, 100);
-  // },
-
-  /**
    * 从API加载教练详情
    */
   async loadCoachDetail() {
@@ -66,7 +49,8 @@ Page({
       if (result && result.data) {
         const coach = result.data;
         this.setData({
-          coachData: coach
+          coachData: coach,
+          auto_confirm_by_coach: coach.auto_confirm_by_coach
         });
       }
     } catch (error) {
@@ -100,33 +84,6 @@ Page({
   },
 
   /**
-   * 处理日期选择事件
-   */
-  // onDateSelected(e) {
-  //   const { date } = e.detail;
-  //   // 可以在这里添加日期选择的处理逻辑
-  // },
-
-  /**
-   * 处理时间段加载完成事件
-   */
-  // onTimeSlotsLoaded(e) {
-  //   const { date, timeSlots } = e.detail;
-  //   // 可以在这里添加时间段加载完成的处理逻辑
-  // },
-
-  /**
-   * 处理错误事件
-   */
-  // onError(e) {
-  //   const { message } = e.detail;
-  //   wx.showToast({
-  //     title: message || '操作失败',
-  //     icon: 'none'
-  //   });
-  // },
-
-  /**
    * 约课
    */
   onBookCoach() {
@@ -157,5 +114,60 @@ Page({
     wx.navigateTo({
       url: `/pages/bookCourse/bookCourse?type=student-book-coach&from=coachDetail&coachId=${coachData.id}&coachName=${encodeURIComponent(coachData.name)}`
     });
+  },
+
+  async uploadPermissions(auto_confirm_by_coach) {
+    const { relationId } = this.data;
+    try{
+      wx.showLoading();
+      const res = await api.relation.permissions(relationId, {
+        auto_confirm_by_coach: auto_confirm_by_coach - 0
+      });
+      wx.hideLoading();
+      if (res && res.success) {
+        this.setData({
+          auto_confirm_by_coach: auto_confirm_by_coach
+        })
+      } else {
+        this.setData({
+          auto_confirm_by_coach: !auto_confirm_by_coach
+        })
+      }
+    } catch (e) {
+      console.log(e)
+      this.setData({
+        auto_confirm_by_coach: !auto_confirm_by_coach
+      })
+    }
+  },
+
+  autoConfirmByCoachChange(e) {
+    if(e.detail.value) {
+      wx.showModal({
+        content: '开启后，该教练发起的所有课程预约，不需要你二次确认，确定开启吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.uploadPermissions(e.detail.value);
+          } else if (res.cancel) {
+            this.setData({
+              auto_confirm_by_coach: false
+            })
+          }
+        }
+      })
+    } else {
+      wx.showModal({
+        content: '关闭后，该教练发起的所有课程预约，需要你的二次确认，确定关闭吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.uploadPermissions(e.detail.value);
+          } else if (res.cancel) {
+            this.setData({
+              auto_confirm_by_coach: true
+            })
+          }
+        }
+      }) 
+    }
   }
 }) 
