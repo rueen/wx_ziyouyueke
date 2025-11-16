@@ -110,6 +110,20 @@
       </view>
     </view>
 
+    <!-- 教练权限 -->
+    <view class="info-section">
+      <view class="permission-container">
+        <view class="permission-text">
+          <text>我发起的课程预约自动确认</text>
+          <text class="iconfont icon-tishi" bind:tap="openPermissionTips"></text>
+        </view>
+        <text class="right-text">
+          <text class="permission-text-opened" wx:if="{{studentData.auto_confirm_by_coach}}">已开启</text>
+          <text wx:else>未开启</text>
+        </text>
+      </view>
+    </view>
+
     <!-- 上课记录 -->
     <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
       <text>查看上课记录</text>

@@ -237,6 +237,32 @@ page {
   color: #999;
 }
 
+/* 教练权限 */
+.permission-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.permission-text{
+  font-size: 28rpx;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.permission-text .icon-tishi{
+  color: #856404;
+  font-weight: 600;
+}
+.permission-container .right-text{
+  font-size: 24rpx;
+  color: #999;
+}
+.permission-text-opened{
+  color: #07c160;
+}
+
 /* 课程记录 */
 .course-list{
   display: flex;
@@ -245,7 +271,7 @@ page {
   background: #fff;
   height: 100rpx;
   padding: 0 32rpx;
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #333;
   margin: 0 16rpx;
   border-radius: 16rpx;

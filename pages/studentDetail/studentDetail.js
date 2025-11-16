@@ -421,6 +421,15 @@ Page({
     wx.navigateTo({
       url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`
     });
+  },
+
+  openPermissionTips(){
+    wx.showModal({
+      title: '提示',
+      content: '需要联系学员开启/关闭。开启后，你主动预约该学员的课程不需要该学员二次确认。',
+      showCancel: false,
+      confirmText: '我知道了'
+    })
   }
 
 })
