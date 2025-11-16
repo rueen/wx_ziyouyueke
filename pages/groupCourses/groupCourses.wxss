@@ -4,10 +4,9 @@
 
 page {
   height: 100vh;
-  background: url(https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/groupCourses-bg9.png) no-repeat;
+  background: url(https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/groupCourses-bg.jpg) no-repeat;
   background-size: 100% auto;
   background-position: left top;
-  backdrop-filter: blur(20px);
 }
 
 .user-section {
