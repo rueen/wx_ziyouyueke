@@ -295,7 +295,6 @@ Page({
     // 生成二维码
     this.generateQRCode(JSON.stringify({
       courseId,
-      relationId,
       registrationId
     }));
     this.startPollingCourseStatus(registrationId);

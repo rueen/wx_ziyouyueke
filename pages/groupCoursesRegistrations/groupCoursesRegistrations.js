@@ -69,7 +69,7 @@ Page({
       success: (res) => {
         try{
           const result = JSON.parse(res.result) || {};
-          const item = this.data.list.find(reg => courseId.toString() === result.courseId.toString() && reg.relation_id.toString() === result.relationId.toString() && reg.id.toString() === result.registrationId.toString());
+          const item = this.data.list.find(reg => courseId.toString() === result.courseId.toString() && reg.id.toString() === result.registrationId.toString());
   
           if(item != null) {
             let tips = '';
