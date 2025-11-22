@@ -1,5 +1,5 @@
 <!--pages/categoriesList/categoriesList.wxml-->
-<navBar title="我的课程" />
+<navBar title="课程设置" />
 <layout>
   <view class="list" wx:if="{{list.length > 0}}">
     <view class="categorie-item" wx:for="{{list}}" wx:key="id" bindtap="openDetail" data-item="{{item}}">

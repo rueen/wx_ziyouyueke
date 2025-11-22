@@ -86,7 +86,7 @@
         </view>
       </view>
       <view class="tips section-info">
-        <text class="tips-text">可在“我的”->“我的课程”添加更多课程</text>
+        <text class="tips-text">可在“我的”->“课程设置”添加更多课程</text>
       </view>
     
     </view>

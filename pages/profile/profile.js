@@ -296,7 +296,7 @@ Page({
     }
   },
 
-  // 我的课程
+  // 课程设置
   onCoursesCategories(){
     // 检查是否需要登录
     if (!this.checkLoginRequired()) {

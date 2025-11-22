@@ -39,7 +39,7 @@
   </view>
 
   <!-- 功能菜单 -->
-  <view class="menu-section">
+  <view class="menu-section" wx:if="{{userRole === 'coach'}}">
     <view class="menu-item" bindtap="onMyCourses">
       <view class="menu-content">
         <text class="menu-text">上课记录</text>
@@ -49,28 +49,35 @@
 
     <view class="menu-item" bindtap="onGroupCourses">
       <view class="menu-content">
-        <text class="menu-text">{{userRole === 'coach' ? '我的活动' : '我报名的活动'}}</text>
+        <text class="menu-text">我的活动</text>
         <!-- <view class="new-tag">NEW</view> -->
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
 
-    <view class="menu-item" bindtap="onCoursesCategories" wx:if="{{userRole === 'coach'}}">
+    <view class="menu-item" bindtap="onCoursesCategories">
       <view class="menu-content">
-        <text class="menu-text">我的课程</text>
+        <text class="menu-text">课程设置</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="onCoursesCategories">
+      <view class="menu-content">
+        <text class="menu-text">卡片设置</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
     
     <view class="menu-item" bindtap="onMyCoachesOrStudents">
       <view class="menu-content">
-        <text class="menu-text">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
+        <text class="menu-text">我的学员</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
 
     <!-- 教练专用：时间模板 -->
-    <view class="menu-item" bindtap="onMyTimeTemplate" wx:if="{{userRole === 'coach'}}">
+    <view class="menu-item" bindtap="onMyTimeTemplate">
       <view class="menu-content">
         <text class="menu-text">时间模板</text>
       </view>
@@ -78,9 +85,33 @@
     </view>
 
     <!-- 教练专用：常用地址 -->
-    <view class="menu-item" bindtap="onMyAddresses" wx:if="{{userRole === 'coach'}}">
+    <view class="menu-item" bindtap="onMyAddresses">
       <view class="menu-content">
         <text class="menu-text">常用地址</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+  </view>
+  <!-- 学员端显示 -->
+  <view class="menu-section" wx:if="{{userRole === 'student'}}">
+    <view class="menu-item" bindtap="onMyCourses">
+      <view class="menu-content">
+        <text class="menu-text">上课记录</text>
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="onGroupCourses">
+      <view class="menu-content">
+        <text class="menu-text">我报名的活动</text>
+        <!-- <view class="new-tag">NEW</view> -->
+      </view>
+      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    </view>
+    
+    <view class="menu-item" bindtap="onMyCoachesOrStudents">
+      <view class="menu-content">
+        <text class="menu-text">我的教练</text>
       </view>
       <text class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
