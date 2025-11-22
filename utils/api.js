@@ -1066,9 +1066,9 @@ module.exports = {
         method: 'GET'
       });
     },
-    getAvailableCards: function(coachId) {
+    getAvailableCards: function(studentId, coachId) {
       return request({
-        url: `/api/h5/card-instances/available/${coachId}`,
+        url: `/api/h5/card-instances/available?student_id=${studentId}&coach_id=${coachId}`,
         method: 'GET'
       });
     },

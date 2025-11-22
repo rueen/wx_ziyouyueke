@@ -39,8 +39,12 @@
             <text class="iconfont icon-leimu"></text>
           </view>
           <view class="info-content">
-            <text class="info-label">课程类型</text>
-            <text class="info-value categoryName">{{courseInfo.categoryName}}</text>
+            <text class="info-label">
+              <text wx:if="{{courseInfo.booking_type === 2}}">卡片类型</text>
+              <text wx:else>课程类型</text>
+            </text>
+            <text class="info-value categoryName" wx:if="{{courseInfo.booking_type === 2}}">{{courseInfo.card_name}}</text>
+            <text class="info-value categoryName" wx:else>{{courseInfo.categoryName}}</text>
           </view>
         </view>
 

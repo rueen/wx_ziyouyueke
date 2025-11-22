@@ -44,7 +44,8 @@
         <view class="course-details">
           <view class="detail-item">
             <text class="detail-label">类型：</text>
-            <text class="detail-value categoryName">{{item.categoryName}}</text>
+            <text class="detail-value categoryName" wx:if="{{item.booking_type === 2}}">{{item.card_name}}</text>
+            <text class="detail-value categoryName" wx:else>{{item.categoryName}}</text>
           </view>
           <view class="detail-item">
             <text class="detail-label">时间：</text>

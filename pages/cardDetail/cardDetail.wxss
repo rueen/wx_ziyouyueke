@@ -1,4 +1,6 @@
 /* pages/cardDetail/cardDetail.wxss */
+@import '/style/iconfont.wxss';
+
 .card-detail-container {
   min-height: 100vh;
   background: #f8f9fa;
@@ -24,7 +26,7 @@
 .card-preview {
   padding: 48rpx 32rpx;
   color: #ffffff;
-  margin: 32rpx;
+  margin: 16rpx;
   border-radius: 16rpx;
 }
 
@@ -74,14 +76,14 @@
 }
 
 .stat-value {
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: 600;
 }
 
 /* 用户信息 */
 .user-info {
   background: #ffffff;
-  margin: 0 32rpx;
+  margin: 0 16rpx;
   padding: 32rpx;
   border-radius: 16rpx;
   display: flex;
@@ -119,14 +121,14 @@
 
 /* 使用记录区域 */
 .usage-section {
-  margin: 0 32rpx;
+  margin: 0 16rpx;
 }
 
 .section-title {
-  font-size: 36rpx;
+  font-size: 30rpx;
   font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 24rpx;
+  color: #333;
+  margin-bottom: 16rpx;
 }
 
 /* 记录列表 */
@@ -148,72 +150,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16rpx;
 }
 
 .record-date {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  font-size: 32rpx;
-  font-weight: 600;
+  gap: 16rpx;
   color: #1d1d1f;
-}
-
-.record-date .iconfont {
-  font-size: 32rpx;
-  color: #007aff;
-}
-
-.record-status {
-  padding: 6rpx 12rpx;
-  border-radius: 24rpx;
-  font-size: 24rpx;
-}
-
-.record-status.pending {
-  background: #fff3cd;
-  color: #ff9500;
-}
-
-.record-status.confirmed {
-  background: #cfe2ff;
-  color: #007aff;
-}
-
-.record-status.completed {
-  background: #d1e7dd;
-  color: #34c759;
-}
-
-.record-status.cancelled {
-  background: #f8d7da;
-  color: #ff3b30;
-}
-
-.record-time {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  font-size: 28rpx;
-  color: #86868b;
-  margin-bottom: 12rpx;
-}
-
-.record-time .iconfont {
-  font-size: 28rpx;
-}
-
-.record-complete {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  font-size: 26rpx;
-  color: #34c759;
-}
-
-.record-complete .iconfont {
-  font-size: 26rpx;
 }
 
 .record-arrow {

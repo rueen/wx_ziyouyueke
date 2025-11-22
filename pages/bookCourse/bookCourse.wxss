@@ -353,4 +353,5 @@ page {
 
 .select-icon.selected {
   color: #007aff;
-} 
+}
+

@@ -38,10 +38,10 @@
       </view>
     </view>
 
-    <!-- 选择课程类型区域 -->
+    <!-- 选择课程类型/卡片区域 -->
     <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
-        <text class="section-title">选择课程类型</text>
+        <text class="section-title">课程类型/卡片</text>
       </view>
       
       <!-- 已选择的课程类型 -->
@@ -53,9 +53,19 @@
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>
       
-      <!-- 课程类型按钮 -->
+      <!-- 已选择的卡片 -->
+      <view class="selected-address" wx:elif="{{selectedCard}}" bindtap="onShowCategorieSelection">
+        <view class="categorie-info">
+          <text>{{selectedCard.card_name}}</text>
+          <text class="option-lessons" wx:if="{{!selectedCard.is_unlimited}}">剩余 {{selectedCard.remaining_lessons}}/{{selectedCard.total_lessons}} 节</text>
+          <text class="option-lessons" wx:else>不限次数</text>
+        </view>
+        <text class="iconfont icon-arrow-r change-icon"></text>
+      </view>
+      
+      <!-- 课程类型/卡片选择按钮 -->
       <view class="select-address-btn" wx:else bindtap="onShowCategorieSelection">
-        <text class="btn-text">选择课程类型</text>
+        <text class="btn-text">选择课程类型或卡片</text>
         <text class="iconfont icon-arrow-r"></text>
       </view>
     </view>
@@ -172,12 +182,13 @@
 
 <!-- 课程类型弹窗 -->
 <view class="modal-mask" wx:if="{{showCategorieSelection}}" bindtap="onHideCategorieSelection">
-  <view class="modal-container">
+  <view class="modal-container" catchtap="onPreventClose">
     <view class="modal-header">
-      <text class="modal-title">选择课程类型</text>
+      <text class="modal-title">选择课程类型或卡片</text>
       <text class="modal-close" bindtap="onHideCategorieSelection">×</text>
     </view>
     <view class="modal-content">
+      <!-- 课程类型列表 -->
       <view class="address-list">
         <view class="address-item" 
           wx:for="{{categoriesList}}" 
@@ -193,10 +204,32 @@
           </view>
           <text class="iconfont icon-selected select-icon {{selectedCategorie && selectedCategorie.category.id === item.category.id ? 'selected' : ''}}"></text>
         </view>
+
+        <!-- 卡片 -->
+        <view 
+          class="address-item {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"
+          wx:for="{{cardsList}}" 
+          wx:key="id"
+          bindtap="onSelectCard"
+          data-card="{{item}}"
+        >
+          <view class="address-info">
+            <text class="categorie-name">
+              <text>{{item.card_name}}</text>
+              <text class="remaining-lessons">
+                <text wx:if="{{!item.is_unlimited}}">{{item.remaining_lessons}}/{{item.total_lessons}}节</text>
+                <text wx:else>不限次数</text>
+              </text>
+            </text>
+            <text class="address-detail">有效期至 {{item.expire_date}}</text>
+          </view>
+          <text class="iconfont icon-selected select-icon {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"></text>
+        </view>
         
         <!-- 空状态 -->
         <emptyState 
-          wx:if="{{categoriesList.length === 0}}"
+          wx:if="{{categoriesList.length === 0 && cardsList.length === 0}}"
+          title="暂无可用课时"
           customClass="compact">
         </emptyState>
       </view>

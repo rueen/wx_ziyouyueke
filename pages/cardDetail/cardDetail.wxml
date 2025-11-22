@@ -31,7 +31,7 @@
             </view>
             <view class="stat-item">
               <view class="stat-label">有效期</view>
-              <view class="stat-value">{{cardDetail.expire_date}}</view>
+              <view class="stat-value">{{cardDetail.expire_date || '--'}}</view>
             </view>
           </view>
         </view>
@@ -76,22 +76,9 @@
           >
             <view class="record-header">
               <view class="record-date">
-                <text class="iconfont icon-calendar"></text>
                 <text>{{item.course_date}}</text>
+                <text>{{item.start_time}} - {{item.end_time}}</text>
               </view>
-              <view class="record-status {{getStatusClass(item.booking_status)}}">
-                {{getStatusText(item.booking_status)}}
-              </view>
-            </view>
-
-            <view class="record-time">
-              <text class="iconfont icon-time"></text>
-              <text>{{item.start_time}} - {{item.end_time}}</text>
-            </view>
-
-            <view wx:if="{{item.complete_at}}" class="record-complete">
-              <text class="iconfont icon-check"></text>
-              <text>核销时间：{{formatDate(item.complete_at)}}</text>
             </view>
 
             <view class="record-arrow">

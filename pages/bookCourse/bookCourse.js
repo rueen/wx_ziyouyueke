@@ -31,6 +31,11 @@ Page({
     selectedCategorie: null, // 已选中的课程类型
     showCategorieSelection: false, // 是否显示课程类型选择
     
+    // 卡片相关
+    cardsList: [], // 可用卡片列表
+    selectedCard: null, // 已选中的卡片
+    bookingType_: 1, // 1-普通课程（使用分类课时），2-卡片课程
+    
     // 时间选择相关
     selectedCoachId: '', // 用于时间选择器的教练ID
     selectedDate: '',
@@ -331,6 +336,9 @@ Page({
     }
     
     this.setData(updateData);
+
+    // 加载卡片列表
+    await this.loadAvailableCards(option.student_id, option.coach_id);
     
     // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
     if (bookingType === 'student-book-coach') {
@@ -372,6 +380,27 @@ Page({
   },
 
   /**
+   * 加载可用卡片列表
+   */
+  async loadAvailableCards(studentId, coachId) {
+    try {
+      const result = await api.card.getAvailableCards(studentId, coachId);
+      
+      if (result && result.data) {
+        this.setData({
+          cardsList: result.data.list || []
+        });
+      }
+    } catch (error) {
+      console.error('加载卡片列表失败:', error);
+      // 静默失败，不影响主流程
+      this.setData({
+        cardsList: []
+      });
+    }
+  },
+
+  /**
    * 显示选择对象弹窗
    */
   onShowOptionSelection() {
@@ -404,6 +433,22 @@ Page({
     const item = e.currentTarget.dataset.item;
     this.setData({
       selectedCategorie: item,
+      selectedCard: null, // 清除卡片选择
+      bookingType_: 1, // 使用普通课程
+      showCategorieSelection: false
+    });
+    this.checkCanSubmit();
+  },
+
+  /**
+   * 选择卡片
+   */
+  onSelectCard(e) {
+    const card = e.currentTarget.dataset.card;
+    this.setData({
+      selectedCard: card,
+      selectedCategorie: null, // 清除课程类型选择
+      bookingType_: 2, // 使用卡片课程
       showCategorieSelection: false
     });
     this.checkCanSubmit();
@@ -472,6 +517,13 @@ Page({
   },
 
   /**
+   * 阻止事件冒泡
+   */
+  onPreventClose() {
+    // 空函数，用于阻止事件冒泡
+  },
+
+  /**
    * 输入备注
    */
   onRemarkInput(e) {
@@ -484,8 +536,17 @@ Page({
    * 检查是否可以提交
    */
   checkCanSubmit() {
-    const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress, selectedCategorie } = this.data;
-    const canSubmit = !!(selectedOption && selectedCategorie && selectedCategorie.remaining_lessons > 0 && selectedDate && selectedTimeSlot && selectedAddress);
+    const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress, selectedCategorie, selectedCard, bookingType_ } = this.data;
+    
+    // 必须选择课程类型或卡片之一
+    let hasValidBookingType = false;
+    if (bookingType_ === 1 && selectedCategorie && selectedCategorie.remaining_lessons > 0) {
+      hasValidBookingType = true; // 使用普通课程且有剩余课时
+    } else if (bookingType_ === 2 && selectedCard) {
+      hasValidBookingType = true; // 使用卡片
+    }
+    
+    const canSubmit = !!(selectedOption && hasValidBookingType && selectedDate && selectedTimeSlot && selectedAddress);
     this.setData({
       canSubmit: canSubmit
     });
@@ -503,7 +564,9 @@ Page({
       selectedAddress, 
       remark,
       isSubmitting,
-      selectedCategorie
+      selectedCategorie,
+      selectedCard,
+      bookingType_
     } = this.data;
     
     if (isSubmitting) {
@@ -541,8 +604,17 @@ Page({
         end_time: selectedTimeSlot.endTime,
         address_id: selectedAddress.id,
         relation_id: selectedOption.id,
-        category_id: selectedCategorie.category.id
+        booking_type: bookingType_ // 1-普通课程，2-卡片课程
       };
+      
+      // 添加课程类型或卡片ID
+      if (bookingType_ === 1) {
+        // 普通课程
+        bookingData.category_id = selectedCategorie.category.id;
+      } else if (bookingType_ === 2) {
+        // 卡片课程
+        bookingData.card_instance_id = selectedCard.id;
+      }
       
       // 添加备注
       if (remark && remark.trim()) {

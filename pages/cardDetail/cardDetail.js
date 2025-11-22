@@ -4,7 +4,6 @@
  */
 
 const api = require('../../utils/api.js');
-const { formatDate } = require('../../utils/util.js');
 
 Page({
 
@@ -50,9 +49,15 @@ Page({
       const result = await api.card.getCardDetail(cardId);
       
       if (result && result.data) {
+        let usageRecords = result.data.usage_records || [];
+        usageRecords = usageRecords.map(item => ({
+          ...item,
+          start_time: `${item.start_time.split(':')[0]}:${item.start_time.split(':')[1]}`,
+          end_time: `${item.end_time.split(':')[0]}:${item.end_time.split(':')[1]}`,
+        }))
         this.setData({
           cardDetail: result.data,
-          usageRecords: result.data.usage_records || []
+          usageRecords: usageRecords
         });
       }
     } catch (error) {
@@ -75,38 +80,4 @@ Page({
       url: `/pages/courseDetail/courseDetail?id=${id}`
     });
   },
-
-  /**
-   * 格式化日期
-   */
-  formatDate(dateStr) {
-    if (!dateStr) return '';
-    return formatDate(new Date(dateStr));
-  },
-
-  /**
-   * 获取预约状态文本
-   */
-  getStatusText(status) {
-    const statusMap = {
-      1: '待确认',
-      2: '已确认',
-      3: '已完成',
-      4: '已取消'
-    };
-    return statusMap[status] || '未知状态';
-  },
-
-  /**
-   * 获取预约状态类名
-   */
-  getStatusClass(status) {
-    const classMap = {
-      1: 'pending',
-      2: 'confirmed',
-      3: 'completed',
-      4: 'cancelled'
-    };
-    return classMap[status] || '';
-  }
 });
