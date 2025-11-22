@@ -124,6 +124,12 @@
       </view>
     </view>
 
+    <!-- 卡片管理 -->
+    <view class="course-list active" bind:tap="handleCardManagement" wx:if="{{!isEditing}}">
+      <text>卡片管理</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
     <!-- 上课记录 -->
     <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
       <text>查看上课记录</text>

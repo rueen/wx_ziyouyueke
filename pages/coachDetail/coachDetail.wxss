@@ -226,3 +226,42 @@ page {
   color: #333;
   font-size: 30rpx;
 }
+
+/* 卡片样式 */
+.card-item {
+  margin-top: 16rpx;
+}
+
+.card-preview {
+  padding: 32rpx;
+  border-radius: 12rpx;
+  color: #ffffff;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.card-name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.card-status {
+  padding: 6rpx 12rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+
+.card-body {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.card-divider {
+  margin: 0 12rpx;
+}

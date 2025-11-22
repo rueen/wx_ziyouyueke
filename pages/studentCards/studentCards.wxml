@@ -1,0 +1,131 @@
+<!--pages/studentCards/studentCards.wxml-->
+<navBar title="{{studentName}}的卡片" />
+<layout>
+  <view class="student-cards-container">
+
+    <!-- 空状态 -->
+    <empty-state 
+      wx:if="{{!loading && cardList.length === 0}}"
+      title="暂无卡片"
+      description="点击下方按钮为学员添加卡片"
+    />
+
+    <!-- 卡片列表 -->
+    <view wx:else class="card-list">
+      <view 
+        wx:for="{{cardList}}" 
+        wx:key="id" 
+        class="card-item"
+        bindtap="onViewDetail"
+        data-card="{{item}}"
+      >
+        <!-- 卡片内容 -->
+        <view class="card-content" style="background-color: {{item.card_color}};">
+          <view class="card-header">
+            <view class="card-name">{{item.card_name}}</view>
+            <view class="card-status {{item.is_expired ? 'expired' : ''}}">
+              {{item.is_expired ? '已过期' : item.card_status_text}}
+            </view>
+          </view>
+          
+          <view class="card-body">
+            <view class="card-lessons">
+              <text wx:if="{{item.is_unlimited}}">不限次数</text>
+              <text wx:else>剩余 {{item.remaining_lessons}}/{{item.total_lessons}} 节</text>
+            </view>
+            <view class="card-used">
+              <text>已使用 {{item.used_count}} 次</text>
+            </view>
+          </view>
+
+          <view class="card-footer" wx:if="{{!(item.card_status === 0 && !item.is_expired)}}">
+            <text class="expire-date">有效期至 {{item.expire_date}}</text>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="card-actions" catchtap="onPreventClose">
+          <!-- 未开启状态：显示开卡、删除 -->
+          <block wx:if="{{item.card_status === 0 && !item.is_expired}}">
+            <view class="action-btn" catchtap="onActivateCard" data-card="{{item}}">
+              <text>开卡</text>
+            </view>
+            <view class="action-btn danger" catchtap="onDeleteCard" data-card="{{item}}">
+              <text>删除</text>
+            </view>
+          </block>
+
+          <!-- 已开启状态：显示停卡 -->
+          <block wx:if="{{item.card_status === 1 && !item.is_expired}}">
+            <view class="action-btn warning" catchtap="onDeactivateCard" data-card="{{item}}">
+              <text>停卡</text>
+            </view>
+          </block>
+
+          <!-- 已停用状态：显示重新开启、删除 -->
+          <block wx:if="{{item.card_status === 2 && !item.is_expired}}">
+            <view class="action-btn" catchtap="onReactivateCard" data-card="{{item}}">
+              <text>重新开启</text>
+            </view>
+            <view class="action-btn danger" catchtap="onDeleteCard" data-card="{{item}}">
+              <text>删除</text>
+            </view>
+          </block>
+
+          <!-- 已过期状态：只显示删除 -->
+          <block wx:if="{{item.is_expired}}">
+            <view class="action-btn danger" catchtap="onDeleteCard" data-card="{{item}}">
+              <text>删除</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- 添加按钮 -->
+    <view class="add-button-container">
+      <button class="add-button" bindtap="onShowAddModal">添加卡片</button>
+    </view>
+
+    <!-- 添加卡片弹窗 -->
+    <view wx:if="{{showAddModal}}" class="modal-mask" bindtap="onHideAddModal">
+      <view class="modal-content" catchtap="onPreventClose">
+        <view class="modal-header">
+          <text class="modal-title">选择卡片模板</text>
+          <text class="iconfont icon-close" bindtap="onHideAddModal"></text>
+        </view>
+
+        <view class="modal-body">
+          <view class="template-list">
+            <view 
+              wx:for="{{templateList}}" 
+              wx:key="id"
+              class="template-item {{selectedTemplateId === item.id ? 'active' : ''}}"
+              bindtap="onSelectTemplate"
+              data-id="{{item.id}}"
+            >
+              <view class="template-preview" style="background-color: {{item.card_color}};">
+                <view class="template-name">{{item.card_name}}</view>
+                <view class="template-info">
+                  <text wx:if="{{item.is_unlimited}}">不限次数</text>
+                  <text wx:else>{{item.card_lessons}}节课</text>
+                  <text class="divider">•</text>
+                  <text>{{item.valid_days}}天</text>
+                </view>
+                <view wx:if="{{item.card_desc}}" class="template-desc">{{item.card_desc}}</view>
+              </view>
+              <view wx:if="{{selectedTemplateId === item.id}}" class="selected-icon">
+                <text class="iconfont icon-right"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="modal-footer">
+          <view class="btn btn-cancel" bindtap="onHideAddModal">取消</view>
+          <view class="btn btn-primary" bindtap="onConfirmAdd">确定</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</layout>

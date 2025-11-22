@@ -1002,6 +1002,107 @@ module.exports = {
       });
     }
   },
+
+  // 卡片管理模块
+  card: {
+    // 卡片模板相关
+    getTemplateList: function(params = {}) {
+      return request({
+        url: '/api/h5/coach-cards',
+        method: 'GET',
+        data: params
+      });
+    },
+    createTemplate: function(params = {}) {
+      return request({
+        url: '/api/h5/coach-cards',
+        method: 'POST',
+        data: params
+      });
+    },
+    updateTemplate: function(id, params = {}) {
+      return request({
+        url: `/api/h5/coach-cards/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
+    toggleTemplate: function(id) {
+      return request({
+        url: `/api/h5/coach-cards/${id}/toggle-active`,
+        method: 'PUT'
+      });
+    },
+    deleteTemplate: function(id) {
+      return request({
+        url: `/api/h5/coach-cards/${id}`,
+        method: 'DELETE'
+      });
+    },
+    getActiveTemplates: function() {
+      return request({
+        url: '/api/h5/coach-cards/active-list',
+        method: 'GET'
+      });
+    },
+    
+    // 卡片实例相关
+    createInstance: function(params = {}) {
+      return request({
+        url: '/api/h5/card-instances',
+        method: 'POST',
+        data: params
+      });
+    },
+    getStudentCards: function(studentId) {
+      return request({
+        url: `/api/h5/card-instances/student/${studentId}`,
+        method: 'GET'
+      });
+    },
+    getMyCards: function(coachId) {
+      return request({
+        url: `/api/h5/card-instances/my-cards/${coachId}`,
+        method: 'GET'
+      });
+    },
+    getAvailableCards: function(coachId) {
+      return request({
+        url: `/api/h5/card-instances/available/${coachId}`,
+        method: 'GET'
+      });
+    },
+    getCardDetail: function(id) {
+      return request({
+        url: `/api/h5/card-instances/${id}`,
+        method: 'GET'
+      });
+    },
+    activateCard: function(id) {
+      return request({
+        url: `/api/h5/card-instances/${id}/activate`,
+        method: 'PUT'
+      });
+    },
+    deactivateCard: function(id) {
+      return request({
+        url: `/api/h5/card-instances/${id}/deactivate`,
+        method: 'PUT'
+      });
+    },
+    reactivateCard: function(id) {
+      return request({
+        url: `/api/h5/card-instances/${id}/reactivate`,
+        method: 'PUT'
+      });
+    },
+    deleteCard: function(id) {
+      return request({
+        url: `/api/h5/card-instances/${id}`,
+        method: 'DELETE'
+      });
+    }
+  },
   
   // 其他
   healthCheck

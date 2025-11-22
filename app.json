@@ -26,7 +26,10 @@
     "pages/poster/poster",
     "pages/allCoachList/allCoachList",
     "pages/allGroupCourses/allGroupCourses",
-    "pages/subscribeMessage/subscribeMessage"
+    "pages/subscribeMessage/subscribeMessage",
+    "pages/cardManagement/cardManagement",
+    "pages/studentCards/studentCards",
+    "pages/cardDetail/cardDetail"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

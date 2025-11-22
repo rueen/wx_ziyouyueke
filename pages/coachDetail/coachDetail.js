@@ -14,7 +14,8 @@ Page({
     coachData: {},
     relationId: null,
     coachId: null,
-    auto_confirm_by_coach: 0 // 该教练发起的课程预约自动确认
+    auto_confirm_by_coach: 0, // 该教练发起的课程预约自动确认
+    myCards: [] // 我的卡片列表
   },
 
   /**
@@ -52,6 +53,9 @@ Page({
           coachData: coach,
           auto_confirm_by_coach: coach.auto_confirm_by_coach
         });
+        
+        // 加载卡片信息
+        this.loadMyCards();
       }
     } catch (error) {
       wx.hideLoading();
@@ -61,6 +65,31 @@ Page({
         title: '加载失败，请重试',
         icon: 'none'
       });
+    }
+  },
+
+  /**
+   * 加载我的卡片（学员视角）
+   */
+  async loadMyCards() {
+    const { coachId } = this.data;
+    
+    try {
+      const result = await api.card.getMyCards(coachId);
+      
+      if (result && result.data) {
+        // 只显示已开启且未过期的卡片
+        const activeCards = (result.data.list || []).filter(card => 
+          card.card_status === 1 && !card.is_expired
+        );
+        
+        this.setData({
+          myCards: activeCards
+        });
+      }
+    } catch (error) {
+      console.error('加载卡片信息失败:', error);
+      // 静默失败，不影响主流程
     }
   },
 
@@ -169,5 +198,15 @@ Page({
         }
       }) 
     }
+  },
+
+  /**
+   * 查看卡片详情
+   */
+  onViewCardDetail(e) {
+    const { card } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/cardDetail/cardDetail?cardId=${card.id}`
+    });
   }
 }) 

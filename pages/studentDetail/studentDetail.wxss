@@ -85,7 +85,7 @@ page {
 .info-section {
   background-color: #fff;
   padding: 32rpx;
-  margin: 16rpx;
+  margin: 16rpx 16rpx 0 16rpx;
   border-radius: 16rpx;
 }
 .info-section .tips{
@@ -273,7 +273,7 @@ page {
   padding: 0 32rpx;
   font-size: 28rpx;
   color: #333;
-  margin: 0 16rpx;
+  margin: 16rpx 16rpx 0 16rpx;
   border-radius: 16rpx;
 }
 

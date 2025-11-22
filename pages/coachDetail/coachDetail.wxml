@@ -40,6 +40,31 @@
       </view>
     </view>
 
+    <!-- 卡片信息 -->
+    <view class="intro-section" wx:if="{{myCards.length > 0}}">
+      <text class="section-title">我的卡片</text>
+      <view 
+        class="card-item" 
+        wx:for="{{myCards}}" 
+        wx:key="id"
+        bindtap="onViewCardDetail"
+        data-card="{{item}}"
+      >
+        <view class="card-preview" style="background-color: {{item.card_color}};">
+          <view class="card-header">
+            <view class="card-name">{{item.card_name}}</view>
+            <view class="card-status">{{item.card_status_text}}</view>
+          </view>
+          <view class="card-body">
+            <text wx:if="{{item.is_unlimited}}">不限次数</text>
+            <text wx:else>剩余 {{item.remaining_lessons}}/{{item.total_lessons}} 节</text>
+            <text class="card-divider">•</text>
+            <text>有效期至 {{item.expire_date}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- 教练权限 -->
     <view class="intro-section">
       <view class="permission-item">

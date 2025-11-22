@@ -308,6 +308,20 @@ Page({
     })
   },
 
+  /**
+   * 卡片设置（教练专用）
+   */
+  onCardManagement() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+
+    wx.navigateTo({
+      url: '/pages/cardManagement/cardManagement'
+    });
+  },
+
   // 打开活动
   onGroupCourses() {
     // 检查是否需要登录

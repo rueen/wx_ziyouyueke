@@ -1,0 +1,155 @@
+<!--pages/cardManagement/cardManagement.wxml-->
+<navBar title="卡片设置" />
+<layout>
+  <view class="card-management-container">
+    <!-- 空状态 -->
+    <empty-state 
+      wx:if="{{!loading && cardList.length === 0}}"
+      title="暂无卡片模板"
+      description="点击下方按钮创建卡片模板"
+    />
+
+    <!-- 卡片列表 -->
+    <view wx:else class="card-list">
+      <view 
+        wx:for="{{cardList}}" 
+        wx:key="id" 
+        class="card-item"
+      >
+        <!-- 卡片预览 -->
+        <view class="card-preview {{item.is_active ? '' : 'disabled'}}" style="background-color: {{item.card_color}};">
+          <view class="card-preview-content">
+            <view class="card-name">{{item.card_name}}</view>
+            <view class="card-info">
+              <text wx:if="{{item.is_unlimited}}">不限次数</text>
+              <text wx:else>{{item.card_lessons}}节课</text>
+              <text class="divider">•</text>
+              <text>{{item.valid_days}}天有效</text>
+            </view>
+          </view>
+          <view wx:if="{{!item.is_active}}" class="disabled-badge">已禁用</view>
+        </view>
+
+        <!-- 卡片描述 -->
+        <!-- <view wx:if="{{item.card_desc}}" class="card-desc">{{item.card_desc}}</view> -->
+
+        <!-- 操作按钮 -->
+        <view class="card-actions">
+          <view class="action-btn" bindtap="onShowEditModal" data-card="{{item}}">
+            <text>编辑</text>
+          </view>
+          <view class="action-btn" bindtap="onToggleActive" data-card="{{item}}">
+            <text>{{item.is_active ? '禁用' : '启用'}}</text>
+          </view>
+          <view wx:if="{{!item.is_active}}" class="action-btn danger" bindtap="onDeleteCard" data-card="{{item}}">
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 添加按钮 -->
+    <view class="add-button-container">
+      <button class="add-button" bindtap="onShowAddModal">创建卡片模板</button>
+    </view>
+
+    <!-- 添加/编辑卡片弹窗 -->
+    <view wx:if="{{showAddModal}}" class="modal-mask" bindtap="onHideModal">
+      <view class="modal-content" catchtap="onPreventClose">
+        <view class="modal-header">
+          <text class="modal-title">{{editingCard ? '编辑卡片' : '创建卡片'}}</text>
+          <text class="iconfont icon-close" bindtap="onHideModal"></text>
+        </view>
+
+        <view class="modal-body">
+          <!-- 卡片名称 -->
+          <view class="form-item">
+            <view class="form-label">卡片名称</view>
+            <input 
+              class="form-input" 
+              placeholder="如：月卡、季卡" 
+              value="{{formData.card_name}}"
+              bindinput="onFormInput"
+              data-field="card_name"
+              maxlength="20"
+            />
+          </view>
+
+          <!-- 课时数 -->
+          <view class="form-item">
+            <view class="form-label">
+              <text>课时数</text>
+              <view class="unlimited-switch">
+                <text class="switch-label">不限次数</text>
+                <switch 
+                  checked="{{formData.is_unlimited}}" 
+                  bindchange="onToggleUnlimited"
+                  color="#007aff"
+                />
+              </view>
+            </view>
+            <input 
+              wx:if="{{!formData.is_unlimited}}"
+              class="form-input" 
+              type="number" 
+              placeholder="请输入课时数" 
+              value="{{formData.card_lessons}}"
+              bindinput="onFormInput"
+              data-field="card_lessons"
+            />
+            <view wx:else class="form-input disabled-input">无限次数</view>
+          </view>
+
+          <!-- 有效天数 -->
+          <view class="form-item">
+            <view class="form-label">有效天数</view>
+            <input 
+              class="form-input" 
+              type="number" 
+              placeholder="如：30" 
+              value="{{formData.valid_days}}"
+              bindinput="onFormInput"
+              data-field="valid_days"
+            />
+          </view>
+
+          <!-- 卡片颜色 -->
+          <view class="form-item">
+            <view class="form-label">卡片颜色</view>
+            <view class="color-picker">
+              <view 
+                wx:for="{{colorList}}" 
+                wx:key="*this"
+                class="color-item {{formData.card_color === item ? 'active' : ''}}"
+                style="background-color: {{item}};"
+                bindtap="onSelectColor"
+                data-color="{{item}}"
+              >
+                <text wx:if="{{formData.card_color === item}}" class="iconfont icon-right"></text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 卡片描述 -->
+          <!-- <view class="form-item">
+            <view class="form-label">卡片描述（选填）</view>
+            <textarea 
+              class="form-textarea" 
+              placeholder="描述卡片的适用范围、使用说明等" 
+              value="{{formData.card_desc}}"
+              bindinput="onFormInput"
+              data-field="card_desc"
+              maxlength="200"
+              auto-height
+            />
+          </view> -->
+        </view>
+
+        <view class="modal-footer">
+          <view class="btn btn-cancel" bindtap="onHideModal">取消</view>
+          <view class="btn btn-primary" bindtap="onSaveCard">保存</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</layout>

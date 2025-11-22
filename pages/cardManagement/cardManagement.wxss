@@ -1,0 +1,290 @@
+/* pages/cardManagement/cardManagement.wxss */
+@import '/style/iconfont.wxss';
+
+.card-management-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 32rpx;
+  padding-bottom: 200rpx;
+}
+
+/* 卡片列表 */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.card-item {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+/* 卡片预览 */
+.card-preview {
+  position: relative;
+  padding: 48rpx 32rpx;
+  color: #ffffff;
+}
+.card-preview.disabled {
+  opacity: 0.6;
+}
+
+.card-preview-content {
+  position: relative;
+  z-index: 1;
+}
+
+.card-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.card-info {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.divider {
+  margin: 0 12rpx;
+}
+
+.disabled-badge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 8rpx 16rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  color: #ffffff;
+}
+
+/* 卡片描述 */
+.card-desc {
+  padding: 24rpx 32rpx;
+  font-size: 28rpx;
+  color: #86868b;
+  line-height: 1.6;
+  border-top: 1rpx solid #f2f2f7;
+}
+
+/* 操作按钮 */
+.card-actions {
+  display: flex;
+  border-top: 1rpx solid #f2f2f7;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #007aff;
+  gap: 8rpx;
+}
+
+.action-btn.danger {
+  color: #ff3b30;
+}
+
+.action-btn:not(:last-child) {
+  border-right: 1rpx solid #f2f2f7;
+}
+
+.action-btn .iconfont {
+  font-size: 32rpx;
+}
+
+/* 添加按钮 */
+.add-button-container {
+  position: fixed;
+  bottom: 100rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600rpx;
+}
+
+.add-button {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button::after {
+  border: none;
+}
+
+.add-button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 32rpx;
+}
+
+.modal-content {
+  width: 100%;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f2f2f7;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.modal-header .iconfont {
+  font-size: 40rpx;
+  color: #86868b;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32rpx;
+}
+
+/* 表单项 */
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  margin-bottom: 16rpx;
+}
+
+.unlimited-switch {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.switch-label {
+  font-size: 26rpx;
+  color: #86868b;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 24rpx;
+  background: #f2f2f7;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  box-sizing: border-box;
+}
+
+.disabled-input {
+  color: #86868b;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 24rpx;
+  background: #f2f2f7;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  box-sizing: border-box;
+}
+
+/* 颜色选择器 */
+.color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.color-item {
+  width: 86rpx;
+  height: 86rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.color-item.active {
+  box-shadow: 0 0 0 4rpx rgba(0, 122, 255, 0.3);
+}
+
+.color-item .iconfont {
+  color: #ffffff;
+}
+
+/* 弹窗底部 */
+.modal-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 32rpx;
+  border-top: 1rpx solid #f2f2f7;
+}
+
+.btn {
+  flex: 1;
+  padding: 28rpx;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-cancel {
+  background: #f2f2f7;
+  color: #1d1d1f;
+}
+
+.btn-primary {
+  background: #007aff;
+  color: #ffffff;
+}

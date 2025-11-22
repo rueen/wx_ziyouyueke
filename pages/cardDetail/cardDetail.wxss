@@ -1,0 +1,229 @@
+/* pages/cardDetail/cardDetail.wxss */
+.card-detail-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding-bottom: 32rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+/* 卡片信息区域 */
+.card-info-section {
+  margin-bottom: 24rpx;
+}
+
+/* 卡片预览 */
+.card-preview {
+  padding: 48rpx 32rpx;
+  color: #ffffff;
+  margin: 32rpx;
+  border-radius: 16rpx;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48rpx;
+}
+
+.card-name {
+  font-size: 44rpx;
+  font-weight: 600;
+}
+
+.card-status {
+  padding: 8rpx 16rpx;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+
+.card-status.expired {
+  background: rgba(255, 59, 48, 0.3);
+}
+
+/* 卡片统计 */
+.card-stats {
+  display: flex;
+  gap: 16rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 12rpx;
+}
+
+.stat-value {
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+/* 用户信息 */
+.user-info {
+  background: #ffffff;
+  margin: 0 32rpx;
+  padding: 32rpx;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+.user-detail {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+}
+
+.nickname {
+  font-size: 28rpx;
+  color: #1d1d1f;
+}
+
+/* 使用记录区域 */
+.usage-section {
+  margin: 0 32rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 24rpx;
+}
+
+/* 记录列表 */
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.record-item {
+  position: relative;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  padding-right: 80rpx;
+}
+
+.record-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.record-date {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.record-date .iconfont {
+  font-size: 32rpx;
+  color: #007aff;
+}
+
+.record-status {
+  padding: 6rpx 12rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+}
+
+.record-status.pending {
+  background: #fff3cd;
+  color: #ff9500;
+}
+
+.record-status.confirmed {
+  background: #cfe2ff;
+  color: #007aff;
+}
+
+.record-status.completed {
+  background: #d1e7dd;
+  color: #34c759;
+}
+
+.record-status.cancelled {
+  background: #f8d7da;
+  color: #ff3b30;
+}
+
+.record-time {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: #86868b;
+  margin-bottom: 12rpx;
+}
+
+.record-time .iconfont {
+  font-size: 28rpx;
+}
+
+.record-complete {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: #34c759;
+}
+
+.record-complete .iconfont {
+  font-size: 26rpx;
+}
+
+.record-arrow {
+  position: absolute;
+  top: 50%;
+  right: 32rpx;
+  transform: translateY(-50%);
+}
+
+.record-arrow .iconfont {
+  font-size: 32rpx;
+  color: #c7c7cc;
+}

@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "layout": "/components/layout/layout",
+    "empty-state": "/components/emptyState/emptyState",
+    "navBar": "/components/navBar/navbar"
+  }
+}

@@ -423,6 +423,18 @@ Page({
     });
   },
 
+  /**
+   * 卡片管理
+   */
+  handleCardManagement() {
+    const { studentData, relationId, studentId } = this.data;
+    const studentName = studentData.student_name || studentData.student.nickname;
+    
+    wx.navigateTo({
+      url: `/pages/studentCards/studentCards?studentId=${studentId}&relationId=${relationId}&studentName=${encodeURIComponent(studentName)}`
+    });
+  },
+
   openPermissionTips(){
     wx.showModal({
       title: '提示',

@@ -1,0 +1,105 @@
+<!--pages/cardDetail/cardDetail.wxml-->
+<navBar title="卡片详情" />
+<layout>
+  <view class="card-detail-container">
+    <view wx:if="{{loading}}" class="loading-state">
+      <text>加载中...</text>
+    </view>
+
+    <view wx:else>
+      <!-- 卡片信息 -->
+      <view wx:if="{{cardDetail}}" class="card-info-section">
+        <view class="card-preview" style="background-color: {{cardDetail.card_color}};">
+          <view class="card-header">
+            <view class="card-name">{{cardDetail.card_name}}</view>
+            <view class="card-status {{cardDetail.is_expired ? 'expired' : ''}}">
+              {{cardDetail.is_expired ? '已过期' : cardDetail.card_status_text}}
+            </view>
+          </view>
+
+          <view class="card-stats">
+            <view class="stat-item">
+              <view class="stat-label">课时</view>
+              <view class="stat-value">
+                <text wx:if="{{cardDetail.is_unlimited}}">不限次数</text>
+                <text wx:else>{{cardDetail.remaining_lessons}}/{{cardDetail.total_lessons}}</text>
+              </view>
+            </view>
+            <view class="stat-item">
+              <view class="stat-label">已使用</view>
+              <view class="stat-value">{{cardDetail.used_count}}次</view>
+            </view>
+            <view class="stat-item">
+              <view class="stat-label">有效期</view>
+              <view class="stat-value">{{cardDetail.expire_date}}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 用户信息 -->
+        <view class="user-info">
+          <view class="info-row">
+            <text class="info-label">学员</text>
+            <view class="user-detail">
+              <image class="avatar" src="{{cardDetail.student.avatar_url}}" mode="aspectFill"></image>
+              <text class="nickname">{{cardDetail.student.nickname}}</text>
+            </view>
+          </view>
+          <view class="info-row">
+            <text class="info-label">教练</text>
+            <view class="user-detail">
+              <image class="avatar" src="{{cardDetail.coach.avatar_url}}" mode="aspectFill"></image>
+              <text class="nickname">{{cardDetail.coach.nickname}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 使用记录 -->
+      <view class="usage-section">
+        <view class="section-title">使用记录</view>
+
+        <!-- 空状态 -->
+        <empty-state 
+          wx:if="{{usageRecords.length === 0}}"
+          title="暂无使用记录"
+        />
+
+        <!-- 记录列表 -->
+        <view wx:else class="record-list">
+          <view 
+            wx:for="{{usageRecords}}" 
+            wx:key="id"
+            class="record-item"
+            bindtap="onViewCourse"
+            data-id="{{item.id}}"
+          >
+            <view class="record-header">
+              <view class="record-date">
+                <text class="iconfont icon-calendar"></text>
+                <text>{{item.course_date}}</text>
+              </view>
+              <view class="record-status {{getStatusClass(item.booking_status)}}">
+                {{getStatusText(item.booking_status)}}
+              </view>
+            </view>
+
+            <view class="record-time">
+              <text class="iconfont icon-time"></text>
+              <text>{{item.start_time}} - {{item.end_time}}</text>
+            </view>
+
+            <view wx:if="{{item.complete_at}}" class="record-complete">
+              <text class="iconfont icon-check"></text>
+              <text>核销时间：{{formatDate(item.complete_at)}}</text>
+            </view>
+
+            <view class="record-arrow">
+              <text class="iconfont icon-arrow-r"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</layout>
