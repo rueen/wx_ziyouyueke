@@ -31,10 +31,10 @@
           <view class="card-body">
             <view class="card-lessons">
               <text wx:if="{{item.is_unlimited}}">不限次数</text>
-              <text wx:else>剩余 {{item.remaining_lessons}}/{{item.total_lessons}} 节</text>
+              <text wx:else>剩余 {{item.available_lessons}}/{{item.total_lessons}} 节</text>
             </view>
             <view class="card-used">
-              <text>已使用 {{item.used_count}} 次</text>
+              <text>已使用 {{item.usage_count}} 次</text>
             </view>
           </view>
 

@@ -53,6 +53,10 @@ page {
   font-weight: 600;
   margin-bottom: 12rpx;
 }
+.coach-phone{
+  font-size: 26rpx;
+  color: #999;
+}
 
 .remaining-lessons {
   display: flex;

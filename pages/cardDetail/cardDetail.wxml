@@ -22,12 +22,12 @@
               <view class="stat-label">课时</view>
               <view class="stat-value">
                 <text wx:if="{{cardDetail.is_unlimited}}">不限次数</text>
-                <text wx:else>{{cardDetail.remaining_lessons}}/{{cardDetail.total_lessons}}</text>
+                <text wx:else>{{cardDetail.available_lessons}}/{{cardDetail.total_lessons}}</text>
               </view>
             </view>
             <view class="stat-item">
               <view class="stat-label">已使用</view>
-              <view class="stat-value">{{cardDetail.used_count}}次</view>
+              <view class="stat-value">{{cardDetail.usage_count}}次</view>
             </view>
             <view class="stat-item">
               <view class="stat-label">有效期</view>

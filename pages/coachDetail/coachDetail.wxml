@@ -10,12 +10,12 @@
       <view class="coach-info">
         <view class="coach-name">
           <text class="coach-name-text">{{coachData.coach.nickname}}</text>
-          <text wx:if="{{coachData.coach.phone}}"> - {{coachData.coach.phone}}</text>
         </view>
-        <view class="remaining-lessons">
+        <text class="coach-phone" wx:if="{{coachData.coach.phone}}">{{coachData.coach.phone}}</text>
+        <!-- <view class="remaining-lessons">
           <text class="lessons-label">剩余课时：</text>
           <text class="lessons-count active">{{coachData.remaining_lessons}}节</text>
-        </view>
+        </view> -->
       </view>
     </view>
 
@@ -57,9 +57,9 @@
           </view>
           <view class="card-body">
             <text wx:if="{{item.is_unlimited}}">不限次数</text>
-            <text wx:else>剩余 {{item.remaining_lessons}}/{{item.total_lessons}} 节</text>
+            <text wx:else>剩余 {{item.available_lessons}}/{{item.total_lessons}} 节</text>
             <text class="card-divider">•</text>
-            <text>有效期至 {{item.expire_date}}</text>
+            <text>有效期至 {{item.expire_date || '--'}}</text>
           </view>
         </view>
       </view>

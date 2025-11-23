@@ -79,12 +79,12 @@ Page({
       
       if (result && result.data) {
         // 只显示已开启且未过期的卡片
-        const activeCards = (result.data.list || []).filter(card => 
-          card.card_status === 1 && !card.is_expired
-        );
+        // const activeCards = (result.data.list || []).filter(card => 
+        //   card.card_status === 1 && !card.is_expired
+        // );
         
         this.setData({
-          myCards: activeCards
+          myCards: result.data.list || []
         });
       }
     } catch (error) {

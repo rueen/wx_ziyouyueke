@@ -26,7 +26,7 @@
               <text class="status-text">已关闭</text>
             </view>
           </view>
-          <text class="option-lessons">剩余课时：{{selectedOption.remainingLessons}}节</text>
+          <!-- <text class="option-lessons">剩余课时：{{selectedOption.remainingLessons}}节</text> -->
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>
@@ -38,10 +38,10 @@
       </view>
     </view>
 
-    <!-- 选择课程类型/卡片区域 -->
+    <!-- 选择课程/卡片区域 -->
     <view class="section" wx:if="{{selectedOption}}">
       <view class="section-header">
-        <text class="section-title">课程类型/卡片</text>
+        <text class="section-title">选择课程/卡片</text>
       </view>
       
       <!-- 已选择的课程类型 -->
@@ -57,7 +57,7 @@
       <view class="selected-address" wx:elif="{{selectedCard}}" bindtap="onShowCategorieSelection">
         <view class="categorie-info">
           <text>{{selectedCard.card_name}}</text>
-          <text class="option-lessons" wx:if="{{!selectedCard.is_unlimited}}">剩余 {{selectedCard.remaining_lessons}}/{{selectedCard.total_lessons}} 节</text>
+          <text class="option-lessons" wx:if="{{!selectedCard.is_unlimited}}">剩余 {{selectedCard.available_lessons}}/{{selectedCard.total_lessons}} 节</text>
           <text class="option-lessons" wx:else>不限次数</text>
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
@@ -65,7 +65,7 @@
       
       <!-- 课程类型/卡片选择按钮 -->
       <view class="select-address-btn" wx:else bindtap="onShowCategorieSelection">
-        <text class="btn-text">选择课程类型或卡片</text>
+        <text class="btn-text">选择课程或卡片</text>
         <text class="iconfont icon-arrow-r"></text>
       </view>
     </view>
@@ -164,7 +164,7 @@
                 <text class="status-text">已关闭</text>
               </view>
             </view>
-            <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text>
+            <!-- <text class="option-lessons">剩余课时：{{item.remainingLessons}}节</text> -->
           </view>
           <text class="iconfont icon-selected select-icon {{selectedOption && selectedOption.id === item.id ? 'selected' : ''}}"></text>
         </view>
@@ -217,7 +217,7 @@
             <text class="categorie-name">
               <text>{{item.card_name}}</text>
               <text class="remaining-lessons">
-                <text wx:if="{{!item.is_unlimited}}">{{item.remaining_lessons}}/{{item.total_lessons}}节</text>
+                <text wx:if="{{!item.is_unlimited}}">{{item.available_lessons}}/{{item.total_lessons}}节</text>
                 <text wx:else>不限次数</text>
               </text>
             </text>

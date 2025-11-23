@@ -297,13 +297,13 @@ Page({
     const { bookingType } = this.data;
     
     // 检查课时是否充足
-    if (option.remainingLessons <= 0) {
-      wx.showToast({
-        title: '该选项剩余课时不足',
-        icon: 'none'
-      });
-      return;
-    }
+    // if (option.remainingLessons <= 0) {
+    //   wx.showToast({
+    //     title: '该选项剩余课时不足',
+    //     icon: 'none'
+    //   });
+    //   return;
+    // }
     
     // 获取当前用户信息，用于教练约学员时的时间选择器
     const userInfo = wx.getStorageSync('userInfo');
@@ -316,7 +316,9 @@ Page({
       selectedCoachId: coachId,
       selectedDate: '',
       selectedTimeSlot: '',
-      remark: ''
+      remark: '',
+      selectedCard: null, // 清除卡片选择
+      bookingType_: 1, // 使用普通课程
     };
     
     // 如果是学员约教练，需要重置地址（因为教练变了）
@@ -387,9 +389,17 @@ Page({
       const result = await api.card.getAvailableCards(studentId, coachId);
       
       if (result && result.data) {
+        const cardsList = result.data.list || [];
         this.setData({
-          cardsList: result.data.list || []
+          cardsList: cardsList
         });
+        if(!this.data.selectedCategorie && cardsList.length) {
+          this.setData({
+            selectedCard: cardsList[0],
+            selectedCategorie: null, // 清除课程类型选择
+            bookingType_: 2, // 使用卡片课程
+          })
+        }
       }
     } catch (error) {
       console.error('加载卡片列表失败:', error);

@@ -53,6 +53,8 @@ page {
 .nickname{
   font-size: 28rpx;
   color: #666;
+  display: flex;
+  gap: 16rpx;
 }
 .student-name-input{
   height: 60rpx;
@@ -242,7 +244,6 @@ page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8rpx;
 }
 .permission-text{
   font-size: 28rpx;

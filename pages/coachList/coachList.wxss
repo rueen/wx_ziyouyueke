@@ -13,15 +13,16 @@ page {
 .coach-list {
   display: flex;
   flex-direction: column;
+  gap: 16rpx;
+  margin: 16rpx;
 }
 
 .coach-item {
   display: flex;
   align-items: center;
   background-color: #fff;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  margin-bottom: 20rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
   transition: transform 0.2s ease;
 }
 

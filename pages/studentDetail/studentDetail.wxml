@@ -11,13 +11,16 @@
         <view class="student-name" wx:if="{{!isEditing}}">
           <view>
             <text>{{studentData.student_name}}</text>
-            <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text>
+            <!-- <text wx:if="{{studentData.student.phone}}"> - {{studentData.student.phone}}</text> -->
           </view>
           <text class="iconfont icon-editor edit-btn" wx:if="{{!isEditing}}" bindtap="onStartEdit"></text>
         </view>
         <input wx:else class="student-name-input" type="text" value="{{studentName}}" bindinput="onStudentNameInput" />
-        <view class="nickname" wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</view>
-        <view class="student-intro">{{studentData.student.intro}}</view>
+        <view class="nickname">
+          <text wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</text>
+          <text wx:if="{{studentData.student.phone}}">{{studentData.student.phone}}</text>
+        </view>
+        <view class="student-intro" wx:if="{{!isEditing}}">{{studentData.student.intro}}</view>
         <view class="booking-status" wx:if="{{!isEditing}}">
           <text class="booking-status-text">约课状态：</text>
           <switch checked="{{bookingStatus}}" bindchange="bookingStatusSwitchChange"/>
@@ -111,7 +114,7 @@
     </view>
 
     <!-- 教练权限 -->
-    <view class="info-section">
+    <view class="info-section" wx:if="{{!isEditing}}">
       <view class="permission-container">
         <view class="permission-text">
           <text>我发起的课程预约自动确认</text>
