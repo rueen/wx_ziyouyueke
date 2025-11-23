@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "navBar": "/components/navBar/navbar",
+    "layout": "/components/layout/layout"
+  },
+  "navigationBarTitleText": "友情赞助"
+}
+

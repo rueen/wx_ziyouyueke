@@ -100,7 +100,7 @@ page {
   z-index: 0;
 }
 .menu-item.subscribe::after{
-  background-color: #ffd60a;
+  background-color: #cff632;
 }
 /* .menu-item.coach::after{
   background-color: #87c1ff;
@@ -109,7 +109,7 @@ page {
   background-color: #cff632;
 } */
 .menu-item.support::after{
-  background-color: #A67C52;
+  background-color: #cff632;
 }
 .menu-item .iconfont{
   font-size: 50rpx;

@@ -1103,6 +1103,79 @@ module.exports = {
       });
     }
   },
+
+  // 赞助管理模块
+  donation: {
+    /**
+     * 创建赞助订单
+     * @param {Object} params - 参数对象
+     * @param {number} params.amount - 赞助金额(分)
+     * @param {string} params.message - 留言内容（可选）
+     * @param {number} params.is_anonymous - 是否匿名：0-否，1-是（可选，默认0）
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({
+        url: '/api/h5/donations',
+        method: 'POST',
+        data: params
+      });
+    },
+    
+    /**
+     * 查询赞助订单详情
+     * @param {number} id - 订单ID
+     * @returns {Promise}
+     */
+    getDetail: function(id) {
+      return request({
+        url: `/api/h5/donations/${id}`,
+        method: 'GET'
+      });
+    },
+    
+    /**
+     * 获取我的赞助记录
+     * @param {Object} params - 查询参数
+     * @param {number} params.page - 页码，默认1
+     * @param {number} params.page_size - 每页数量，默认10
+     * @returns {Promise}
+     */
+    getMyList: function(params = {}) {
+      return request({
+        url: '/api/h5/donations/my/list',
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    /**
+     * 获取赞助列表（公开）
+     * @param {Object} params - 查询参数
+     * @param {number} params.page - 页码，默认1
+     * @param {number} params.page_size - 每页数量，默认20
+     * @returns {Promise}
+     */
+    getPublicList: function(params = {}) {
+      return request({
+        url: '/api/h5/donations/list/public',
+        method: 'GET',
+        data: params
+      });
+    },
+    
+    /**
+     * 查询订单支付状态
+     * @param {number} id - 订单ID
+     * @returns {Promise}
+     */
+    getStatus: function(id) {
+      return request({
+        url: `/api/h5/donations/${id}/status`,
+        method: 'GET'
+      });
+    }
+  },
   
   // 其他
   healthCheck

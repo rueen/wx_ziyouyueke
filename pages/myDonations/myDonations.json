@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "navBar": "/components/navBar/navbar",
+    "layout": "/components/layout/layout",
+    "empty-state": "/components/emptyState/emptyState"
+  },
+  "navigationBarTitleText": "我的赞助记录",
+  "enablePullDownRefresh": true
+}
+

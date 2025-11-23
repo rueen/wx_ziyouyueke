@@ -5,7 +5,7 @@
     <view class="logo">
       <text class="iconfont icon-logo"></text>
     </view>
-    <text class="slogan">一步约好私教课</text>
+    <text class="slogan">自由教练约课工具</text>
   </view>
 
   <!-- 登录区域 -->

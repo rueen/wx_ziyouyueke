@@ -1,7 +1,7 @@
 /* pages/subscribeMessage/subscribeMessage.wxss */
 page {
   height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
 }
 
 .subscribe-page {
@@ -94,7 +94,6 @@ page {
 }
 
 .ghost-button,
-.action-button,
 .primary-button {
   width: auto!important;
   border: none;
@@ -108,23 +107,13 @@ page {
   padding: 0 30rpx;
 }
 
-.action-button {
-  background-color: #ffd60a;
-  color: #000;
-}
 .ghost-button{
-  border: 1rpx solid #ffd60a;
+  border: 1rpx solid #000;
   background: none;
 }
 
-.action-button::after,
 .primary-button::after {
   border: none;
-}
-
-.action-button[disabled] {
-  background-color: #d1d1d6;
-  color: #ffffff;
 }
 
 .primary-button {

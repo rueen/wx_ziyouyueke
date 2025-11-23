@@ -383,9 +383,13 @@ Page({
     return true;
   },
 
-  // 友情赞助
+  /**
+   * 友情赞助
+   */
   handleSupport() {
-
+    wx.navigateTo({
+      url: '/pages/donation/donation'
+    });
   },
 
   /**
