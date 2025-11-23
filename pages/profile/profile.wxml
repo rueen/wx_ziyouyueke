@@ -23,97 +23,79 @@
   </view>
 
   <!-- 公共菜单 -->
-  <view class="public-menu-section" bind:tap="openSubscribeMessage">
-    <view class="public-menu-item subscribe">
+  <view class="menu-section">
+    <view class="menu-item subscribe" bind:tap="openSubscribeMessage">
       <text class="iconfont icon-xiaoxidingyue"></text>
-      <text class="public-menu-item-text">消息订阅</text>
+      <text class="menu-item-text">消息订阅</text>
     </view>
-    <view class="public-menu-item coach" bind:tap="handleOpenAllCoachList">
+    <view class="menu-item coach" bind:tap="handleOpenAllCoachList">
       <text class="iconfont icon-users"></text>
-      <text class="public-menu-item-text">教练大厅</text>
+      <text class="menu-item-text">教练大厅</text>
     </view>
-    <view class="public-menu-item activity" bind:tap="handleOpenAllGroupCourses">
+    <view class="menu-item activity" bind:tap="handleOpenAllGroupCourses">
       <text class="iconfont icon-huodong"></text>
-      <text class="public-menu-item-text">活动大厅</text>
+      <text class="menu-item-text">活动大厅</text>
+    </view>
+    <view class="menu-item support" bind:tap="handleSupport">
+      <text class="iconfont icon-coffee"></text>
+      <text class="menu-item-text">友情赞助</text>
     </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-section" wx:if="{{userRole === 'coach'}}">
     <view class="menu-item" bindtap="onMyCourses">
-      <view class="menu-content">
-        <text class="menu-text">上课记录</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-order"></text>
+      <text class="menu-item-text">上课记录</text>
     </view>
 
-    <view class="menu-item" bindtap="onGroupCourses">
-      <view class="menu-content">
-        <text class="menu-text">我的活动</text>
-        <!-- <view class="new-tag">NEW</view> -->
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+    <view class="menu-item" bindtap="onMyCoachesOrStudents">
+      <text class="iconfont icon-student"></text>
+      <text class="menu-item-text">我的学员</text>
     </view>
 
     <view class="menu-item" bindtap="onCoursesCategories">
-      <view class="menu-content">
-        <text class="menu-text">课程设置</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-course"></text>
+      <text class="menu-item-text">课程设置</text>
     </view>
 
     <view class="menu-item" bindtap="onCardManagement">
-      <view class="menu-content">
-        <text class="menu-text">卡片设置</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
-    </view>
-    
-    <view class="menu-item" bindtap="onMyCoachesOrStudents">
-      <view class="menu-content">
-        <text class="menu-text">我的学员</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <view class="new-tag">NEW</view>
+      <text class="iconfont icon-card"></text>
+      <text class="menu-item-text">卡片设置</text>
     </view>
 
-    <!-- 教练专用：时间模板 -->
     <view class="menu-item" bindtap="onMyTimeTemplate">
-      <view class="menu-content">
-        <text class="menu-text">时间模板</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-shijianmoban"></text>
+      <text class="menu-item-text">时间模板</text>
     </view>
 
-    <!-- 教练专用：常用地址 -->
     <view class="menu-item" bindtap="onMyAddresses">
-      <view class="menu-content">
-        <text class="menu-text">常用地址</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-location"></text>
+      <text class="menu-item-text">常用地址</text>
+    </view>
+
+    <view class="menu-item" bindtap="onGroupCourses">
+      <!-- <view class="new-tag">NEW</view> -->
+      <text class="iconfont icon-huodong"></text>
+      <text class="menu-item-text">我的活动</text>
     </view>
   </view>
   <!-- 学员端显示 -->
   <view class="menu-section" wx:if="{{userRole === 'student'}}">
     <view class="menu-item" bindtap="onMyCourses">
-      <view class="menu-content">
-        <text class="menu-text">上课记录</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-order"></text>
+      <text class="menu-item-text">上课记录</text>
+    </view>
+
+    <view class="menu-item" bindtap="onMyCoachesOrStudents">
+      <text class="iconfont icon-student"></text>
+      <text class="menu-item-text">我的教练</text>
     </view>
 
     <view class="menu-item" bindtap="onGroupCourses">
-      <view class="menu-content">
-        <text class="menu-text">我报名的活动</text>
-        <!-- <view class="new-tag">NEW</view> -->
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
-    </view>
-    
-    <view class="menu-item" bindtap="onMyCoachesOrStudents">
-      <view class="menu-content">
-        <text class="menu-text">我的教练</text>
-      </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+      <text class="iconfont icon-huodong"></text>
+      <text class="menu-item-text">我参加的活动</text>
     </view>
   </view>
   <!-- 登录/退出登录 -->

@@ -67,7 +67,7 @@
             <view class="form-label">卡片名称</view>
             <input 
               class="form-input" 
-              placeholder="如：月卡、季卡" 
+              placeholder="如：月卡、季卡、年卡、体验卡" 
               value="{{formData.card_name}}"
               bindinput="onFormInput"
               data-field="card_name"

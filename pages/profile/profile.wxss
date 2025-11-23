@@ -68,25 +68,26 @@ page {
 }
 
 /* 公共菜单 */
-.public-menu-section{
+.menu-section{
   background-color: #fff;
   border-radius: 16rpx;
   overflow: hidden;
   margin: 0 16rpx 16rpx 16rpx;
   display: flex;
   align-items: center;
-  padding: 30rpx 0;
+  padding: 20rpx 0;
+  flex-wrap: wrap;
 }
-.public-menu-item{
-  flex: 1;
+.menu-item{
+  width: 25%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10rpx 0;
+  padding: 20rpx 0;
   position: relative;
 }
-.public-menu-item::after{
+.menu-item::after{
   content: '';
   display: block;
   width: 30rpx;
@@ -98,10 +99,19 @@ page {
   margin-left: -5rpx;
   z-index: 0;
 }
-.public-menu-item.subscribe::after{
+.menu-item.subscribe::after{
   background-color: #ffd60a;
 }
-.public-menu-item .iconfont{
+/* .menu-item.coach::after{
+  background-color: #87c1ff;
+}
+.menu-item.activity::after{
+  background-color: #cff632;
+} */
+.menu-item.support::after{
+  background-color: #A67C52;
+}
+.menu-item .iconfont{
   font-size: 50rpx;
   width: 60rpx;
   height: 60rpx;
@@ -110,64 +120,27 @@ page {
   position: relative;
   z-index: 1;
 }
-.public-menu-item-text{
+.menu-item-text{
   font-size: 24rpx;
   color: #000;
   margin-top: 5rpx;
 }
-
-/* 功能菜单 */
-.menu-section {
-  background-color: #fff;
-  border-radius: 16rpx;
-  overflow: hidden;
-  margin: 0 16rpx;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30rpx;
-  height: 110rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.menu-item:last-child {
-  border-bottom: none;
-}
-
-.menu-item:active {
-  background-color: #f9f9f9;
-}
-
-.menu-content {
-  display: flex;
-  align-items: center;
-}
-.menu-content .new-tag{
-  font-size: 18rpx;
+.menu-item .new-tag{
+  font-size: 14rpx;
   background: #ff9500;
   color: #fff;
-  width: 60rpx;
-  height: 32rpx;
+  width: 50rpx;
+  height: 30rpx;
+  line-height: 30rpx;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 6rpx;
-  margin-left: 8rpx;
+  position: absolute;
+  top: 16rpx; right: 16rpx;
+  z-index: 3;
 }
 
-.menu-icon {
-  font-size: 40rpx;
-  color: #007aff;
-  margin-right: 24rpx;
-}
-
-.menu-text {
-  font-size: 32rpx;
-  color: #333;
-}
 
 /* 退出登录样式 */
 .logout-btn{

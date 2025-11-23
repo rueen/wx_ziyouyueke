@@ -383,6 +383,11 @@ Page({
     return true;
   },
 
+  // 友情赞助
+  handleSupport() {
+
+  },
+
   /**
    * 登录/退出登录
    */
