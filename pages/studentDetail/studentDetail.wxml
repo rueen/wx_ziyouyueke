@@ -129,7 +129,7 @@
 
     <!-- 卡片管理 -->
     <view class="course-list active" bind:tap="handleCardManagement" wx:if="{{!isEditing}}">
-      <text>卡片管理</text>
+      <text>课程卡管理</text>
       <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 

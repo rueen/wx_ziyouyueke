@@ -1,13 +1,13 @@
 <!--pages/studentCards/studentCards.wxml-->
-<navBar title="{{studentName}}的卡片" />
+<navBar title="{{studentName}}的课程卡" />
 <layout>
   <view class="student-cards-container">
 
     <!-- 空状态 -->
     <empty-state 
       wx:if="{{!loading && cardList.length === 0}}"
-      title="暂无卡片"
-      description="点击下方按钮为学员添加卡片"
+      title="暂无课程卡"
+      description="点击下方按钮为学员添加课程卡"
     />
 
     <!-- 卡片列表 -->
@@ -84,7 +84,7 @@
 
     <!-- 添加按钮 -->
     <view class="add-button-container">
-      <button class="add-button" bindtap="onShowAddModal">添加卡片</button>
+      <button class="add-button" bindtap="onShowAddModal">添加课程卡</button>
     </view>
 
     <!-- 添加卡片弹窗 -->

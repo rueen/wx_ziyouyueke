@@ -1,5 +1,5 @@
 <!--pages/cardManagement/cardManagement.wxml-->
-<navBar title="卡片设置" />
+<navBar title="课程卡设置" />
 <layout>
   <view class="card-management-container">
     <!-- 空状态 -->

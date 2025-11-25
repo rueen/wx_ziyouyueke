@@ -90,7 +90,7 @@ Page({
         if (templates.length === 0) {
           wx.showModal({
             title: '提示',
-            content: '暂无可用的卡片模板，请先在卡片设置中创建并启用卡片模板',
+            content: '暂无可用的卡片模板，请先在课程卡设置中创建并启用卡片模板',
             showCancel: false
           });
           return;
