@@ -1,0 +1,72 @@
+<wxs module="_filters">
+  var formatDuration = function(seconds) {
+    if (!seconds) return '00:00';
+    var minutes = Math.floor(seconds / 60);
+    var secs = seconds % 60;
+    return (minutes < 10 ? '0' + minutes : minutes) + ':' + (secs < 10 ? '0' + secs : secs);
+  };
+  
+  module.exports = {
+    formatDuration: formatDuration
+  };
+</wxs>
+
+<!-- 课程内容展示区域 -->
+<view wx:if="{{courseContent}}" class="course-content-section">
+  <view class="section-header">
+    <text class="section-title">{{title}}</text>
+    <view wx:if="{{showEditButton}}" 
+          class="edit-content-btn" 
+          bindtap="onEdit">
+      <text class="iconfont icon-xiugai"></text>
+      {{editButtonText}}
+    </view>
+  </view>
+
+  <!-- 文字内容 -->
+  <view wx:if="{{courseContent.text_content}}" class="content-text">
+    <text>{{courseContent.text_content}}</text>
+  </view>
+
+  <!-- 图片内容 -->
+  <view wx:if="{{courseContent.images && courseContent.images.length > 0}}" class="content-images">
+    <image 
+      wx:for="{{courseContent.images}}" 
+      wx:key="*this"
+      class="content-image"
+      src="{{item}}"
+      mode="aspectFill"
+      bindtap="onPreviewImage"
+      data-url="{{item}}"
+    ></image>
+  </view>
+
+  <!-- 音频内容 -->
+  <view wx:if="{{courseContent.audios && courseContent.audios.length > 0}}" class="content-audios">
+    <view 
+      wx:for="{{courseContent.audios}}" 
+      wx:key="url" 
+      class="audio-item {{playingAudioIndex === index ? 'playing' : ''}}"
+      bindtap="onPlayAudio"
+      data-url="{{item.url}}"
+      data-index="{{index}}"
+    >
+      <text class="iconfont {{playingAudioIndex === index ? 'icon-audio-pause' : 'icon-audio-play'}} audio-icon"></text>
+      <text class="audio-name">音频 {{index + 1}}</text>
+      <text class="audio-duration">{{_filters.formatDuration(item.duration)}}</text>
+    </view>
+  </view>
+
+  <!-- 视频内容 -->
+  <view wx:if="{{courseContent.videos && courseContent.videos.length > 0}}" class="content-videos">
+    <video 
+      wx:for="{{courseContent.videos}}" 
+      wx:key="url"
+      class="content-video"
+      src="{{item.url}}"
+      controls
+      show-center-play-btn
+    ></video>
+  </view>
+</view>
+

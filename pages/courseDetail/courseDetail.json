@@ -1,7 +1,9 @@
 {
   "usingComponents": {
     "navBar": "/components/navBar/navbar",
-    "layout": "/components/layout/layout"
+    "layout": "/components/layout/layout",
+    "course-content-editor": "/components/courseContentEditor/courseContentEditor",
+    "course-content-display": "/components/courseContentDisplay/courseContentDisplay"
   },
   "enablePullDownRefresh": true,
   "navigationStyle": "custom"

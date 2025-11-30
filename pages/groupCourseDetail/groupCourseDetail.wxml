@@ -173,9 +173,22 @@ module.exports = {
     </view>
   </view>
 
+  <!-- 课程内容展示组件 -->
+  <view class="course-content-section">
+    <course-content-display 
+      course-content="{{courseContent}}"
+      show-edit-button="{{isOwner}}"
+      title="活动内容记录"
+      course-type="{{2}}"
+      bind:edit="onShowContentModal"
+    ></course-content-display>
+  </view>
+
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
     <view class="action-buttons">
+      <!-- 已结束状态且是教练且没有课程内容时，显示添加内容按钮 -->
+      <button class="action-btn publish" bindtap="onShowContentModal" wx:if="{{courseDetail.status === 2 && isOwner && !courseContent}}">添加活动内容</button>
       <!-- 分享按钮 -->
       <button class="action-btn share" bindtap="onShareTap" wx:if="{{courseDetail.status === 1}}">
         <text class="iconfont icon-share-line share-icon"></text>
@@ -245,6 +258,16 @@ module.exports = {
     </view>
   </view>
 </view>
+
+<!-- 课程内容编辑组件 -->
+<course-content-editor 
+  show="{{showContentModal}}"
+  course-type="{{2}}"
+  course-id="{{courseId}}"
+  course-content="{{courseContent}}"
+  bind:close="onHideContentModal"
+  bind:success="onContentSaveSuccess"
+></course-content-editor>
 
 <!-- 报名人员弹窗 -->
 <view class="registration-modal" wx:if="{{showRegistrationModal}}">

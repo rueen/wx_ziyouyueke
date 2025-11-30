@@ -1,0 +1,150 @@
+<wxs module="_filters">
+  var formatDuration = function(seconds) {
+    if (!seconds) return '00:00';
+    var minutes = Math.floor(seconds / 60);
+    var secs = seconds % 60;
+    return (minutes < 10 ? '0' + minutes : minutes) + ':' + (secs < 10 ? '0' + secs : secs);
+  };
+  
+  module.exports = {
+    formatDuration: formatDuration
+  };
+</wxs>
+
+<!-- 课程内容编辑弹窗 -->
+<view class="content-modal {{show ? 'show' : ''}}" wx:if="{{show}}">
+  <view class="modal-overlay" bindtap="onClose"></view>
+  <view class="modal-content content-modal-content">
+    <view class="modal-header">
+      <text class="modal-title">{{courseType === 1 ? '上课' : '活动'}}内容记录</text>
+      <text class="modal-close" bindtap="onClose">✕</text>
+    </view>
+    
+    <view class="modal-body content-modal-body">
+      <!-- 文字内容 -->
+      <view class="form-group">
+        <view class="form-label">文字内容</view>
+        <textarea 
+          class="form-textarea" 
+          placeholder="请输入{{courseType === 1 ? '课程' : '活动'}}内容..." 
+          value="{{contentForm.text_content}}" 
+          bindinput="onContentTextInput"
+          maxlength="500"
+          auto-height
+        ></textarea>
+        <view class="char-count">{{contentForm.text_content.length}}/500</view>
+      </view>
+
+      <!-- 图片 -->
+      <view class="form-group">
+        <view class="form-label">图片（最多9张）</view>
+        <view class="image-list">
+          <view wx:for="{{contentForm.images}}" wx:key="*this" class="image-item">
+            <image src="{{item}}" mode="aspectFill" class="preview-image" 
+                   bindtap="onPreviewImage" data-url="{{item}}"></image>
+            <view 
+              class="delete-btn"
+              catchtap="onDeleteImage"
+              data-index="{{index}}"
+            >
+              <text class="iconfont icon-close"></text>
+            </view>
+          </view>
+          <view wx:if="{{contentForm.images.length < 9}}" 
+                class="add-image-btn" bindtap="onChooseImage">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 音频 -->
+      <view class="form-group">
+        <view class="form-label">音频（最多3个，每个不超过60秒）</view>
+        <view class="media-list">
+          <!-- 已上传的音频列表 -->
+          <view wx:for="{{contentForm.audios}}" wx:key="url" class="media-item" bindtap="onPlayAudio" data-url="{{item.url}}" data-index="{{index}}">
+            <text class="iconfont {{ playingAudioContext && playingAudioIndex === index ? 'icon-audio-pause' : 'icon-audio-play'}} media-icon"></text>
+            <text class="media-name">音频 {{index + 1}}</text>
+            <text class="media-duration">{{_filters.formatDuration(item.duration)}}</text>
+            <text class="iconfont icon-close delete-media" 
+                  catchtap="onDeleteAudio" data-index="{{index}}"></text>
+          </view>
+          
+          <!-- 录音按钮 -->
+          <view wx:if="{{contentForm.audios.length < 3 && !isRecording && !showRecordPreview}}" 
+                class="record-btn-wrapper">
+            <button class="preview-btn confirm" bindtap="onStartRecord">点击录音</button>
+          </view>
+          
+          <!-- 录音中状态 -->
+          <view wx:if="{{isRecording}}" class="recording-container">
+            <view class="recording-time">{{_filters.formatDuration(recordingDuration)}} / 60</view>
+            <view class="recording-wave">
+              <view class="wave-bar"></view>
+              <view class="wave-bar"></view>
+              <view class="wave-bar"></view>
+              <view class="wave-bar"></view>
+              <view class="wave-bar"></view>
+            </view>
+            <button class="record-action-btn stop" bindtap="onStopRecord">
+              完成录音
+            </button>
+          </view>
+          
+          <!-- 录音预览 -->
+          <view wx:if="{{showRecordPreview}}" class="record-preview">
+            <view class="preview-info">
+              <text class="iconfont {{ isPlayingPreview ? 'icon-audio-pause' : 'icon-audio-play'}} preview-icon" bindtap="onPlayRecordPreview"></text>
+              <view class="preview-text">
+                <text class="preview-label">点击播放试听</text>
+                <text class="preview-duration">{{_filters.formatDuration(recordingDuration)}}</text>
+              </view>
+            </view>
+            <view class="preview-actions">
+              <button class="preview-btn cancel" bindtap="onReRecord">重录</button>
+              <button class="preview-btn confirm" bindtap="onSubmitRecord">使用该录音</button>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 视频 -->
+      <view class="form-group">
+        <view class="form-label">视频（最多1个，最长60秒）</view>
+        <view class="media-list">
+          <view wx:for="{{contentForm.videos}}" wx:key="url" class="video-item">
+            <video 
+              class="content-video"
+              src="{{item.url}}"
+              controls
+              show-center-play-btn
+            ></video>
+            <view 
+              class="delete-btn"
+              catchtap="onDeleteVideo"
+              data-index="{{index}}"
+            >
+              <text class="iconfont icon-close"></text>
+            </view>
+            <!-- <text class="iconfont icon-close delete-media" 
+                  bindtap="onDeleteVideo" data-index="{{index}}"></text> -->
+          </view>
+          <view wx:if="{{contentForm.videos.length < 1}}" 
+                class="add-media-btn" 
+                bindtap="onChooseVideo">
+            <text class="iconfont icon-tianjia"></text>
+            添加视频
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="modal-btn cancel-modal-btn" bindtap="onClose">取消</button>
+      <button class="modal-btn confirm-modal-btn active" 
+              bindtap="onSave">保存</button>
+    </view>
+  </view>
+</view>
+

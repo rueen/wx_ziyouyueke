@@ -100,7 +100,7 @@ page {
   font-weight: 600;
   color: #1d1d1f;
   line-height: 1.4;
-  margin-top: 24rpx;
+  margin-top: 16rpx;
   margin-bottom: 16rpx;
 }
 
@@ -140,7 +140,7 @@ page {
   border-radius: 16rpx;
   display: flex;
   align-items: center;
-  padding: 32rpx;
+  padding: 24rpx;
 }
 
 .address-icon {
@@ -187,7 +187,7 @@ page {
 /* 报名信息 */
 .registration-info {
   background: #fff;
-  padding: 32rpx;
+  padding: 24rpx;
   margin-top: 16rpx;
   border-radius: 16rpx;
 }
@@ -221,10 +221,10 @@ page {
 .coach-info {
   display: flex;
   align-items: center;
-  padding: 32rpx;
+  padding: 24rpx;
   background-color: #fff;
   border-radius: 16rpx;
-  margin-top: 24rpx;
+  margin-top: 16rpx;
 }
 .coach-info:active{
   transform: scale(0.98);
@@ -257,8 +257,8 @@ page {
 /* 内容区域 */
 .content-section {
   background: #fff;
-  padding: 32rpx;
-  margin-top: 24rpx;
+  padding: 24rpx;
+  margin-top: 16rpx;
   border-radius: 16rpx;
 }
 
@@ -479,4 +479,8 @@ page {
 .participant-time {
   font-size: 24rpx;
   color: #86868b;
+}
+
+.course-content-section{
+  margin-top: 16rpx;
 }

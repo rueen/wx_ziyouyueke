@@ -132,11 +132,30 @@
         </view>
       </view>
     </view>
+
+    <!-- 上课内容展示组件 -->
+    <view class="course-content">
+      <course-content-display 
+        course-content="{{courseContent}}"
+        show-edit-button="{{userRole === 'coach'}}"
+        title="上课内容记录"
+        course-type="{{1}}"
+        bind:edit="onShowContentModal"
+      ></course-content-display>
+    </view>
   </view>
 </layout>
 
 <!-- 底部操作按钮 -->
 <view wx:if="{{!loading && courseInfo}}" class="bottom-actions">
+  <!-- 已完成状态且是教练且没有课程内容时，显示添加内容按钮 -->
+  <view wx:if="{{courseInfo.status === 'completed' && userRole === 'coach' && !courseContent}}" class="action-buttons">
+    <view class="single-button">
+      <button class="action-btn primary-btn" 
+              bindtap="onShowContentModal">添加上课内容</button>
+    </view>
+  </view>
+
   <!-- 待确认状态的按钮 -->
   <view wx:if="{{courseInfo.status === 'pending'}}" class="action-buttons">
     <!-- 如果是课程创建人，只显示取消按钮 -->
@@ -261,4 +280,15 @@
               bindtap="onConfirmVerify">确认核销</button>
     </view>
   </view>
-</view> 
+</view>
+
+<!-- 课程内容编辑组件 -->
+<course-content-editor 
+  show="{{showContentModal}}"
+  course-type="{{1}}"
+  course-id="{{courseId}}"
+  course-content="{{courseContent}}"
+  bind:close="onHideContentModal"
+  bind:success="onContentSaveSuccess"
+></course-content-editor>
+ 

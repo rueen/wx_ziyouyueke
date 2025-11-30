@@ -1,6 +1,8 @@
 {
   "usingComponents": {
     "ghostNav": "/components/ghostNav/ghostNav",
-    "shareModal": "/components/shareModal/shareModal"
+    "shareModal": "/components/shareModal/shareModal",
+    "course-content-editor": "/components/courseContentEditor/courseContentEditor",
+    "course-content-display": "/components/courseContentDisplay/courseContentDisplay"
   }
 }

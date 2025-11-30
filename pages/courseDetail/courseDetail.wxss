@@ -31,7 +31,7 @@ page {
 .course-card {
   background-color: #fff;
   border-radius: 16rpx;
-  padding: 32rpx;
+  padding: 24rpx;
   margin: 16rpx;
 }
 
@@ -435,7 +435,12 @@ page {
   color: #666;
   line-height: 1.5;
   display: block;
-} 
+}
+
 .categoryName{
   color: #f2652e;
+}
+
+.course-content{
+  margin: 16rpx;
 }

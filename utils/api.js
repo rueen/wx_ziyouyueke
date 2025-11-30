@@ -964,6 +964,7 @@ module.exports = {
     groupCourse: (filePath) => uploadImage(filePath, 'groupCourse'),
     avatar: (filePath) => uploadImage(filePath, 'avatar'),
     poster: (filePath) => uploadImage(filePath, 'poster'),
+    courseContent: (filePath) => uploadImage(filePath, 'course_contents/images'),
     // document: (filePath) => uploadImage(filePath, 'documents'),
     // temp: (filePath) => uploadImage(filePath, 'temp')
   },
@@ -1173,6 +1174,165 @@ module.exports = {
       return request({
         url: `/api/h5/donations/${id}/status`,
         method: 'GET'
+      });
+    }
+  },
+
+  // 课程内容记录模块
+  courseContent: {
+    /**
+     * 添加课程内容
+     * @param {Object} params - 参数对象
+     * @param {number} params.course_type - 课程类型：1-一对一，2-团课
+     * @param {number} params.booking_id - 一对一课程ID（course_type=1时必填）
+     * @param {number} params.group_course_id - 团课ID（course_type=2时必填）
+     * @param {string} params.text_content - 文本内容（可选）
+     * @param {Array} params.images - 图片URL数组（可选）
+     * @param {Array} params.audios - 音频数组（可选），格式：[{url: "xxx", duration: 60}]
+     * @param {Array} params.videos - 视频数组（可选），格式：[{url: "xxx", duration: 120}]
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({
+        url: '/api/h5/course-content',
+        method: 'POST',
+        data: params
+      });
+    },
+
+    /**
+     * 编辑课程内容
+     * @param {number} id - 课程内容ID
+     * @param {Object} params - 参数对象
+     * @param {string} params.text_content - 文本内容（可选，传null或空字符串清空）
+     * @param {Array} params.images - 图片URL数组（可选，传null或空数组清空）
+     * @param {Array} params.audios - 音频数组（可选，传null或空数组清空）
+     * @param {Array} params.videos - 视频数组（可选，传null或空数组清空）
+     * @returns {Promise}
+     */
+    update: function(id, params = {}) {
+      return request({
+        url: `/api/h5/course-content/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
+
+    /**
+     * 根据课程ID获取课程内容
+     * @param {Object} params - 查询参数
+     * @param {number} params.course_type - 课程类型：1-一对一，2-团课
+     * @param {number} params.booking_id - 一对一课程ID（course_type=1时必填）
+     * @param {number} params.group_course_id - 团课ID（course_type=2时必填）
+     * @returns {Promise}
+     */
+    getByCourse: function(params = {}) {
+      return request({
+        url: '/api/h5/course-content/by-course',
+        method: 'GET',
+        data: params
+      });
+    },
+
+    /**
+     * 上传音频文件
+     * @param {string} filePath - 本地音频文件路径
+     * @returns {Promise}
+     */
+    uploadAudio: function(filePath) {
+      return new Promise((resolve, reject) => {
+        const token = wx.getStorageSync('token');
+        
+        wx.uploadFile({
+          url: `${API_CONFIG.baseUrl}/api/upload/audio`,
+          filePath: filePath,
+          name: 'file',
+          formData: {
+            directory: 'course_contents/audios'
+          },
+          header: {
+            'Authorization': `Bearer ${token}`
+          },
+          success: (res) => {
+            try {
+              const data = JSON.parse(res.data);
+              if (data.success) {
+                resolve(data);
+              } else {
+                // Token过期处理
+                if (data.code === 1002 || data.code === 2002) {
+                  handleTokenExpired();
+                }
+                reject(data);
+              }
+            } catch (e) {
+              reject({
+                code: -1,
+                message: '响应解析失败',
+                error: e
+              });
+            }
+          },
+          fail: (error) => {
+            console.error('[API Upload Error] /api/upload/audio', error);
+            reject({
+              code: -1,
+              message: '音频上传失败',
+              error: error
+            });
+          }
+        });
+      });
+    },
+
+    /**
+     * 上传视频文件
+     * @param {string} filePath - 本地视频文件路径
+     * @returns {Promise}
+     */
+    uploadVideo: function(filePath) {
+      return new Promise((resolve, reject) => {
+        const token = wx.getStorageSync('token');
+        
+        wx.uploadFile({
+          url: `${API_CONFIG.baseUrl}/api/upload/video`,
+          filePath: filePath,
+          name: 'file',
+          formData: {
+            directory: 'course_contents/videos'
+          },
+          header: {
+            'Authorization': `Bearer ${token}`
+          },
+          success: (res) => {
+            try {
+              const data = JSON.parse(res.data);
+              if (data.success) {
+                resolve(data);
+              } else {
+                // Token过期处理
+                if (data.code === 1002 || data.code === 2002) {
+                  handleTokenExpired();
+                }
+                reject(data);
+              }
+            } catch (e) {
+              reject({
+                code: -1,
+                message: '响应解析失败',
+                error: e
+              });
+            }
+          },
+          fail: (error) => {
+            console.error('[API Upload Error] /api/upload/video', error);
+            reject({
+              code: -1,
+              message: '视频上传失败',
+              error: error
+            });
+          }
+        });
       });
     }
   },

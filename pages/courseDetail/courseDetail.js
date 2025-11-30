@@ -31,14 +31,17 @@ Page({
     
     // 扫码核销确认相关
     showVerifyConfirmModal: false,
-    scannedCourseId: ''
+    scannedCourseId: '',
+    
+    // 课程内容相关
+    courseContent: null, // 课程内容数据
+    showContentModal: false // 显示课程内容编辑弹窗
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
     if (options.id) {
       this.setData({
         courseId: options.id
@@ -111,6 +114,13 @@ Page({
       
       if (result && result.data) {
         const course = result.data;
+        
+        // 加载课程内容（如果有）
+        if (course.course_content) {
+          this.setData({
+            courseContent: course.course_content
+          });
+        }
         
         // 根据用户角色决定显示的头像和昵称
         let displayName, displayAvatar;
@@ -599,6 +609,579 @@ Page({
         }
       }
     })
+  },
+
+  /**
+   * 显示课程内容编辑弹窗
+   */
+  onShowContentModal() {
+    this.setData({
+      courseContent: this.data.courseInfo.course_content,
+      showContentModal: true
+    });
+  },
+
+  /**
+   * 隐藏课程内容编辑弹窗
+   */
+  onHideContentModal() {
+    this.setData({
+      showContentModal: false
+    });
+  },
+
+  /**
+   * 课程内容保存成功
+   */
+  onContentSaveSuccess(e) {
+    const { courseContent } = e.detail;
+    
+    // 更新课程内容
+    this.setData({
+      courseContent: courseContent
+    });
+    
+    // 刷新课程详情
+    this.loadCourseDetail();
+  },
+
+  /**
+   * 文本内容输入
+   */
+  onContentTextInput(e) {
+    this.setData({
+      'contentForm.text_content': e.detail.value
+    });
+  },
+
+  /**
+   * 选择图片
+   */
+  onChooseImage() {
+    const { images } = this.data.contentForm;
+    const maxCount = 9 - images.length;
+    
+    if (maxCount <= 0) {
+      wx.showToast({
+        title: '最多上传9张图片',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.chooseImage({
+      count: maxCount,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: async (res) => {
+        wx.showLoading({ title: '上传中...' });
+        
+        try {
+          const uploadPromises = res.tempFilePaths.map(filePath => 
+            api.upload.courseContent(filePath)
+          );
+          
+          const results = await Promise.all(uploadPromises);
+          const newImages = results.map(r => r.data.url);
+          
+          this.setData({
+            'contentForm.images': [...images, ...newImages]
+          });
+          
+          wx.hideLoading();
+          wx.showToast({
+            title: '上传成功',
+            icon: 'success'
+          });
+        } catch (error) {
+          wx.hideLoading();
+          wx.showToast({
+            title: error.message || '上传失败',
+            icon: 'error'
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 删除图片
+   */
+  onDeleteImage(e) {
+    const { index } = e.currentTarget.dataset;
+    const { images } = this.data.contentForm;
+    
+    images.splice(index, 1);
+    this.setData({
+      'contentForm.images': images
+    });
+  },
+
+  /**
+   * 预览图片
+   */
+  onPreviewImage(e) {
+    const { url } = e.currentTarget.dataset;
+    const { images } = this.data.contentForm;
+    
+    wx.previewImage({
+      current: url,
+      urls: images
+    });
+  },
+
+  /**
+   * 开始录音
+   */
+  onStartRecord() {
+    const { audios } = this.data.contentForm;
+    
+    if (audios.length >= 3) {
+      wx.showToast({
+        title: '最多录制3个音频',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 请求录音权限并开始录音
+    wx.authorize({
+      scope: 'scope.record',
+      success: () => {
+        this.startRecording();
+      },
+      fail: () => {
+        // 权限被拒绝，引导用户打开设置
+        wx.showModal({
+          title: '需要录音权限',
+          content: '请在设置中开启录音权限',
+          confirmText: '去设置',
+          success: (res) => {
+            if (res.confirm) {
+              wx.openSetting();
+            }
+          }
+        });
+      }
+    });
+  },
+
+  /**
+   * 开始录音
+   */
+  startRecording() {
+    const { recorderManager } = this.data;
+    
+    recorderManager.start({
+      duration: 60000, // 最长录音时长60秒
+      sampleRate: 16000, // 采样率
+      numberOfChannels: 1, // 录音通道数
+      encodeBitRate: 48000, // 编码码率
+      format: 'mp3' // 音频格式
+    });
+  },
+
+  /**
+   * 停止录音
+   */
+  onStopRecord() {
+    const { recorderManager, isRecording } = this.data;
+    
+    if (!isRecording) {
+      return;
+    }
+    
+    recorderManager.stop();
+  },
+
+  /**
+   * 播放录音预览
+   */
+  onPlayRecordPreview() {
+    const { currentRecordPath, playingAudioContext, isPlayingPreview } = this.data;
+    
+    // 如果正在播放，则停止
+    if (isPlayingPreview && playingAudioContext) {
+      playingAudioContext.stop();
+      playingAudioContext.destroy();
+      this.setData({
+        playingAudioContext: null,
+        isPlayingPreview: false
+      });
+      return;
+    }
+    
+    // 开始播放
+    const innerAudioContext = wx.createInnerAudioContext();
+    innerAudioContext.src = currentRecordPath;
+    
+    this.setData({
+      playingAudioContext: innerAudioContext,
+      isPlayingPreview: true
+    });
+    
+    innerAudioContext.play();
+    
+    wx.showToast({
+      title: '播放中...',
+      icon: 'none',
+      duration: 1000
+    });
+    
+    // 播放结束
+    innerAudioContext.onEnded(() => {
+      innerAudioContext.destroy();
+      this.setData({
+        playingAudioContext: null,
+        isPlayingPreview: false
+      });
+    });
+    
+    // 播放错误
+    innerAudioContext.onError((err) => {
+      console.error('音频播放失败:', err);
+      innerAudioContext.destroy();
+      this.setData({
+        playingAudioContext: null,
+        isPlayingPreview: false
+      });
+      wx.showToast({
+        title: '播放失败',
+        icon: 'none'
+      });
+    });
+  },
+
+  /**
+   * 重新录音
+   */
+  onReRecord() {
+    // 停止正在播放的音频
+    if (this.data.playingAudioContext) {
+      this.data.playingAudioContext.stop();
+      this.data.playingAudioContext.destroy();
+    }
+    
+    this.setData({
+      showRecordPreview: false,
+      currentRecordPath: '',
+      recordingDuration: 0,
+      playingAudioContext: null,
+      isPlayingPreview: false
+    });
+  },
+
+  /**
+   * 提交录音
+   */
+  async onSubmitRecord() {
+    // 停止正在播放的音频
+    if (this.data.playingAudioContext) {
+      this.data.playingAudioContext.stop();
+      this.data.playingAudioContext.destroy();
+    }
+    
+    const { currentRecordPath, recordingDuration } = this.data;
+    const { audios } = this.data.contentForm;
+    
+    // 录音时长需要至少1秒
+    if (recordingDuration < 1) {
+      wx.showToast({
+        title: '录音时长太短',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    wx.showLoading({ title: '上传中...' });
+    
+    try {
+      const result = await api.courseContent.uploadAudio(currentRecordPath);
+      
+      this.setData({
+        'contentForm.audios': [...audios, {
+          url: result.data.url,
+          duration: recordingDuration
+        }],
+        showRecordPreview: false,
+        currentRecordPath: '',
+        recordingDuration: 0,
+        playingAudioContext: null,
+        isPlayingPreview: false
+      });
+      
+      wx.hideLoading();
+      wx.showToast({
+        title: '上传成功',
+        icon: 'success'
+      });
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '上传失败',
+        icon: 'error'
+      });
+    }
+  },
+
+  /**
+   * 播放已上传的音频
+   */
+  onPlayAudio(e) {
+    const { url } = e.currentTarget.dataset;
+    const { playingAudioContext } = this.data;
+    
+    // 如果有正在播放的音频，先停止
+    if (playingAudioContext) {
+      playingAudioContext.stop();
+      playingAudioContext.destroy();
+      
+      // 如果点击的是同一个音频，则只停止不重新播放
+      if (playingAudioContext.src === url) {
+        this.setData({
+          playingAudioContext: null
+        });
+        return;
+      }
+    }
+    
+    // 开始播放新的音频
+    const innerAudioContext = wx.createInnerAudioContext();
+    innerAudioContext.src = url;
+    
+    this.setData({
+      playingAudioContext: innerAudioContext
+    });
+    
+    innerAudioContext.play();
+    
+    wx.showToast({
+      title: '播放中...',
+      icon: 'none',
+      duration: 1000
+    });
+    
+    // 播放结束
+    innerAudioContext.onEnded(() => {
+      innerAudioContext.destroy();
+      this.setData({
+        playingAudioContext: null
+      });
+    });
+    
+    // 播放错误
+    innerAudioContext.onError((err) => {
+      console.error('音频播放失败:', err);
+      innerAudioContext.destroy();
+      this.setData({
+        playingAudioContext: null
+      });
+      wx.showToast({
+        title: '播放失败',
+        icon: 'none'
+      });
+    });
+  },
+
+  /**
+   * 删除音频
+   */
+  onDeleteAudio(e) {
+    const { index } = e.currentTarget.dataset;
+    const { audios } = this.data.contentForm;
+    
+    audios.splice(index, 1);
+    this.setData({
+      'contentForm.audios': audios
+    });
+  },
+
+  /**
+   * 选择视频
+   */
+  onChooseVideo() {
+    console.log('点击了添加视频按钮');
+    const { videos } = this.data.contentForm;
+    
+    if (videos.length >= 1) {
+      wx.showToast({
+        title: '最多上传1个视频',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 先请求相机权限
+    wx.authorize({
+      scope: 'scope.camera',
+      success: () => {
+        console.log('相机权限已授权');
+        this.chooseVideoFile();
+      },
+      fail: () => {
+        console.log('相机权限被拒绝，尝试直接选择');
+        // 即使相机权限被拒绝，用户仍然可以从相册选择
+        this.chooseVideoFile();
+      }
+    });
+  },
+
+  /**
+   * 选择视频文件
+   */
+  chooseVideoFile() {
+    console.log('开始选择视频');
+    wx.chooseVideo({
+      sourceType: ['album', 'camera'],
+      maxDuration: 60, // 微信小程序限制最长60秒
+      camera: 'back',
+      success: async (res) => {
+        console.log('视频选择成功:', res);
+        // 检查文件大小（100MB）
+        if (res.size > 100 * 1024 * 1024) {
+          wx.showToast({
+            title: '视频文件不能超过100MB',
+            icon: 'none'
+          });
+          return;
+        }
+        
+        wx.showLoading({ title: '上传中...' });
+        
+        try {
+          const result = await api.courseContent.uploadVideo(res.tempFilePath);
+          
+          const { videos } = this.data.contentForm;
+          this.setData({
+            'contentForm.videos': [...videos, {
+              url: result.data.url,
+              duration: Math.round(res.duration)
+            }]
+          });
+          
+          wx.hideLoading();
+          wx.showToast({
+            title: '上传成功',
+            icon: 'success'
+          });
+        } catch (error) {
+          console.error('视频上传失败:', error);
+          wx.hideLoading();
+          wx.showToast({
+            title: error.message || '上传失败',
+            icon: 'error'
+          });
+        }
+      },
+      fail: (error) => {
+        console.error('选择视频失败:', error);
+        if (error.errMsg && error.errMsg.includes('cancel')) {
+          console.log('用户取消选择视频');
+          return;
+        }
+        wx.showToast({
+          title: '选择视频失败',
+          icon: 'none'
+        });
+      }
+    });
+  },
+
+  /**
+   * 删除视频
+   */
+  onDeleteVideo(e) {
+    const { index } = e.currentTarget.dataset;
+    const { videos } = this.data.contentForm;
+    
+    videos.splice(index, 1);
+    this.setData({
+      'contentForm.videos': videos
+    });
+  },
+
+  /**
+   * 保存课程内容
+   */
+  async onSaveCourseContent() {
+    const { contentForm, courseContent } = this.data;
+    
+    // 验证至少有一项内容
+    if (!contentForm.text_content && 
+        contentForm.images.length === 0 && 
+        contentForm.audios.length === 0 && 
+        contentForm.videos.length === 0) {
+      wx.showToast({
+        title: '请至少添加一项内容',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    try {
+      wx.showLoading({ title: '保存中...' });
+      
+      const params = {
+        course_type: 1, // 一对一课程
+        booking_id: this.data.courseId,
+        text_content: contentForm.text_content || null,
+        images: contentForm.images.length > 0 ? contentForm.images : null,
+        audios: contentForm.audios.length > 0 ? contentForm.audios : null,
+        videos: contentForm.videos.length > 0 ? contentForm.videos : null
+      };
+      
+      let result;
+      if (courseContent && courseContent.id) {
+        // 更新课程内容
+        result = await api.courseContent.update(courseContent.id, params);
+      } else {
+        // 创建课程内容
+        result = await api.courseContent.create(params);
+      }
+      
+      wx.hideLoading();
+      
+      if (result && result.success) {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+        
+        this.setData({
+          showContentModal: false,
+          courseContent: result.data
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '保存失败',
+        icon: 'error'
+      });
+    }
+  },
+
+  /**
+   * 格式化时长（秒转分:秒）
+   */
+  formatDuration(seconds) {
+    if (!seconds) return '00:00';
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  },
+
+  /**
+   * 预览课程内容图片
+   */
+  onPreviewContentImage(e) {
+    const { url } = e.currentTarget.dataset;
+    const { courseContent } = this.data;
+    
+    wx.previewImage({
+      current: url,
+      urls: courseContent.images
+    });
   },
 
   /**
