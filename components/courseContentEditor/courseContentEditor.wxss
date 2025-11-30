@@ -366,6 +366,11 @@
   border: none;
 }
 
+.record-action-btn:active{
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
 /* 录音预览 */
 .record-preview {
   display: flex;
@@ -420,6 +425,11 @@
 
 .preview-btn::after {
   border: none;
+}
+
+.preview-btn:active{
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .preview-btn.cancel {
