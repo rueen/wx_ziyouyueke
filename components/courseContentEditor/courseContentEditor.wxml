@@ -72,9 +72,14 @@
           </view>
           
           <!-- 录音按钮 -->
-          <view wx:if="{{contentForm.audios.length < 3 && !isRecording && !showRecordPreview}}" 
+          <view wx:if="{{contentForm.audios.length < 3 && !isRecording && !showRecordPreview && !isRequestingRecord}}" 
                 class="record-btn-wrapper">
             <button class="preview-btn confirm" bindtap="onStartRecord">点击录音</button>
+          </view>
+          
+          <!-- 准备录音中 -->
+          <view wx:if="{{isRequestingRecord}}" class="record-btn-wrapper">
+            <button class="preview-btn confirm" disabled>准备中...</button>
           </view>
           
           <!-- 录音中状态 -->

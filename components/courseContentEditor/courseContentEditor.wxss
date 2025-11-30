@@ -256,6 +256,12 @@
   width: 100%;
 }
 
+.record-btn-wrapper button[disabled] {
+  opacity: 0.6;
+  background-color: #e5e5ea !important;
+  color: #86868b !important;
+}
+
 .record-btn {
   display: flex;
   flex-direction: column;

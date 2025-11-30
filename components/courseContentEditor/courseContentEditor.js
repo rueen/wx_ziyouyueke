@@ -46,6 +46,7 @@ Component({
     
     // 录音相关
     isRecording: false,
+    isRequestingRecord: false, // 是否正在请求录音权限/启动录音
     recordingDuration: 0,
     recordTimer: null,
     recorderManager: null,
@@ -53,6 +54,7 @@ Component({
     showRecordPreview: false,
     playingAudioContext: null,
     isPlayingPreview: false,
+    playingAudioIndex: null, // 当前播放的音频索引
     
     uploadingMedia: false
   },
@@ -187,11 +189,13 @@ Component({
     resetRecordState() {
       this.setData({
         isRecording: false,
+        isRequestingRecord: false,
         recordingDuration: 0,
         currentRecordPath: '',
         showRecordPreview: false,
         playingAudioContext: null,
-        isPlayingPreview: false
+        isPlayingPreview: false,
+        playingAudioIndex: null
       });
     },
 
@@ -317,6 +321,11 @@ Component({
      * 开始录音
      */
     onStartRecord() {
+      // 防止重复点击
+      if (this.data.isRequestingRecord || this.data.isRecording) {
+        return;
+      }
+      
       const { audios } = this.data.contentForm;
       
       if (audios.length >= 3) {
@@ -327,6 +336,16 @@ Component({
         return;
       }
       
+      // 设置请求中状态
+      this.setData({
+        isRequestingRecord: true
+      });
+      
+      wx.showLoading({
+        title: '准备录音...',
+        mask: true
+      });
+      
       // 请求录音权限并开始录音
       wx.authorize({
         scope: 'scope.record',
@@ -334,6 +353,12 @@ Component({
           this.startRecording();
         },
         fail: () => {
+          // 权限请求失败，重置状态
+          this.setData({
+            isRequestingRecord: false
+          });
+          wx.hideLoading();
+          
           wx.showModal({
             title: '需要录音权限',
             content: '请在设置中开启录音权限',
@@ -354,13 +379,32 @@ Component({
     startRecording() {
       const { recorderManager } = this.data;
       
-      recorderManager.start({
-        duration: 60000,
-        sampleRate: 16000,
-        numberOfChannels: 1,
-        encodeBitRate: 48000,
-        format: 'mp3'
-      });
+      try {
+        recorderManager.start({
+          duration: 60000,
+          sampleRate: 16000,
+          numberOfChannels: 1,
+          encodeBitRate: 48000,
+          format: 'mp3'
+        });
+        
+        // 录音器的 onStart 回调会处理后续状态
+        // 这里可以先隐藏 loading，onStart 回调会更新 isRecording 状态
+        wx.hideLoading();
+        this.setData({
+          isRequestingRecord: false
+        });
+      } catch (error) {
+        console.error('开始录音失败:', error);
+        wx.hideLoading();
+        this.setData({
+          isRequestingRecord: false
+        });
+        wx.showToast({
+          title: '录音启动失败',
+          icon: 'none'
+        });
+      }
     },
 
     /**
