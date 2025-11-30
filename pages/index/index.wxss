@@ -96,6 +96,61 @@ page {
   margin-left: 10rpx;
 }
 
+/* 公共菜单 */
+.menu-section{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.menu-item{
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20rpx 0;
+  position: relative;
+}
+.menu-item::after{
+  content: '';
+  display: block;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  margin-left: -5rpx;
+  z-index: 0;
+}
+.menu-item.subscribe::after{
+  background-color: #cff632;
+}
+.menu-item .iconfont{
+  font-size: 46rpx;
+  width: 60rpx;
+  height: 60rpx;
+  text-align: center;
+  line-height: 60rpx;
+  position: relative;
+  z-index: 1;
+}
+.menu-item-text{
+  font-size: 24rpx;
+  color: #000;
+  margin-top: 5rpx;
+}
+.menu-item.tool-bmi .icon-bmi{
+  display: block;
+  font-size: 36rpx;
+  width: 60rpx;
+  height: 60rpx;
+  text-align: center;
+  line-height: 60rpx;
+  position: relative;
+  z-index: 1;
+}
+
 /* 我的课表 */
 .my-schedule {
   margin-top: 16rpx;

@@ -1,0 +1,203 @@
+/* pages/tools-bmi/bmi.wxss */
+page {
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.bmi-container {
+  padding: 0 16rpx 32rpx;
+  margin-top: 16rpx;
+}
+
+/* 输入区域 */
+.input-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.input-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.input-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 32rpx;
+}
+
+.input-item .label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: normal;
+  min-width: 120rpx;
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.input {
+  flex: 1;
+  text-align: right;
+  font-size: 32rpx;
+  color: #333;
+  padding-right: 16rpx;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.unit {
+  font-size: 28rpx;
+  color: #999;
+  min-width: 60rpx;
+}
+
+/* 计算按钮 */
+.calculate-btn {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculate-btn:active {
+  transform: translateY(2rpx);
+  background-color: #222;
+}
+
+/* 结果展示 */
+.result-section {
+  margin-bottom: 16rpx;
+}
+
+.result-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bmi-value {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 24rpx;
+}
+
+.bmi-value .label-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.bmi-value .value-text {
+  font-size: 56rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.bmi-category {
+  display: flex;
+  align-items: center;
+}
+
+.bmi-category .label-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.bmi-category .category-text {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 标准区域 */
+.standard-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.standard-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+/* 表格样式 */
+.table-wrapper {
+  border: 1rpx solid #e5e5ea;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 1rpx solid #e5e5ea;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-header {
+  background-color: #f2f2f7;
+}
+
+.table-header .table-cell {
+  font-weight: bold;
+  color: #333;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 24rpx 16rpx;
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+  border-right: 1rpx solid #e5e5ea;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+/* 来源注释 */
+.source-note {
+  margin-top: 24rpx;
+  padding: 16rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.note-text {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+}
+
+.note-text:last-child {
+  margin-bottom: 0;
+}

@@ -19,7 +19,7 @@
         </view>
       </view>
 
-      <view class="stats-row">
+      <!-- <view class="stats-row">
         <view class="stat-item" bindtap="onMyCoachOrStudentClick">
           <text class="stat-label">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
           <text class="iconfont icon-arrow-r stat-arrow"></text>
@@ -29,13 +29,29 @@
           <text class="stat-label">上课记录</text>
           <text class="iconfont icon-arrow-r stat-arrow"></text>
         </view>
+      </view> -->
+      <!-- 公共菜单 -->
+      <view class="menu-section">
+        <view class="menu-item subscribe" bind:tap="openSubscribeMessage">
+          <text class="iconfont icon-xiaoxidingyue"></text>
+          <text class="menu-item-text">消息订阅</text>
+        </view>
+        <view class="menu-item coach" bind:tap="handleOpenAllCoachList">
+          <text class="iconfont icon-users"></text>
+          <text class="menu-item-text">教练大厅</text>
+        </view>
+        <view class="menu-item activity" bind:tap="handleOpenAllGroupCourses">
+          <text class="iconfont icon-huodong"></text>
+          <text class="menu-item-text">活动大厅</text>
+        </view>
+        <view class="menu-item tool-bmi" bind:tap="handleOpenToolsBmi">
+          <view class="icon-bmi">
+            <text class="icon-bmi-text">BMI</text>
+          </view>
+          <text class="menu-item-text">身体测量</text>
+        </view>
       </view>
     </view>
-
-    <!-- 活动大厅 -->
-    <!-- <view class="active ad-container" bind:tap="handleOpenAllGroupCourses">
-      <image src="https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/images/ad-allGroupCourses.png" mode="aspectFill" class="ad-image" />
-    </view> -->
 
     <!-- 我的课表 -->
     <view class="my-schedule">

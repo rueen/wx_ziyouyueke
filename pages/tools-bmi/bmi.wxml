@@ -1,0 +1,79 @@
+<!--pages/tools-bmi/bmi.wxml-->
+<navBar title="BMI计算器" />
+<layout>
+  <view class="bmi-container">
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <view class="input-item">
+        <text class="label">身高</text>
+        <view class="input-wrapper">
+          <input type="digit" class="input" placeholder="请输入身高" value="{{height}}" bindinput="onHeightInput" />
+          <text class="unit">厘米</text>
+        </view>
+      </view>
+
+      <view class="input-item">
+        <text class="label">体重</text>
+        <view class="input-wrapper">
+          <input type="digit" class="input" placeholder="请输入体重" value="{{weight}}" bindinput="onWeightInput" />
+          <text class="unit">公斤</text>
+        </view>
+      </view>
+
+      <!-- 计算按钮 -->
+      <button class="calculate-btn" bindtap="onCalculate">BMI 计算</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view class="result-section" wx:if="{{bmiValue}}">
+      <view class="result-card">
+        <view class="bmi-value">
+          <text class="label-text">您的BMI指数为：</text>
+          <text class="value-text">{{bmiValue}}</text>
+        </view>
+        <view class="bmi-category">
+          <text class="label-text">属于：</text>
+          <text class="category-text" style="color: {{categoryColor}}">{{category}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成年人判断标准 -->
+    <view class="standard-section">
+      <view class="standard-title">成年人超重肥胖判断标准</view>
+      <view class="table-wrapper">
+        <view class="table-row table-header">
+          <text class="table-cell">BMI范围</text>
+          <text class="table-cell">分类</text>
+        </view>
+        <view class="table-row" wx:for="{{adultStandards}}" wx:key="index">
+          <text class="table-cell">{{item.range}}</text>
+          <text class="table-cell">{{item.category}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 儿童青少年判断标准 -->
+    <view class="standard-section">
+      <view class="standard-title">7～17岁儿童青少年超重肥胖判断标准</view>
+      <view class="table-wrapper">
+        <view class="table-row table-header">
+          <text class="table-cell">年龄（岁）</text>
+          <text class="table-cell">性别</text>
+          <text class="table-cell">超重</text>
+          <text class="table-cell">肥胖</text>
+        </view>
+        <view class="table-row" wx:for="{{childStandards}}" wx:key="index">
+          <text class="table-cell">{{item.age}}</text>
+          <text class="table-cell">{{item.gender}}</text>
+          <text class="table-cell">{{item.overweight}}</text>
+          <text class="table-cell">{{item.obese}}</text>
+        </view>
+      </view>
+      <view class="source-note">
+        <text class="note-text">数据来源：《中国居民膳食指南（2022）》</text>
+        <text class="note-text">注：儿童青少年BMI标准因年龄、性别而异，建议参考完整版标准或咨询专业医生</text>
+      </view>
+    </view>
+  </view>
+</layout>

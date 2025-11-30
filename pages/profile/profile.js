@@ -237,27 +237,6 @@ Page({
     })
   },
 
-  // 消息订阅
-  openSubscribeMessage() {
-    wx.navigateTo({
-      url: '/pages/subscribeMessage/subscribeMessage'
-    });
-  },
-
-  // 教练大厅
-  handleOpenAllCoachList() {
-    wx.navigateTo({
-      url: '/pages/allCoachList/allCoachList'
-    });
-  },
-
-  // 活动大厅
-  handleOpenAllGroupCourses() {
-    wx.navigateTo({
-      url: '/pages/allGroupCourses/allGroupCourses'
-    });
-  },
-
   /**
    * 上课记录
    */

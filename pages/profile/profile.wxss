@@ -112,7 +112,7 @@ page {
   background-color: #cff632;
 }
 .menu-item .iconfont{
-  font-size: 50rpx;
+  font-size: 46rpx;
   width: 60rpx;
   height: 60rpx;
   text-align: center;
