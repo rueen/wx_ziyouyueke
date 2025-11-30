@@ -61,10 +61,10 @@
       <text class="menu-item-text">我的活动</text>
     </view>
 
-    <view class="menu-item support" bind:tap="handleSupport">
+    <!-- <view class="menu-item support" bind:tap="handleSupport">
       <text class="iconfont icon-coffee"></text>
       <text class="menu-item-text">友情赞助</text>
-    </view>
+    </view> -->
   </view>
   <!-- 学员端显示 -->
   <view class="menu-section" wx:if="{{userRole === 'student'}}">
