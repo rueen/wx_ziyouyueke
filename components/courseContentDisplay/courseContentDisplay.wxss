@@ -8,7 +8,7 @@
 .course-content-section {
   background: #fff;
   border-radius: 16rpx;
-  padding: 32rpx;
+  padding: 24rpx;
 }
 
 .section-header {

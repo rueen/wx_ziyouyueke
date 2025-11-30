@@ -1286,51 +1286,168 @@ module.exports = {
     },
 
     /**
-     * 上传视频文件
+     * 上传视频文件（自动压缩大于10MB的视频）
      * @param {string} filePath - 本地视频文件路径
+     * @param {Object} options - 配置选项
+     * @param {boolean} options.compress - 是否压缩，默认true
+     * @param {number} options.compressThreshold - 压缩阈值(MB)，默认10MB
+     * @param {string} options.quality - 压缩质量：low | medium | high，默认medium
+     * @param {number} options.bitrate - 码率(kbps)，默认1000
+     * @param {number} options.resolution - 分辨率比例(0-1]，默认1
      * @returns {Promise}
      */
-    uploadVideo: function(filePath) {
-      return new Promise((resolve, reject) => {
-        const token = wx.getStorageSync('token');
+    uploadVideo: function(filePath, options = {}) {
+      return new Promise(async (resolve, reject) => {
+        const {
+          compress = true,
+          compressThreshold = 10,
+          quality = 'medium',
+          bitrate = 1000,
+          resolution = 1
+        } = options;
         
-        wx.uploadFile({
-          url: `${API_CONFIG.baseUrl}/api/upload/video`,
-          filePath: filePath,
-          name: 'file',
-          formData: {
-            directory: 'course_contents/videos'
-          },
-          header: {
-            'Authorization': `Bearer ${token}`
-          },
-          success: (res) => {
-            try {
-              const data = JSON.parse(res.data);
-              if (data.success) {
-                resolve(data);
-              } else {
-                // Token过期处理
-                if (data.code === 1002 || data.code === 2002) {
-                  handleTokenExpired();
+        const token = wx.getStorageSync('token');
+        let uploadPath = filePath;
+        
+        try {
+          // 如果启用压缩，检查文件大小并压缩
+          if (compress) {
+            const fileInfo = await this._getFileInfo(filePath);
+            const fileSizeInMB = fileInfo.size / 1024 / 1024;
+            
+            console.log(`[视频上传] 原始大小: ${fileSizeInMB.toFixed(2)}MB`);
+            
+            // 大于阈值时进行压缩
+            if (fileSizeInMB > compressThreshold) {
+              console.log(`[视频上传] 视频较大，尝试压缩...`);
+              wx.showLoading({ title: '压缩中...' });
+              
+              try {
+                const compressResult = await this._compressVideo(filePath, {
+                  quality,
+                  bitrate,
+                  resolution
+                });
+                
+                uploadPath = compressResult.tempFilePath;
+                const compressedSizeInMB = compressResult.size / 1024 / 1024;
+                const compressionRatio = ((1 - compressResult.size / fileInfo.size) * 100).toFixed(0);
+                
+                console.log(`[视频上传] 压缩完成: ${compressedSizeInMB.toFixed(2)}MB, 压缩率: ${compressionRatio}%`);
+              } catch (compressError) {
+                // 压缩失败，使用原视频（开发者工具可能因缺少 ffmpeg 而失败，真机正常）
+                console.warn('[视频上传] 压缩失败，使用原视频:', compressError.message || compressError);
+                if (compressError.message && compressError.message.includes('ffmpeg')) {
+                  console.info('[提示] 开发者工具需要安装 ffmpeg 才能压缩视频，但真机上可正常使用');
+                  console.info('[提示] 详见文档: https://developers.weixin.qq.com/miniprogram/dev/devtools/ffmpeg.html');
                 }
-                reject(data);
               }
-            } catch (e) {
+            }
+          }
+          
+          // 开始上传
+          wx.showLoading({ title: '上传中...' });
+          
+          wx.uploadFile({
+            url: `${API_CONFIG.baseUrl}/api/upload/video`,
+            filePath: uploadPath,
+            name: 'file',
+            formData: {
+              directory: 'course_contents/videos'
+            },
+            header: {
+              'Authorization': `Bearer ${token}`
+            },
+            success: (res) => {
+              try {
+                const data = JSON.parse(res.data);
+                if (data.success) {
+                  resolve(data);
+                } else {
+                  // Token过期处理
+                  if (data.code === 1002 || data.code === 2002) {
+                    handleTokenExpired();
+                  }
+                  reject(data);
+                }
+              } catch (e) {
+                reject({
+                  code: -1,
+                  message: '响应解析失败',
+                  error: e
+                });
+              }
+            },
+            fail: (error) => {
+              console.error('[API Upload Error] /api/upload/video', error);
               reject({
                 code: -1,
-                message: '响应解析失败',
-                error: e
+                message: '视频上传失败',
+                error: error
               });
             }
+          });
+        } catch (error) {
+          console.error('[视频上传] 处理失败:', error);
+          reject({
+            code: -1,
+            message: '视频处理失败',
+            error: error
+          });
+        }
+      });
+    },
+    
+    /**
+     * 获取文件信息
+     * @private
+     * @param {string} filePath - 文件路径
+     * @returns {Promise}
+     */
+    _getFileInfo: function(filePath) {
+      return new Promise((resolve, reject) => {
+        wx.getFileInfo({
+          filePath: filePath,
+          success: resolve,
+          fail: reject
+        });
+      });
+    },
+    
+    /**
+     * 压缩视频
+     * @private
+     * @param {string} videoPath - 视频文件路径
+     * @param {Object} options - 压缩配置
+     * @returns {Promise}
+     */
+    _compressVideo: function(videoPath, options = {}) {
+      const { quality = 'medium', bitrate = 1000, resolution = 1 } = options;
+      
+      return new Promise((resolve, reject) => {
+        // 检查是否支持视频压缩
+        if (!wx.compressVideo) {
+          console.warn('[视频压缩] 当前环境不支持 wx.compressVideo');
+          reject(new Error('当前环境不支持视频压缩'));
+          return;
+        }
+        
+        wx.compressVideo({
+          src: videoPath,
+          quality: quality,
+          bitrate: bitrate,
+          resolution: resolution,
+          success: (res) => {
+            console.log('[视频压缩] 成功:', res);
+            resolve(res);
           },
           fail: (error) => {
-            console.error('[API Upload Error] /api/upload/video', error);
-            reject({
-              code: -1,
-              message: '视频上传失败',
-              error: error
-            });
+            console.error('[视频压缩] 失败:', error);
+            // 开发者工具可能需要安装 ffmpeg，真机不需要
+            if (error.errMsg && error.errMsg.includes('ffmpeg')) {
+              console.warn('[视频压缩] 开发者工具需安装 ffmpeg，真机可正常使用');
+            }
+            reject(error);
           }
         });
       });

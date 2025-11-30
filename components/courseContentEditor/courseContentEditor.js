@@ -576,7 +576,6 @@ Component({
      * 选择视频
      */
     onChooseVideo() {
-      console.log('点击了添加视频按钮');
       const { videos } = this.data.contentForm;
       
       if (videos.length >= 1) {
@@ -618,9 +617,8 @@ Component({
             return;
           }
           
-          wx.showLoading({ title: '上传中...' });
-          
           try {
+            // 上传视频（自动压缩大于10MB的视频）
             const result = await api.courseContent.uploadVideo(res.tempFilePath);
             
             const { videos } = this.data.contentForm;

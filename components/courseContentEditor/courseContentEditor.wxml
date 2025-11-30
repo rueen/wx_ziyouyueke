@@ -110,7 +110,7 @@
       </view>
 
       <!-- 视频 -->
-      <view class="form-group">
+      <!-- <view class="form-group">
         <view class="form-label">视频（最多1个，最长60秒）</view>
         <view class="media-list">
           <view wx:for="{{contentForm.videos}}" wx:key="url" class="video-item">
@@ -127,8 +127,6 @@
             >
               <text class="iconfont icon-close"></text>
             </view>
-            <!-- <text class="iconfont icon-close delete-media" 
-                  bindtap="onDeleteVideo" data-index="{{index}}"></text> -->
           </view>
           <view wx:if="{{contentForm.videos.length < 1}}" 
                 class="add-media-btn" 
@@ -137,7 +135,7 @@
             添加视频
           </view>
         </view>
-      </view>
+      </view> -->
     </view>
 
     <view class="modal-footer">

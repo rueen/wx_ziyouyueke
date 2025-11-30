@@ -58,7 +58,7 @@
   </view>
 
   <!-- 视频内容 -->
-  <view wx:if="{{courseContent.videos && courseContent.videos.length > 0}}" class="content-videos">
+  <!-- <view wx:if="{{courseContent.videos && courseContent.videos.length > 0}}" class="content-videos">
     <video 
       wx:for="{{courseContent.videos}}" 
       wx:key="url"
@@ -67,6 +67,6 @@
       controls
       show-center-play-btn
     ></video>
-  </view>
+  </view> -->
 </view>
 
