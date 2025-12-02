@@ -83,10 +83,10 @@
       <text class="menu-item-text">我参加的活动</text>
     </view>
 
-    <view class="menu-item support" bind:tap="handleSupport">
+    <!-- <view class="menu-item support" bind:tap="handleSupport">
       <text class="iconfont icon-coffee"></text>
       <text class="menu-item-text">友情赞助</text>
-    </view>
+    </view> -->
   </view>
   <!-- 登录/退出登录 -->
   <view class="logout-btn" bindtap="onLogout">
