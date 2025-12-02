@@ -1,4 +1,5 @@
 <!--pages/login/login.wxml-->
+<ghostNav isShowLogo="{{false}}" />
 <view class="login-container">
   <!-- 顶部Logo区域 -->
   <view class="logo-section">

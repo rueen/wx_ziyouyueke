@@ -297,6 +297,11 @@ Page({
 
   // 消息订阅
   openSubscribeMessage() {
+    // 检查是否需要登录
+    if (!this.checkLoginRequired()) {
+      return;
+    }
+    
     wx.navigateTo({
       url: '/pages/subscribeMessage/subscribeMessage'
     });

@@ -1,4 +1,7 @@
 {
   "navigationStyle": "custom",
-  "navigationBarTextStyle": "white"
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "ghostNav": "/components/ghostNav/ghostNav"
+  }
 } 
