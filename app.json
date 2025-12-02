@@ -30,9 +30,6 @@
     "pages/cardManagement/cardManagement",
     "pages/studentCards/studentCards",
     "pages/cardDetail/cardDetail",
-    "pages/donation/donation",
-    "pages/myDonations/myDonations",
-    "pages/donationList/donationList",
     "pages/tools-bmi/bmi"
   ],
   "requiredPrivateInfos": [

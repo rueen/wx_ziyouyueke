@@ -365,11 +365,11 @@ Page({
   /**
    * 友情赞助
    */
-  handleSupport() {
-    wx.navigateTo({
-      url: '/pages/donation/donation'
-    });
-  },
+  // handleSupport() {
+  //   wx.navigateTo({
+  //     url: '/pages/donation/donation'
+  //   });
+  // },
 
   /**
    * 登录/退出登录
