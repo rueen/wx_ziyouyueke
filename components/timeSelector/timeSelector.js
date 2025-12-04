@@ -377,7 +377,7 @@ Component({
             const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
             return {
               id: course.id,
-              studentName: course.student ? course.student.nickname : '未知学员',
+              studentName: course.relation.student_name || course.student.nickname,
               location: course.address.name,
               booking_status: this.getStatusFromApi(course.booking_status),
               isCreatedByCurrentUser: isCreatedByCurrentUser,
