@@ -33,7 +33,137 @@
       <view class="loading-text">加载中...</view>
     </view>
 
-    <!-- 时间段列表 -->
+    <!-- 自由时间选择（timeType = 2 且 mode = select） -->
+    <view wx:elif="{{timeType === 2 && mode === 'select'}}" class="free-time-selector-wrapper">
+      <view class="free-time-hint" wx:if="{{freeTimeRange}}">
+        <text class="hint-text">可预约时间段：{{freeTimeRange.startTime}} - {{freeTimeRange.endTime}}</text>
+      </view>
+
+      <!-- 已有课程展示（放在选择时间上方） -->
+      <view wx:if="{{bookedCoursesForDisplay.length > 0 || groupCoursesForDisplay.length > 0}}" class="booked-courses-section">
+        <view class="section-header">
+          <text class="section-title">当天已有课程</text>
+          <text class="section-subtitle">（避免时间冲突）</text>
+        </view>
+        
+        <view class="courses-list">
+          <!-- 个人课程 -->
+          <view 
+            class="course-item personal-course" 
+            wx:for="{{bookedCoursesForDisplay}}" 
+            wx:for-item="course"
+            wx:key="id"
+            data-course="{{course}}"
+            bindtap="onCourseTap"
+          >
+            <view class="course-time">
+              <text>{{course.startTime}} - {{course.endTime}}</text>
+            </view>
+            <view class="personal-course-info">
+              <view class="student-info">
+                <text class="student-name">{{course.studentName}}</text>
+                <view class="status-badge status-{{course.booking_status}}">
+                  <text class="status-text">{{course.booking_status === 'pending' ? (
+                    course.isCreatedByCurrentUser ? (
+                      userRole === 'coach' ? '待学员确认' : '待教练确认'
+                    ) : '待确认'
+                  ) : 
+                    course.booking_status === 'confirmed' ? '已确认' : 
+                    course.booking_status === 'completed' ? '已完成' : '未知状态'}}</text>
+                </view>
+              </view>
+              <view class="location-info">
+                <text class="iconfont icon-locationfill"></text>
+                <text>{{course.location}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 活动 -->
+          <view 
+            class="course-item group-course" 
+            wx:for="{{groupCoursesForDisplay}}" 
+            wx:for-item="course"
+            wx:key="id"
+            data-course="{{course}}"
+            bindtap="onCourseTap"
+          >
+            <view class="course-time">
+              <text>{{course.startTime}} - {{course.endTime}}</text>
+            </view>
+            <view class="group-course-info">
+              <view class="group-course-header">
+                <text class="group-course-title">{{course.title}}</text>
+                <view class="group-badge">
+                  <text class="badge-text">活动</text>
+                </view>
+              </view>
+              <view class="group-course-details">
+                <view class="group-course-location">
+                  <text class="iconfont icon-locationfill"></text>
+                  <text>{{course.location}}</text>
+                </view>
+                <view class="group-course-stats">
+                  <text class="participants">{{course.currentParticipants}}/{{course.maxParticipants}}人</text>
+                  <text class="price">{{course.price}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="time-selection-card">
+        <view class="selection-header">
+          <text class="header-title">选择上课时间</text>
+        </view>
+
+        <view class="time-picker-row">
+          <view class="time-picker-item">
+            <text class="picker-label">开始时间</text>
+            <picker 
+              mode="time" 
+              value="{{selectedStartTime}}" 
+              bindchange="onSelectStartTime"
+            >
+              <view class="picker-view">
+                <text class="picker-text {{selectedStartTime ? 'selected' : ''}}">{{selectedStartTime || '请选择'}}</text>
+                <text class="iconfont icon-rightarrow"></text>
+              </view>
+            </picker>
+          </view>
+
+          <view class="time-separator">
+            <text class="separator-text">至</text>
+          </view>
+
+          <view class="time-picker-item">
+            <text class="picker-label">结束时间</text>
+            <picker 
+              mode="time" 
+              value="{{selectedEndTime}}" 
+              bindchange="onSelectEndTime"
+            >
+              <view class="picker-view">
+                <text class="picker-text {{selectedEndTime ? 'selected' : ''}}">{{selectedEndTime || '请选择'}}</text>
+                <text class="iconfont icon-rightarrow"></text>
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <!-- 确认按钮 -->
+        <button 
+          class="confirm-free-time-btn {{selectedStartTime && selectedEndTime ? '' : 'disabled'}}" 
+          bindtap="onConfirmFreeTime"
+          disabled="{{!selectedStartTime || !selectedEndTime}}"
+        >
+          确认选择
+        </button>
+      </view>
+    </view>
+
+    <!-- 固定时间段列表（timeType = 0 或 1，或 timeType = 2 但 mode = view） -->
     <view wx:else class="time-slots">
       <view wx:if="{{timeSlots.length === 0 || !dateList.length}}" class="empty-state">
         <text>暂无时间安排</text>

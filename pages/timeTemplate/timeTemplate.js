@@ -77,17 +77,22 @@ Page({
     }, {
       type: 1,
       text: '按周历循环模板(每周几一样)'
-    },
-    // {
-    //   type: 2,
-    //   text: '自由日程模板(每个日期都可以不一样)'
-    // }
-    ],
-    time_type: 0, // 0：全日程统一模板(每天一样)；1:按周历循环模板(每周几一样)；2:自由日程模板(每个日期都可以不一样)
+    }, {
+      type: 2,
+      text: '自由日程模板(可自由选择时间段)'
+    }],
+    time_type: 0, // 0：全日程统一模板(每天一样)；1:按周历循环模板(每周几一样)；2:自由日程模板(可自由选择时间段)
     isEditTimeType: false,
     // 按周历循环模板
     weekSlotTemplate: weekSlotTemplateDefault,
-    isSaving: false
+    isSaving: false,
+    // 自由日程模板配置
+    freeTimeRange: {
+      startTime: '09:00',
+      endTime: '18:00'
+    },
+    tempFreeStartTime: '09:00',
+    tempFreeEndTime: '18:00'
   },
 
   /**
@@ -160,6 +165,19 @@ Page({
           weekSlots = this.data.weekSlotTemplate;
         }
         
+        // 解析自由日程模板数据
+        let freeTimeRange = this.data.freeTimeRange;
+        try {
+          if (template.free_time_range) {
+            freeTimeRange = {
+              startTime: template.free_time_range.startTime || '09:00',
+              endTime: template.free_time_range.endTime || '18:00'
+            };
+          }
+        } catch (e) {
+          console.error('解析自由日程模板数据失败:', e);
+        }
+        
         this.setData({
           template: template,
           bookingSettings: {
@@ -172,7 +190,10 @@ Page({
           dateSlotTemplate: template.date_slots || this.data.dateSlotTemplate,
           time_type: template.time_type !== undefined ? template.time_type : 0,
           templateId: template.id, // 保存模板ID用于更新
-          templateEnabled: template.is_active === 1 // 设置启用状态
+          templateEnabled: template.is_active === 1, // 设置启用状态
+          freeTimeRange: freeTimeRange,
+          tempFreeStartTime: freeTimeRange.startTime,
+          tempFreeEndTime: freeTimeRange.endTime
         });
       }
     } catch (error) {
@@ -637,7 +658,7 @@ Page({
     });
   },
   async handleSaveTimeType() {
-    const { templateId, time_type, timeSlotTemplate, dateSlotTemplate, weekSlotTemplate } = this.data;
+    const { templateId, time_type, timeSlotTemplate, dateSlotTemplate, weekSlotTemplate, tempFreeStartTime, tempFreeEndTime } = this.data;
     
     try {
       wx.showLoading({
@@ -671,6 +692,33 @@ Page({
           }))
         }));
         templateData.week_slots = weekSlotData;
+      } else if (time_type === 2) {
+        // 自由日程模板：验证并准备时间范围数据
+        if (!tempFreeStartTime || !tempFreeEndTime) {
+          wx.hideLoading();
+          wx.showToast({
+            title: '请设置时间范围',
+            icon: 'none'
+          });
+          this.setData({ isSaving: false });
+          return;
+        }
+        
+        if (tempFreeStartTime >= tempFreeEndTime) {
+          wx.hideLoading();
+          wx.showToast({
+            title: '结束时间必须晚于开始时间',
+            icon: 'none'
+          });
+          this.setData({ isSaving: false });
+          return;
+        }
+        
+        templateData.free_time_range = {
+          startTime: tempFreeStartTime,
+          endTime: tempFreeEndTime
+        };
+        templateData.date_slots = dateSlotTemplate;
       }
 
       if (templateId) {
@@ -684,11 +732,21 @@ Page({
         icon: 'success'
       });
       
-      this.setData({
+      // 更新本地数据
+      const updateData = {
         'template.time_type': time_type,
         isSaving: false,
         isEditTimeType: false
-      });
+      };
+      
+      if (time_type === 2) {
+        updateData.freeTimeRange = {
+          startTime: tempFreeStartTime,
+          endTime: tempFreeEndTime
+        };
+      }
+      
+      this.setData(updateData);
     } catch (e) {
       wx.hideLoading();
       console.error('保存时间模板失败:', e);
@@ -708,6 +766,21 @@ Page({
     this.setData({
       weekSlotTemplate: _weekSlotTemplate
     })
+  },
+
+  /**
+   * 自由日程时间范围变化
+   */
+  onFreeStartTimeChange(e) {
+    this.setData({
+      tempFreeStartTime: e.detail.value
+    });
+  },
+
+  onFreeEndTimeChange(e) {
+    this.setData({
+      tempFreeEndTime: e.detail.value
+    });
   },
   
 }) 

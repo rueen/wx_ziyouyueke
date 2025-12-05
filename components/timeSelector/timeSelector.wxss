@@ -83,6 +83,172 @@
   padding: 16rpx;
 }
 
+/* 自由时间选择器样式 */
+.free-time-selector-wrapper {
+  padding: 16rpx;
+}
+
+.free-time-hint {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx;
+  background-color: #e7f3ff;
+  border-left: 6rpx solid #007aff;
+  border-radius: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.hint-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #007aff;
+  line-height: 1.6;
+}
+
+.time-selection-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+}
+
+.selection-header {
+  margin-bottom: 32rpx;
+}
+
+.header-title {
+  font-size: 32rpx;
+  color: #1d1d1f;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.time-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.time-picker-item {
+  flex: 1;
+}
+
+.picker-label {
+  font-size: 24rpx;
+  color: #86868b;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.picker-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e5e5ea;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #c7c7cc;
+}
+
+.picker-text.selected {
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.icon-rightarrow {
+  font-size: 24rpx;
+  color: #c7c7cc;
+}
+
+.time-separator {
+  padding-top: 32rpx;
+}
+
+.separator-text {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+.confirm-free-time-btn {
+  width: 100%;
+  height: 88rpx;
+  background-color: #007aff;
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 500;
+  border-radius: 16rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-free-time-btn::after {
+  border: none;
+}
+
+.confirm-free-time-btn.disabled {
+  background-color: #e5e5ea;
+  color: #c7c7cc;
+}
+
+/* 已有课程展示区域（自由时间选择模式） */
+.booked-courses-section {
+  margin-bottom: 24rpx;
+  padding: 24rpx;
+  background-color: #fff3cd;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #ffc107;
+}
+
+.booked-courses-section .section-header {
+  margin-bottom: 16rpx;
+}
+
+.booked-courses-section .section-title {
+  font-size: 28rpx;
+  color: #856404;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 8rpx;
+}
+
+.booked-courses-section .section-subtitle {
+  font-size: 22rpx;
+  color: #856404;
+  display: inline-block;
+}
+
+/* 复用原有课程列表样式，在此作用域下 */
+.booked-courses-section .courses-list {
+  background-color: transparent;
+}
+
+.booked-courses-section .course-item {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.booked-courses-section .course-item:last-child {
+  margin-bottom: 0;
+}
+
+.booked-courses-section .course-time {
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
 /* 加载状态样式 */
 .loading-container {
   display: flex;

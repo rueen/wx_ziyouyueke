@@ -117,7 +117,62 @@
 
       <!-- 自由日程模板 -->
       <block wx:if="{{time_type === 2}}">
-        
+        <view class="template-section">
+          <view class="section-header">
+            <text class="section-title-small">可预约时间范围</text>
+          </view>
+          <view class="free-time-range-container">
+            <view class="free-time-hint">
+              <text class="hint-text">学员和教练可以在此时间范围内自由选择任意时间段进行预约</text>
+            </view>
+            <view class="time-range-selector">
+              <view class="time-range-item">
+                <text class="time-label">开始时间</text>
+                <picker 
+                  mode="time" 
+                  value="{{tempFreeStartTime}}" 
+                  bindchange="onFreeStartTimeChange"
+                  disabled="{{!isEditTimeType}}"
+                >
+                  <view class="picker-display {{isEditTimeType ? '' : 'disabled'}}">
+                    <text>{{tempFreeStartTime}}</text>
+                    <text class="iconfont icon-rightarrow"></text>
+                  </view>
+                </picker>
+              </view>
+              <view class="time-range-separator">
+                <text class="separator-line">至</text>
+              </view>
+              <view class="time-range-item">
+                <text class="time-label">结束时间</text>
+                <picker 
+                  mode="time" 
+                  value="{{tempFreeEndTime}}" 
+                  bindchange="onFreeEndTimeChange"
+                  disabled="{{!isEditTimeType}}"
+                >
+                  <view class="picker-display {{isEditTimeType ? '' : 'disabled'}}">
+                    <text>{{tempFreeEndTime}}</text>
+                    <text class="iconfont icon-rightarrow"></text>
+                  </view>
+                </picker>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 日期模板 -->
+        <view class="data-section">
+          <view class="section-header">
+            <text class="section-title-small">周历</text>
+          </view>
+          <view class="date-slots">
+            <view class="date-slot" wx:for="{{dateSlotTemplate}}" wx:key="id">
+              <text>{{ item.text }}</text>
+              <switch checked="{{item.checked}}" data-index="{{index}}" disabled="{{!isEditTimeType}}" bindchange="switchDateChange" />
+            </view>
+          </view>
+        </view>
       </block>
       
     </view>
