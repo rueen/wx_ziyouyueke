@@ -336,9 +336,8 @@ page {
   align-items: center;
   justify-content: space-between;
   padding: 24rpx;
-  background-color: #f8f9fa;
   border-radius: 12rpx;
-  border: 2rpx solid #e5e5ea;
+  border: 1rpx solid #007aff;
   font-size: 28rpx;
   color: #1d1d1f;
 }

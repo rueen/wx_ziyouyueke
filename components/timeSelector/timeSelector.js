@@ -66,7 +66,10 @@ Component({
     selectedEndTime: '',
     // 自由时间选择模式下的课程展示
     bookedCoursesForDisplay: [],
-    groupCoursesForDisplay: []
+    groupCoursesForDisplay: [],
+    // 动态计算的时间限制
+    minSelectableStartTime: '', // 可选择的最小开始时间
+    minSelectableEndTime: ''    // 可选择的最小结束时间
   },
 
   /**
@@ -249,6 +252,15 @@ Component({
           } else {
             isChecked = true;
           }
+        } else if (timeType === 2) {
+          // 自由日程模板：也使用 date_slots 控制可预约的星期几
+          const date_slots = (timeTemplate && timeTemplate.date_slots) ? timeTemplate.date_slots : [];
+          const weekDayJson = date_slots.find(item => item.text === weekDay) || {};
+          if (weekDayJson.checked != null) {
+            isChecked = weekDayJson.checked;
+          } else {
+            isChecked = true;
+          }
         }
         
         if (isChecked) {
@@ -364,44 +376,65 @@ Component({
       
       // 选择模式：保存课程数据用于展示，但不生成时间段
       if (timeType === 2 && this.properties.mode === 'select') {
-        // 处理课程数据用于展示（排除已取消的课程）
-        const coursesForDisplay = bookedCourses.filter(course => course.booking_status !== 4).map(course => {
-          const isCreatedByCurrentUser = course.created_by && course.created_by == this.data.currentUserId;
-          return {
-            id: course.id,
-            studentName: course.relation.student_name || course.student.nickname,
-            location: course.address.name,
-            startTime: `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`,
-            endTime: `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`,
-            booking_status: this.getStatusFromApi(course.booking_status),
-            isCreatedByCurrentUser: isCreatedByCurrentUser,
-            courseData: course,
-            type: 'personal'
-          };
-        }).sort((a, b) => a.startTime.localeCompare(b.startTime));
+        // 提取所有已预约的时间段（排除已取消的课程）
+        const bookedTimeSlots = [];
         
-        const groupCoursesForDisplay = groupCourses.map(groupCourse => {
-          return {
-            id: groupCourse.id,
-            title: groupCourse.title,
-            coachName: groupCourse.coach ? groupCourse.coach.nickname : '未知教练',
-            location: groupCourse.address ? groupCourse.address.name : '未设置地址',
-            startTime: `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`,
-            endTime: `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`,
-            currentParticipants: groupCourse.current_participants || 0,
-            maxParticipants: groupCourse.max_participants || 0,
-            price: this.getGroupCoursePrice(groupCourse),
-            courseData: groupCourse,
-            type: 'group'
-          };
-        }).sort((a, b) => a.startTime.localeCompare(b.startTime));
+        // 添加个人课程的时间段
+        bookedCourses.filter(course => course.booking_status !== 4).forEach(course => {
+          const startTime = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
+          const endTime = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
+          const timeKey = `${startTime}-${endTime}`;
+          
+          // 检查是否已存在相同时间段
+          const existingSlot = bookedTimeSlots.find(slot => slot.timeKey === timeKey);
+          if (existingSlot) {
+            existingSlot.count += 1;
+          } else {
+            bookedTimeSlots.push({
+              timeKey: timeKey,
+              startTime: startTime,
+              endTime: endTime,
+              count: 1,
+              type: 'personal'
+            });
+          }
+        });
+        
+        // 添加活动的时间段
+        groupCourses.forEach(groupCourse => {
+          const startTime = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
+          const endTime = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
+          const timeKey = `${startTime}-${endTime}`;
+          
+          // 检查是否已存在相同时间段
+          const existingSlot = bookedTimeSlots.find(slot => slot.timeKey === timeKey);
+          if (existingSlot) {
+            existingSlot.count += 1;
+            existingSlot.hasGroup = true;
+          } else {
+            bookedTimeSlots.push({
+              timeKey: timeKey,
+              startTime: startTime,
+              endTime: endTime,
+              count: 1,
+              type: 'group',
+              hasGroup: true
+            });
+          }
+        });
+        
+        // 按时间排序
+        bookedTimeSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
         
         // 保存到 data 中用于显示
         this.setData({
           isLoading: false,
-          bookedCoursesForDisplay: coursesForDisplay,
-          groupCoursesForDisplay: groupCoursesForDisplay
+          bookedCoursesForDisplay: bookedTimeSlots,
+          groupCoursesForDisplay: [] // 不再单独显示
         });
+        
+        // 更新时间限制
+        this.updateTimeConstraints(date);
         return;
       }
       
@@ -637,11 +670,16 @@ Component({
       if (date === this.data.currentDate) return;
       
       this.setData({
-        currentDate: date
+        currentDate: date,
+        selectedStartTime: '', // 切换日期时清空已选时间
+        selectedEndTime: ''
       });
       
       // 加载选中日期的时间段数据
       this.loadTimeSlots(date);
+      
+      // 更新时间限制
+      this.updateTimeConstraints(date);
       
       // 触发日期选择事件
       this.triggerEvent('dateSelected', {
@@ -819,7 +857,7 @@ Component({
      */
     onSelectStartTime(e) {
       const time = e.detail.value;
-      const { freeTimeRange, selectedEndTime } = this.data;
+      const { freeTimeRange, selectedEndTime, minSelectableStartTime, currentDate } = this.data;
 
       // 验证时间是否在范围内
       if (freeTimeRange && time < freeTimeRange.startTime) {
@@ -838,6 +876,15 @@ Component({
         return;
       }
 
+      // 如果是今天，验证开始时间必须大于当前时间
+      if (this.isToday(currentDate) && time < minSelectableStartTime) {
+        wx.showToast({
+          title: '开始时间必须晚于当前时间',
+          icon: 'none'
+        });
+        return;
+      }
+
       // 如果已选择结束时间，验证开始时间必须小于结束时间
       if (selectedEndTime && time >= selectedEndTime) {
         wx.showToast({
@@ -847,7 +894,16 @@ Component({
         return;
       }
 
-      this.setData({ selectedStartTime: time });
+      this.setData({ 
+        selectedStartTime: time,
+        // 更新结束时间的最小值
+        minSelectableEndTime: this.getNextMinuteTime(time)
+      });
+      
+      // 如果结束时间也已选择，自动触发选择事件
+      if (this.data.selectedEndTime) {
+        this.triggerTimeSelection();
+      }
     },
 
     /**
@@ -855,7 +911,7 @@ Component({
      */
     onSelectEndTime(e) {
       const time = e.detail.value;
-      const { freeTimeRange, selectedStartTime } = this.data;
+      const { freeTimeRange, selectedStartTime, minSelectableEndTime } = this.data;
 
       // 验证时间是否在范围内
       if (freeTimeRange && time < freeTimeRange.startTime) {
@@ -883,21 +939,31 @@ Component({
         return;
       }
 
-      this.setData({ selectedEndTime: time });
-    },
-
-    /**
-     * 确认选择自由时间段
-     */
-    onConfirmFreeTime() {
-      const { currentDate, selectedStartTime, selectedEndTime } = this.data;
-
-      if (!selectedStartTime || !selectedEndTime) {
+      // 验证结束时间必须大于最小可选时间
+      if (minSelectableEndTime && time < minSelectableEndTime) {
         wx.showToast({
-          title: '请选择完整的时间段',
+          title: '结束时间必须晚于开始时间',
           icon: 'none'
         });
         return;
+      }
+
+      this.setData({ selectedEndTime: time });
+      
+      // 如果开始时间也已选择，自动触发选择事件
+      if (this.data.selectedStartTime) {
+        this.triggerTimeSelection();
+      }
+    },
+
+    /**
+     * 触发时间段选择事件（内部方法）
+     */
+    triggerTimeSelection() {
+      const { currentDate, selectedStartTime, selectedEndTime } = this.data;
+
+      if (!selectedStartTime || !selectedEndTime) {
+        return; // 数据不完整，不触发事件
       }
 
       // 触发时间段选择事件
@@ -911,6 +977,73 @@ Component({
         },
         date: currentDate
       });
+    },
+
+    /**
+     * 更新时间限制（针对今天的情况）
+     */
+    updateTimeConstraints(date) {
+      const { freeTimeRange } = this.data;
+      
+      if (!freeTimeRange) {
+        return;
+      }
+
+      // 判断是否是今天
+      if (this.isToday(date)) {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        
+        // 当前时间，向上取整到下一分钟
+        const currentTime = `${String(currentHour).padStart(2, '0')}:${String(currentMinute + 1).padStart(2, '0')}`;
+        
+        // 取当前时间和配置开始时间的较大值
+        const minStartTime = currentTime > freeTimeRange.startTime ? currentTime : freeTimeRange.startTime;
+        
+        this.setData({
+          minSelectableStartTime: minStartTime,
+          minSelectableEndTime: this.getNextMinuteTime(minStartTime)
+        });
+      } else {
+        // 不是今天，使用配置的时间范围
+        this.setData({
+          minSelectableStartTime: freeTimeRange.startTime,
+          minSelectableEndTime: freeTimeRange.startTime
+        });
+      }
+    },
+
+    /**
+     * 判断是否是今天
+     */
+    isToday(dateString) {
+      const today = new Date();
+      const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      return dateString === todayString;
+    },
+
+    /**
+     * 获取指定时间的下一分钟
+     */
+    getNextMinuteTime(timeString) {
+      if (!timeString) return '';
+      
+      const [hour, minute] = timeString.split(':').map(Number);
+      let nextMinute = minute + 1;
+      let nextHour = hour;
+      
+      if (nextMinute >= 60) {
+        nextMinute = 0;
+        nextHour += 1;
+      }
+      
+      if (nextHour >= 24) {
+        nextHour = 23;
+        nextMinute = 59;
+      }
+      
+      return `${String(nextHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`;
     }
   }
 }); 
