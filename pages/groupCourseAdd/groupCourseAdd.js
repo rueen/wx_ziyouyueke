@@ -169,10 +169,13 @@ Page({
           if (course.course_date && course.start_time && course.end_time) {
             this.setData({
               selectedTimeSlot: {
-                id: `${course.course_date}_${course.start_time}_${course.end_time}`,
+                id: `free_${course.course_date}_${course.start_time}_${course.end_time}`,
                 course_date: course.course_date,
                 start_time: course.start_time,
-                end_time: course.end_time
+                end_time: course.end_time,
+                startTime: course.start_time, // 兼容新格式
+                endTime: course.end_time,     // 兼容新格式
+                isFreeTime: true              // 标记为自由时间段
               }
             })
           }

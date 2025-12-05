@@ -99,6 +99,54 @@ Component({
       if (newCoachId && typeof newCoachId === 'number') {
         this.initializeComponent();
       }
+    },
+    'selectedTimeSlot': function(newSelectedTimeSlot) {
+      // 当 selectedTimeSlot 变化时，如果是自由日程模板且是选择模式，回显时间
+      const { timeType } = this.data;
+      if (timeType === 2 && this.properties.mode === 'select') {
+        if (newSelectedTimeSlot && Object.keys(newSelectedTimeSlot).length > 0) {
+          // 检查是否是自由时间段
+          const isFreeTime = newSelectedTimeSlot.isFreeTime || 
+                            (newSelectedTimeSlot.startTime && newSelectedTimeSlot.endTime) ||
+                            (newSelectedTimeSlot.start_time && newSelectedTimeSlot.end_time);
+          
+          if (isFreeTime) {
+            let selectedStartTime = newSelectedTimeSlot.startTime || newSelectedTimeSlot.start_time || '';
+            let selectedEndTime = newSelectedTimeSlot.endTime || newSelectedTimeSlot.end_time || '';
+            
+            // 格式化时间（确保格式为 HH:mm）
+            if (selectedStartTime && selectedStartTime.includes(':')) {
+              const [hour, minute] = selectedStartTime.split(':');
+              selectedStartTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+            }
+            if (selectedEndTime && selectedEndTime.includes(':')) {
+              const [hour, minute] = selectedEndTime.split(':');
+              selectedEndTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+            }
+            
+            this.setData({
+              selectedStartTime: selectedStartTime,
+              selectedEndTime: selectedEndTime
+            });
+            
+            // 如果日期不同，切换日期并更新时间限制
+            const slotDate = newSelectedTimeSlot.course_date || newSelectedTimeSlot.date;
+            if (slotDate && slotDate !== this.data.currentDate) {
+              this.setData({ currentDate: slotDate });
+              this.loadTimeSlots(slotDate);
+            } else if (slotDate) {
+              // 日期相同，只更新时间限制
+              this.updateTimeConstraints(slotDate);
+            }
+          }
+        } else {
+          // 清空已选时间
+          this.setData({
+            selectedStartTime: '',
+            selectedEndTime: ''
+          });
+        }
+      }
     }
   },
 
@@ -117,8 +165,10 @@ Component({
           
           // 确定初始日期：优先使用selectedTimeSlot.course_date，否则使用currentDate
           let initialDate = this.data.currentDate;
-          if (this.properties.selectedTimeSlot && this.properties.selectedTimeSlot.course_date) {
-            initialDate = this.properties.selectedTimeSlot.course_date;
+          const { selectedTimeSlot } = this.properties;
+          
+          if (selectedTimeSlot && selectedTimeSlot.course_date) {
+            initialDate = selectedTimeSlot.course_date;
             // 设置currentDate
             this.setData({
               currentDate: initialDate
@@ -126,7 +176,7 @@ Component({
           }
           
           if (initialDate) {
-            this.loadTimeSlots(initialDate); // 加载时间段
+            this.loadTimeSlots(initialDate); // 加载时间段（内部会处理时间回显）
           }
         }).catch(error => {
           console.error('加载时间模板失败:', error);
@@ -426,11 +476,41 @@ Component({
         // 按时间排序
         bookedTimeSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
         
+        // 检查是否有已选择的时间段（编辑模式回显）
+        let selectedStartTime = '';
+        let selectedEndTime = '';
+        const { selectedTimeSlot } = this.properties;
+        
+        if (selectedTimeSlot) {
+          // 检查是否是自由时间段
+          const isFreeTime = selectedTimeSlot.isFreeTime || 
+                            (selectedTimeSlot.startTime && selectedTimeSlot.endTime) ||
+                            (selectedTimeSlot.start_time && selectedTimeSlot.end_time);
+          
+          if (isFreeTime) {
+            // 优先使用 startTime/endTime，兼容 start_time/end_time
+            selectedStartTime = selectedTimeSlot.startTime || selectedTimeSlot.start_time || '';
+            selectedEndTime = selectedTimeSlot.endTime || selectedTimeSlot.end_time || '';
+            
+            // 格式化时间（确保格式为 HH:mm）
+            if (selectedStartTime && selectedStartTime.includes(':')) {
+              const [hour, minute] = selectedStartTime.split(':');
+              selectedStartTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+            }
+            if (selectedEndTime && selectedEndTime.includes(':')) {
+              const [hour, minute] = selectedEndTime.split(':');
+              selectedEndTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+            }
+          }
+        }
+        
         // 保存到 data 中用于显示
         this.setData({
           isLoading: false,
           bookedCoursesForDisplay: bookedTimeSlots,
-          groupCoursesForDisplay: [] // 不再单独显示
+          groupCoursesForDisplay: [], // 不再单独显示
+          selectedStartTime: selectedStartTime,
+          selectedEndTime: selectedEndTime
         });
         
         // 更新时间限制
@@ -669,22 +749,58 @@ Component({
       
       if (date === this.data.currentDate) return;
       
-      this.setData({
-        currentDate: date,
-        selectedStartTime: '', // 切换日期时清空已选时间
-        selectedEndTime: ''
-      });
+      const { timeType } = this.data;
+      const { mode } = this.properties;
+      const { selectedStartTime, selectedEndTime } = this.data;
       
-      // 加载选中日期的时间段数据
-      this.loadTimeSlots(date);
-      
-      // 更新时间限制
-      this.updateTimeConstraints(date);
-      
-      // 触发日期选择事件
-      this.triggerEvent('dateSelected', {
-        date: date
-      });
+      // 对于自由日程模板，如果已选择时间，切换日期时保持时间并触发事件
+      if (timeType === 2 && mode === 'select' && selectedStartTime && selectedEndTime) {
+        // 保持已选时间，只更新日期
+        this.setData({
+          currentDate: date
+        });
+        
+        // 更新时间限制
+        this.updateTimeConstraints(date);
+        
+        // 触发时间段选择事件，更新 course_date
+        this.triggerEvent('timeSlotTap', {
+          slot: {
+            id: `free_${date}_${selectedStartTime}_${selectedEndTime}`,
+            startTime: selectedStartTime,
+            endTime: selectedEndTime,
+            status: 'free',
+            isFreeTime: true
+          },
+          date: date
+        });
+        
+        // 加载选中日期的时间段数据（用于显示已预约时间段）
+        this.loadTimeSlots(date);
+        
+        // 触发日期选择事件
+        this.triggerEvent('dateSelected', {
+          date: date
+        });
+      } else {
+        // 其他情况：清空已选时间
+        this.setData({
+          currentDate: date,
+          selectedStartTime: '',
+          selectedEndTime: ''
+        });
+        
+        // 加载选中日期的时间段数据
+        this.loadTimeSlots(date);
+        
+        // 更新时间限制
+        this.updateTimeConstraints(date);
+        
+        // 触发日期选择事件
+        this.triggerEvent('dateSelected', {
+          date: date
+        });
+      }
     },
 
     /**
