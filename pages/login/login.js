@@ -11,6 +11,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    navBarHeight: 0,
+    contentHeight: 0,
+    canGoBack: false,
     hasUserInfo: false,
     agreedToTerms: false, // 是否同意用户协议
     selectedRole: 'student', // 选择的身份，默认为学员
@@ -31,6 +34,10 @@ Page({
         selectedRole
       })
     }
+
+    this.getNavBarHeight();
+    this.checkCanGoBack();
+
     // 检查用户是否已经登录
     this.checkLoginStatus();
     
@@ -43,6 +50,39 @@ Page({
    */
   onShow() {
 
+  },
+
+  /**
+   * 返回上一页
+   */
+  onBack() {
+    if(this.data.canGoBack) {
+      wx.navigateBack();
+    } else {
+      this.mockLoginSuccess('guest');
+    }
+  },
+  /**
+   * 获取导航栏高度（使用全局方法）
+   */
+  getNavBarHeight() {
+    const app = getApp();
+    const { navBarHeight, contentHeight } = app.getNavBarInfo();
+    this.setData({
+      navBarHeight,
+      contentHeight
+    });
+  },
+
+  /**
+   * 检查是否可以返回上一页
+   */
+  checkCanGoBack() {
+    const pages = getCurrentPages();
+    const canGoBack = pages.length > 1;
+    this.setData({
+      canGoBack
+    });
   },
 
   /**

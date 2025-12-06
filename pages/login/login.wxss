@@ -9,6 +9,17 @@ page {
   /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
 }
 
+.backBtn{
+  position: fixed;
+  padding-left: 20rpx;
+}
+.backBtn-content{
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .login-container {
   display: flex;
   flex-direction: column;

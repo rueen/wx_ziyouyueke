@@ -1,5 +1,9 @@
 <!--pages/login/login.wxml-->
-<ghostNav isShowLogo="{{false}}" />
+<view class="backBtn" style="height: {{navBarHeight}}px;">
+  <view class="backBtn-content" style="width: {{contentHeight}}px;height: {{contentHeight}}px;" bindtap="onBack">
+    <text class="iconfont icon-close"></text>
+  </view>
+</view>
 <view class="login-container">
   <!-- 顶部Logo区域 -->
   <view class="logo-section">
