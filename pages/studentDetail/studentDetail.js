@@ -414,9 +414,10 @@ Page({
   // 查看上课记录
   handleViewCourseList() {
     const { studentData } = this.data;
+
     const student = {
       student_id: studentData.student_id,
-      nickname: studentData.student.nickname
+      nickname: studentData.student_name
     }
     wx.navigateTo({
       url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`

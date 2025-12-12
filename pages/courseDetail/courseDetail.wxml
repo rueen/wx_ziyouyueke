@@ -12,28 +12,42 @@
     <view class="course-card">
       <!-- 人员信息 -->
       <view class="person-info">
-        <view class="person-avatar">
+        <view class="person-avatar" bindtap="onStudentDetail">
           <image src="{{courseInfo.displayAvatar}}" class="avatar-img"></image>
         </view>
-        <view class="person-details">
+        <view class="person-details" bindtap="onStudentDetail">
           <text class="person-name">{{courseInfo.displayName}}</text>
           <text class="person-role">{{courseInfo.displayRole}}</text>
         </view>
-        <!-- 课程状态 -->
-        <view class="status-badge status-{{courseInfo.status}}">
-          <text class="status-text">{{courseInfo.status === 'pending' ? (
-            courseInfo.isCreatedByCurrentUser ? (
-              userRole === 'coach' ? '待学员确认' : '待教练确认'
-            ) : '待确认'
-          ) : 
-            courseInfo.status === 'confirmed' ? '已确认' : 
-            courseInfo.status === 'completed' ? '已完成' : 
-            courseInfo.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+        <view class="view-all" bind:tap="handleViewCourseList">
+          <text>查看所有记录</text>
+          <text class="iconfont icon-arrow-r"></text>
         </view>
       </view>
 
       <!-- 课程详细信息 -->
       <view class="course-info-section">
+        <view class="info-item">
+          <view class="info-icon">
+            <text class="iconfont icon-status"></text>
+          </view>
+          <view class="info-content">
+            <text class="info-label">课程状态</text>
+            <view class="status-badge-box">
+              <!-- 课程状态 -->
+              <view class="status-badge status-{{courseInfo.status}}">
+                <text class="status-text">{{courseInfo.status === 'pending' ? (
+                  courseInfo.isCreatedByCurrentUser ? (
+                    userRole === 'coach' ? '待学员确认' : '待教练确认'
+                  ) : '待确认'
+                ) : 
+                  courseInfo.status === 'confirmed' ? '已确认' : 
+                  courseInfo.status === 'completed' ? '已完成' : 
+                  courseInfo.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
         <view class="info-item">
           <view class="info-icon">
             <text class="iconfont icon-leimu"></text>

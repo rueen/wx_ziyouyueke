@@ -1222,16 +1222,41 @@ Page({
   },
 
   /**
-   * 页面上拉触底事件的处理函数
+   * 进入学员详情
    */
-  onReachBottom: function () {
-
+  onStudentDetail(e) {
+    const { courseInfo } = this.data;
+    wx.navigateTo({
+      url: `/pages/studentDetail/studentDetail?relationId=${courseInfo.relation_id}&studentId=${courseInfo.student_id}`
+    });
   },
 
   /**
-   * 用户点击右上角分享
+   * 查看上课记录
    */
-  onShareAppMessage: function () {
+  handleViewCourseList() {
+    // 获取页面栈
+    const pages = getCurrentPages();
+    // 检查是否有上一页，且上一页是课程列表页面
+    if (pages.length > 1) {
+      const prevPage = pages[pages.length - 2];
+      if (prevPage.route === 'pages/courseList/courseList') {
+        // 如果是课程列表页面，直接返回
+        wx.navigateBack();
+        return;
+      }
+    }
 
-  }
+    // 如果不是从课程列表页面来的，则正常跳转
+    const { courseInfo } = this.data;
+
+    const student = {
+      student_id: courseInfo.student_id,
+      nickname: courseInfo.relation.student_name
+    }
+    wx.navigateTo({
+      url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`
+    });
+  },
+  
 }); 

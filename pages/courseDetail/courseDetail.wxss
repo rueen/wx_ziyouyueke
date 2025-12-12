@@ -78,11 +78,14 @@ page {
   color: #999;
 }
 
+.person-info .view-all{
+  font-size: 26rpx;
+  color: #666;
+}
+
 /* 状态标签 */
-.status-badge {
-  position: absolute;
-  right: 0;
-  top: 0;
+.status-badge-box {
+  display: flex;
 }
 
 /* 课程信息区域 */
@@ -114,6 +117,14 @@ page {
 
 .info-icon .iconfont{
   color: #333;
+}
+
+.info-icon .icon-status{
+  display: block;
+  width: 16rpx;
+  height: 16rpx;
+  border: 4rpx solid #333;
+  border-radius: 50%;
 }
 
 .info-content {
