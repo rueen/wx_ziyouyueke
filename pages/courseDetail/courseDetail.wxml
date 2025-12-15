@@ -19,9 +19,15 @@
           <text class="person-name">{{courseInfo.displayName}}</text>
           <text class="person-role">{{courseInfo.displayRole}}</text>
         </view>
-        <view class="view-all" bind:tap="handleViewCourseList">
-          <text>查看所有记录</text>
-          <text class="iconfont icon-arrow-r"></text>
+        <view>
+          <!-- <view class="view-all" bind:tap="handleViewCourseList">
+            <text>查看所有记录</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view> -->
+          <view class="view-all" bind:tap="handleViewPrevCourse">
+            <text>查看上次课内容</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
         </view>
       </view>
 

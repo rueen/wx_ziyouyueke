@@ -1258,5 +1258,15 @@ Page({
       url: `/pages/courseList/courseList?pageFrom=studentDetail&student=${JSON.stringify(student)}`
     });
   },
+
+  /**
+   * 查看上次上课内容
+   */
+  handleViewPrevCourse() {
+    const { courseInfo } = this.data;
+    wx.navigateTo({
+      url: `/pages/courseDetail/courseDetail?id=${courseInfo.previous_course_id}`
+    });
+  }
   
 }); 
