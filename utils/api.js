@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -778,6 +778,13 @@ module.exports = {
     complete: completeCourse,
     delete: deleteCourse,
     getDetail: getCourseDetail,
+    edit: function(id, params = {}) {
+      return request({
+        url: `/api/h5/courses/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    }
   },
 
   // 地址管理模块

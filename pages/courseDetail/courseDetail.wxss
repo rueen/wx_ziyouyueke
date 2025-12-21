@@ -137,6 +137,12 @@ page {
   font-size: 26rpx;
   color: #999;
   margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.info-label .icon-editor{
+  color: #007aff;
 }
 
 .info-value {

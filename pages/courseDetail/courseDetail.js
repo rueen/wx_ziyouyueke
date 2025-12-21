@@ -1185,27 +1185,6 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
@@ -1267,6 +1246,55 @@ Page({
     wx.navigateTo({
       url: `/pages/courseDetail/courseDetail?id=${courseInfo.previous_course_id}`
     });
+  },
+
+  // 修改课程备注
+  handleEditRemark(e) {
+    const { currentTarget: { dataset: { type, title } } } = e;
+    const { courseInfo } = this.data;
+
+    wx.showModal({
+      title: title,
+      editable: true,
+      content: courseInfo[type],
+      placeholderText: `请输入${title}`,
+      success: (res) => {
+        if (res.confirm) {
+          this.editCourse({
+            [type]: res.content
+          })
+        }
+      }
+    })    
+  },
+
+  // 修改课程类型
+  handleEditBookingType() {
+
+  },
+
+  // 修改课程
+  async editCourse(params = {}) {
+    try{
+      wx.showLoading({ title: '保存中...' });
+      const result = await api.course.edit(this.data.courseId, params);
+
+      wx.hideLoading();
+      if (result && result.success) {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+        
+        this.loadCourseDetail();
+      }
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '保存失败',
+        icon: 'error'
+      });
+    }
   }
   
 }); 
