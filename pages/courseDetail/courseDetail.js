@@ -1300,7 +1300,7 @@ Page({
           selectedCard: currentCard || null,
           selectedCategorie: null
         });
-      } else if (courseInfo.booking_type === 1 && courseInfo.category_id) {
+      } else if (courseInfo.booking_type === 1 && courseInfo.category_id != null) {
         // 普通课程
         const currentCategorie = this.data.categoriesList.find(c => c.category.id === courseInfo.category_id);
         this.setData({
