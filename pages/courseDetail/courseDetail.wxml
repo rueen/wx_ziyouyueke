@@ -76,7 +76,10 @@
             <text class="iconfont icon-shijianmoban"></text>
           </view>
           <view class="info-content">
-            <text class="info-label">上课时间</text>
+            <view class="info-label">
+              <text>上课时间</text>
+              <text class="iconfont icon-editor" bind:tap="handleEditTime" wx:if="{{userRole === 'coach' && courseInfo.status !== 'completed' && courseInfo.status !== 'cancelled'}}"></text>
+            </view>
             <text class="info-value">{{courseInfo.time}}</text>
           </view>
         </view>
@@ -86,7 +89,6 @@
             <text class="iconfont icon-location"></text>
           </view>
           <view class="info-content">
-            <!-- <text class="info-label">上课地点</text> -->
             <view class="info-label">
               <text>上课地点</text>
               <text class="iconfont icon-editor" bind:tap="handleEditLocation" wx:if="{{userRole === 'coach' && courseInfo.status !== 'completed' && courseInfo.status !== 'cancelled'}}"></text>
@@ -350,4 +352,26 @@
   bind:loaded="onAddressLoaded"
   bind:loaderror="onAddressLoadError"
 />
+
+<!-- 时间选择弹窗 -->
+<view class="time-selection-modal" wx:if="{{showTimeSelection}}">
+  <view class="modal-overlay" bindtap="onHideTimeSelection"></view>
+  <view class="modal-content-time">
+    <view class="modal-header">
+      <text class="modal-title">修改上课时间</text>
+      <text class="modal-close" bindtap="onHideTimeSelection">×</text>
+    </view>
+    <view class="modal-body-time">
+      <time-selector
+        coachId="{{courseInfo.coach_id}}"
+        courseId="{{courseId}}"
+        mode="select"
+        showBookingDetails="{{false}}"
+        selectedTimeSlot="{{selectedTimeSlot}}"
+        bind:timeSlotTap="onTimeSlotTap"
+        bind:error="onTimeSelectorError"
+      />
+    </view>
+  </view>
+</view>
  

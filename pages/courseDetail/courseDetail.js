@@ -46,7 +46,12 @@ Page({
     
     // 地址选择相关
     showAddressSelection: false, // 显示地址选择弹窗
-    selectedAddress: null // 已选中的地址
+    selectedAddress: null, // 已选中的地址
+    
+    // 时间选择相关
+    showTimeSelection: false, // 显示时间选择弹窗
+    selectedDate: '', // 选中的日期
+    selectedTimeSlot: null // 选中的时间段
   },
 
   /**
@@ -1424,6 +1429,81 @@ Page({
           });
         }
       }
+    });
+  },
+
+  // 修改上课时间
+  handleEditTime() {
+    const { courseInfo } = this.data;
+    if (!courseInfo) return;
+
+    // 显示时间选择弹窗
+    this.setData({
+      showTimeSelection: true,
+      selectedDate: courseInfo.course_date || '',
+      selectedTimeSlot: {
+        startTime: courseInfo.start_time,
+        endTime: courseInfo.end_time
+      }
+    });
+  },
+
+  /**
+   * 隐藏时间选择弹窗
+   */
+  onHideTimeSelection() {
+    this.setData({
+      showTimeSelection: false
+    });
+  },
+
+  /**
+   * 时间段被选择
+   */
+  onTimeSlotTap(e) {
+    const { date, slot } = e.detail;
+
+    if (slot.status === 'full') {
+      wx.showToast({
+        title: '该时段已满员',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 确认修改
+    const timeStr = `${date} ${slot.startTime}-${slot.endTime}`;
+    wx.showModal({
+      title: '确认修改',
+      content: `确定要将上课时间修改为"${timeStr}"吗？`,
+      success: async (res) => {
+        if (res.confirm) {
+          // 调用编辑课程接口
+          await this.editCourse({
+            course_date: date,
+            start_time: slot.startTime,
+            end_time: slot.endTime
+          });
+
+          this.setData({
+            selectedDate: date,
+            selectedTimeSlot: slot,
+            showTimeSelection: false
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 时间选择器错误处理
+   */
+  onTimeSelectorError(e) {
+    const { message } = e.detail;
+    console.error('时间选择器错误:', message);
+    wx.showToast({
+      title: message || '时间加载失败',
+      icon: 'none'
     });
   },
 

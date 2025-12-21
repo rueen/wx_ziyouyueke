@@ -5,7 +5,8 @@
     "course-content-editor": "/components/courseContentEditor/courseContentEditor",
     "course-content-display": "/components/courseContentDisplay/courseContentDisplay",
     "categorie-selector": "/components/categorieSelector/categorieSelector",
-    "address-selector": "/components/addressSelector/addressSelector"
+    "address-selector": "/components/addressSelector/addressSelector",
+    "time-selector": "/components/timeSelector/timeSelector"
   },
   "enablePullDownRefresh": true,
   "navigationStyle": "custom"

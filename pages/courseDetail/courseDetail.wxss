@@ -461,3 +461,65 @@ page {
 .course-content{
   margin: 16rpx;
 }
+
+/* 时间选择弹窗样式 */
+.time-selection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.time-selection-modal .modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content-time {
+  position: relative;
+  width: 90%;
+  max-width: 700rpx;
+  max-height: 80vh;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content-time .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.modal-content-time .modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-content-time .modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+  padding: 0 10rpx;
+}
+
+.modal-body-time {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20rpx;
+}
