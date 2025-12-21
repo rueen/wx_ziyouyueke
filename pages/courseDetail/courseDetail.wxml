@@ -371,8 +371,7 @@
         bind:timeSlotTap="onTimeSlotTap"
         bind:error="onTimeSelectorError"
       />
-      <button class="modal-btn confirm-modal-btn active" 
-              bindtap="onConfirmEditTime">确定</button>
+      <button class="modal-btn confirm-modal-btn active" bindtap="onConfirmEditTime" wx:if="{{!!newDate}}">确定</button>
     </view>
   </view>
 </view>
