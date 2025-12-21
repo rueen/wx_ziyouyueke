@@ -59,10 +59,6 @@
             <text class="iconfont icon-leimu"></text>
           </view>
           <view class="info-content">
-            <!-- <text class="info-label">
-              <text wx:if="{{courseInfo.booking_type === 2}}">卡片类型</text>
-              <text wx:else>课程类型</text>
-            </text> -->
             <view class="info-label">
               <text>
                 <text wx:if="{{courseInfo.booking_type === 2}}">卡片类型</text>
@@ -90,7 +86,11 @@
             <text class="iconfont icon-location"></text>
           </view>
           <view class="info-content">
-            <text class="info-label">上课地点</text>
+            <!-- <text class="info-label">上课地点</text> -->
+            <view class="info-label">
+              <text>上课地点</text>
+              <text class="iconfont icon-editor" bind:tap="handleEditLocation" wx:if="{{userRole === 'coach' && courseInfo.status !== 'completed' && courseInfo.status !== 'cancelled'}}"></text>
+            </view>
             <text class="info-value">{{courseInfo.location}}</text>
           </view>
         </view>
@@ -336,5 +336,18 @@
   bind:hide="onHideCategorieSelection"
   bind:selectcategorie="onSelectCategorie"
   bind:selectcard="onSelectCard"
+/>
+
+<!-- 地址选择器组件 -->
+<address-selector
+  show="{{showAddressSelection}}"
+  selectedAddress="{{selectedAddress}}"
+  coachId="{{courseInfo.coach_id}}"
+  autoLoad="{{true}}"
+  title="修改上课地点"
+  bind:hide="onHideAddressSelection"
+  bind:select="onSelectAddress"
+  bind:loaded="onAddressLoaded"
+  bind:loaderror="onAddressLoadError"
 />
  

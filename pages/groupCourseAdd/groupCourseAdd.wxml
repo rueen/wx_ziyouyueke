@@ -352,35 +352,11 @@ module.exports = {
   </view>
 
   <!-- 地址选择弹窗 -->
-  <view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">
-    <view class="modal-container" catchtap="">
-      <view class="modal-header">
-        <text class="modal-title">选择上课地点</text>
-        <text class="modal-close" bindtap="onHideAddressSelection">×</text>
-      </view>
-      <view class="modal-content">
-        <view class="address-list">
-          <view class="address-item" 
-                wx:for="{{addresses}}" 
-                wx:key="id" 
-                bindtap="onSelectAddress" 
-                data-address="{{item}}">
-            <view class="address-info">
-              <text class="address-name">
-                <text>{{item.name}}</text>
-                <text class="default-tag" wx:if="{{item.is_default}}">默认</text>
-              </text>
-              <text class="address-detail">{{item.address}}</text>
-            </view>
-            <text class="iconfont icon-selected select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
-          </view>
-          
-          <!-- 空状态 -->
-          <view wx:if="{{addresses.length === 0}}" class="empty-address">
-            <text class="empty-text">暂无地址，请先添加地址</text>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
+  <address-selector
+    show="{{showAddressSelection}}"
+    addressList="{{addresses}}"
+    selectedAddress="{{selectedAddress}}"
+    bind:hide="onHideAddressSelection"
+    bind:select="onSelectAddress"
+  />
 </layout>

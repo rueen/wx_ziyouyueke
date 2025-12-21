@@ -4,7 +4,8 @@
     "layout": "/components/layout/layout",
     "course-content-editor": "/components/courseContentEditor/courseContentEditor",
     "course-content-display": "/components/courseContentDisplay/courseContentDisplay",
-    "categorie-selector": "/components/categorieSelector/categorieSelector"
+    "categorie-selector": "/components/categorieSelector/categorieSelector",
+    "address-selector": "/components/addressSelector/addressSelector"
   },
   "enablePullDownRefresh": true,
   "navigationStyle": "custom"

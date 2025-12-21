@@ -42,7 +42,11 @@ Page({
     categoriesList: [], // 课程类型列表
     cardsList: [], // 卡片列表
     selectedCategorie: null, // 已选中的课程类型
-    selectedCard: null // 已选中的卡片
+    selectedCard: null, // 已选中的卡片
+    
+    // 地址选择相关
+    showAddressSelection: false, // 显示地址选择弹窗
+    selectedAddress: null // 已选中的地址
   },
 
   /**
@@ -1420,6 +1424,71 @@ Page({
           });
         }
       }
+    });
+  },
+
+  // 修改上课地点
+  handleEditLocation() {
+    const { courseInfo } = this.data;
+    if (!courseInfo) return;
+
+    // 设置当前选中的地址
+    this.setData({
+      selectedAddress: courseInfo.address || null,
+      showAddressSelection: true
+    });
+  },
+
+  /**
+   * 隐藏地址选择弹窗
+   */
+  onHideAddressSelection() {
+    this.setData({
+      showAddressSelection: false
+    });
+  },
+
+  /**
+   * 选择地址
+   */
+  onSelectAddress(e) {
+    const address = e.detail.address;
+    
+    // 确认修改
+    wx.showModal({
+      title: '确认修改',
+      content: `确定要将上课地点修改为"${address.name}"吗？`,
+      success: async (res) => {
+        if (res.confirm) {
+          // 调用编辑课程接口
+          await this.editCourse({
+            address_id: address.id
+          });
+          
+          this.setData({
+            selectedAddress: address,
+            showAddressSelection: false
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 地址列表加载完成
+   */
+  onAddressLoaded(e) {
+    console.log('地址列表加载完成:', e.detail.addresses);
+  },
+
+  /**
+   * 地址列表加载失败
+   */
+  onAddressLoadError(e) {
+    console.error('地址列表加载失败:', e.detail.error);
+    wx.showToast({
+      title: '加载地址失败',
+      icon: 'none'
     });
   },
 

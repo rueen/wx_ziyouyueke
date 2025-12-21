@@ -1,0 +1,42 @@
+<!--components/addressSelector/addressSelector.wxml-->
+<view class="modal-mask" wx:if="{{show}}" bindtap="onHide">
+  <view class="modal-container" catchtap="onPreventClose">
+    <view class="modal-header">
+      <text class="modal-title">{{title}}</text>
+      <text class="modal-close" bindtap="onHide">×</text>
+    </view>
+    <view class="modal-content">
+      <!-- 加载中状态 -->
+      <view wx:if="{{loading}}" class="loading-container">
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 地址列表 -->
+      <view wx:else class="address-list">
+        <view class="address-item" 
+              wx:for="{{addressList || internalAddressList}}" 
+              wx:key="id" 
+              bindtap="onSelectAddress" 
+              data-address="{{item}}">
+          <view class="address-info">
+            <text class="address-name">
+              <text>{{item.name}}</text>
+              <text class="default-tag" wx:if="{{item.is_default}}">默认</text>
+            </text>
+            <text class="address-detail">{{item.address}}</text>
+          </view>
+          <text class="iconfont icon-selected select-icon {{selectedAddress && selectedAddress.id === item.id ? 'selected' : ''}}"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <emptyState 
+          wx:if="{{!(addressList.length || internalAddressList.length)}}"
+          title="{{emptyText}}"
+          type="no-address"
+          customClass="compact">
+        </emptyState>
+      </view>
+    </view>
+  </view>
+</view>
+

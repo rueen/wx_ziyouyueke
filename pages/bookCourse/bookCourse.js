@@ -500,7 +500,7 @@ Page({
    * 选择地址
    */
   onSelectAddress(e) {
-    const address = e.currentTarget.dataset.address;
+    const address = e.detail.address;
     this.setData({
       selectedAddress: address,
       showAddressSelection: false

@@ -4,6 +4,7 @@
     "layout": "/components/layout/layout",
     "timeSelector": "/components/timeSelector/timeSelector",
     "emptyState": "/components/emptyState/emptyState",
-    "categorie-selector": "/components/categorieSelector/categorieSelector"
+    "categorie-selector": "/components/categorieSelector/categorieSelector",
+    "address-selector": "/components/addressSelector/addressSelector"
   }
 } 
