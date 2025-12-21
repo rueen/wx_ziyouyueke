@@ -1471,14 +1471,15 @@ Page({
   onTimeSlotTap(e) {
     const { date, slot } = e.detail;
     this.setData({
-      newDate: {
-        date, slot
-      }
-    })
+      selectedDate: date,
+      selectedTimeSlot: slot
+    });
   },
   onConfirmEditTime() {
-    const { date, slot } = this.data.newDate;
-console.log(slot)
+    const { selectedDate, selectedTimeSlot } = this.data;
+    const date = selectedDate;
+    const slot = selectedTimeSlot;
+
     if (slot.status === 'groupBooked') {
       wx.showToast({
         title: '该时段已有活动',
@@ -1509,8 +1510,8 @@ console.log(slot)
           });
 
           this.setData({
-            selectedDate: date,
-            selectedTimeSlot: slot,
+            // selectedDate: date,
+            // selectedTimeSlot: slot,
             showTimeSelection: false
           });
         }

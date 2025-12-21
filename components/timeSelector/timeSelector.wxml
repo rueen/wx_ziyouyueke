@@ -219,7 +219,6 @@
             <view wx:else class="quota-info">
               <text class="free-text">可选择</text>
             </view>
-            
             <!-- 选择提示：free状态和普通模式的booked状态都可以选择 -->
             <view wx:if="{{slot.status === 'free' || (slot.status === 'booked' && type === 'default')}}" class="select-hint-container">
               <view wx:if="{{slot.id !== selectedTimeSlot.id}}" class="select-hint">点击选择</view>
