@@ -324,4 +324,17 @@
   bind:close="onHideContentModal"
   bind:success="onContentSaveSuccess"
 ></course-content-editor>
+
+<!-- 课程类型选择器组件 -->
+<categorie-selector
+  show="{{showCategorieSelection}}"
+  categoriesList="{{categoriesList}}"
+  cardsList="{{cardsList}}"
+  selectedCategorie="{{selectedCategorie}}"
+  selectedCard="{{selectedCard}}"
+  title="修改课程类型或卡片"
+  bind:hide="onHideCategorieSelection"
+  bind:selectcategorie="onSelectCategorie"
+  bind:selectcard="onSelectCard"
+/>
  

@@ -3,7 +3,8 @@
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
     "course-content-editor": "/components/courseContentEditor/courseContentEditor",
-    "course-content-display": "/components/courseContentDisplay/courseContentDisplay"
+    "course-content-display": "/components/courseContentDisplay/courseContentDisplay",
+    "categorie-selector": "/components/categorieSelector/categorieSelector"
   },
   "enablePullDownRefresh": true,
   "navigationStyle": "custom"

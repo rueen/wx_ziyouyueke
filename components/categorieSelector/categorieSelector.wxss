@@ -1,0 +1,110 @@
+/* components/categorieSelector/categorieSelector.wxss */
+@import '/style/iconfont.wxss';
+
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container {
+  width: 650rpx;
+  max-height: 80vh;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin: 0 40rpx;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+  padding: 0 10rpx;
+}
+
+.modal-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.list {
+  padding: 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:active {
+  background-color: #f8f9fa;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.item-name {
+  font-size: 30rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.remaining-lessons {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  background-color: #f2f2f7;
+  color: #86868b;
+  font-size: 24rpx;
+  border-radius: 8rpx;
+  font-weight: normal;
+}
+
+.item-detail {
+  font-size: 26rpx;
+  color: #86868b;
+}
+
+.select-icon {
+  color: #ddd;
+  font-size: 32rpx;
+}
+
+.select-icon.selected {
+  color: #007aff;
+}
+

@@ -181,61 +181,16 @@
 </view>
 
 <!-- 课程类型弹窗 -->
-<view class="modal-mask" wx:if="{{showCategorieSelection}}" bindtap="onHideCategorieSelection">
-  <view class="modal-container" catchtap="onPreventClose">
-    <view class="modal-header">
-      <text class="modal-title">选择课程类型或卡片</text>
-      <text class="modal-close" bindtap="onHideCategorieSelection">×</text>
-    </view>
-    <view class="modal-content">
-      <!-- 课程类型列表 -->
-      <view class="address-list">
-        <view class="address-item" 
-          wx:for="{{categoriesList}}" 
-          wx:key="id" 
-          bindtap="onSelectCategorie" 
-          data-item="{{item}}">
-          <view class="address-info">
-            <text class="categorie-name">
-              <text>{{item.category.name}}</text>
-              <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
-            </text>
-            <text class="address-detail">{{item.category.desc}}</text>
-          </view>
-          <text class="iconfont icon-selected select-icon {{selectedCategorie && selectedCategorie.category.id === item.category.id ? 'selected' : ''}}"></text>
-        </view>
-
-        <!-- 卡片 -->
-        <view 
-          class="address-item {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"
-          wx:for="{{cardsList}}" 
-          wx:key="id"
-          bindtap="onSelectCard"
-          data-card="{{item}}"
-        >
-          <view class="address-info">
-            <text class="categorie-name">
-              <text>{{item.card_name}}</text>
-              <text class="remaining-lessons">
-                <text wx:if="{{!item.is_unlimited}}">{{item.available_lessons}}/{{item.total_lessons}}节</text>
-                <text wx:else>不限次数</text>
-              </text>
-            </text>
-            <text class="address-detail">有效期至 {{item.expire_date}}</text>
-          </view>
-          <text class="iconfont icon-selected select-icon {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"></text>
-        </view>
-        
-        <!-- 空状态 -->
-        <emptyState 
-          wx:if="{{categoriesList.length === 0 && cardsList.length === 0}}"
-          title="暂无可用课时"
-          customClass="compact">
-        </emptyState>
-      </view>
-    </view>
-  </view>
-</view> 
+<categorie-selector
+  show="{{showCategorieSelection}}"
+  categoriesList="{{categoriesList}}"
+  cardsList="{{cardsList}}"
+  selectedCategorie="{{selectedCategorie}}"
+  selectedCard="{{selectedCard}}"
+  bind:hide="onHideCategorieSelection"
+  bind:selectcategorie="onSelectCategorie"
+  bind:selectcard="onSelectCard"
+/> 
 
 <!-- 地址选择弹窗 -->
 <view class="modal-mask" wx:if="{{showAddressSelection}}" bindtap="onHideAddressSelection">

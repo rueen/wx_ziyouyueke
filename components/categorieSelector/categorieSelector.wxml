@@ -1,0 +1,58 @@
+<!--components/categorieSelector/categorieSelector.wxml-->
+<view class="modal-mask" wx:if="{{show}}" bindtap="onHide">
+  <view class="modal-container" catchtap="onPreventClose">
+    <view class="modal-header">
+      <text class="modal-title">{{title}}</text>
+      <text class="modal-close" bindtap="onHide">×</text>
+    </view>
+    <view class="modal-content">
+      <!-- 课程类型列表 -->
+      <view class="list">
+        <!-- 课程类型 -->
+        <view class="list-item" 
+          wx:for="{{categoriesList}}" 
+          wx:key="id" 
+          bindtap="onSelectCategorie" 
+          data-item="{{item}}">
+          <view class="item-info">
+            <text class="item-name">
+              <text>{{item.category.name}}</text>
+              <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+            </text>
+            <text class="item-detail">{{item.category.desc}}</text>
+          </view>
+          <text class="iconfont icon-selected select-icon {{selectedCategorie && selectedCategorie.category.id === item.category.id ? 'selected' : ''}}"></text>
+        </view>
+
+        <!-- 卡片 -->
+        <view 
+          class="list-item"
+          wx:for="{{cardsList}}" 
+          wx:key="id"
+          bindtap="onSelectCard"
+          data-card="{{item}}"
+        >
+          <view class="item-info">
+            <text class="item-name">
+              <text>{{item.card_name}}</text>
+              <text class="remaining-lessons">
+                <text wx:if="{{!item.is_unlimited}}">{{item.available_lessons}}/{{item.total_lessons}}节</text>
+                <text wx:else>不限次数</text>
+              </text>
+            </text>
+            <text class="item-detail">有效期至 {{item.expire_date}}</text>
+          </view>
+          <text class="iconfont icon-selected select-icon {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"></text>
+        </view>
+        
+        <!-- 空状态 -->
+        <emptyState 
+          wx:if="{{categoriesList.length === 0 && cardsList.length === 0}}"
+          title="{{emptyText}}"
+          customClass="compact">
+        </emptyState>
+      </view>
+    </view>
+  </view>
+</view>
+

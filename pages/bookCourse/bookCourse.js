@@ -440,7 +440,7 @@ Page({
     });
   },
   onSelectCategorie(e) {
-    const item = e.currentTarget.dataset.item;
+    const item = e.detail.categorie;
     this.setData({
       selectedCategorie: item,
       selectedCard: null, // 清除卡片选择
@@ -454,7 +454,7 @@ Page({
    * 选择卡片
    */
   onSelectCard(e) {
-    const card = e.currentTarget.dataset.card;
+    const card = e.detail.card;
     this.setData({
       selectedCard: card,
       selectedCategorie: null, // 清除课程类型选择

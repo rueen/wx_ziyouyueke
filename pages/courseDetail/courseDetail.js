@@ -35,7 +35,14 @@ Page({
     
     // 课程内容相关
     courseContent: null, // 课程内容数据
-    showContentModal: false // 显示课程内容编辑弹窗
+    showContentModal: false, // 显示课程内容编辑弹窗
+    
+    // 课程类型/卡片选择相关
+    showCategorieSelection: false, // 显示课程类型选择弹窗
+    categoriesList: [], // 课程类型列表
+    cardsList: [], // 卡片列表
+    selectedCategorie: null, // 已选中的课程类型
+    selectedCard: null // 已选中的卡片
   },
 
   /**
@@ -1269,8 +1276,151 @@ Page({
   },
 
   // 修改课程类型
-  handleEditBookingType() {
+  async handleEditBookingType() {
+    const { courseInfo } = this.data;
+    if (!courseInfo) return;
 
+    try {
+      wx.showLoading({ title: '加载中...' });
+
+      // 加载课程类型列表和卡片列表
+      await this.loadCategoriesAndCards(courseInfo.student_id, courseInfo.coach_id, courseInfo.relation_id);
+
+      wx.hideLoading();
+
+      // 设置当前选中的课程类型或卡片
+      if (courseInfo.booking_type === 2 && courseInfo.card_instance_id) {
+        // 卡片课程
+        const currentCard = this.data.cardsList.find(c => c.id === courseInfo.card_instance_id);
+        this.setData({
+          selectedCard: currentCard || null,
+          selectedCategorie: null
+        });
+      } else if (courseInfo.booking_type === 1 && courseInfo.category_id) {
+        // 普通课程
+        const currentCategorie = this.data.categoriesList.find(c => c.category.id === courseInfo.category_id);
+        this.setData({
+          selectedCategorie: currentCategorie || null,
+          selectedCard: null
+        });
+      }
+
+      // 显示选择弹窗
+      this.setData({
+        showCategorieSelection: true
+      });
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载课程类型列表失败:', error);
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 加载课程类型列表和卡片列表
+   */
+  async loadCategoriesAndCards(studentId, coachId, relationId) {
+    try {
+      // 并行加载课程类型和卡片数据
+      const [relationResult, cardsResult] = await Promise.all([
+        // 获取师生关系详情（包含课程类型列表）
+        api.relation.getMyStudentsDetail(relationId),
+        // 获取可用卡片列表
+        api.card.getAvailableCards(studentId, coachId)
+      ]);
+
+      // 处理课程类型数据
+      let categoriesList = [];
+      if (relationResult && relationResult.data) {
+        const categoryLessons = relationResult.data.category_lessons || [];
+        // 过滤出剩余课时 > 0 的课程类型
+        categoriesList = categoryLessons.filter(item => item.remaining_lessons > 0);
+      }
+
+      // 处理卡片数据
+      let cardsList = [];
+      if (cardsResult && cardsResult.data) {
+        cardsList = cardsResult.data.list || [];
+      }
+
+      this.setData({
+        categoriesList,
+        cardsList
+      });
+    } catch (error) {
+      console.error('加载课程类型和卡片失败:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * 隐藏课程类型选择弹窗
+   */
+  onHideCategorieSelection() {
+    this.setData({
+      showCategorieSelection: false
+    });
+  },
+
+  /**
+   * 选择课程类型
+   */
+  onSelectCategorie(e) {
+    const item = e.detail.categorie;
+    
+    // 确认修改
+    wx.showModal({
+      title: '确认修改',
+      content: `确定要将课程类型修改为"${item.category.name}"吗？`,
+      success: async (res) => {
+        if (res.confirm) {
+          // 调用编辑课程接口
+          await this.editCourse({
+            category_id: item.category.id,
+            booking_type: 1, // 普通课程
+            card_instance_id: null // 清除卡片ID
+          });
+          
+          this.setData({
+            selectedCategorie: item,
+            selectedCard: null,
+            showCategorieSelection: false
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 选择卡片
+   */
+  onSelectCard(e) {
+    const card = e.detail.card;
+    
+    // 确认修改
+    wx.showModal({
+      title: '确认修改',
+      content: `确定要将课程卡片修改为"${card.card_name}"吗？`,
+      success: async (res) => {
+        if (res.confirm) {
+          // 调用编辑课程接口
+          await this.editCourse({
+            card_instance_id: card.id,
+            booking_type: 2, // 卡片课程
+            // category_id: null // 清除课程类型ID
+          });
+          
+          this.setData({
+            selectedCard: card,
+            selectedCategorie: null,
+            showCategorieSelection: false
+          });
+        }
+      }
+    });
   },
 
   // 修改课程
