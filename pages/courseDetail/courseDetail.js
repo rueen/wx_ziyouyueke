@@ -1432,18 +1432,26 @@ Page({
     });
   },
 
+  getTimeSlot(time) {
+    return `${time.split(':')[0]}:${time.split(':')[1]}`
+  },
+
   // 修改上课时间
   handleEditTime() {
     const { courseInfo } = this.data;
     if (!courseInfo) return;
+    const start_time = this.getTimeSlot(courseInfo.start_time);
+    const end_time = this.getTimeSlot(courseInfo.end_time);
 
     // 显示时间选择弹窗
     this.setData({
       showTimeSelection: true,
       selectedDate: courseInfo.course_date || '',
       selectedTimeSlot: {
-        startTime: courseInfo.start_time,
-        endTime: courseInfo.end_time
+        id: `${courseInfo.course_date}_${start_time}_${end_time}`,
+        course_date: courseInfo.course_date,
+        startTime: start_time,
+        endTime: end_time
       }
     });
   },
