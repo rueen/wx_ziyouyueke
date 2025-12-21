@@ -105,28 +105,13 @@ Component({
       const { timeType } = this.data;
       if (timeType === 2 && this.properties.mode === 'select') {
         if (newSelectedTimeSlot && Object.keys(newSelectedTimeSlot).length > 0) {
-          // 检查是否是自由时间段
-          const isFreeTime = newSelectedTimeSlot.isFreeTime || 
-                            (newSelectedTimeSlot.startTime && newSelectedTimeSlot.endTime) ||
-                            (newSelectedTimeSlot.start_time && newSelectedTimeSlot.end_time);
+          // 提取时间字段（兼容多种格式）
+          const { startTime, endTime } = this.extractTimeFromSlot(newSelectedTimeSlot);
           
-          if (isFreeTime) {
-            let selectedStartTime = newSelectedTimeSlot.startTime || newSelectedTimeSlot.start_time || '';
-            let selectedEndTime = newSelectedTimeSlot.endTime || newSelectedTimeSlot.end_time || '';
-            
-            // 格式化时间（确保格式为 HH:mm）
-            if (selectedStartTime && selectedStartTime.includes(':')) {
-              const [hour, minute] = selectedStartTime.split(':');
-              selectedStartTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-            }
-            if (selectedEndTime && selectedEndTime.includes(':')) {
-              const [hour, minute] = selectedEndTime.split(':');
-              selectedEndTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-            }
-            
+          if (startTime && endTime) {
             this.setData({
-              selectedStartTime: selectedStartTime,
-              selectedEndTime: selectedEndTime
+              selectedStartTime: startTime,
+              selectedEndTime: endTime
             });
             
             // 如果日期不同，切换日期并更新时间限制
@@ -154,6 +139,140 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    /**
+     * 格式化时间为 HH:mm 格式（去掉秒）
+     * @param {string} timeString - 时间字符串（可能包含秒，如 HH:mm:ss）
+     * @returns {string} HH:mm 格式的时间字符串
+     */
+    formatTime(timeString) {
+      if (!timeString || !timeString.includes(':')) {
+        return timeString || '';
+      }
+      const parts = timeString.split(':');
+      return `${parts[0]}:${parts[1]}`;
+    },
+
+    /**
+     * 从 selectedTimeSlot 中提取时间字段（兼容多种格式）
+     * @param {Object} selectedTimeSlot - 选中的时间段对象
+     * @returns {Object} { startTime, endTime } 格式化后的时间
+     */
+    extractTimeFromSlot(selectedTimeSlot) {
+      if (!selectedTimeSlot) {
+        return { startTime: '', endTime: '' };
+      }
+
+      let startTime = selectedTimeSlot.startTime || selectedTimeSlot.start_time || '';
+      let endTime = selectedTimeSlot.endTime || selectedTimeSlot.end_time || '';
+
+      if (!startTime || !endTime) {
+        return { startTime: '', endTime: '' };
+      }
+
+      // 格式化时间（确保格式为 HH:mm）
+      return {
+        startTime: this.formatTime(startTime),
+        endTime: this.formatTime(endTime)
+      };
+    },
+
+    /**
+     * 检查自由时间段的状态（是否与已预约时间段冲突）
+     * @param {string} startTime - 开始时间 HH:mm
+     * @param {string} endTime - 结束时间 HH:mm
+     * @param {string} date - 日期 YYYY-MM-DD
+     * @param {Array} bookedCourses - 个人课程列表（可选，如果不传则从data中读取）
+     * @param {Array} groupCourses - 活动列表（可选，如果不传则从data中读取）
+     * @returns {Object} { status, canSelect, message }
+     */
+    async checkFreeTimeSlotStatus(startTime, endTime, date, bookedCourses = null, groupCourses = null) {
+      // 检查时间段是否已过期
+      const isExpired = this.isTimeSlotExpired(date, startTime);
+      if (isExpired) {
+        return { status: 'expired', canSelect: false, message: '该时段已过期' };
+      }
+
+      // 如果没有传入课程数据，则重新获取
+      if (!bookedCourses || !groupCourses) {
+        const coachId = this.properties && this.properties.coachId ? this.properties.coachId : null;
+        const queryParams = {
+          start_date: date,
+          end_date: date,
+          limit: 100
+        };
+        
+        if (coachId) {
+          queryParams.coach_id = coachId;
+        }
+        
+        try {
+          const [courseResult, groupCourseResult] = await Promise.all([
+            api.course.getList(queryParams),
+            this.loadGroupCourses(date, coachId)
+          ]);
+          
+          bookedCourses = courseResult.data ? courseResult.data.list : [];
+          groupCourses = groupCourseResult || [];
+        } catch (error) {
+          console.error('获取课程数据失败:', error);
+          return { status: 'free', canSelect: true, message: '' };
+        }
+      }
+
+      // 获取当前选中的时间段（用于排除）
+      const { selectedTimeSlot } = this.properties;
+      const { startTime: selectedStartTime, endTime: selectedEndTime } = this.extractTimeFromSlot(selectedTimeSlot);
+
+      // 检查是否与个人课程冲突
+      const activePersonalCourses = bookedCourses.filter(course => course.booking_status !== 4);
+      for (const course of activePersonalCourses) {
+        const courseStart = this.formatTime(course.start_time);
+        const courseEnd = this.formatTime(course.end_time);
+
+        // 排除当前选中的时间段（编辑模式）
+        if (selectedStartTime === courseStart && selectedEndTime === courseEnd) {
+          continue;
+        }
+
+        // 判断时间段是否重叠
+        const hasOverlap = (startTime < courseEnd && endTime > courseStart);
+        
+        if (hasOverlap) {
+          // 其他已预约的时间段，根据 type 判断
+          if (this.properties.type === 'groupCourses') {
+            // 活动模式：任何已预约的时间段都不可选
+            return { status: 'booked', canSelect: false, message: '该时段已预约' };
+          } else {
+            // 普通模式：已预约但未满员的时间段可以选
+            // 这里简化处理，假设未满员
+            return { status: 'booked', canSelect: true, message: '' };
+          }
+        }
+      }
+
+      // 检查是否与活动冲突
+      for (const groupCourse of groupCourses) {
+        // 排除当前编辑的活动
+        if (this.properties.courseId != null && groupCourse.id === this.properties.courseId) {
+          continue;
+        }
+
+        const courseStart = this.formatTime(groupCourse.start_time);
+        const courseEnd = this.formatTime(groupCourse.end_time);
+
+        // 判断时间段是否重叠
+        const hasOverlap = (startTime < courseEnd && endTime > courseStart);
+        
+        if (hasOverlap) {
+          // 有活动的时间段不可选
+          return { status: 'groupBooked', canSelect: false, message: '该时段已有活动' };
+        }
+      }
+
+      // 没有冲突，可以选择
+      return { status: 'free', canSelect: true, message: '' };
+    },
+
     /**
      * 初始化组件
      */
@@ -429,11 +548,22 @@ Component({
         // 提取所有已预约的时间段（排除已取消的课程）
         const bookedTimeSlots = [];
         
+        // 获取当前选中的时间段（用于排除）
+        const { selectedTimeSlot } = this.properties;
+        const { startTime: selectedStartTime, endTime: selectedEndTime } = this.extractTimeFromSlot(selectedTimeSlot);
+        
+        // 统一处理个人课程和活动的时间段（合并计数）
         // 添加个人课程的时间段
         bookedCourses.filter(course => course.booking_status !== 4).forEach(course => {
-          const startTime = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
-          const endTime = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
+          const startTime = this.formatTime(course.start_time);
+          const endTime = this.formatTime(course.end_time);
           const timeKey = `${startTime}-${endTime}`;
+          
+          // 排除当前选中的时间段（编辑模式回显时，不显示自己）
+          if (selectedStartTime && selectedEndTime && 
+              selectedStartTime === startTime && selectedEndTime === endTime) {
+            return; // 跳过当前选中的时间段
+          }
           
           // 检查是否已存在相同时间段
           const existingSlot = bookedTimeSlots.find(slot => slot.timeKey === timeKey);
@@ -444,31 +574,34 @@ Component({
               timeKey: timeKey,
               startTime: startTime,
               endTime: endTime,
-              count: 1,
-              type: 'personal'
+              count: 1
             });
           }
         });
         
-        // 添加活动的时间段
+        // 添加活动的时间段（与个人课程统一处理，合并计数）
         groupCourses.forEach(groupCourse => {
-          const startTime = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
-          const endTime = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
+          // 排除当前编辑的活动（编辑模式回显时，不显示自己）
+          if (this.properties.courseId != null && groupCourse.id === this.properties.courseId) {
+            return; // 跳过当前编辑的活动
+          }
+          
+          const startTime = this.formatTime(groupCourse.start_time);
+          const endTime = this.formatTime(groupCourse.end_time);
           const timeKey = `${startTime}-${endTime}`;
           
-          // 检查是否已存在相同时间段
+          // 检查是否已存在相同时间段（与个人课程合并）
           const existingSlot = bookedTimeSlots.find(slot => slot.timeKey === timeKey);
           if (existingSlot) {
             existingSlot.count += 1;
-            existingSlot.hasGroup = true;
+            existingSlot.hasGroup = true; // 标记包含活动
           } else {
             bookedTimeSlots.push({
               timeKey: timeKey,
               startTime: startTime,
               endTime: endTime,
               count: 1,
-              type: 'group',
-              hasGroup: true
+              hasGroup: true // 标记包含活动
             });
           }
         });
@@ -476,39 +609,10 @@ Component({
         // 按时间排序
         bookedTimeSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
         
-        // 检查是否有已选择的时间段（编辑模式回显）
-        let selectedStartTime = '';
-        let selectedEndTime = '';
-        const { selectedTimeSlot } = this.properties;
-        
-        if (selectedTimeSlot) {
-          // 检查是否是自由时间段
-          const isFreeTime = selectedTimeSlot.isFreeTime || 
-                            (selectedTimeSlot.startTime && selectedTimeSlot.endTime) ||
-                            (selectedTimeSlot.start_time && selectedTimeSlot.end_time);
-          
-          if (isFreeTime) {
-            // 优先使用 startTime/endTime，兼容 start_time/end_time
-            selectedStartTime = selectedTimeSlot.startTime || selectedTimeSlot.start_time || '';
-            selectedEndTime = selectedTimeSlot.endTime || selectedTimeSlot.end_time || '';
-            
-            // 格式化时间（确保格式为 HH:mm）
-            if (selectedStartTime && selectedStartTime.includes(':')) {
-              const [hour, minute] = selectedStartTime.split(':');
-              selectedStartTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-            }
-            if (selectedEndTime && selectedEndTime.includes(':')) {
-              const [hour, minute] = selectedEndTime.split(':');
-              selectedEndTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-            }
-          }
-        }
-        
         // 保存到 data 中用于显示
         this.setData({
           isLoading: false,
           bookedCoursesForDisplay: bookedTimeSlots,
-          groupCoursesForDisplay: [], // 不再单独显示
           selectedStartTime: selectedStartTime,
           selectedEndTime: selectedEndTime
         });
@@ -518,15 +622,15 @@ Component({
         return;
       }
       
-      // 查看模式：根据实际课程动态生成时间段列表
+      // 查看模式:根据实际课程动态生成时间段列表
       if (timeType === 2 && this.properties.mode === 'view') {
         // 从课程数据中提取唯一的时间段
         const uniqueTimeSlots = new Map();
         
         // 添加个人课程的时间段
         bookedCourses.forEach(course => {
-          const startTime = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
-          const endTime = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
+          const startTime = this.formatTime(course.start_time);
+          const endTime = this.formatTime(course.end_time);
           const key = `${startTime}-${endTime}`;
           if (!uniqueTimeSlots.has(key)) {
             uniqueTimeSlots.set(key, { startTime, endTime });
@@ -535,8 +639,8 @@ Component({
         
         // 添加活动的时间段
         groupCourses.forEach(groupCourse => {
-          const startTime = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
-          const endTime = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
+          const startTime = this.formatTime(groupCourse.start_time);
+          const endTime = this.formatTime(groupCourse.end_time);
           const key = `${startTime}-${endTime}`;
           if (!uniqueTimeSlots.has(key)) {
             uniqueTimeSlots.set(key, { startTime, endTime });
@@ -568,15 +672,15 @@ Component({
 
           // 查找该时间段的所有个人课程（包括已取消的）
           const allCoursesInSlot = bookedCourses.filter(course => {
-            const course_start_time = `${course.start_time.split(':')[0]}:${course.start_time.split(':')[1]}`;
-            const course_end_time = `${course.end_time.split(':')[0]}:${course.end_time.split(':')[1]}`;
+            const course_start_time = this.formatTime(course.start_time);
+            const course_end_time = this.formatTime(course.end_time);
             return course_start_time === slot.startTime && course_end_time === slot.endTime;
           });
 
           // 查找该时间段的活动
           const groupCoursesInSlot = groupCourses.filter(groupCourse => {
-            const course_start_time = `${groupCourse.start_time.split(':')[0]}:${groupCourse.start_time.split(':')[1]}`;
-            const course_end_time = `${groupCourse.end_time.split(':')[0]}:${groupCourse.end_time.split(':')[1]}`;
+            const course_start_time = this.formatTime(groupCourse.start_time);
+            const course_end_time = this.formatTime(groupCourse.end_time);
             if(this.properties.type === 'groupCourses' && this.properties.courseId != null) {
               return groupCourse.id !== this.properties.courseId && course_start_time === slot.startTime && course_end_time === slot.endTime;
             }
@@ -744,7 +848,7 @@ Component({
     /**
      * 选择日期
      */
-    onSelectDate(e) {
+    async onSelectDate(e) {
       const { date } = e.currentTarget.dataset;
       
       if (date === this.data.currentDate) return;
@@ -763,20 +867,22 @@ Component({
         // 更新时间限制
         this.updateTimeConstraints(date);
         
+        // 先加载选中日期的时间段数据，然后检查状态
+        await this.loadTimeSlots(date);
+        
+        // 检查该时间段的状态
+        const statusCheck = await this.checkFreeTimeSlotStatus(selectedStartTime, selectedEndTime, date);
+        
         // 触发时间段选择事件，更新 course_date
         this.triggerEvent('timeSlotTap', {
           slot: {
-            id: `free_${date}_${selectedStartTime}_${selectedEndTime}`,
+            id: `${date}_${selectedStartTime}_${selectedEndTime}`,
             startTime: selectedStartTime,
             endTime: selectedEndTime,
-            status: 'free',
-            isFreeTime: true
+            status: statusCheck.status
           },
           date: date
         });
-        
-        // 加载选中日期的时间段数据（用于显示已预约时间段）
-        this.loadTimeSlots(date);
         
         // 触发日期选择事件
         this.triggerEvent('dateSelected', {
@@ -1075,21 +1181,23 @@ Component({
     /**
      * 触发时间段选择事件（内部方法）
      */
-    triggerTimeSelection() {
+    async triggerTimeSelection() {
       const { currentDate, selectedStartTime, selectedEndTime } = this.data;
 
       if (!selectedStartTime || !selectedEndTime) {
         return; // 数据不完整，不触发事件
       }
 
+      // 检查该时间段的状态
+      const statusCheck = await this.checkFreeTimeSlotStatus(selectedStartTime, selectedEndTime, currentDate);
+
       // 触发时间段选择事件
       this.triggerEvent('timeSlotTap', {
         slot: {
-          id: `free_${currentDate}_${selectedStartTime}_${selectedEndTime}`,
+          id: `${currentDate}_${selectedStartTime}_${selectedEndTime}`,
           startTime: selectedStartTime,
           endTime: selectedEndTime,
-          status: 'free',
-          isFreeTime: true // 标记为自由时间段
+          status: statusCheck.status
         },
         date: currentDate
       });

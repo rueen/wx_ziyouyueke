@@ -1478,7 +1478,14 @@ Page({
   },
   onConfirmEditTime() {
     const { date, slot } = this.data.newDate;
-
+console.log(slot)
+    if (slot.status === 'groupBooked') {
+      wx.showToast({
+        title: '该时段已有活动',
+        icon: 'none'
+      });
+      return;
+    }
     if (slot.status === 'full') {
       wx.showToast({
         title: '该时段已满员',
