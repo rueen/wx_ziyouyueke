@@ -359,7 +359,7 @@
   <view class="modal-content-time">
     <view class="modal-header">
       <text class="modal-title">修改上课时间</text>
-      <text class="modal-close" bindtap="onHideTimeSelection">×</text>
+      <text class="iconfont icon-close" bindtap="onHideTimeSelection"></text>
     </view>
     <view class="modal-body-time">
       <time-selector
@@ -371,6 +371,8 @@
         bind:timeSlotTap="onTimeSlotTap"
         bind:error="onTimeSelectorError"
       />
+      <button class="modal-btn confirm-modal-btn active" 
+              bindtap="onConfirmEditTime">确定</button>
     </view>
   </view>
 </view>

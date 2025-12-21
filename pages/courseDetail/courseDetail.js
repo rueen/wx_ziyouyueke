@@ -1470,6 +1470,14 @@ Page({
    */
   onTimeSlotTap(e) {
     const { date, slot } = e.detail;
+    this.setData({
+      newDate: {
+        date, slot
+      }
+    })
+  },
+  onConfirmEditTime() {
+    const { date, slot } = this.data.newDate;
 
     if (slot.status === 'full') {
       wx.showToast({

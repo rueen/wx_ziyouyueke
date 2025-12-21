@@ -511,13 +511,6 @@ page {
   color: #333;
 }
 
-.modal-content-time .modal-close {
-  font-size: 48rpx;
-  color: #999;
-  line-height: 1;
-  padding: 0 10rpx;
-}
-
 .modal-body-time {
   flex: 1;
   overflow-y: auto;
