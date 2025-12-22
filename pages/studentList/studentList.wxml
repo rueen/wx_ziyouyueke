@@ -7,7 +7,7 @@
       <input 
         class="search-input"
         type="text"
-        placeholder="搜索学员姓名或手机号"
+        placeholder="搜索学员名称或手机号"
         value="{{keyword}}"
         bindinput="onSearchInput"
         confirm-type="search"
