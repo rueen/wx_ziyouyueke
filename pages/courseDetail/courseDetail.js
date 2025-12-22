@@ -276,13 +276,13 @@ Page({
    * 确认取消课程
    */
   async onConfirmCancel() {
-    if (!this.data.cancelReason.trim()) {
-      wx.showToast({
-        title: '请输入取消原因',
-        icon: 'error'
-      });
-      return;
-    }
+    // if (!this.data.cancelReason.trim()) {
+    //   wx.showToast({
+    //     title: '请输入取消原因',
+    //     icon: 'error'
+    //   });
+    //   return;
+    // }
 
     try {
       wx.showLoading({ title: '取消中...' });
