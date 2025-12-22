@@ -1,6 +1,24 @@
 <!--pages/studentList/studentList.wxml-->
 <navBar title="我的学员" />
 <layout>
+  <!-- 搜索框 -->
+  <view class="search-container">
+    <view class="search-box">
+      <input 
+        class="search-input"
+        type="text"
+        placeholder="搜索学员姓名或手机号"
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">
+        <text class="iconfont icon-close"></text>
+      </view>
+    </view>
+  </view>
+
   <!-- 学员列表 -->
   <view class="student-list" wx:if="{{students.length > 0}}">
     <view class="student-item" wx:for="{{students}}" wx:key="id" bindtap="onStudentDetail" data-student="{{item}}">
@@ -45,12 +63,13 @@
   </view>
 
   <!-- 空状态 -->
-  <emptyState 
-    wx:else
-    type="no-data"
-    title="暂无学员"
-    description="您还没有关联任何学员，下拉可刷新">
-  </emptyState>
+  <view wx:else>
+    <emptyState 
+      type="no-data"
+      title="{{keyword ? '未找到相关学员' : '暂无学员'}}"
+      description="{{keyword ? '请尝试其他关键词搜索' : '您还没有关联任何学员，下拉可刷新'}}">
+    </emptyState>
+  </view>
 
   <!-- 添加学员按钮 -->
   <view class="add-button-container">

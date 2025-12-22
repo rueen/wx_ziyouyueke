@@ -26,6 +26,10 @@ Page({
     hasMore: true,
     isRefreshing: false,
 
+    // 搜索相关
+    keyword: '', // 搜索关键词
+    searchTimer: null, // 搜索防抖定时器
+
     // 分享相关
     showShareModal: false,
     shareOptions: [
@@ -135,12 +139,17 @@ Page({
       }
 
       // 构建请求参数
-      const { currentPage, pageSize } = this.data;
+      const { currentPage, pageSize, keyword } = this.data;
       
       const params = {
         page: currentPage,
         limit: pageSize
       };
+
+      // 如果有搜索关键词，添加到参数中
+      if (keyword && keyword.trim()) {
+        params.keyword = keyword.trim();
+      }
 
       // 调用API获取我的学员列表
       const result = await api.relation.getMyStudents(params);
@@ -233,6 +242,76 @@ Page({
   },
 
   /**
+   * 搜索输入事件处理（带防抖）
+   * @param {Object} e 事件对象
+   */
+  onSearchInput(e) {
+    const keyword = e.detail.value;
+    
+    // 更新搜索关键词
+    this.setData({
+      keyword: keyword
+    });
+
+    // 清除之前的定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+    }
+
+    // 设置防抖定时器，500ms后执行搜索
+    const timer = setTimeout(() => {
+      this.loadStudents(true);
+    }, 500);
+
+    this.setData({
+      searchTimer: timer
+    });
+  },
+
+  /**
+   * 搜索确认事件处理
+   * @param {Object} e 事件对象
+   */
+  onSearchConfirm(e) {
+    const keyword = e.detail.value;
+    
+    // 清除防抖定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+      this.setData({
+        searchTimer: null
+      });
+    }
+
+    // 更新搜索关键词并立即搜索
+    this.setData({
+      keyword: keyword
+    });
+    
+    this.loadStudents(true);
+  },
+
+  /**
+   * 清空搜索
+   */
+  onClearSearch() {
+    // 清除防抖定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+      this.setData({
+        searchTimer: null
+      });
+    }
+
+    // 清空搜索关键词并重新加载
+    this.setData({
+      keyword: ''
+    });
+    
+    this.loadStudents(true);
+  },
+
+  /**
    * 页面分享配置
    */
   onShareAppMessage() {
@@ -242,5 +321,14 @@ Page({
       path: `/pages/bindCoach/bindCoach?coachId=${coachInfo.id}`,
       imageUrl: coachInfo.avatar_url
     };
+  },
+
+  /**
+   * 页面卸载时清理定时器
+   */
+  onUnload() {
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+    }
   }
 }) 
