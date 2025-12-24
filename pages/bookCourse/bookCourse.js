@@ -25,6 +25,10 @@ Page({
     availableOptions: [], // 可选择的教练或学员列表（包括课时为0的）
     selectedOption: null, // 已选择的教练或学员
     showOptionSelection: false, // 是否显示选择弹窗
+    
+    // 搜索相关
+    keyword: '', // 搜索关键词
+    searchTimer: null, // 搜索防抖定时器
 
     // 课程类型
     categoriesList: [],
@@ -130,17 +134,22 @@ Page({
 
   /**
    * 加载可选择的教练或学员列表
+   * @param {String} keyword - 搜索关键词（可选）
    */
-  async loadAvailableOptions() {
+  async loadAvailableOptions(keyword = '') {
     const { bookingType } = this.data;
     
     try {
       let result;
       if (bookingType === 'coach-book-student') {
         // 教练约学员：获取我的学员列表（包括剩余课时为0的）
-        result = await api.relation.getMyStudents({
+        const params = {
           limit: 200
-        });
+        };
+        if (keyword) {
+          params.keyword = keyword;
+        }
+        result = await api.relation.getMyStudents(params);
         if (result && result.data && result.data.list) {
           // API返回的数据在result.data.list中
           const dataArray = Array.isArray(result.data.list) ? result.data.list : [];
@@ -313,6 +322,7 @@ Page({
     const updateData = {
       selectedOption: option,
       showOptionSelection: false,
+      searchTimer: null,
       selectedCoachId: coachId,
       selectedDate: '',
       selectedTimeSlot: '',
@@ -320,6 +330,10 @@ Page({
       selectedCard: null, // 清除卡片选择
       bookingType_: 1, // 使用普通课程
     };
+    // 清除搜索定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+    }
     
     // 如果是学员约教练，需要重置地址（因为教练变了）
     // 如果是教练约学员，不重置地址（因为教练没变）
@@ -356,6 +370,76 @@ Page({
   onSelectOption(e) {
     const option = e.currentTarget.dataset.option;
     this.selectOption(option);
+  },
+
+  /**
+   * 搜索输入事件处理（带防抖）
+   * @param {Object} e 事件对象
+   */
+  onSearchInput(e) {
+    const keyword = e.detail.value;
+    
+    // 更新搜索关键词
+    this.setData({
+      keyword: keyword
+    });
+
+    // 清除之前的定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+    }
+
+    // 设置防抖定时器，500ms后执行搜索
+    const timer = setTimeout(() => {
+      this.loadAvailableOptions(keyword);
+    }, 500);
+
+    this.setData({
+      searchTimer: timer
+    });
+  },
+
+  /**
+   * 搜索确认事件处理
+   * @param {Object} e 事件对象
+   */
+  onSearchConfirm(e) {
+    const keyword = e.detail.value;
+    
+    // 清除防抖定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+      this.setData({
+        searchTimer: null
+      });
+    }
+
+    // 更新搜索关键词并立即搜索
+    this.setData({
+      keyword: keyword
+    });
+    
+    this.loadAvailableOptions(keyword);
+  },
+
+  /**
+   * 清空搜索
+   */
+  onClearSearch() {
+    // 清除防抖定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+      this.setData({
+        searchTimer: null
+      });
+    }
+
+    // 清空搜索关键词并重新加载
+    this.setData({
+      keyword: ''
+    });
+    
+    this.loadAvailableOptions('');
   },
 
   /**
@@ -423,8 +507,15 @@ Page({
    * 隐藏选择对象弹窗
    */
   onHideOptionSelection() {
+    // 清除搜索定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
+    }
+    
     this.setData({
-      showOptionSelection: false
+      showOptionSelection: false,
+      keyword: '',
+      searchTimer: null
     });
   },
 
@@ -688,6 +779,16 @@ Page({
       });
     } finally {
       this.setData({ isSubmitting: false });
+    }
+  },
+
+  /**
+   * 页面卸载时清理
+   */
+  onUnload() {
+    // 清除搜索定时器
+    if (this.data.searchTimer) {
+      clearTimeout(this.data.searchTimer);
     }
   }
 }) 

@@ -141,12 +141,31 @@
 </layout>
 
 <!-- 选择对象弹窗 -->
-<view class="modal-mask" wx:if="{{showOptionSelection}}" bindtap="onHideOptionSelection">
+<view class="modal-mask" wx:if="{{showOptionSelection}}">
   <view class="modal-container" catchtap="">
     <view class="modal-header">
       <text class="modal-title">{{bookingType === 'coach-book-student' ? '选择学员' : '选择教练'}}</text>
       <text class="modal-close" bindtap="onHideOptionSelection">×</text>
     </view>
+    
+    <!-- 搜索框（仅在选择学员时显示） -->
+    <view class="search-section" wx:if="{{bookingType === 'coach-book-student'}}">
+      <view class="search-box">
+        <input 
+          class="search-input"
+          type="text"
+          placeholder="搜索学员名称或手机号"
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+          confirm-type="search"
+          bindconfirm="onSearchConfirm"
+        />
+        <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">
+          <text class="iconfont icon-close"></text>
+        </view>
+      </view>
+    </view>
+    
     <view class="modal-content">
       <view class="option-list">
         <view class="option-item {{item.remainingLessons <= 0 ? 'disabled' : ''}}" 
