@@ -1,0 +1,298 @@
+/* pages/tools-thr/thr.wxss */
+page {
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.thr-container {
+  padding: 0 16rpx 32rpx;
+  margin-top: 16rpx;
+}
+
+/* 计算方法选择 */
+.method-section {
+  margin-bottom: 16rpx;
+}
+
+.method-tabs {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  display: flex;
+  gap: 8rpx;
+}
+
+.method-tab {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.method-tab.active {
+  background-color: #007aff;
+}
+
+.method-tab .tab-text {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.method-tab.active .tab-text {
+  color: #fff;
+}
+
+/* 输入区域 */
+.input-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.input-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.input-item:last-of-type {
+  border-bottom: none;
+}
+
+.input-item .label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: normal;
+  min-width: 150rpx;
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.input {
+  flex: 1;
+  text-align: right;
+  font-size: 32rpx;
+  color: #333;
+  padding-right: 16rpx;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.unit {
+  font-size: 28rpx;
+  color: #999;
+  min-width: 80rpx;
+}
+
+/* 运动强度选择 */
+.intensity-item {
+  padding: 32rpx 0 16rpx;
+}
+
+.intensity-item .label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: normal;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.intensity-options {
+  display: flex;
+  gap: 16rpx;
+}
+
+.intensity-option {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.intensity-option.active {
+  background-color: #007aff;
+}
+
+.intensity-option .option-text {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.intensity-option.active .option-text {
+  color: #fff;
+}
+
+/* 计算按钮 */
+.calculate-btn {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32rpx;
+}
+
+.calculate-btn:active {
+  transform: translateY(2rpx);
+  background-color: #222;
+}
+
+/* 结果展示 */
+.result-section {
+  margin-bottom: 16rpx;
+}
+
+.result-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-title {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 24rpx;
+}
+
+.result-value {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 24rpx;
+}
+
+.value-number {
+  font-size: 56rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.value-separator {
+  font-size: 40rpx;
+  color: #666;
+  margin: 0 16rpx;
+}
+
+.value-unit {
+  font-size: 28rpx;
+  color: #999;
+  margin-left: 8rpx;
+}
+
+.result-desc {
+  padding: 16rpx 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.desc-text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 标准区域 */
+.standard-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.standard-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+/* 强度说明卡片 */
+.intensity-desc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.intensity-desc-item {
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.intensity-desc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #e5e5ea;
+}
+
+.intensity-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.intensity-range {
+  font-size: 26rpx;
+  color: #007aff;
+  font-weight: 500;
+}
+
+.intensity-desc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.desc-point {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 来源注释 */
+.source-note {
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.note-text {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 12rpx;
+}
+
+.note-text:last-child {
+  margin-bottom: 0;
+}

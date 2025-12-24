@@ -36,10 +36,10 @@
           <text class="iconfont icon-xiaoxidingyue"></text>
           <text class="menu-item-text">消息订阅</text>
         </view>
-        <view class="menu-item coach" bind:tap="handleOpenAllCoachList">
+        <!-- <view class="menu-item coach" bind:tap="handleOpenAllCoachList">
           <text class="iconfont icon-users"></text>
           <text class="menu-item-text">教练大厅</text>
-        </view>
+        </view> -->
         <view class="menu-item activity" bind:tap="handleOpenAllGroupCourses">
           <text class="iconfont icon-huodong"></text>
           <text class="menu-item-text">活动大厅</text>
@@ -49,6 +49,10 @@
             <text class="icon-bmi-text">BMI</text>
           </view>
           <text class="menu-item-text">身体测量</text>
+        </view>
+        <view class="menu-item" bind:tap="handleOpenToolsHeartRate">
+          <text class="iconfont icon-heart_rate"></text>
+          <text class="menu-item-text">目标心率</text>
         </view>
       </view>
     </view>

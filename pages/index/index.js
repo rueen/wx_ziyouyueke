@@ -323,6 +323,12 @@ Page({
     wx.navigateTo({
       url: '/pages/tools-bmi/bmi'
     });
+  },
+  // 工具-心率计算
+  handleOpenToolsHeartRate() {
+    wx.navigateTo({
+      url: '/pages/tools-thr/thr'
+    });
   }
   
 })

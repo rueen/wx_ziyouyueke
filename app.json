@@ -30,7 +30,8 @@
     "pages/cardManagement/cardManagement",
     "pages/studentCards/studentCards",
     "pages/cardDetail/cardDetail",
-    "pages/tools-bmi/bmi"
+    "pages/tools-bmi/bmi",
+    "pages/tools-thr/thr"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

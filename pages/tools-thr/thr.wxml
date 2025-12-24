@@ -1,0 +1,158 @@
+<!--pages/tools-thr/thr.wxml-->
+<navBar title="目标心率计算器" />
+<layout>
+  <view class="thr-container">
+    <!-- 计算方法选择 -->
+    <view class="method-section">
+      <view class="method-tabs">
+        <view 
+          class="method-tab {{methodType === 'percent' ? 'active' : ''}}" 
+          bindtap="onMethodChange" 
+          data-type="percent"
+        >
+          <text class="tab-text">最大心率百分比法</text>
+        </view>
+        <view 
+          class="method-tab {{methodType === 'reserve' ? 'active' : ''}}" 
+          bindtap="onMethodChange" 
+          data-type="reserve"
+        >
+          <text class="tab-text">心率储备法</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 输入区域 -->
+    <view class="input-section">
+      <!-- 年龄输入 -->
+      <view class="input-item">
+        <text class="label">年龄</text>
+        <view class="input-wrapper">
+          <input 
+            type="number" 
+            class="input" 
+            placeholder="请输入年龄" 
+            value="{{age}}" 
+            bindinput="onAgeInput" 
+          />
+          <text class="unit">岁</text>
+        </view>
+      </view>
+
+      <!-- 安静心率输入（仅心率储备法显示） -->
+      <view class="input-item" wx:if="{{methodType === 'reserve'}}">
+        <text class="label">安静心率</text>
+        <view class="input-wrapper">
+          <input 
+            type="number" 
+            class="input" 
+            placeholder="请输入安静心率" 
+            value="{{restingHR}}" 
+            bindinput="onRestingHRInput" 
+          />
+          <text class="unit">次/分</text>
+        </view>
+      </view>
+
+      <!-- 运动强度选择 -->
+      <view class="intensity-item">
+        <text class="label">运动强度</text>
+        <view class="intensity-options">
+          <view 
+            class="intensity-option {{intensity === 'basic' ? 'active' : ''}}" 
+            bindtap="onIntensityChange" 
+            data-type="basic"
+          >
+            <text class="option-text">基础</text>
+          </view>
+          <view 
+            class="intensity-option {{intensity === 'fitness' ? 'active' : ''}}" 
+            bindtap="onIntensityChange" 
+            data-type="fitness"
+          >
+            <text class="option-text">健身</text>
+          </view>
+          <view 
+            class="intensity-option {{intensity === 'performance' ? 'active' : ''}}" 
+            bindtap="onIntensityChange" 
+            data-type="performance"
+          >
+            <text class="option-text">运动表现</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 计算按钮 -->
+      <button class="calculate-btn" bindtap="onCalculate">计算目标心率</button>
+    </view>
+
+    <!-- 结果展示 -->
+    <view class="result-section" wx:if="{{thrMin && thrMax}}">
+      <view class="result-card">
+        <view class="result-title">目标心率范围</view>
+        <view class="result-value">
+          <text class="value-number">{{thrMin}}</text>
+          <text class="value-separator">~</text>
+          <text class="value-number">{{thrMax}}</text>
+          <text class="value-unit">次/分</text>
+        </view>
+        <view class="result-desc">
+          <text class="desc-text">{{intensityDesc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 强度说明 -->
+    <!-- <view class="standard-section">
+      <view class="standard-title">运动强度说明</view>
+      
+      <view class="intensity-desc-card">
+        <view class="intensity-desc-item">
+          <view class="intensity-desc-header">
+            <text class="intensity-name">基础</text>
+            <text class="intensity-range">{{methodType === 'percent' ? '64% ~ 76%' : '40% ~ 59%'}}</text>
+          </view>
+          <view class="intensity-desc-content">
+            <text class="desc-point">• 改善健康状况</text>
+            <text class="desc-point">• 养成日常习惯</text>
+            <text class="desc-point">• 提升耐力、精力和情绪</text>
+            <text class="desc-point">• 消耗热量</text>
+          </view>
+        </view>
+
+        <view class="intensity-desc-item">
+          <view class="intensity-desc-header">
+            <text class="intensity-name">健身</text>
+            <text class="intensity-range">{{methodType === 'percent' ? '77% ~ 95%' : '60% ~ 89%'}}</text>
+          </view>
+          <view class="intensity-desc-content">
+            <text class="desc-point">• 改善心肺适能</text>
+            <text class="desc-point">• 引入间歇训练</text>
+            <text class="desc-point">• 调整频率、时间来增加强度</text>
+          </view>
+        </view>
+
+        <view class="intensity-desc-item">
+          <view class="intensity-desc-header">
+            <text class="intensity-name">运动表现</text>
+            <text class="intensity-range">{{methodType === 'percent' ? '96%+' : '90%+'}}</text>
+          </view>
+          <view class="intensity-desc-content">
+            <text class="desc-point">• 创造个人记录</text>
+            <text class="desc-point">• 获得比赛名次</text>
+          </view>
+        </view>
+      </view>
+    </view> -->
+
+    <!-- 注意事项 -->
+    <view class="standard-section">
+      <view class="standard-title">训练建议</view>
+      <view class="source-note">
+        <text class="note-text">• 每周至少达到3～5次，每次20分钟的基础心肺训练，才能进入健身训练</text>
+        <text class="note-text">• 建议从较为保守的强度开始，然后逐渐增加强度</text>
+        <text class="note-text">• 如果运动强度太大，可能导致过度训练和损伤；如果强度太低，生理刺激可能不足以产生机能的提高</text>
+      </view>
+    </view>
+  </view>
+</layout>
