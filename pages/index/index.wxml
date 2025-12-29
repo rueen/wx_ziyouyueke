@@ -66,6 +66,7 @@
         coachId="{{userInfo.id}}"
         mode="view"
         show-booking-details="{{true}}"
+        bind:dateSelected="dateSelected"
       />
       <!-- 学员时间安排 -->
       <studentSchedule

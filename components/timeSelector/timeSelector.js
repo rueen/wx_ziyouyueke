@@ -42,6 +42,11 @@ Component({
     selectedTimeSlot: {
       type: Object,
       value: {}
+    },
+    // 当前选中的日期（可从父组件传入）
+    currentDate: {
+      type: String,
+      value: ''
     }
   },
 
@@ -49,7 +54,6 @@ Component({
    * 组件的初始数据
    */
   data: {
-    currentDate: '', // 当前选中的日期
     dateList: [], // 可预约日期列表
     timeSlots: [], // 当前日期的时间段列表
     isLoading: false, // 加载状态
@@ -98,6 +102,18 @@ Component({
     'coachId': function(newCoachId) {
       if (newCoachId && typeof newCoachId === 'number') {
         this.initializeComponent();
+      }
+    },
+    'currentDate': function(newCurrentDate) {
+      // 当父组件传入的 currentDate 变化时，更新内部状态并加载时间段
+      if (newCurrentDate && newCurrentDate !== this.data.currentDate) {
+        this.setData({
+          currentDate: newCurrentDate
+        });
+        // 如果组件已初始化，加载时间段
+        if (this.data.dateList && this.data.dateList.length > 0) {
+          this.loadTimeSlots(newCurrentDate);
+        }
       }
     },
     'selectedTimeSlot': function(newSelectedTimeSlot) {

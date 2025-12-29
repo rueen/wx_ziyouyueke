@@ -16,7 +16,7 @@ Page({
     
     // 来源信息
     from: '', // 'home', 'studentDetail', 'coachDetail', 'studentList', 'coachList'
-    
+    currentDate: '', // 当前选中的日期
     // 预设信息
     presetId: '', // 预设的教练ID或学员ID
     presetName: '', // 预设的教练名称或学员名称
@@ -66,7 +66,8 @@ Page({
     
     const { 
       type, 
-      from, 
+      from,
+      currentDate,
       coachId, 
       coachName, 
       studentId, 
@@ -92,6 +93,12 @@ Page({
       presetId: coachId || studentId || '',
       presetName: decodeURIComponent(coachName || studentName || '')
     });
+
+    if(currentDate){
+      this.setData({
+        currentDate
+      })
+    }
     
     // 设置页面标题
     wx.setNavigationBarTitle({

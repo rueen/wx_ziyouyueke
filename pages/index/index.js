@@ -15,7 +15,8 @@ Page({
     currentUserId: null,
     userInfo: {},
     // 用户身份
-    userRole: '' // 'student' 学员, 'coach' 教练
+    userRole: '', // 'student' 学员, 'coach' 教练
+    currentDate: '', // 当前选中的日期
   },
 
   /**
@@ -242,17 +243,17 @@ Page({
       return;
     }
     
-    const { userRole } = this.data;
+    const { userRole, currentDate } = this.data;
 
     if (userRole === 'student') {
       // 学员身份：约教练
       wx.navigateTo({
-        url: '/pages/bookCourse/bookCourse?type=student-book-coach&from=home'
+        url: `/pages/bookCourse/bookCourse?type=student-book-coach&from=home`
       });
     } else {
       // 教练身份：约学员
       wx.navigateTo({
-        url: '/pages/bookCourse/bookCourse?type=coach-book-student&from=home'
+        url: `/pages/bookCourse/bookCourse?type=coach-book-student&from=home&currentDate=${currentDate}`
       });
     }
   },
@@ -329,6 +330,13 @@ Page({
     wx.navigateTo({
       url: '/pages/tools-thr/thr'
     });
+  },
+
+  dateSelected(e) {
+    const { date } = e.detail;
+    this.setData({
+      currentDate: date
+    })
   }
   
 })

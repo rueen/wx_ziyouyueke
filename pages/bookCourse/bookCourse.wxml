@@ -80,6 +80,7 @@
       <timeSelector 
         coachId="{{selectedOption.coach_id}}"
         mode="select"
+        currentDate="{{currentDate}}"
         showBookingDetails="{{false}}"
         selectedTimeSlot="{{selectedTimeSlot}}"
         bind:timeSlotTap="onTimeSlotTap"
