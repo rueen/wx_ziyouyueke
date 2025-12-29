@@ -141,6 +141,25 @@ page {
   line-height: 1.4;
 }
 
+/* 课程设置入口 */
+.course-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  height: 100rpx;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+  color: #333;
+  margin: 16rpx 16rpx 0 16rpx;
+  border-radius: 16rpx;
+}
+
+.course-list .arrow {
+  font-size: 24rpx;
+  color: #999;
+}
+
 /* 编辑操作按钮 */
 .edit-actions {
   display: flex;

@@ -25,13 +25,27 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 只设置参数，不加载数据
     if (options.relationId && options.studentId) {
       this.setData({
         studentId: options.studentId - 0,
         relationId: options.relationId - 0
-      }, () => {
-        this.loadStudentDetail();
       });
+    }
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    // 统一在 onShow 中加载数据（首次进入和从其他页面返回都会触发）
+    if (this.data.relationId) {
+      // 如果处于编辑状态，先取消编辑
+      if (this.data.isEditing) {
+        this.onCancelEdit();
+      }
+      // 加载数据
+      this.loadStudentDetail();
     }
   },
 
@@ -235,6 +249,15 @@ Page({
         duration: 3000
       });
     }
+  },
+
+  /**
+   * 跳转到课程设置页面
+   */
+  handleCategoriesList() {
+    wx.navigateTo({
+      url: '/pages/categoriesList/categoriesList'
+    });
   }
 });
 
