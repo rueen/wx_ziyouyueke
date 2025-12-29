@@ -30,6 +30,7 @@
     "pages/cardManagement/cardManagement",
     "pages/studentCards/studentCards",
     "pages/cardDetail/cardDetail",
+    "pages/regularCourseManagement/regularCourseManagement",
     "pages/tools-bmi/bmi",
     "pages/tools-thr/thr"
   ],

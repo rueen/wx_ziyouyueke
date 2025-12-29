@@ -28,76 +28,28 @@
       </view>
     </view>
 
-    <!-- 课时信息 -->
-    <view class="info-section">
-      <view class="section-header">
-        <text class="section-title">
-          <text>剩余课时</text>
-        </text>
-        <text class="expire-date-title">到期时间</text>
-      </view>
-      <view class="tips">
-        <text class="tips-text" wx:if="{{!studentData.booking_status}}">课程到期时间会在约课状态重新开启后顺延</text>
-        <text class="tips-text" wx:else>到期时间 23:59:59 过后，课程剩余课时会自动清零</text>
-      </view>
-      
-      <view class="info-item" wx:for="{{studentData.category_lessons}}" wx:key="index">
-        <view class="info-label">{{item.category.name}}：</view>
-        <view class="course-item">
-          <view wx:if="{{!isEditing}}" class="info-value">
-            <text class="lessons-count active">{{item.remaining_lessons}}节</text>
-          </view>
-          <view wx:else class="edit-value-container">
-            <input
-              class="edit-input" 
-              type="number" 
-              value="{{item.remaining_lessons}}" 
-              bindinput="onLessonsInput"
-              data-id="{{item.category.id}}"
-              placeholder="请输入课时数"></input>
-            <text class="edit-unit">节</text>
-          </view>
-          <!-- 到期时间 -->
-          <view wx:if="{{!isEditing}}" class="info-value">
-            <text class="expire-date-text" wx:if="{{item.expire_date}}">{{item.expire_date}}</text>
-            <text class="expire-date-text" wx:else>永久</text>
-          </view>
-          <view wx:else class="edit-value-container">
-            <view
-              class="clear-expire"
-              wx:if="{{lessons[index].expire_date}}"
-              bind:tap="handleClearExpireDate"
-              data-id="{{item.category.id}}"
-            >
-              <text class="iconfont icon-close"></text>
-            </view>
-            <picker
-              mode="date"
-              bindchange="bindPickerChange"
-              data-id="{{item.category.id}}"
-            >
-              <text class="expire-date-text" wx:if="{{lessons[index].expire_date}}">
-                <text>{{lessons[index].expire_date}}</text>
-                <text class="iconfont icon-arrow-r"></text>
-              </text>
-              <text class="expire-date-text" wx:else>
-                <text>永久</text>
-                <text class="iconfont icon-arrow-r"></text>
-              </text>
-            </picker>
-          </view>
-        </view>
-      </view>
-      <view class="tips section-info">
-        <text class="tips-text">可在“我的”->“课程设置”添加更多课程</text>
-      </view>
-    
+    <!-- 常规课管理 -->
+    <view class="course-list active" bind:tap="handleRegularCourseManagement" wx:if="{{!isEditing}}">
+      <text>常规课管理</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
+    <!-- 卡片管理 -->
+    <view class="course-list active" bind:tap="handleCardManagement" wx:if="{{!isEditing}}">
+      <text>课程卡管理</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
+    <!-- 上课记录 -->
+    <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
+      <text>查看上课记录</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 
     <!-- 备注信息 -->
     <view class="info-section">
       <view class="section-header">
-        <text class="section-title">教练备注</text>
+        <text class="section-title">备注</text>
       </view>
       
       <view class="remark-container">
@@ -125,18 +77,6 @@
           <text wx:else>未开启</text>
         </text>
       </view>
-    </view>
-
-    <!-- 卡片管理 -->
-    <view class="course-list active" bind:tap="handleCardManagement" wx:if="{{!isEditing}}">
-      <text>课程卡管理</text>
-      <text class="iconfont icon-arrow-r arrow"></text>
-    </view>
-
-    <!-- 上课记录 -->
-    <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
-      <text>查看上课记录</text>
-      <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 
     <!-- 编辑状态的操作按钮 -->

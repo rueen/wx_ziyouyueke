@@ -21,7 +21,6 @@ Page({
     isSaving: false,     // 是否正在保存
     showUnbindModal: false, // 是否显示解除绑定确认弹窗
     isUnbinding: false,   // 是否正在解除绑定
-    lessons: [],
     bookingStatus: true
   },
 
@@ -61,7 +60,6 @@ Page({
         const studentData = result.data || {};
         this.setData({
           studentData: studentData,
-          lessons: studentData.lessons,
           studentName: studentData.student_name || studentData.student.nickname || '',
           studentRemark: studentData.coach_remark || '',
           bookingStatus: studentData.booking_status
@@ -164,50 +162,6 @@ Page({
   },
 
   /**
-   * 输入课时数
-   */
-  onLessonsInput(e) {
-    const { currentTarget: { dataset: { id } }, detail: { value } } = e;
-    const lessons = [...this.data.lessons];
-    lessons.map(item => {
-      if(item.category_id === id) {
-        item.remaining_lessons = parseInt(value);
-      }
-    })
-    this.setData({
-      lessons: lessons
-    })
-  },
-
-  // 清除到期时间
-  handleClearExpireDate(e) {
-    const { currentTarget: { dataset: { id } } } = e;
-    const lessons = [...this.data.lessons];
-    lessons.map(item => {
-      if(item.category_id === id) {
-        item.expire_date = null;
-      }
-    })
-    this.setData({
-      lessons: lessons
-    })
-  },
-
-  // 选择到期时间
-  bindPickerChange(e) {
-    const { currentTarget: { dataset: { id } }, detail: { value } } = e;
-    const lessons = [...this.data.lessons];
-    lessons.map(item => {
-      if(item.category_id === id) {
-        item.expire_date = value;
-      }
-    })
-    this.setData({
-      lessons: lessons
-    })
-  },
-
-  /**
    * 输入备注
    */
   onRemarkInput(e) {
@@ -220,7 +174,7 @@ Page({
    * 保存修改
    */
   async onSave() {
-    const { lessons, studentRemark, studentName, studentData, isSaving } = this.data;
+    const { studentRemark, studentName, studentData, isSaving } = this.data;
 
     if (isSaving) {
       return; // 防止重复提交
@@ -235,13 +189,8 @@ Page({
         title: '保存中...'
       });
 
-      // 调用API更新师生关系
+      // 调用API更新师生关系（仅更新学员姓名和备注）
       const updateData = {
-        category_lessons: lessons.map(lesson => ({
-          category_id: lesson.category_id,
-          expire_date: lesson.expire_date,
-          remaining_lessons: lesson.remaining_lessons
-        })),
         student_name: studentName.trim(),
         coach_remark: studentRemark.trim()
       };
@@ -433,6 +382,17 @@ Page({
     
     wx.navigateTo({
       url: `/pages/studentCards/studentCards?studentId=${studentId}&relationId=${relationId}&studentName=${encodeURIComponent(studentName)}`
+    });
+  },
+
+  /**
+   * 常规课管理
+   */
+  handleRegularCourseManagement() {
+    const { relationId, studentId } = this.data;
+    
+    wx.navigateTo({
+      url: `/pages/regularCourseManagement/regularCourseManagement?relationId=${relationId}&studentId=${studentId}`
     });
   },
 

@@ -1,0 +1,87 @@
+<!--pages/regularCourseManagement/regularCourseManagement.wxml-->
+<navBar title="常规课管理" />
+<layout>
+  <view class="container">
+    <!-- 课时信息 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">
+          <text>剩余课时</text>
+        </text>
+        <text class="expire-date-title">到期时间</text>
+      </view>
+      <view class="tips">
+        <text class="tips-text" wx:if="{{!bookingStatus}}">课程到期时间会在约课状态重新开启后顺延</text>
+        <text class="tips-text" wx:else>到期时间 23:59:59 过后，课程剩余课时会自动清零</text>
+      </view>
+      
+      <view class="info-item" wx:for="{{categoryLessons}}" wx:key="index">
+        <view class="info-label">{{item.category.name}}：</view>
+        <view class="course-item">
+          <view wx:if="{{!isEditing}}" class="info-value">
+            <text class="lessons-count active">{{item.remaining_lessons}}节</text>
+          </view>
+          <view wx:else class="edit-value-container">
+            <input
+              class="edit-input" 
+              type="number" 
+              value="{{lessons[index].remaining_lessons}}" 
+              bindinput="onLessonsInput"
+              data-id="{{item.category.id}}"
+              data-index="{{index}}"
+              placeholder="请输入课时数"></input>
+            <text class="edit-unit">节</text>
+          </view>
+          <!-- 到期时间 -->
+          <view wx:if="{{!isEditing}}" class="info-value">
+            <text class="expire-date-text" wx:if="{{item.expire_date}}">{{item.expire_date}}</text>
+            <text class="expire-date-text" wx:else>永久</text>
+          </view>
+          <view wx:else class="edit-value-container">
+            <view
+              class="clear-expire"
+              wx:if="{{lessons[index].expire_date}}"
+              bind:tap="handleClearExpireDate"
+              data-id="{{item.category.id}}"
+              data-index="{{index}}"
+            >
+              <text class="iconfont icon-close"></text>
+            </view>
+            <picker
+              mode="date"
+              bindchange="bindPickerChange"
+              data-id="{{item.category.id}}"
+              data-index="{{index}}"
+            >
+              <text class="expire-date-text" wx:if="{{lessons[index].expire_date}}">
+                <text>{{lessons[index].expire_date}}</text>
+                <text class="iconfont icon-arrow-r"></text>
+              </text>
+              <text class="expire-date-text" wx:else>
+                <text>永久</text>
+                <text class="iconfont icon-arrow-r"></text>
+              </text>
+            </picker>
+          </view>
+        </view>
+      </view>
+      <view class="tips section-info">
+        <text class="tips-text">可在"我的"->"课程设置"添加更多课程</text>
+      </view>
+    </view>
+
+    <!-- 编辑状态的操作按钮 -->
+    <view wx:if="{{isEditing}}" class="edit-actions">
+      <button class="cancel-btn" bindtap="onCancelEdit">取消</button>
+      <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
+        {{isSaving ? '保存中...' : '保存'}}
+      </button>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view wx:if="{{!isEditing}}" class="action-buttons">
+      <button class="edit-button" bindtap="onStartEdit">编辑</button>
+    </view>
+  </view>
+</layout>
+
