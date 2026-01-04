@@ -1,0 +1,296 @@
+/* pages/tools-rm/rm.wxss */
+page {
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.rm-container {
+  padding: 0 16rpx 32rpx;
+  margin-top: 16rpx;
+}
+
+/* 输入区域 */
+.input-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+.input-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.input-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 32rpx;
+}
+
+.input-item .label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: normal;
+  min-width: 120rpx;
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.input {
+  flex: 1;
+  text-align: right;
+  font-size: 32rpx;
+  color: #333;
+  padding-right: 16rpx;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.unit {
+  font-size: 28rpx;
+  color: #999;
+  min-width: 60rpx;
+}
+
+/* 计算按钮 */
+.calculate-btn {
+  width: 100%;
+  height: 96rpx;
+  background-color: #333;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculate-btn:active {
+  transform: translateY(2rpx);
+  background-color: #222;
+}
+
+/* 结果展示 */
+.result-section {
+  margin-bottom: 16rpx;
+}
+
+.result-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rm-value {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 16rpx;
+}
+
+.rm-value .label-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.rm-value .value-text {
+  font-size: 56rpx;
+  color: #333;
+  font-weight: bold;
+  margin-right: 8rpx;
+}
+
+.rm-value .unit-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.formula-note {
+  margin-top: 8rpx;
+}
+
+.formula-note .note-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 训练重量推荐 */
+.recommendation-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 标准区域 */
+.standard-section {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.standard-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+/* 表格样式 */
+.table-wrapper {
+  border: 1rpx solid #e5e5ea;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 1rpx solid #e5e5ea;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-header {
+  background-color: #f2f2f7;
+}
+
+.table-header .table-cell {
+  font-weight: bold;
+  color: #333;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 24rpx 16rpx;
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+  border-right: 1rpx solid #e5e5ea;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+/* 来源注释 */
+.source-note {
+  margin-top: 24rpx;
+  padding: 16rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+}
+
+.note-text {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+}
+
+.note-text:last-child {
+  margin-bottom: 0;
+}
+
+/* 1RM测试参考内容 */
+.test-content {
+  padding: 16rpx 0;
+}
+
+.test-item {
+  display: flex;
+  margin-bottom: 24rpx;
+  line-height: 1.8;
+}
+
+.test-item:last-child {
+  margin-bottom: 0;
+}
+
+.test-number {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  min-width: 48rpx;
+}
+
+.test-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* 子表格样式 */
+.sub-table {
+  width: 100%;
+  margin: 16rpx 0 16rpx 48rpx;
+  border: 1rpx solid #e5e5ea;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.sub-row {
+  display: flex;
+  border-bottom: 1rpx solid #e5e5ea;
+  background-color: #f8f9fa;
+}
+
+.sub-row:first-child {
+  background-color: #f2f2f7;
+}
+
+.sub-row:last-child {
+  border-bottom: none;
+}
+
+.sub-label {
+  flex: 0 0 160rpx;
+  padding: 16rpx;
+  font-size: 26rpx;
+  color: #666;
+  border-right: 1rpx solid #e5e5ea;
+  font-weight: normal;
+}
+
+.sub-row:first-child .sub-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.sub-value {
+  flex: 1;
+  padding: 16rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.sub-row:first-child .sub-value {
+  font-weight: bold;
+  color: #333;
+}
+
