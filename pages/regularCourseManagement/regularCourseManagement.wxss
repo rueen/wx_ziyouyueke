@@ -52,6 +52,9 @@ page {
 }
 
 /* 信息项 */
+.info-item{
+  margin-top: 16rpx;
+}
 .info-label {
   font-size: 28rpx;
   color: #000;
@@ -83,6 +86,13 @@ page {
 
 .lessons-count.empty {
   color: #ff3b30;
+}
+.available_lessons-box{
+  font-size: 24rpx;
+  color: #666;
+}
+.available_lessons{
+  color: rgb(255, 102, 1);
 }
 
 .expire-date-text {

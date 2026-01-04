@@ -48,7 +48,7 @@
       <view class="selected-address" wx:if="{{selectedCategorie}}" bindtap="onShowCategorieSelection">
         <view class="categorie-info">
           <text>{{selectedCategorie.category.name}}</text>
-          <text class="option-lessons">剩余课时：{{ selectedCategorie.remaining_lessons }}节</text>
+          <text class="option-lessons">剩余课时：{{ selectedCategorie.available_lessons }}节</text>
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>

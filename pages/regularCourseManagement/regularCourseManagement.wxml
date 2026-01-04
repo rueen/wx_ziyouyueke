@@ -64,6 +64,12 @@
             </picker>
           </view>
         </view>
+        <view>
+          <text class="available_lessons-box">
+            <text>含 <text class="available_lessons">{{item.available_lessons}}节</text> 可用课时</text>
+            <text wx:if="{{item.remaining_lessons - item.available_lessons > 0}}">，<text class="available_lessons">{{item.remaining_lessons - item.available_lessons}}节</text> 未核销课时</text>
+          </text>
+        </view>
       </view>
     </view>
 

@@ -17,7 +17,7 @@
           <view class="item-info">
             <text class="item-name">
               <text>{{item.category.name}}</text>
-              <text class="remaining-lessons">{{item.remaining_lessons}}节</text>
+              <text class="remaining-lessons">{{item.available_lessons}}节</text>
             </text>
             <text class="item-detail">{{item.category.desc}}</text>
           </view>
