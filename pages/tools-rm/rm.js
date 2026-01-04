@@ -10,24 +10,7 @@ Page({
     oneRM: '', // 计算出的1RM值
     
     // 训练重量推荐
-    recommendations: [],
-    
-    // %1RM与最大重复次数对照表
-    rmStandards: [
-      { percent: 100, maxReps: 1 },
-      { percent: 95, maxReps: 2 },
-      { percent: 93, maxReps: 3 },
-      { percent: 90, maxReps: 4 },
-      { percent: 87, maxReps: 5 },
-      { percent: 85, maxReps: 6 },
-      { percent: 83, maxReps: 7 },
-      { percent: 80, maxReps: 8 },
-      { percent: 77, maxReps: 9 },
-      { percent: 75, maxReps: 10 },
-      { percent: 70, maxReps: 11 },
-      { percent: 67, maxReps: 12 },
-      { percent: 65, maxReps: 15 }
-    ]
+    recommendations: []
   },
 
   /**
@@ -126,12 +109,18 @@ Page({
     const recommendations = [
       { percent: 100, reps: '1', weight: (oneRM * 1.00).toFixed(1) },
       { percent: 95, reps: '2', weight: (oneRM * 0.95).toFixed(1) },
+      { percent: 93, reps: '3', weight: (oneRM * 0.93).toFixed(1) },
       { percent: 90, reps: '4', weight: (oneRM * 0.90).toFixed(1) },
+      { percent: 87, reps: '5', weight: (oneRM * 0.87).toFixed(1) },
       { percent: 85, reps: '6', weight: (oneRM * 0.85).toFixed(1) },
+      { percent: 83, reps: '7', weight: (oneRM * 0.83).toFixed(1) },
       { percent: 80, reps: '8', weight: (oneRM * 0.80).toFixed(1) },
+      { percent: 77, reps: '9', weight: (oneRM * 0.77).toFixed(1) },
       { percent: 75, reps: '10', weight: (oneRM * 0.75).toFixed(1) },
       { percent: 70, reps: '11', weight: (oneRM * 0.70).toFixed(1) },
       { percent: 67, reps: '12', weight: (oneRM * 0.67).toFixed(1) },
+      // { percent: 66, reps: '13', weight: (oneRM * 0.66).toFixed(1) },
+      // { percent: 65.5, reps: '14', weight: (oneRM * 0.655).toFixed(1) },
       { percent: 65, reps: '15', weight: (oneRM * 0.65).toFixed(1) }
     ];
 

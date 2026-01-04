@@ -221,76 +221,66 @@ page {
   padding: 16rpx 0;
 }
 
-.test-item {
-  display: flex;
-  margin-bottom: 24rpx;
-  line-height: 1.8;
+.test-step {
+  margin-bottom: 32rpx;
+  padding: 24rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
 }
 
-.test-item:last-child {
+.test-step:last-child {
   margin-bottom: 0;
 }
 
-.test-number {
-  font-size: 28rpx;
+.step-title {
+  font-size: 30rpx;
   color: #333;
   font-weight: bold;
-  min-width: 48rpx;
+  margin-bottom: 16rpx;
+  display: block;
 }
 
-.test-text {
-  flex: 1;
+.step-desc {
+  display: block;
   font-size: 28rpx;
   color: #666;
-  line-height: 1.8;
+  line-height: 2;
+  margin-bottom: 8rpx;
 }
 
-/* 子表格样式 */
-.sub-table {
-  width: 100%;
-  margin: 16rpx 0 16rpx 48rpx;
-  border: 1rpx solid #e5e5ea;
-  border-radius: 12rpx;
-  overflow: hidden;
+.step-desc:last-child {
+  margin-bottom: 0;
 }
 
-.sub-row {
+/* 重量指导样式 */
+.weight-guide {
+  margin-top: 16rpx;
+}
+
+.guide-row {
   display: flex;
-  border-bottom: 1rpx solid #e5e5ea;
-  background-color: #f8f9fa;
-}
-
-.sub-row:first-child {
-  background-color: #f2f2f7;
-}
-
-.sub-row:last-child {
-  border-bottom: none;
-}
-
-.sub-label {
-  flex: 0 0 160rpx;
+  align-items: center;
   padding: 16rpx;
-  font-size: 26rpx;
-  color: #666;
-  border-right: 1rpx solid #e5e5ea;
-  font-weight: normal;
+  background-color: #fff;
+  border-radius: 8rpx;
+  margin-bottom: 12rpx;
 }
 
-.sub-row:first-child .sub-label {
-  font-weight: bold;
+.guide-row:last-child {
+  margin-bottom: 0;
+}
+
+.guide-label {
+  font-size: 28rpx;
   color: #333;
+  font-weight: bold;
+  min-width: 140rpx;
 }
 
-.sub-value {
+.guide-value {
   flex: 1;
-  padding: 16rpx;
   font-size: 26rpx;
   color: #666;
-}
-
-.sub-row:first-child .sub-value {
-  font-weight: bold;
-  color: #333;
+  line-height: 1.6;
 }
 

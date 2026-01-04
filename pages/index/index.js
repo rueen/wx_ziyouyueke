@@ -331,6 +331,12 @@ Page({
       url: '/pages/tools-thr/thr'
     });
   },
+  // 工具-rm计算
+  handleOpenToolsRm() {
+    wx.navigateTo({
+      url: '/pages/tools-rm/rm'
+    });
+  },
 
   dateSelected(e) {
     const { date } = e.detail;

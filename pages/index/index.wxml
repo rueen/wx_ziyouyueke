@@ -40,10 +40,10 @@
           <text class="iconfont icon-users"></text>
           <text class="menu-item-text">教练大厅</text>
         </view> -->
-        <view class="menu-item activity" bind:tap="handleOpenAllGroupCourses">
+        <!-- <view class="menu-item activity" bind:tap="handleOpenAllGroupCourses">
           <text class="iconfont icon-huodong"></text>
           <text class="menu-item-text">活动大厅</text>
-        </view>
+        </view> -->
         <view class="menu-item tool-bmi" bind:tap="handleOpenToolsBmi">
           <view class="icon-bmi">
             <text class="icon-bmi-text">BMI</text>
@@ -53,6 +53,12 @@
         <view class="menu-item" bind:tap="handleOpenToolsHeartRate">
           <text class="iconfont icon-heart_rate"></text>
           <text class="menu-item-text">目标心率</text>
+        </view>
+        <view class="menu-item tool-bmi" bind:tap="handleOpenToolsRm">
+          <view class="icon-bmi">
+            <text class="icon-bmi-text">RM</text>
+          </view>
+          <text class="menu-item-text">力量计算</text>
         </view>
       </view>
     </view>

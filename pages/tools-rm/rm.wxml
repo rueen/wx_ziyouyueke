@@ -54,132 +54,48 @@
           <text class="table-cell">{{item.reps}}</text>
         </view>
       </view>
+      <view class="source-note">
+        <text class="note-text">注：此表格为理论参考值，实际训练中个体差异较大，建议根据自身情况调整</text>
+      </view>
     </view>
 
     <!-- 1RM测试参考 -->
     <view class="standard-section">
       <view class="standard-title">1RM 测试参考</view>
       <view class="test-content">
-        <view class="test-item">
-          <text class="test-number">1.</text>
-          <text class="test-text">指导客户按照预估 1RM 的 40% ~ 60% 选择一个可以轻松重复完成 5 ~ 10 次的负重进行热身。</text>
+        <view class="test-step">
+          <view class="step-title">热身阶段</view>
+          <text class="step-desc">1. 按预估 1RM 的 40% ~ 60% 完成 5 ~ 10 次热身，休息 1 分钟</text>
+          <text class="step-desc">2. 完成 3 ~ 5 次热身重量，休息 2 分钟</text>
+          <text class="step-desc">3. 完成 2 ~ 3 次接近最大负荷重量，休息 2 ~ 4 分钟</text>
         </view>
-        <view class="test-item">
-          <text class="test-number">2.</text>
-          <text class="test-text">休息 1 分钟。</text>
+        
+        <view class="test-step">
+          <view class="step-title">测试阶段</view>
+          <text class="step-desc">4. 尝试 1RM，根据结果调整重量后再次尝试</text>
+          <text class="step-desc">5. 理想情况下应在 3 次内测得准确 1RM</text>
+          <text class="step-desc">6. 记录最后一次成功举起的最大重量</text>
         </view>
-        <view class="test-item">
-          <text class="test-number">3.</text>
-          <text class="test-text">按照下列标准估算一个客户可以重复完成 3 ~ 5 次的热身重量：</text>
-        </view>
-        <view class="sub-table">
-          <view class="sub-row">
-            <text class="sub-label">身体区域</text>
-            <text class="sub-value">递增绝对值或百分比</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">上肢动作</text>
-            <text class="sub-value">10 ~ 20 磅（4.5 ~ 9.0 千克）或 5% ~ 10%</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">下肢动作</text>
-            <text class="sub-value">30 ~ 40 磅（13.6 ~ 18.1 千克）或 10% ~ 20%</text>
-          </view>
-        </view>
-        <view class="test-item">
-          <text class="test-number">4.</text>
-          <text class="test-text">休息 2 分钟。</text>
-        </view>
-        <view class="test-item">
-          <text class="test-number">5.</text>
-          <text class="test-text">按照下列标准估算一个客户可以重复完成 2 ~ 3 次的保守且接近最大负荷的重量：</text>
-        </view>
-        <view class="sub-table">
-          <view class="sub-row">
-            <text class="sub-label">身体区域</text>
-            <text class="sub-value">递增绝对值或百分比</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">上肢动作</text>
-            <text class="sub-value">10 ~ 20 磅（4.5 ~ 9.0 千克）或 5% ~ 10%</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">下肢动作</text>
-            <text class="sub-value">30 ~ 40 磅（13.6 ~ 18.1 千克）或 10% ~ 20%</text>
-          </view>
-        </view>
-        <view class="test-item">
-          <text class="test-number">6.</text>
-          <text class="test-text">休息 2 ~ 4 分钟。</text>
-        </view>
-        <view class="test-item">
-          <text class="test-number">7.</text>
-          <text class="test-text">按照下列标准递增或减少重量直至客户能以正确的技术动作完成一次重复：</text>
-        </view>
-        <view class="sub-table">
-          <view class="sub-row">
-            <text class="sub-label">身体区域</text>
-            <text class="sub-value">递增绝对值或百分比</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">上肢动作</text>
-            <text class="sub-value">5 ~ 10 磅（2.3 ~ 4.5 千克）或 2.5% ~ 5%</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">下肢动作</text>
-            <text class="sub-value">15 ~ 20 磅（6.8 ~ 9.0 千克）或 5% ~ 10%</text>
-          </view>
-        </view>
-        <view class="test-item">
-          <text class="test-number">8.</text>
-          <text class="test-text">指导客户尝试 1RM。</text>
-        </view>
-        <view class="test-item">
-          <text class="test-number">9.</text>
-          <text class="test-text">如果客户成功，休息 2 ~ 4 分钟后回到步骤 7。如果客户失败，休息 2 ~ 4 分钟后按照下列标准减少重量且回到步骤 8：</text>
-        </view>
-        <view class="sub-table">
-          <view class="sub-row">
-            <text class="sub-label">身体区域</text>
-            <text class="sub-value">递减绝对值或百分比</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">上肢动作</text>
-            <text class="sub-value">5 ~ 10 磅（2.3 ~ 4.5 千克）或 2.5% ~ 5%</text>
-          </view>
-          <view class="sub-row">
-            <text class="sub-label">下肢动作</text>
-            <text class="sub-value">15 ~ 20 磅（6.8 ~ 9.0 千克）或 5% ~ 10%</text>
-          </view>
-        </view>
-        <view class="test-item">
-          <text class="test-number">10.</text>
-          <text class="test-text">持续递增或减少重量直至客户能以正确的技术动作完成一次重复。理想情况下，客户的 1RM 应在 3 次内测得。</text>
-        </view>
-        <view class="test-item">
-          <text class="test-number">11.</text>
-          <text class="test-text">将最后一次成功举起的最大重量记录为 1RM。</text>
-        </view>
-      </view>
-    </view>
 
-    <!-- %1RM与最大重复次数对照表 -->
-    <view class="standard-section">
-      <view class="standard-title">%1RM 与最大重复次数对照表</view>
-      <view class="table-wrapper">
-        <view class="table-row table-header">
-          <text class="table-cell">%1RM</text>
-          <text class="table-cell">最大重复次数</text>
-        </view>
-        <view class="table-row" wx:for="{{rmStandards}}" wx:key="percent">
-          <text class="table-cell">{{item.percent}}</text>
-          <text class="table-cell">{{item.maxReps}}</text>
+        <view class="test-step">
+          <view class="step-title">重量递增标准</view>
+          <view class="weight-guide">
+            <view class="guide-row">
+              <text class="guide-label">上肢动作</text>
+              <text class="guide-value">每次递增 2.5 ~ 5 kg 或 2.5% ~ 10%</text>
+            </view>
+            <view class="guide-row">
+              <text class="guide-label">下肢动作</text>
+              <text class="guide-value">每次递增 7 ~ 9 kg 或 5% ~ 20%</text>
+            </view>
+          </view>
         </view>
       </view>
       <view class="source-note">
-        <text class="note-text">注：此表格为理论参考值，实际训练中个体差异较大，建议根据自身情况调整</text>
+        <text class="note-text">注：测试过程中应确保动作标准，避免受伤风险</text>
       </view>
     </view>
+
   </view>
 </layout>
 
