@@ -1,0 +1,110 @@
+<!--pages/planDetail/planDetail.wxml-->
+<navBar title="{{type === 'add' ? '新增计划' : '计划详情'}}" />
+<layout>
+  <view class="container">
+    <!-- 计划名称 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">计划名称</text>
+        <view class="icon-section" wx:if="{{!isStudent && (!isEditing && type === 'edit')}}">
+          <text class="iconfont icon-del del-btn" bindtap="handleDelete"></text>
+          <text class="iconfont icon-editor edit-btn" bindtap="onStartEdit"></text>
+        </view>
+      </view>
+      <text wx:if="{{!isEditing}}" class="plan-name">{{planName || '未命名'}}</text>
+      <input
+        wx:else
+        type="text"
+        placeholder="例如：阶段一目标"
+        class="edit-input"
+        value="{{planName}}"
+        bindinput="onPlanNameInput"
+        maxlength="100"
+      />
+    </view>
+
+    <!-- 计划内容 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">计划内容</text>
+      </view>
+      <view class="content-container">
+        <text wx:if="{{!isEditing}}" class="content-text">{{planContent || '暂无内容'}}</text>
+        <textarea 
+          wx:else
+          class="content-textarea" 
+          placeholder="例如：开始时间、结束时间、预期效果、训练评语等" 
+          value="{{planContent}}" 
+          bindinput="onPlanContentInput"
+          maxlength="2000"
+        ></textarea>
+      </view>
+    </view>
+
+    <!-- 图片 -->
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">
+          <text>图片</text>
+          <text wx:if="{{isEditing}}">（最多4张）</text>
+        </text>
+      </view>
+      <view class="image-upload">
+        <view class="image-list">
+          <view 
+            wx:for="{{images}}" 
+            wx:key="*this"
+            class="image-item"
+            bindtap="onPreviewImage"
+            data-index="{{index}}"
+          >
+            <image src="{{item}}" mode="aspectFill"></image>
+            <view 
+              wx:if="{{isEditing}}"
+              class="delete-btn"
+              catchtap="onDeleteImage"
+              data-index="{{index}}"
+            >
+              <text class="iconfont icon-close"></text>
+            </view>
+          </view>
+          <view 
+            wx:if="{{isEditing && images.length < 4}}"
+            class="add-image-btn"
+            bindtap="onChooseImage"
+          >
+            <text class="add-icon">+</text>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 可见性设置 -->
+    <view class="info-section" wx:if="{{isEditing}}">
+      <view class="section-header">
+        <text class="section-title">对学员可见</text>
+      </view>
+      <view class="switch-container">
+        <switch checked="{{isVisible === 1}}" bindchange="onVisibleChange" />
+        <text class="switch-text">{{isVisible === 1 ? '学员可见' : '学员不可见'}}</text>
+      </view>
+    </view>
+
+    <!-- 可见性显示（非编辑状态） -->
+    <!-- <view class="info-section" wx:if="{{!isEditing}}">
+      <view class="section-header">
+        <text class="section-title">可见性</text>
+      </view>
+      <text class="visible-text">{{isVisible === 1 ? '学员可见' : '学员不可见'}}</text>
+    </view> -->
+
+    <!-- 编辑状态的操作按钮 -->
+    <view wx:if="{{isEditing}}" class="edit-actions">
+      <button class="cancel-btn" bindtap="onCancelEdit" wx:if="{{type === 'edit'}}">取消</button>
+      <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">
+        {{isSaving ? '保存中...' : '保存'}}
+      </button>
+    </view>
+  </view>
+</layout>

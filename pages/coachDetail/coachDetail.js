@@ -208,5 +208,20 @@ Page({
     wx.navigateTo({
       url: `/pages/cardDetail/cardDetail?cardId=${card.id}`
     });
-  }
+  },
+
+  /**
+   * 训练计划
+   */
+  handlePlanManagement() {
+    const { coachId } = this.data;
+    
+    // 获取当前用户ID（教练ID）
+    const userInfo = wx.getStorageSync('userInfo');
+    const studentId = userInfo && userInfo.id ? userInfo.id : '';
+    
+    wx.navigateTo({
+      url: `/pages/planList/planList?studentId=${studentId}&coachId=${coachId}&isStudent=true`
+    });
+  },
 }) 

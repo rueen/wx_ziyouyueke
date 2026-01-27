@@ -40,6 +40,12 @@
       <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 
+    <!-- 训练计划 -->
+    <view class="course-list active" bind:tap="handlePlanManagement" wx:if="{{!isEditing}}">
+      <text>训练计划</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
     <!-- 上课记录 -->
     <view class="course-list active" bind:tap="handleViewCourseList" wx:if="{{!isEditing}}">
       <text>查看上课记录</text>

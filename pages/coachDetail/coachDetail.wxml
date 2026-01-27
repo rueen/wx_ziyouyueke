@@ -65,6 +65,12 @@
       </view>
     </view>
 
+    <!-- 训练计划 -->
+    <view class="groupCourse-section" bind:tap="handlePlanManagement" wx:if="{{coachData.plans_len}}">
+      <text>训练计划</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
     <!-- 教练权限 -->
     <view class="intro-section">
       <view class="permission-item">

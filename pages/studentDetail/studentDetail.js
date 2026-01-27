@@ -396,6 +396,22 @@ Page({
     });
   },
 
+  /**
+   * 训练计划
+   */
+  handlePlanManagement() {
+    const { studentId, studentData } = this.data;
+    const studentName = studentData.student_name || studentData.student.nickname;
+    
+    // 获取当前用户ID（教练ID）
+    const userInfo = wx.getStorageSync('userInfo');
+    const coachId = userInfo && userInfo.id ? userInfo.id : '';
+    
+    wx.navigateTo({
+      url: `/pages/planList/planList?studentId=${studentId}&studentName=${encodeURIComponent(studentName)}&coachId=${coachId}`
+    });
+  },
+
   openPermissionTips(){
     wx.showModal({
       title: '提示',

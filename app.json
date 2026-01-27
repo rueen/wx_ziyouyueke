@@ -31,6 +31,8 @@
     "pages/studentCards/studentCards",
     "pages/cardDetail/cardDetail",
     "pages/regularCourseManagement/regularCourseManagement",
+    "pages/planList/planList",
+    "pages/planDetail/planDetail",
     "pages/tools-bmi/bmi",
     "pages/tools-thr/thr",
     "pages/tools-rm/rm"

@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -1457,6 +1457,84 @@ module.exports = {
             reject(error);
           }
         });
+      });
+    }
+  },
+
+  // 训练计划模块
+  plan: {
+    /**
+     * 获取训练计划列表
+     * @param {Object} params - 查询参数
+     * @param {number} params.student_id - 学员ID（可选，仅教练可传）
+     * @param {number} params.is_visible - 是否可见：0-不可见，1-可见（可选，仅教练可传）
+     * @param {number} params.page - 页码，默认1
+     * @param {number} params.page_size - 每页数量，默认20
+     * @returns {Promise}
+     */
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/plans',
+        method: 'GET',
+        data: params
+      });
+    },
+
+    /**
+     * 获取训练计划详情
+     * @param {number} id - 计划ID
+     * @returns {Promise}
+     */
+    getDetail: function(id) {
+      return request({
+        url: `/api/h5/plans/${id}`,
+        method: 'GET'
+      });
+    },
+
+    /**
+     * 创建训练计划
+     * @param {Object} params - 参数对象
+     * @param {number} params.student_id - 学员ID（必填）
+     * @param {string} params.plan_name - 计划名称（必填，最大100字符）
+     * @param {Object} params.plan_content - 计划内容，JSON对象格式（可选）
+     * @param {number} params.is_visible - 是否对学员可见：0-不可见，1-可见（可选，默认1）
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({
+        url: '/api/h5/plans',
+        method: 'POST',
+        data: params
+      });
+    },
+
+    /**
+     * 更新训练计划
+     * @param {number} id - 计划ID
+     * @param {Object} params - 参数对象
+     * @param {string} params.plan_name - 计划名称（可选，最大100字符）
+     * @param {Object} params.plan_content - 计划内容，JSON对象格式（可选）
+     * @param {number} params.is_visible - 是否对学员可见：0-不可见，1-可见（可选）
+     * @returns {Promise}
+     */
+    update: function(id, params = {}) {
+      return request({
+        url: `/api/h5/plans/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
+
+    /**
+     * 删除训练计划
+     * @param {number} id - 计划ID
+     * @returns {Promise}
+     */
+    delete: function(id) {
+      return request({
+        url: `/api/h5/plans/${id}`,
+        method: 'DELETE'
       });
     }
   },
