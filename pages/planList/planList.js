@@ -148,8 +148,13 @@ Page({
    */
   onPlanDetail(e) {
     const plan = e.currentTarget.dataset.plan;
+    let url = `/pages/planDetail/planDetail?planId=${plan.id}&studentId=${this.data.studentId || ''}&coachId=${this.data.coachId || ''}`;
+    
+    if(this.data.isStudent){
+      url = `${url}&isStudent=${this.data.isStudent}`
+    }
     wx.navigateTo({
-      url: `/pages/planDetail/planDetail?planId=${plan.id}&studentId=${this.data.studentId || ''}&coachId=${this.data.coachId || ''}&isStudent=${this.data.isStudent}`
+      url: url
     });
   },
 
