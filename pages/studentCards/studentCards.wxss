@@ -278,3 +278,47 @@
   background: #007aff;
   color: #ffffff;
 }
+
+.edit-form {
+  padding: 24rpx 32rpx 20rpx;
+}
+
+.edit-form-label {
+  font-size: 28rpx;
+  color: #1d1d1f;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.edit-form-tip {
+  font-size: 24rpx;
+  color: #86868b;
+  margin-bottom: 16rpx;
+  line-height: 1.5;
+}
+
+.edit-date-picker {
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 12rpx;
+  background: #f8f9fa;
+  border: 1rpx solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #1d1d1f;
+  box-sizing: border-box;
+}
+
+.edit-date-picker .iconfont {
+  font-size: 24rpx;
+  color: #86868b;
+}
+
+.edit-modal-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 24rpx 32rpx 32rpx;
+  border-top: 1rpx solid #f2f2f7;
+}

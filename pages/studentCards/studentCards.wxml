@@ -77,6 +77,9 @@
 
           <!-- 已过期状态：只显示删除 -->
           <block wx:if="{{item.is_expired}}">
+            <view class="action-btn" catchtap="onEditCard" data-card="{{item}}">
+              <text>编辑</text>
+            </view>
             <view class="action-btn danger" catchtap="onDeleteCard" data-card="{{item}}">
               <text>删除</text>
             </view>
@@ -132,3 +135,25 @@
     </view>
   </view>
 </layout>
+<!-- 编辑卡片实例 -->
+<modal 
+  show="{{showModal}}" 
+  title="调整卡片有效期" 
+  position="center"
+  bind:close="onModalClose"
+>
+  <view class="edit-form">
+    <view class="edit-form-label">到期时间</view>
+    <view class="edit-form-tip">仅修改卡片有效期，不影响其他卡片信息</view>
+    <picker mode="date" value="{{editExpireDate}}" bindchange="onEditExpireDateChange">
+      <view class="edit-date-picker">
+        <text>{{editExpireDate || '请选择到期时间'}}</text>
+        <text class="iconfont icon-arrow-r"></text>
+      </view>
+    </picker>
+  </view>
+  <view class="edit-modal-footer">
+    <view class="btn btn-cancel" bindtap="onModalClose">取消</view>
+    <view class="btn btn-primary" bindtap="onConfirmEditCard">保存</view>
+  </view>
+</modal>

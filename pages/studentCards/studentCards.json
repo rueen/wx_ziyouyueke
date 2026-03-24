@@ -2,6 +2,7 @@
   "usingComponents": {
     "layout": "/components/layout/layout",
     "empty-state": "/components/emptyState/emptyState",
-    "navBar": "/components/navBar/navbar"
+    "navBar": "/components/navBar/navbar",
+    "modal": "/components/modal/modal"
   }
 }

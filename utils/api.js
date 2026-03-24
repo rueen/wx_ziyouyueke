@@ -1086,6 +1086,13 @@ module.exports = {
         method: 'GET'
       });
     },
+    updateCard: function(id, params = {}) {
+      return request({
+        url: `/api/h5/card-instances/${id}`,
+        method: 'PUT',
+        data: params
+      });
+    },
     activateCard: function(id) {
       return request({
         url: `/api/h5/card-instances/${id}/activate`,

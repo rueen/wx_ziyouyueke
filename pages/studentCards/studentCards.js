@@ -19,7 +19,10 @@ Page({
     
     showAddModal: false, // 显示添加卡片弹窗
     templateList: [], // 可用的卡片模板列表
-    selectedTemplateId: null
+    selectedTemplateId: null,
+    showModal: false, // 显示编辑弹窗
+    editingCardId: null, // 当前编辑的卡片ID
+    editExpireDate: '' // 编辑中的到期日期
   },
 
   /**
@@ -199,6 +202,76 @@ Page({
    */
   onEditCard(e) {
     const { card } = e.currentTarget.dataset;
+    this.setData({
+      showModal: true,
+      editingCardId: card.id,
+      editExpireDate: card.expire_date || ''
+    });
+  },
+
+  /**
+   * 编辑弹窗关闭
+   */
+  onModalClose() {
+    this.setData({
+      showModal: false,
+      editingCardId: null,
+      editExpireDate: ''
+    });
+  },
+
+  /**
+   * 编辑到期时间变更
+   * @param {Object} e 事件对象
+   */
+  onEditExpireDateChange(e) {
+    this.setData({
+      editExpireDate: e.detail.value
+    });
+  },
+
+  /**
+   * 保存编辑（仅更新 expire_date）
+   */
+  async onConfirmEditCard() {
+    const { editingCardId, editExpireDate } = this.data;
+
+    if (!editingCardId) {
+      return;
+    }
+    if (!editExpireDate) {
+      wx.showToast({
+        title: '请选择到期时间',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({ title: '保存中...' });
+
+      const result = await api.card.updateCard(editingCardId, {
+        expire_date: editExpireDate
+      });
+
+      wx.hideLoading();
+
+      if (result && result.success) {
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+        this.onModalClose();
+        this.loadCardList();
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('更新卡片到期时间失败:', error);
+      wx.showToast({
+        title: error.message || '保存失败',
+        icon: 'none'
+      });
+    }
   },
 
   /**
