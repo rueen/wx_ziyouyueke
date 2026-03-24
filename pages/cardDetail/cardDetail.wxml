@@ -72,12 +72,15 @@
             wx:key="id"
             class="record-item"
             bindtap="onViewCourse"
-            data-id="{{item.id}}"
+            data-item="{{item}}"
           >
             <view class="record-header">
               <view class="record-date">
                 <text>{{item.course_date}}</text>
                 <text>{{item.start_time}} - {{item.end_time}}</text>
+                <view class="group-badge" wx:if="{{item.record_type === 'group_course'}}">
+                  <text class="badge-text">活动</text>
+                </view>
               </view>
             </view>
 

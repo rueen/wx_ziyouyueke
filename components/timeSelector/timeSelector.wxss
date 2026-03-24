@@ -606,8 +606,8 @@
 
 /* 活动样式 */
 .group-course {
-  border-left: 4rpx solid #ff9500;
-  background-color: #fff8f5;
+  border-left: 4rpx solid #b1dd01;
+  background-color: #fbfdf2;
 }
 
 .group-course-info {
@@ -632,8 +632,8 @@
 .group-badge {
   display: flex;
   align-items: center;
-  background-color: #ff9500;
-  color: #fff;
+  background-color: #cff632;
+  color: #000;
   padding: 6rpx 12rpx;
   border-radius: 10rpx;
 }

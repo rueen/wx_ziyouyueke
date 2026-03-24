@@ -363,6 +363,7 @@ const getCoursePriceText = (course) => {
   
   switch (course.price_type) {
     case 1: // 扣课时
+    case 4: // 课程卡课时
       return `${course.lesson_cost || 0}课时`;
     case 2: // 金额展示
       return `¥${course.price_amount || 0}`;

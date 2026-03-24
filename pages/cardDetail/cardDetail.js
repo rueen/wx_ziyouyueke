@@ -75,9 +75,16 @@ Page({
    * 查看课程详情
    */
   onViewCourse(e) {
-    const { id } = e.currentTarget.dataset;
+    const { item } = e.currentTarget.dataset;
+    if(item.record_type === 'group_course') {
+      // 团课
+      wx.navigateTo({
+        url: `/pages/groupCourseDetail/groupCourseDetail?courseId=${item.id}`
+      });
+      return
+    }
     wx.navigateTo({
-      url: `/pages/courseDetail/courseDetail?id=${id}`
+      url: `/pages/courseDetail/courseDetail?id=${item.id}`
     });
   },
 });

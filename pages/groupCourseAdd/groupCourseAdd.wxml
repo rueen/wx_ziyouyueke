@@ -40,6 +40,26 @@ module.exports = {
       }
     }
     return name;
+  },
+  getCardPickerValue: function(cardsList, card_id) {
+    var index = 0;
+    for (var i = 0; i < cardsList.length; i++) {
+      if (cardsList[i].value === card_id) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  },
+  show_card: function(cardsList, card_id) {
+    var name;
+    for (var i = 0; i < cardsList.length; i++) {
+      if (cardsList[i].value === card_id) {
+        name = cardsList[i].card_name;
+        break;
+      }
+    }
+    return name;
   }
 }
 </wxs>
@@ -200,6 +220,23 @@ module.exports = {
         >
           <view class="picker-text">
             <text>{{_filters.show_category(categoryList, formData.category_id)}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 课程卡类型 -->
+      <view wx:if="{{formData.price_type === 4}}" class="form-item">
+        <view class="form-label">课程卡类型</view>
+        <picker 
+          mode="selector" 
+          range="{{cardsList}}" 
+          range-key="card_name"
+          value="{{_filters.getCardPickerValue(cardsList, formData.card_id)}}"
+          bindchange="cardIdOnPickerChange"
+        >
+          <view class="picker-text">
+            <text>{{_filters.show_card(cardsList, formData.card_id)}}</text>
             <text class="iconfont icon-arrow-r"></text>
           </view>
         </picker>

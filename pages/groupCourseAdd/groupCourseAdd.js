@@ -21,8 +21,9 @@ Page({
       duration: 90,
       max_participants: 10,
       min_participants: 1,
-      price_type: 1, // 1-扣课时，2-金额展示，3-免费
+      price_type: 1, // 1-扣课时，2-金额展示，3-免费，4-课程卡
       category_id: 0, // 课程类型ID
+      card_id: null, // 课程卡ID
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
@@ -36,7 +37,8 @@ Page({
     
     // 选项数据
     priceTypes: [
-      { value: 1, label: '扣课时（1课时）' },
+      { value: 1, label: '课时（1课时）' },
+      { value: 4, label: '课程卡（1课时）' },
       { value: 2, label: '线下收费' },
       { value: 3, label: '免费' }
     ],
@@ -48,6 +50,8 @@ Page({
 
     // 课程类型
     categoryList: [],
+    // 课程卡类型
+    cardsList: [],
     
     // 地址列表
     addresses: [],
@@ -113,6 +117,29 @@ Page({
       }
     } catch (error) {
 
+    }
+  },
+  /**
+   * 加载卡片模板列表
+   */
+  async loadCardsList() {
+    try {
+      const result = await api.card.getTemplateList();
+      
+      if (result && result.data) {
+        const list = result.data.list || [];
+        const cardsList = list.map(item => ({...item, value: item.id}))
+        this.setData({
+          cardsList: cardsList,
+          ['formData.card_id']: cardsList[0].id
+        });
+      }
+    } catch (error) {
+      console.error('加载卡片列表失败:', error);
+      // 静默失败，不影响主流程
+      this.setData({
+        cardsList: []
+      });
     }
   },
 
@@ -275,10 +302,14 @@ Page({
    */
   priceTypeOnPickerChange(e) {
     const { priceTypes } = this.data;
-    const { value } = e.detail
+    const { value } = e.detail;
+    const price_type = priceTypes[value].value;
 
+    if(price_type === 4) {
+      this.loadCardsList();
+    }
     this.setData({
-      ['formData.price_type']: priceTypes[value].value
+      ['formData.price_type']: price_type
     })
   },
   categoryIdOnPickerChange(e) {
@@ -287,6 +318,14 @@ Page({
 
     this.setData({
       ['formData.category_id']: categoryList[value].value
+    })
+  },
+  cardIdOnPickerChange(e) {
+    const { cardsList } = this.data;
+    const { value } = e.detail
+
+    this.setData({
+      ['formData.card_id']: cardsList[value].value
     })
   },
   enrollmentScopeOnPickerChange(e){
@@ -587,7 +626,6 @@ Page({
       cover_images,
       images
     }
-    
     const apiCall = mode === 'add' 
       ? api.groupCourse.create(params)
       : api.groupCourse.update(courseId, params)

@@ -115,7 +115,8 @@ module.exports = {
     <view class="registration-details">
       <view class="registration-item">
         <text class="registration-label">课程类型：</text>
-        <text class="registration-value">{{courseDetail.category_name}}</text>
+        <text class="registration-value" wx:if="{{courseDetail.price_type === 4}}">{{courseDetail.card_info.card_name}}</text>
+        <text class="registration-value" wx:else>{{courseDetail.category_name}}</text>
       </view>
       <view class="registration-item">
         <text class="registration-label">报名范围：</text>

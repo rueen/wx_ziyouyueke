@@ -159,6 +159,21 @@
   color: #1d1d1f;
 }
 
+.group-badge {
+  display: flex;
+  align-items: center;
+  background-color: #ff9500;
+  color: #fff;
+  background-color: #cff632;
+  color: #000;
+  padding: 6rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.group-badge .badge-text {
+  font-size: 22rpx;
+}
+
 .record-arrow {
   position: absolute;
   top: 50%;
