@@ -34,7 +34,7 @@
               <text wx:else>剩余 {{item.available_lessons}}/{{item.total_lessons}} 节</text>
             </view>
             <view class="card-used">
-              <text>已使用 {{item.usage_count}} 次</text>
+              <text>已消耗 {{item.usage_count || 0}} 次</text>
             </view>
           </view>
 
@@ -57,6 +57,9 @@
 
           <!-- 已开启状态：显示停卡 -->
           <block wx:if="{{item.card_status === 1 && !item.is_expired}}">
+            <view class="action-btn" catchtap="onEditCard" data-card="{{item}}">
+              <text>编辑</text>
+            </view>
             <view class="action-btn warning" catchtap="onDeactivateCard" data-card="{{item}}">
               <text>停卡</text>
             </view>

@@ -1,5 +1,6 @@
 /* components/categorieSelector/categorieSelector.wxss */
 @import '/style/iconfont.wxss';
+@import '/style/common.wxss';
 
 .modal-mask {
   position: fixed;

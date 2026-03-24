@@ -195,6 +195,13 @@ Page({
   },
 
   /**
+   * 编辑
+   */
+  onEditCard(e) {
+    const { card } = e.currentTarget.dataset;
+  },
+
+  /**
    * 停卡
    */
   onDeactivateCard(e) {

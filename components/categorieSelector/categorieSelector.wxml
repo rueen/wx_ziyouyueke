@@ -40,7 +40,10 @@
                 <text wx:else>不限次数</text>
               </text>
             </text>
-            <text class="item-detail">有效期至 {{item.expire_date}}</text>
+            <text class="tips-text" wx:if="{{item.card_status === 0}}">
+              <text>未开卡，预约成功后自动开卡</text>
+            </text>
+            <text class="item-detail" wx:else>有效期至 {{item.expire_date}}</text>
           </view>
           <text class="iconfont icon-selected select-icon {{selectedCard && selectedCard.id === item.id ? 'selected' : ''}}"></text>
         </view>

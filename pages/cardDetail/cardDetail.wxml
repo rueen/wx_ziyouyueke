@@ -26,7 +26,7 @@
               </view>
             </view>
             <view class="stat-item">
-              <view class="stat-label">已使用</view>
+              <view class="stat-label">已消耗</view>
               <view class="stat-value">{{cardDetail.usage_count}}次</view>
             </view>
             <view class="stat-item">
