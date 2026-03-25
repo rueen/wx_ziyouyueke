@@ -22,12 +22,12 @@
               <view class="stat-label">课时</view>
               <view class="stat-value">
                 <text wx:if="{{cardDetail.is_unlimited}}">不限次数</text>
-                <text wx:else>{{cardDetail.available_lessons}}/{{cardDetail.total_lessons}}</text>
+                <text wx:else>{{cardDetail.remaining_lessons}}/{{cardDetail.total_lessons}}</text>
               </view>
             </view>
             <view class="stat-item">
               <view class="stat-label">已消耗</view>
-              <view class="stat-value">{{cardDetail.usage_count}}次</view>
+              <view class="stat-value">{{cardDetail.used_count}}次</view>
             </view>
             <view class="stat-item">
               <view class="stat-label">有效期</view>
@@ -57,7 +57,10 @@
 
       <!-- 使用记录 -->
       <view class="usage-section">
-        <view class="section-title">使用记录</view>
+        <view class="section-title">
+          <text>使用记录</text>
+          <text class="section-desc"> 显示最近200条</text>
+        </view>
 
         <!-- 空状态 -->
         <empty-state 
@@ -78,9 +81,20 @@
               <view class="record-date">
                 <text>{{item.course_date}}</text>
                 <text>{{item.start_time}} - {{item.end_time}}</text>
-                <view class="group-badge" wx:if="{{item.record_type === 'group_course'}}">
-                  <text class="badge-text">活动</text>
-                </view>
+                <block wx:if="{{item.record_type === 'group_course'}}">
+                  <view class="group-badge">
+                    <text class="badge-text">活动</text>
+                  </view>
+                </block>
+                <block wx:if="{{item.record_type === 'course'}}">
+                  <!-- 课程状态 -->
+                  <view class="status-badge status-{{item.status}}">
+                    <text class="status-text">{{item.status === 1 ? '待确认' : 
+                      item.status === 2 ? '已确认' : 
+                      item.status === 3 ? '已完成' : 
+                      (item.status === 4 || item.status === 5) ? '已取消' : '未知状态'}}</text>
+                  </view>
+                </block>
               </view>
             </view>
 

@@ -255,10 +255,14 @@ page {
 }
 
 .card-status {
-  padding: 6rpx 12rpx;
+  padding: 8rpx 16rpx;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 24rpx;
   font-size: 24rpx;
+}
+
+.card-status.expired {
+  background: rgba(255, 59, 48, 0.3);
 }
 
 .card-body {

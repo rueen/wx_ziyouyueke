@@ -53,11 +53,14 @@
         <view class="card-preview" style="background-color: {{item.card_color}};">
           <view class="card-header">
             <view class="card-name">{{item.card_name}}</view>
-            <view class="card-status">{{item.card_status_text}}</view>
+            <!-- <view class="card-status">{{item.card_status_text}}</view> -->
+            <view class="card-status {{item.is_expired ? 'expired' : ''}}">
+              {{item.is_expired ? '已过期' : item.card_status_text}}
+            </view>
           </view>
           <view class="card-body">
             <text wx:if="{{item.is_unlimited}}">不限次数</text>
-            <text wx:else>剩余 {{item.available_lessons}}/{{item.total_lessons}} 节</text>
+            <text wx:else>剩余 {{item.remaining_lessons}}/{{item.total_lessons}} 节</text>
             <text class="card-divider">•</text>
             <text>有效期至 {{item.expire_date || '--'}}</text>
           </view>

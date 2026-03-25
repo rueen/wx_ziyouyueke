@@ -20,22 +20,27 @@
   padding: 6rpx 12rpx;
 }
 
-.status-badge.status-pending {
+.status-badge.status-pending,
+.status-badge.status-1 {
   background-color: #fff3cd;
   border: 1rpx solid #ffeaa7;
 }
 
-.status-badge.status-confirmed {
+.status-badge.status-confirmed,
+.status-badge.status-2 {
   background-color: #d4edda; 
   border: 1rpx solid #c3e6cb;
 }
 
-.status-badge.status-completed {
+.status-badge.status-completed,
+.status-badge.status-3 {
   background-color: #d1ecf1;
   border: 1rpx solid #bee5eb;
 }
 
-.status-badge.status-cancelled {
+.status-badge.status-cancelled,
+.status-badge.status-4,
+.status-badge.status-5 {
   background-color: #f8d7da;
   border: 1rpx solid #f5c6cb;
 }
@@ -45,19 +50,24 @@
   color: #333;
 }
 
-.status-pending .status-text {
+.status-pending .status-text,
+.status-1 .status-text {
   color: #856404;
 }
 
-.status-confirmed .status-text {
+.status-confirmed .status-text,
+.status-2 .status-text {
   color: #155724;
 }
 
-.status-completed .status-text {
+.status-completed .status-text,
+.status-3 .status-text {
   color: #0c5460;
 }
 
-.status-cancelled .status-text {
+.status-cancelled .status-text,
+.status-4 .status-text,
+.status-5 .status-text {
   color: #721c24;
 }
 
