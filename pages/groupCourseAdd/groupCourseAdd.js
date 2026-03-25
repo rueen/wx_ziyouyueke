@@ -78,6 +78,7 @@ Page({
         mode: 'edit',
         courseId: parseInt(options.id)
       })
+      this.loadCardsList()
       this.loadCourseDetail()
     } else {
       this.setData({
@@ -122,7 +123,7 @@ Page({
   /**
    * 加载卡片模板列表
    */
-  async loadCardsList() {
+  async loadCardsList(isResetCardId = false) {
     try {
       const result = await api.card.getTemplateList();
       
@@ -130,9 +131,13 @@ Page({
         const list = result.data.list || [];
         const cardsList = list.map(item => ({...item, value: item.id}))
         this.setData({
-          cardsList: cardsList,
-          ['formData.card_id']: cardsList[0].id
+          cardsList: cardsList
         });
+        if(isResetCardId){
+          this.setData({
+            ['formData.card_id']: cardsList[0].id
+          });
+        }
       }
     } catch (error) {
       console.error('加载卡片列表失败:', error);
@@ -182,6 +187,7 @@ Page({
               min_participants: course.min_participants,
               price_type: course.price_type, // 1-扣课时，2-金额展示，3-免费
               category_id: course.category_id, // 课程类型ID
+              card_id: course.card_id, // 课程卡ID
               lesson_cost: course.lesson_cost,
               price_amount: course.price_amount,
               enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人
@@ -306,7 +312,7 @@ Page({
     const price_type = priceTypes[value].value;
 
     if(price_type === 4) {
-      this.loadCardsList();
+      this.loadCardsList(true);
     }
     this.setData({
       ['formData.price_type']: price_type
