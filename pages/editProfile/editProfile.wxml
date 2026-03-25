@@ -63,7 +63,7 @@
       </view>
     </view>
     <!-- 是否在教练大厅展示 -->
-    <view class="wrap" wx:if="{{userRole === 'coach'}}">
+    <!-- <view class="wrap" wx:if="{{userRole === 'coach'}}">
       <view class="isShow-container">
         <text class="label">是否在教练大厅展示</text>
         <switch checked="{{userInfo.is_show}}" bindchange="isShowSwitchChange"/>
@@ -72,7 +72,7 @@
         <text class="tips-text" wx:if="{{userInfo.is_show}}">所有学员均可在“教练大厅”查看到你的信息</text>
         <text class="tips-text" wx:else>“教练大厅”不展示你的信息</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- 宣传页面 -->
     <view class="wrap poster-item" bind:tap="openBindPage">
