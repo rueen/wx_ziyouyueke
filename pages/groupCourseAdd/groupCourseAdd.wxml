@@ -1,6 +1,16 @@
 <!--pages/groupCourseAdd/groupCourseAdd.wxml-->
 <wxs module="_filters">
 module.exports = {
+  getPriceTypeValue: function(priceTypes, price_type) {
+    var index = 0;
+    for (var i = 0; i < priceTypes.length; i++) {
+      if (priceTypes[i].value === price_type) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  },
   show_price_type: function(priceTypes, price_type){
     var label;
     for (var i = 0; i < priceTypes.length; i++) {
@@ -198,7 +208,7 @@ module.exports = {
           mode="selector" 
           range="{{priceTypes}}" 
           range-key="label"
-          value="{{formData.price_type - 1}}"
+          value="{{_filters.getPriceTypeValue(priceTypes, formData.price_type)}}"
           bindchange="priceTypeOnPickerChange"
         >
           <view class="picker-text">
