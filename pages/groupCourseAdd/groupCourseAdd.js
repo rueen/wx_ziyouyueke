@@ -23,7 +23,7 @@ Page({
       min_participants: 1,
       price_type: 1, // 1-扣课时，2-金额展示，3-免费，4-课程卡
       category_id: 0, // 课程类型ID
-      card_id: null, // 课程卡ID
+      card_id: [], // 课程卡ID列表（多选）
       lesson_cost: 1,
       price_amount: 0,
       enrollment_scope: 1, // 1-仅学员，2-所有人
@@ -135,7 +135,7 @@ Page({
         });
         if(isResetCardId){
           this.setData({
-            ['formData.card_id']: cardsList[0].id
+            'formData.card_id': []
           });
         }
       }
@@ -187,7 +187,7 @@ Page({
               min_participants: course.min_participants,
               price_type: course.price_type, // 1-扣课时，2-金额展示，3-免费
               category_id: course.category_id, // 课程类型ID
-              card_id: course.card_id, // 课程卡ID
+              card_id: Array.isArray(course.card_id) ? course.card_id : (course.card_id ? [course.card_id] : []), // 课程卡ID列表
               lesson_cost: course.lesson_cost,
               price_amount: course.price_amount,
               enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人
@@ -326,13 +326,20 @@ Page({
       ['formData.category_id']: categoryList[value].value
     })
   },
-  cardIdOnPickerChange(e) {
-    const { cardsList } = this.data;
-    const { value } = e.detail
-
-    this.setData({
-      ['formData.card_id']: cardsList[value].value
-    })
+  /**
+   * 切换课程卡选中状态（多选）
+   * @param {Object} e 事件对象
+   */
+  onToggleCard(e) {
+    const { id } = e.currentTarget.dataset;
+    const card_id = [...this.data.formData.card_id];
+    const idx = card_id.indexOf(id);
+    if (idx === -1) {
+      card_id.push(id);
+    } else {
+      card_id.splice(idx, 1);
+    }
+    this.setData({ 'formData.card_id': card_id });
   },
   enrollmentScopeOnPickerChange(e){
     const { enrollmentScopes } = this.data;
@@ -581,6 +588,14 @@ Page({
       return false;
     }
     
+    if (formData.price_type === 4 && formData.card_id.length === 0) {
+      wx.showToast({
+        title: '请选择至少一种课程卡',
+        icon: 'none'
+      })
+      return false
+    }
+
     if (formData.price_type === 2 && formData.price_amount <= 0) {
       wx.showToast({
         title: '请输入费用金额',

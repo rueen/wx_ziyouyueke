@@ -51,25 +51,12 @@ module.exports = {
     }
     return name;
   },
-  getCardPickerValue: function(cardsList, card_id) {
-    var index = 0;
-    for (var i = 0; i < cardsList.length; i++) {
-      if (cardsList[i].value === card_id) {
-        index = i;
-        break;
-      }
+  isCardSelected: function(card_id, id) {
+    if (!card_id) return false;
+    for (var i = 0; i < card_id.length; i++) {
+      if (card_id[i] === id) return true;
     }
-    return index;
-  },
-  show_card: function(cardsList, card_id) {
-    var name;
-    for (var i = 0; i < cardsList.length; i++) {
-      if (cardsList[i].value === card_id) {
-        name = cardsList[i].card_name;
-        break;
-      }
-    }
-    return name;
+    return false;
   }
 }
 </wxs>
@@ -235,21 +222,32 @@ module.exports = {
         </picker>
       </view>
 
-      <!-- 课程卡类型 -->
+      <!-- 课程卡类型（多选） -->
       <view wx:if="{{formData.price_type === 4}}" class="form-item">
-        <view class="form-label">课程卡类型</view>
-        <picker 
-          mode="selector" 
-          range="{{cardsList}}" 
-          range-key="card_name"
-          value="{{_filters.getCardPickerValue(cardsList, formData.card_id)}}"
-          bindchange="cardIdOnPickerChange"
-        >
-          <view class="picker-text">
-            <text>{{_filters.show_card(cardsList, formData.card_id)}}</text>
-            <text class="iconfont icon-arrow-r"></text>
+        <view class="form-label">
+          <text>课程卡类型</text>
+          <text class="label-sub">可多选</text>
+        </view>
+        <!-- 卡片多选列表 -->
+        <view class="card-check-list">
+          <view
+            wx:for="{{cardsList}}"
+            wx:key="id"
+            class="card-check-item {{_filters.isCardSelected(formData.card_id, item.value) ? 'checked' : ''}}"
+            bindtap="onToggleCard"
+            data-id="{{item.value}}"
+          >
+            <view class="card-check-info">
+              <text class="card-check-name">{{item.card_name}}</text>
+            </view>
+            <view class="card-check-box {{_filters.isCardSelected(formData.card_id, item.value) ? 'checked' : ''}}">
+              <text wx:if="{{_filters.isCardSelected(formData.card_id, item.value)}}" class="iconfont icon-right"></text>
+            </view>
           </view>
-        </picker>
+          <view wx:if="{{cardsList.length === 0}}" class="card-check-empty">
+            <text>暂无可用课程卡</text>
+          </view>
+        </view>
       </view>
       
       <!-- 费用金额 -->

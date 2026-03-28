@@ -388,3 +388,81 @@ page {
   font-size: 28rpx;
   color: #86868b;
 }
+
+/* 课程卡多选 */
+.label-sub {
+  font-size: 24rpx;
+  color: #86868b;
+  font-weight: normal;
+  margin-left: 12rpx;
+}
+
+.card-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  border: 1rpx solid #e9ecef;
+}
+
+.card-check-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 24rpx;
+  background: #fff;
+  transition: background 0.15s;
+}
+
+.card-check-item.checked {
+  background: #f0f6ff;
+}
+
+.card-check-item:not(:last-child) {
+  border-bottom: 1rpx solid #f2f2f7;
+}
+
+.card-check-item:active {
+  background: #f5f5f5;
+}
+
+.card-check-info {
+  flex: 1;
+}
+
+.card-check-name {
+  font-size: 28rpx;
+  color: #1d1d1f;
+}
+
+.card-check-box {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 2rpx solid #c7c7cc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.card-check-box.checked {
+  background: #007aff;
+  border-color: #007aff;
+}
+
+.card-check-box .iconfont {
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.card-check-empty {
+  padding: 48rpx 0;
+  text-align: center;
+  font-size: 28rpx;
+  color: #86868b;
+  background: #fff;
+}

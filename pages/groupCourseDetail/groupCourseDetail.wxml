@@ -50,6 +50,16 @@ module.exports = {
     if (month.length === 1) month = '0' + month
     if (day.length === 1) day = '0' + day
     return month + '-' + day
+  },
+  getCardName: function(card_info) {
+    var nameStr = '';
+    for(var i = 0; i < card_info.length; i ++) {
+      if(i > 0) {
+        nameStr += '、';
+      }
+      nameStr += card_info[i].card_name;
+    }
+    return nameStr;
   }
 }
 </wxs>
@@ -116,7 +126,7 @@ module.exports = {
     <view class="registration-details">
       <view class="registration-item">
         <text class="registration-label">课程类型：</text>
-        <text class="registration-value" wx:if="{{courseDetail.price_type === 4}}">{{courseDetail.card_info.card_name}}</text>
+        <text class="registration-value" wx:if="{{courseDetail.price_type === 4}}">{{_filters.getCardName(courseDetail.card_info)}}</text>
         <text class="registration-value" wx:else>{{courseDetail.category_name}}</text>
       </view>
       <view class="registration-item">
