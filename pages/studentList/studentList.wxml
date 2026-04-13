@@ -21,24 +21,41 @@
 
   <!-- 学员列表 -->
   <view class="student-list" wx:if="{{students.length > 0}}">
-    <view class="student-item" wx:for="{{students}}" wx:key="id" bindtap="onStudentDetail" data-student="{{item}}">
+    <view
+      class="student-item {{item.relation_status === 2 ? 'student-item-pending' : ''}}"
+      wx:for="{{students}}"
+      wx:key="id"
+      bindtap="onStudentDetail"
+      data-student="{{item}}"
+    >
+      <!-- 头像：待激活学员无 student 对象，显示占位图 -->
       <view class="student-avatar">
-        <image src="{{item.student.avatar_url}}" class="avatar-img"></image>
+        <image wx:if="{{item.student}}" src="{{item.student.avatar_url}}" class="avatar-img"></image>
+        <view wx:else class="avatar-placeholder">
+          <text class="iconfont icon-user placeholder-icon"></text>
+        </view>
       </view>
+
       <view class="student-info">
         <view class="student-main-info">
-          <text class="student-name">{{item.student_name}}</text>
-          <!-- <text wx:if="{{item.student.phone}}"> - {{item.student.phone}}</text> -->
-          <view class="status-badge status-cancelled" wx:if="{{!item.booking_status}}">
+          <text class="student-name">{{item.student_name || item.pending_phone}}</text>
+          <!-- 待激活徽标 -->
+          <view class="status-badge pending-badge" wx:if="{{item.relation_status === 2}}">
+            <text class="status-text">待激活</text>
+          </view>
+          <!-- 已关闭徽标 -->
+          <view class="status-badge status-cancelled" wx:elif="{{!item.booking_status}}">
             <text class="status-text">已关闭</text>
           </view>
         </view>
-        <!-- <view class="remaining-lessons">
-          <text class="lessons-label">剩余课时：</text>
-          <text class="lessons-count active">{{item.remaining_lessons}}节</text>
-        </view> -->
+        <!-- 待激活学员显示录入的手机号 -->
+        <view class="pending-phone-hint" wx:if="{{item.relation_status === 2}}">
+          <text>{{item.pending_phone}}</text>
+        </view>
       </view>
-      <text class="iconfont icon-arrow-r arrow-icon"></text>
+
+      <!-- 待激活不显示跳转箭头 -->
+      <text wx:if="{{item.relation_status !== 2}}" class="iconfont icon-arrow-r arrow-icon"></text>
     </view>
     
     <!-- 加载更多提示 -->
@@ -85,4 +102,67 @@
   bind:select="onSelectShareType"
 />
 
- 
+<!-- 手动录入学员弹窗 -->
+<view wx:if="{{showAddByPhoneModal}}" class="abp-mask" bindtap="onHideAddByPhoneModal">
+  <view class="abp-modal" catchtap="onPreventClose">
+    <view class="abp-header">
+      <text class="abp-title">手动录入学员</text>
+      <text class="iconfont icon-close abp-close" bindtap="onHideAddByPhoneModal"></text>
+    </view>
+
+    <view class="abp-body">
+      <!-- 手机号 -->
+      <view class="abp-field">
+        <view class="abp-label">手机号 <text class="abp-required">*</text></view>
+        <input
+          class="abp-input"
+          type="number"
+          maxlength="11"
+          placeholder="请输入学员手机号"
+          value="{{addByPhoneForm.phone}}"
+          data-field="phone"
+          bindinput="onAddByPhoneInput"
+        />
+      </view>
+
+      <!-- 姓名 -->
+      <view class="abp-field">
+        <view class="abp-label">姓名 <text class="abp-required">*</text></view>
+        <input
+          class="abp-input"
+          type="text"
+          placeholder="教练自定义学员称呼"
+          value="{{addByPhoneForm.student_name}}"
+          data-field="student_name"
+          bindinput="onAddByPhoneInput"
+        />
+      </view>
+
+      <!-- 备注 -->
+      <view class="abp-field">
+        <view class="abp-label">备注</view>
+        <textarea
+          class="abp-textarea"
+          placeholder="选填，教练内部备注"
+          value="{{addByPhoneForm.coach_remark}}"
+          data-field="coach_remark"
+          bindinput="onAddByPhoneInput"
+          maxlength="200"
+        ></textarea>
+      </view>
+
+      <view class="abp-tips">
+        <text>• 已注册：直接建立正式师生关系</text>
+        <text>• 未注册：创建待激活关系，学员绑定手机号后自动激活</text>
+      </view>
+    </view>
+
+    <view class="abp-footer">
+      <view class="abp-btn abp-btn-cancel" bindtap="onHideAddByPhoneModal">取消</view>
+      <view class="abp-btn abp-btn-primary" bindtap="onSubmitAddByPhone">
+        <text wx:if="{{!isSubmittingByPhone}}">确认添加</text>
+        <text wx:else>添加中...</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -34,8 +34,18 @@ Page({
     showShareModal: false,
     shareOptions: [
       { id: 'friend', name: '发送好友', icon: 'icon-wechat' },
-      { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' }
-    ]
+      { id: 'qrcode', name: '生成二维码', icon: 'icon-qrcode' },
+      { id: 'manual', name: '手动录入', icon: 'icon-editor' }
+    ],
+
+    // 手动录入学员弹窗
+    showAddByPhoneModal: false,
+    addByPhoneForm: {
+      phone: '',
+      student_name: '',
+      coach_remark: ''
+    },
+    isSubmittingByPhone: false
   },
 
   /**
@@ -69,6 +79,10 @@ Page({
       case 'qrcode':
         // 生成二维码
         this.generateQRCode();
+        break;
+      case 'manual':
+        // 手动录入学员
+        this.onShowAddByPhoneModal();
         break;
     }
   },
@@ -233,12 +247,157 @@ Page({
 
   /**
    * 进入学员详情
+   * 待激活学员（relation_status=2）无法进入详情，点击弹出提示
    */
   onStudentDetail(e) {
     const student = e.currentTarget.dataset.student;
+
+    if (student.relation_status === 2) {
+      wx.showModal({
+        title: '待激活学员',
+        content: `手机号 ${student.pending_phone} 尚未注册，请引导其登录并绑定手机号后自动激活。`,
+        cancelText: '解除绑定',
+        confirmText: '知道了',
+        success: (res) => {
+          if (res.cancel) {
+            this.onUnbindPendingStudent(student);
+          }
+        }
+      });
+      return;
+    }
+
     wx.navigateTo({
       url: `/pages/studentDetail/studentDetail?relationId=${student.id}&studentId=${student.student_id}`
     });
+  },
+
+  /**
+   * 解除待激活学员绑定
+   * @param {Object} student 待激活学员关系对象
+   */
+  onUnbindPendingStudent(student) {
+    wx.showModal({
+      title: '确认解除',
+      content: `确定要解除与手机号 ${student.pending_phone} 的待激活关系吗？`,
+      confirmText: '确认解除',
+      confirmColor: '#ff3b30',
+      success: async (res) => {
+        if (!res.confirm) return;
+
+        try {
+          wx.showLoading({ title: '解除中...' });
+          const result = await api.relation.delete(student.id);
+          wx.hideLoading();
+
+          if (result && result.success) {
+            wx.showToast({ title: '解除成功', icon: 'success' });
+            setTimeout(() => this.loadStudents(true), 600);
+          } else {
+            throw new Error(result.message || '解除失败');
+          }
+        } catch (error) {
+          wx.hideLoading();
+          console.error('解除待激活关系失败:', error);
+          wx.showToast({
+            title: error.message || '解除失败，请重试',
+            icon: 'none',
+            duration: 3000
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 显示手动录入学员弹窗
+   */
+  onShowAddByPhoneModal() {
+    this.setData({
+      showAddByPhoneModal: true,
+      addByPhoneForm: { phone: '', student_name: '', coach_remark: '' }
+    });
+  },
+
+  /**
+   * 关闭手动录入学员弹窗
+   */
+  onHideAddByPhoneModal() {
+    this.setData({
+      showAddByPhoneModal: false
+    });
+  },
+
+  /**
+   * 手动录入表单输入事件（phone / student_name / coach_remark 共用）
+   * @param {Object} e 事件对象
+   */
+  onAddByPhoneInput(e) {
+    const { field } = e.currentTarget.dataset;
+    this.setData({
+      [`addByPhoneForm.${field}`]: e.detail.value
+    });
+  },
+
+  /**
+   * 提交手动录入学员
+   */
+  async onSubmitAddByPhone() {
+    const { addByPhoneForm, isSubmittingByPhone } = this.data;
+
+    if (isSubmittingByPhone) return;
+
+    const { phone, student_name, coach_remark } = addByPhoneForm;
+
+    if (!validatePhone(phone)) {
+      wx.showToast({ title: '请输入正确的手机号', icon: 'none' });
+      return;
+    }
+
+    const trimmedName = student_name.trim();
+    if (!trimmedName) {
+      wx.showToast({ title: '请输入学员姓名', icon: 'none' });
+      return;
+    }
+    if (trimmedName.length > 50) {
+      wx.showToast({ title: '学员姓名不能超过50个字符', icon: 'none' });
+      return;
+    }
+
+    try {
+      this.setData({ isSubmittingByPhone: true });
+      wx.showLoading({ title: '添加中...' });
+
+      const result = await api.relation.addByPhone({
+        phone: phone.trim(),
+        student_name: student_name.trim(),
+        coach_remark: coach_remark.trim()
+      });
+
+      wx.hideLoading();
+
+      if (result && result.success) {
+        const isPending = result.data && result.data.is_pending;
+        wx.showToast({
+          title: isPending ? '已录入，等待学员激活' : '添加成功',
+          icon: 'success',
+          duration: 2000
+        });
+        this.onHideAddByPhoneModal();
+        // 延迟刷新，等 toast 消失后再加载
+        setTimeout(() => this.loadStudents(true), 600);
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('手动录入学员失败:', error);
+      wx.showToast({
+        title: error.message || '添加失败，请重试',
+        icon: 'none',
+        duration: 3000
+      });
+    } finally {
+      this.setData({ isSubmittingByPhone: false });
+    }
   },
 
   /**
@@ -322,6 +481,11 @@ Page({
       imageUrl: coachInfo.avatar_url
     };
   },
+
+  /**
+   * 阻止事件冒泡，防止点击弹窗内容区域时触发遮罩关闭
+   */
+  onPreventClose() {},
 
   /**
    * 页面卸载时清理定时器

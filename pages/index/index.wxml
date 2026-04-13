@@ -84,9 +84,30 @@
     
     <!-- 立即约课按钮 -->
     <view class="book-button-container">
-      <!-- <phone-verify id="phoneVerify" bind:verified="onBookCourse" bind:needLogin="onNeedLogin"> -->
-        <button class="book-button" bind:tap="onBookCourse">{{userRole === 'student' ? '约教练' : '约学员'}}</button>
-      <!-- </phone-verify> -->
+      <button class="book-button" bind:tap="onBookCourse">{{userRole === 'student' ? '约教练' : '约学员'}}</button>
     </view>
   </view>
 </layout>
+
+<!-- 绑定手机号引导弹窗（学员未绑定手机且无教练时自动弹出） -->
+<modal
+  show="{{showPhoneBindGuide}}"
+  title="请先绑定手机号"
+  position="center"
+  maskClosable="{{true}}"
+  bind:close="onHidePhoneBindGuide"
+>
+  <view class="pbg-body">
+    <text class="pbg-desc">绑定手机号后，系统将自动与已绑定的教练关联，你才可以查看教练并发起约课</text>
+    <view class="pbg-footer">
+      <view class="pbg-btn-cancel" bindtap="onHidePhoneBindGuide">暂不绑定</view>
+      <phone-verify
+        id="phoneVerify"
+        bind:verified="onPhoneVerified"
+        bind:needLogin="onNeedLogin"
+      >
+        <view class="pbg-btn-confirm">立即绑定</view>
+      </phone-verify>
+    </view>
+  </view>
+</modal>

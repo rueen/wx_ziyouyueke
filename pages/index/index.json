@@ -3,6 +3,7 @@
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
     "timeSelector": "/components/timeSelector/timeSelector",
-    "studentSchedule": "/components/studentSchedule/studentSchedule"
+    "studentSchedule": "/components/studentSchedule/studentSchedule",
+    "modal": "/components/modal/modal"
   }
 }

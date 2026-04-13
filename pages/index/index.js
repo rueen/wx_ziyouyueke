@@ -17,6 +17,7 @@ Page({
     // 用户身份
     userRole: '', // 'student' 学员, 'coach' 教练
     currentDate: '', // 当前选中的日期
+    showPhoneBindGuide: false, // 是否显示绑定手机号引导（学员未绑定手机且无教练时显示）
   },
 
   /**
@@ -150,6 +151,14 @@ Page({
         
         // 更新本地缓存
         wx.setStorageSync('userInfo', user);
+
+        // 学员未绑定手机号且无教练时，显示绑定手机号引导
+        const userRole = wx.getStorageSync('userRole');
+        if (userRole === 'student' && !user.phone && user.coachCount === 0) {
+          this.setData({ showPhoneBindGuide: true });
+        } else {
+          this.setData({ showPhoneBindGuide: false });
+        }
       }
 
     } catch (error) {
@@ -343,6 +352,22 @@ Page({
     this.setData({
       currentDate: date
     })
+  },
+
+  /**
+   * 关闭绑定手机号引导弹窗
+   */
+  onHidePhoneBindGuide() {
+    this.setData({ showPhoneBindGuide: false });
+  },
+
+  /**
+   * phone-verify 组件验证通过（手机号绑定成功）后的回调
+   * 关闭弹窗并重新加载用户信息以更新状态
+   */
+  async onPhoneVerified() {
+    this.setData({ showPhoneBindGuide: false });
+    await this.loadUserInfo();
   }
   
 })

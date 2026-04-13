@@ -151,6 +151,52 @@ page {
   z-index: 1;
 }
 
+/* 绑定手机号引导弹窗内容 */
+.pbg-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+}
+
+.pbg-desc {
+  font-size: 26rpx;
+  color: #86868b;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 36rpx;
+  padding: 0 20rpx;
+}
+
+.pbg-footer {
+  display: flex;
+  width: 100%;
+  gap: 20rpx;
+}
+
+.pbg-btn-cancel {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  color: #86868b;
+  background: #f5f5f5;
+}
+
+.pbg-btn-confirm {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+  background: #333;
+}
+
 /* 我的课表 */
 .my-schedule {
   margin-top: 16rpx;

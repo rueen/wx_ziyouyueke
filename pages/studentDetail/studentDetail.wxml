@@ -20,7 +20,7 @@
           <text wx:if="{{studentData.student_name !== studentData.student.nickname}}">{{studentData.student.nickname}}</text>
           <text wx:if="{{studentData.student.phone}}">{{studentData.student.phone}}</text>
         </view>
-        <view class="student-intro" wx:if="{{!isEditing}}">{{studentData.student.intro}}</view>
+        <view class="student-intro" wx:if="{{!isEditing}}">{{studentData.student.intro || ''}}</view>
         <view class="booking-status" wx:if="{{!isEditing}}">
           <text class="booking-status-text">约课状态：</text>
           <switch checked="{{bookingStatus}}" bindchange="bookingStatusSwitchChange"/>

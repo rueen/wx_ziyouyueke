@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -750,6 +750,21 @@ module.exports = {
     },
     update: updateRelation,
     delete: deleteRelation,
+    /**
+     * 教练通过手机号手动录入学员
+     * @param {Object} params 请求参数
+     * @param {string} params.phone 手机号（必填）
+     * @param {string} params.student_name 学员姓名（选填）
+     * @param {string} params.coach_remark 教练备注（选填）
+     * @returns {Promise}
+     */
+    addByPhone: function(params = {}) {
+      return request({
+        url: '/api/h5/relations/add-by-phone',
+        method: 'POST',
+        data: params
+      });
+    },
     // 切换约课状态
     switchBookingStatus: function(id, params = {}) {
       return request({
