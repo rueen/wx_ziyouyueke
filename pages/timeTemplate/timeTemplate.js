@@ -18,6 +18,7 @@ Page({
       minAdvanceDays: 1, // 最少需要提前几天预约
       maxAdvanceDays: 30, // 最多可预约未来几天
       maxAdvanceNums: 1, // 同时段最多可预约人数
+      minAdvanceHours: 0, // 最短提前预约时间（小时），0 表示不限制
     },
     
     // 模板启用状态
@@ -69,6 +70,7 @@ Page({
     tempMinAdvanceDays: 1,
     tempMaxAdvanceDays: 30,
     tempMaxAdvanceNums: 1,
+    tempMinAdvanceHours: 0,
 
     // 时间类型
     timeTypeArr: [{
@@ -178,13 +180,17 @@ Page({
           console.error('解析自由日程模板数据失败:', e);
         }
         
+        const minAdvanceHours = template.min_advance_hours || 0;
+
         this.setData({
           template: template,
           bookingSettings: {
             minAdvanceDays: template.min_advance_days,
             maxAdvanceDays: template.max_advance_days,
-            maxAdvanceNums: template.max_advance_nums
+            maxAdvanceNums: template.max_advance_nums,
+            minAdvanceHours: minAdvanceHours
           },
+          tempMinAdvanceHours: minAdvanceHours,
           timeSlotTemplate: timeSlots,
           weekSlotTemplate: weekSlots,
           dateSlotTemplate: template.date_slots || this.data.dateSlotTemplate,
@@ -224,7 +230,8 @@ Page({
       showSettingsForm: true,
       tempMinAdvanceDays: bookingSettings.minAdvanceDays,
       tempMaxAdvanceDays: bookingSettings.maxAdvanceDays,
-      tempMaxAdvanceNums: bookingSettings.maxAdvanceNums
+      tempMaxAdvanceNums: bookingSettings.maxAdvanceNums,
+      tempMinAdvanceHours: bookingSettings.minAdvanceHours
     });
   },
 
@@ -258,6 +265,15 @@ Page({
   onMaxAdvanceNumsChange(e) {
     this.setData({
       tempMaxAdvanceNums: parseInt(e.detail.value) || ''
+    });
+  },
+
+  /**
+   * 最短提前预约时间输入变化
+   */
+  onMinAdvanceHoursChange(e) {
+    this.setData({
+      tempMinAdvanceHours: parseInt(e.detail.value) || 0
     });
   },
 
@@ -315,7 +331,7 @@ Page({
    * 保存预约设置
    */
   async onSaveSettings() {
-    const { tempMinAdvanceDays, tempMaxAdvanceDays, tempMaxAdvanceNums, timeSlotTemplate, templateId } = this.data;
+    const { tempMinAdvanceDays, tempMaxAdvanceDays, tempMaxAdvanceNums, tempMinAdvanceHours, timeSlotTemplate, templateId } = this.data;
     
     if (tempMinAdvanceDays >= tempMaxAdvanceDays) {
       wx.showToast({
@@ -350,6 +366,7 @@ Page({
         min_advance_days: tempMinAdvanceDays,
         max_advance_days: tempMaxAdvanceDays,
         max_advance_nums: tempMaxAdvanceNums,
+        min_advance_hours: tempMinAdvanceHours,
         is_active: 1
       };
 
@@ -365,7 +382,8 @@ Page({
         bookingSettings: {
           minAdvanceDays: tempMinAdvanceDays,
           maxAdvanceDays: tempMaxAdvanceDays,
-          maxAdvanceNums: tempMaxAdvanceNums
+          maxAdvanceNums: tempMaxAdvanceNums,
+          minAdvanceHours: tempMinAdvanceHours
         },
         templateEnabled: true,
         showSettingsForm: false

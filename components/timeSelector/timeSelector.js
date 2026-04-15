@@ -73,7 +73,8 @@ Component({
     groupCoursesForDisplay: [],
     // 动态计算的时间限制
     minSelectableStartTime: '', // 可选择的最小开始时间
-    minSelectableEndTime: ''    // 可选择的最小结束时间
+    minSelectableEndTime: '',   // 可选择的最小结束时间
+    minAdvanceHours: 0          // 最短提前预约时间（小时），0 表示不限制
   },
 
   /**
@@ -351,6 +352,7 @@ Component({
           this.setData({
             timeTemplate: template,
             maxAdvanceDays: template.max_advance_days || 30,
+            minAdvanceHours: template.min_advance_hours || 0,
             timeType: timeType,
             weekSlots: weekSlots,
             freeTimeRange: freeTimeRange
@@ -682,6 +684,8 @@ Component({
         const timeSlots = finalTemplateSlots.map(slot => {
           // 检查时间段是否已过期
           const isExpired = this.isTimeSlotExpired(date, slot.startTime);
+          // 检查时间段是否在最短提前预约窗口内（过期的不再重复判断；团课由教练自主设置，不受此限制）
+          const isTooSoon = !isExpired && this.properties.type !== 'groupCourses' && this.isTimeSlotTooSoon(date, slot.startTime);
           
           // 获取该时间段的最大预约人数
           const maxAdvanceNums = timeTemplate.max_advance_nums || 1;
@@ -740,10 +744,12 @@ Component({
           // 合并个人课程和活动
           const allCourses = [...courses, ...groupCoursesList];
 
-          // 判断时间段状态
+          // 判断时间段状态（优先级：expired > tooSoon > groupBooked > full > booked > free）
           let status;
           if (isExpired) {
             status = 'expired';
+          } else if (isTooSoon) {
+            status = 'tooSoon';
           } else if (groupCoursesInSlot.length > 0) {
             // 有活动：无论什么模式都不可选
             status = 'groupBooked';
@@ -766,9 +772,10 @@ Component({
             maxAdvanceNums: maxAdvanceNums,
             bookedCount: bookedCount,
             remainingCount: remainingCount,
-            courses: allCourses, // 包含个人课程和活动
-            groupCourses: groupCoursesList, // 单独的活动列表
-            isExpired: isExpired
+            courses: allCourses,
+            groupCourses: groupCoursesList,
+            isExpired: isExpired,
+            isTooSoon: isTooSoon
           };
         });
 
@@ -955,6 +962,32 @@ Component({
     },
 
     /**
+     * 判断时间段是否在最短提前预约时间窗口内（太早预约）
+     * @param {string} date 日期 YYYY-MM-DD
+     * @param {string} startTime 开始时间 HH:MM
+     * @returns {boolean} 是否在限制窗口内
+     */
+    isTimeSlotTooSoon(date, startTime) {
+      const { minAdvanceHours } = this.data;
+      if (!minAdvanceHours || minAdvanceHours <= 0) return false;
+
+      try {
+        const now = new Date();
+        const [y, m, d] = date.split('-').map(Number);
+        const [h, min] = startTime.split(':').map(Number);
+        const slotDateTime = new Date(y, m - 1, d, h, min, 0, 0);
+
+        const diffMs = slotDateTime - now;
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        // 时间段在未来，但距现在不足 minAdvanceHours 小时
+        return diffHours >= 0 && diffHours < minAdvanceHours;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    /**
      * 点击时间段
      */
     onTimeSlotTap(e) {
@@ -985,6 +1018,8 @@ Component({
         } else if (slot.status === 'booked' && this.properties.type === 'default') {
           // 普通模式：有预约但未满可以选择
           canSelect = true;
+        } else if (slot.status === 'tooSoon') {
+          message = `需提前 ${this.data.minAdvanceHours} 小时预约`;
         } else if (slot.status === 'groupBooked') {
           message = '该时段已有活动';
         } else if (slot.status === 'booked' && this.properties.type === 'groupCourses') {

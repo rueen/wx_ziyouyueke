@@ -22,6 +22,10 @@
           <text class="setting-value">{{bookingSettings.maxAdvanceDays}}天</text>
         </view>
         <view class="setting-item">
+          <text class="setting-label">最短提前预约时间</text>
+          <text class="setting-value">{{bookingSettings.minAdvanceHours === 0 ? '不限制' : bookingSettings.minAdvanceHours + '小时'}}</text>
+        </view>
+        <view class="setting-item">
           <text class="setting-label">同时段最多可预约人数</text>
           <text class="setting-value">{{bookingSettings.maxAdvanceNums}}人</text>
         </view>
@@ -201,6 +205,17 @@
                value="{{tempMaxAdvanceDays}}" 
                bindinput="onMaxAdvanceDaysChange" 
                placeholder="请输入天数" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">最短提前预约时间（小时）</text>
+        <input
+          class="form-input"
+          type="number"
+          value="{{tempMinAdvanceHours}}"
+          bindinput="onMinAdvanceHoursChange"
+          placeholder="0 表示不限制"
+        />
+        <text class="form-hint">例：填写 24，则不可预约 24 小时内的课程</text>
       </view>
       <view class="form-item">
         <text class="form-label">同时段最多可预约人数</text>

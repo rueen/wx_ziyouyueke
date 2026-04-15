@@ -233,6 +233,13 @@ page {
   margin-bottom: 16rpx;
 }
 
+.form-hint {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 10rpx;
+  line-height: 1.5;
+}
+
 .form-input {
   height: 88rpx;
   padding: 0 24rpx;

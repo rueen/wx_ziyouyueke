@@ -201,6 +201,10 @@
             <view wx:if="{{slot.status === 'expired'}}" class="quota-info">
               <text class="expired-text">已过期</text>
             </view>
+            <!-- 提前预约限制 -->
+            <view wx:elif="{{slot.status === 'tooSoon'}}" class="quota-info">
+              <text class="too-soon-text">提前{{minAdvanceHours}}小时预约</text>
+            </view>
             <!-- 活动占用 -->
             <view wx:elif="{{slot.status === 'groupBooked'}}" class="quota-info">
               <text class="group-booked-text">已有活动</text>

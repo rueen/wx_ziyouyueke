@@ -542,6 +542,12 @@
   color: #c7c7cc;
 }
 
+.too-soon-text {
+  font-size: 24rpx;
+  color: #ff9500;
+  font-weight: 500;
+}
+
 .full-text {
   font-size: 28rpx;
   color: #ff6b6b;
