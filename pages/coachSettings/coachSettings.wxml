@@ -17,7 +17,6 @@
           <switch
             checked="{{isEnabled}}"
             bindchange="onToggleEnabled"
-            color="#333"
           />
         </view>
 
