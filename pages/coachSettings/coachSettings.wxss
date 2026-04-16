@@ -1,0 +1,146 @@
+/* pages/coachSettings/coachSettings.wxss */
+
+.container {
+  padding: 24rpx 24rpx 160rpx;
+}
+
+/* 分组 */
+.section {
+  margin-bottom: 32rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1d1d1f;
+  padding: 0 8rpx 12rpx;
+}
+
+.section-desc {
+  font-size: 22rpx;
+  color: #86868b;
+  padding: 0 8rpx 16rpx;
+  line-height: 1.6;
+}
+
+/* 卡片 */
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+/* 行 */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 8rpx;
+  min-height: 80rpx;
+}
+
+.row-label {
+  font-size: 28rpx;
+  color: #1d1d1f;
+  flex: 1;
+}
+
+.row-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #f2f2f7;
+  margin: 0 28rpx;
+}
+
+/* Picker */
+.picker-val {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-arrow {
+  font-size: 24rpx;
+  color: #c7c7cc;
+}
+
+/* 次数输入框 */
+.count-input {
+  width: 80rpx;
+  height: 56rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.unit {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 说明文字 */
+.tip-box {
+  background: #f9f9f9;
+  border-radius: 0 0 16rpx 16rpx;
+  padding: 16rpx;
+  margin-top: 4rpx;
+}
+
+.tip-text {
+  font-size: 22rpx;
+  color: #86868b;
+  line-height: 1.7;
+}
+
+/* 加载 */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 120rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 底部保存按钮 */
+.save-button-container {
+  position: fixed;
+  bottom: 60rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 48rpx);
+  max-width: 600rpx;
+  z-index: 999;
+}
+
+.save-button {
+  width: 100%;
+  height: 96rpx;
+  background: #333;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.save-btn.disabled {
+  opacity: 0.6;
+}

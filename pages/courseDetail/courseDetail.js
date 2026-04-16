@@ -276,14 +276,6 @@ Page({
    * 确认取消课程
    */
   async onConfirmCancel() {
-    // if (!this.data.cancelReason.trim()) {
-    //   wx.showToast({
-    //     title: '请输入取消原因',
-    //     icon: 'error'
-    //   });
-    //   return;
-    // }
-
     try {
       wx.showLoading({ title: '取消中...' });
       
@@ -294,18 +286,29 @@ Page({
       wx.hideLoading();
 
       if (result) {
-        wx.showToast({
-          title: '取消成功',
-          icon: 'success'
-        });
-        
         this.setData({
           showCancelModal: false,
           cancelReason: ''
         });
-        
+
         // 重新加载课程详情
         this.loadCourseDetail();
+
+        // 若后端返回剩余取消次数，则提示（仅学员视角）
+        const remaining = result.data && result.data.remaining_cancellations;
+        const timeWindowText = result.data && result.data.time_window_text;
+        if (this.data.userRole === 'student' && remaining !== undefined) {
+          wx.showModal({
+            title: '取消成功',
+            content: remaining > 0
+              ? `${timeWindowText || '本统计周期'}内还可取消 ${remaining} 次`
+              : `${timeWindowText || '本统计周期'}内取消次数已用完，不可再次取消`,
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        } else {
+          wx.showToast({ title: '取消成功', icon: 'success' });
+        }
       } else {
         throw new Error(result.message || '取消失败');
       }
@@ -314,7 +317,8 @@ Page({
       console.error('取消课程失败：', error);
       wx.showToast({
         title: error.message || '取消失败',
-        icon: 'error'
+        icon: 'none',
+        duration: 3000
       });
     }
   },

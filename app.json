@@ -33,6 +33,7 @@
     "pages/regularCourseManagement/regularCourseManagement",
     "pages/planList/planList",
     "pages/planDetail/planDetail",
+    "pages/coachSettings/coachSettings",
     "pages/tools-bmi/bmi",
     "pages/tools-thr/thr",
     "pages/tools-rm/rm"

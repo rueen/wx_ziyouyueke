@@ -1,0 +1,86 @@
+<!--pages/coachSettings/coachSettings.wxml-->
+<navBar title="更多设置" />
+<layout>
+  <view class="container" wx:if="{{!loading}}">
+
+    <!-- 取消次数限制 -->
+    <view class="section">
+      <view class="section-title">学员取消课程限制</view>
+      <view class="section-desc">开启后，学员取消「已确认」课程时将计入次数；取消「待确认」课程不受限制。超出限制后无法继续取消已确认的课程</view>
+
+      <view class="card">
+        <!-- 开关 -->
+        <view class="setting-row">
+          <view class="row-left">
+            <text class="row-label">开启取消次数限制</text>
+          </view>
+          <switch
+            checked="{{isEnabled}}"
+            bindchange="onToggleEnabled"
+            color="#333"
+          />
+        </view>
+
+        <!-- 详细配置（仅启用时显示） -->
+        <block wx:if="{{isEnabled}}">
+          <view class="divider"></view>
+
+          <!-- 统计周期 -->
+          <view class="setting-row">
+            <text class="row-label">统计周期</text>
+            <picker
+              mode="selector"
+              range="{{timeWindowLabels}}"
+              value="{{timeWindowIndex}}"
+              bindchange="onTimeWindowChange"
+            >
+              <view class="picker-val">
+                <text>{{timeWindowLabels[timeWindowIndex]}}</text>
+                <text class="iconfont icon-arrow-r picker-arrow"></text>
+              </view>
+            </picker>
+          </view>
+
+          <view class="divider"></view>
+
+          <!-- 最大取消次数 -->
+          <view class="setting-row">
+            <text class="row-label">最多可取消次数</text>
+            <view class="row-right">
+              <input
+                class="count-input"
+                type="number"
+                value="{{maxCount}}"
+                bindinput="onMaxCountInput"
+                placeholder="次数"
+                maxlength="3"
+              />
+              <text class="unit">次</text>
+            </view>
+          </view>
+
+          <!-- 说明 -->
+          <view class="tip-box">
+            <text class="tip-text">示例：设置为「{{timeWindowLabels[timeWindowIndex]}}最多取消 {{maxCount || '--'}} 次」后，学员取消「已确认」课程超过 {{maxCount || '--'}} 次将被禁止继续取消，次数在自然周期结束后自动重置；取消「待确认」课程不计入次数</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:else class="loading-wrap">
+    <text class="loading-text">加载中...</text>
+  </view>
+</layout>
+
+<!-- 保存按钮 -->
+<view class="save-button-container" wx:if="{{!loading}}">
+  <button
+    class="save-button {{saving ? 'disabled' : ''}}"
+    bindtap="onSave"
+    loading="{{saving}}"
+    disabled="{{saving}}"
+  >保存设置</button>
+</view>

@@ -336,6 +336,16 @@ Page({
   },
 
   /**
+   * 更多设置（教练专用）
+   */
+  onCoachSettings() {
+    if (!this.checkLoginRequired()) return;
+    wx.navigateTo({
+      url: '/pages/coachSettings/coachSettings'
+    });
+  },
+
+  /**
    * 常用地址
    */
   onMyAddresses() {

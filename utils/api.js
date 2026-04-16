@@ -1561,6 +1561,38 @@ module.exports = {
     }
   },
   
+  /**
+   * 取消次数限制设置模块（教练专用）
+   */
+  cancellationSettings: {
+    /**
+     * 获取教练的取消次数限制设置
+     * @returns {Promise}
+     */
+    get: function() {
+      return request({
+        url: '/api/h5/cancellation-settings',
+        method: 'GET'
+      });
+    },
+
+    /**
+     * 创建或更新取消次数限制设置（upsert）
+     * @param {Object} params
+     * @param {number} params.is_enabled - 是否启用：0-关闭，1-开启
+     * @param {string} params.time_window - 统计周期：day/week/month/quarter/year
+     * @param {number} params.max_count - 周期内最多可取消次数
+     * @returns {Promise}
+     */
+    save: function(params = {}) {
+      return request({
+        url: '/api/h5/cancellation-settings',
+        method: 'PUT',
+        data: params
+      });
+    }
+  },
+
   // 其他
   healthCheck
 }; 
