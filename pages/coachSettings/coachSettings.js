@@ -21,7 +21,7 @@ Page({
 
     // 取消次数限制
     isEnabled: false,
-    timeWindowIndex: 2, // 默认：每自然月
+    timeWindowIndex: 1, // 默认：每自然周
     maxCount: 3,
 
     // 选项数据
@@ -45,7 +45,7 @@ Page({
         const index = TIME_WINDOW_OPTIONS.findIndex(o => o.value === time_window);
         this.setData({
           isEnabled: !!is_enabled,
-          timeWindowIndex: index >= 0 ? index : 2,
+          timeWindowIndex: index >= 0 ? index : 1,
           maxCount: max_count || 3
         });
       }
