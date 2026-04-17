@@ -1233,10 +1233,27 @@ Component({
      * 触发时间段选择事件（内部方法）
      */
     async triggerTimeSelection() {
-      const { currentDate, selectedStartTime, selectedEndTime } = this.data;
+      const { currentDate, selectedStartTime, selectedEndTime, minAdvanceHours } = this.data;
 
       if (!selectedStartTime || !selectedEndTime) {
-        return; // 数据不完整，不触发事件
+        return;
+      }
+
+      // 提前预约限制校验（非团课）
+      if (minAdvanceHours > 0 && this.properties.type !== 'groupCourses') {
+        if (this.isTimeSlotTooSoon(currentDate, selectedStartTime)) {
+          wx.showToast({
+            title: `需提前 ${minAdvanceHours} 小时预约，请重新选择开始时间`,
+            icon: 'none',
+            duration: 2500
+          });
+          // 重置开始时间，避免 picker 显示无效值误导用户
+          this.setData({
+            selectedStartTime: '',
+            minSelectableEndTime: ''
+          });
+          return;
+        }
       }
 
       // 检查该时间段的状态
