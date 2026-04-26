@@ -362,7 +362,7 @@
       <text class="iconfont icon-close" bindtap="onHideTimeSelection"></text>
     </view>
     <view class="modal-body-time">
-      <time-selector
+      <timeSelector
         coachId="{{courseInfo.coach_id}}"
         courseId="{{courseId}}"
         mode="select"
