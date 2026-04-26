@@ -1593,6 +1593,54 @@ module.exports = {
     }
   },
 
+  /**
+   * 休息时段模块（教练专用）
+   */
+  blockedSlot: {
+    /**
+     * 获取指定日期的休息时段列表
+     * @param {Object} params
+     * @param {number} [params.coach_id] - 教练ID（不传时后端取当前登录用户）
+     * @param {string} params.date - 日期，格式 YYYY-MM-DD
+     * @returns {Promise}
+     */
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/blocked-slots',
+        method: 'GET',
+        data: params
+      });
+    },
+
+    /**
+     * 设置某时间段为休息
+     * @param {Object} params
+     * @param {string} params.slot_date - 日期，格式 YYYY-MM-DD
+     * @param {string} params.start_time - 开始时间，格式 HH:MM
+     * @param {string} params.end_time - 结束时间，格式 HH:MM
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({
+        url: '/api/h5/blocked-slots',
+        method: 'POST',
+        data: params
+      });
+    },
+
+    /**
+     * 取消休息（删除休息时段）
+     * @param {number} id - blocked_slots 记录ID
+     * @returns {Promise}
+     */
+    delete: function(id) {
+      return request({
+        url: `/api/h5/blocked-slots/${id}`,
+        method: 'DELETE'
+      });
+    }
+  },
+
   // 其他
   healthCheck
 }; 

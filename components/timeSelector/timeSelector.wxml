@@ -125,9 +125,22 @@
           bindtap="onTimeSlotTap"
         >
           <view class="time-slot-time">
-            <text>{{slot.startTime}} - {{slot.endTime}}</text>
-            <!-- 名额统计 -->
-            <text class="quota-statistics" wx:if="{{mode === 'view' && showBookingDetails}}">{{slot.bookedCount}}/{{slot.maxAdvanceNums}} 已预约</text>
+            <view class="slot-time-label">
+              <text>{{slot.startTime}}-{{slot.endTime}}</text>
+              <!-- 休息中标记 -->
+              <text wx:if="{{slot.isBlocked}}" class="rest-badge">休息中</text>
+            </view>
+            <view class="slot-time-actions">
+              <!-- 名额统计 -->
+              <text class="quota-statistics" wx:if="{{mode === 'view' && showBookingDetails}}">{{slot.bookedCount}}/{{slot.maxAdvanceNums}} 已预约</text>
+              <!-- 休息按钮（仅教练视角、view 模式、未过期、固定时间段模板、无待确认/已确认课程） -->
+              <text
+                wx:if="{{userRole === 'coach' && mode === 'view' && !slot.isExpired && timeType !== 2 && !slot.hasActiveBookings}}"
+                class="rest-btn {{slot.isBlocked ? 'rest-btn-cancel' : ''}}"
+                catchtap="onToggleRest"
+                data-slot="{{slot}}"
+              >{{slot.isBlocked ? '取消休息' : '休息'}}</text>
+            </view>
           </view>
           
           <!-- 查看模式：显示课程列表 -->
@@ -204,6 +217,10 @@
             <!-- 提前预约限制 -->
             <view wx:elif="{{slot.status === 'tooSoon'}}" class="quota-info">
               <text class="too-soon-text">提前{{minAdvanceHours}}小时预约</text>
+            </view>
+            <!-- 休息中 -->
+            <view wx:elif="{{slot.status === 'resting'}}" class="quota-info">
+              <text class="resting-text">休息中</text>
             </view>
             <!-- 活动占用 -->
             <view wx:elif="{{slot.status === 'groupBooked'}}" class="quota-info">

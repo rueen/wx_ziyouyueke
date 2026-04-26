@@ -74,7 +74,8 @@ Component({
     // 动态计算的时间限制
     minSelectableStartTime: '', // 可选择的最小开始时间
     minSelectableEndTime: '',   // 可选择的最小结束时间
-    minAdvanceHours: 0          // 最短提前预约时间（小时），0 表示不限制
+    minAdvanceHours: 0,         // 最短提前预约时间（小时），0 表示不限制
+    blockedSlots: []            // 当前日期的休息时段列表
   },
 
   /**
@@ -550,13 +551,23 @@ Component({
       }
       
       // 无论哪种模式都需要加载个人课程和活动数据，用于冲突检测
-      const [courseResult, groupCourseResult] = await Promise.all([
+      // 仅固定时间段模板（非 timeType=2）需要拉取休息时段
+      const blockedSlotsParams = { date };
+      if (coachId) blockedSlotsParams.coach_id = coachId;
+      const blockedSlotsPromise = (timeType !== 2)
+        ? api.blockedSlot.getList(blockedSlotsParams)
+        : Promise.resolve({ data: [] });
+
+      const [courseResult, groupCourseResult, blockedSlotResult] = await Promise.all([
         api.course.getList(queryParams),
-        this.loadGroupCourses(date, coachId)
+        this.loadGroupCourses(date, coachId),
+        blockedSlotsPromise
       ]);
 
       const bookedCourses = courseResult.data ? courseResult.data.list : [];
       const groupCourses = groupCourseResult || [];
+      const blockedSlots = (blockedSlotResult && blockedSlotResult.data) ? blockedSlotResult.data : [];
+      this.setData({ blockedSlots });
 
       // 对于自由日程模板（time_type = 2），根据模式处理
       let finalTemplateSlots = templateSlots;
@@ -686,6 +697,12 @@ Component({
           const isExpired = this.isTimeSlotExpired(date, slot.startTime);
           // 检查时间段是否在最短提前预约窗口内（过期的不再重复判断；团课由教练自主设置，不受此限制）
           const isTooSoon = !isExpired && this.properties.type !== 'groupCourses' && this.isTimeSlotTooSoon(date, slot.startTime);
+          // 检查时间段是否被教练设置为休息
+          const blockedSlotItem = blockedSlots.find(b =>
+            this.formatTime(b.start_time) === slot.startTime &&
+            this.formatTime(b.end_time) === slot.endTime
+          );
+          const isBlocked = !!blockedSlotItem;
           
           // 获取该时间段的最大预约人数
           const maxAdvanceNums = timeTemplate.max_advance_nums || 1;
@@ -744,12 +761,14 @@ Component({
           // 合并个人课程和活动
           const allCourses = [...courses, ...groupCoursesList];
 
-          // 判断时间段状态（优先级：expired > tooSoon > groupBooked > full > booked > free）
+          // 判断时间段状态（优先级：expired > tooSoon > resting > groupBooked > full > booked > free）
           let status;
           if (isExpired) {
             status = 'expired';
           } else if (isTooSoon) {
             status = 'tooSoon';
+          } else if (isBlocked) {
+            status = 'resting';
           } else if (groupCoursesInSlot.length > 0) {
             // 有活动：无论什么模式都不可选
             status = 'groupBooked';
@@ -764,6 +783,11 @@ Component({
             status = 'free';
           }
 
+          // 是否存在待确认/已确认的课程（有则不显示休息按钮）
+          const hasActiveBookings = activeCourses.some(
+            course => course.booking_status === 1 || course.booking_status === 2
+          );
+
           return {
             id: `${date}_${slot.startTime}_${slot.endTime}`,
             startTime: slot.startTime,
@@ -775,7 +799,10 @@ Component({
             courses: allCourses,
             groupCourses: groupCoursesList,
             isExpired: isExpired,
-            isTooSoon: isTooSoon
+            isTooSoon: isTooSoon,
+            isBlocked: isBlocked,
+            blockedSlotId: isBlocked ? blockedSlotItem.id : null,
+            hasActiveBookings: hasActiveBookings
           };
         });
 
@@ -1020,6 +1047,8 @@ Component({
           canSelect = true;
         } else if (slot.status === 'tooSoon') {
           message = `需提前 ${this.data.minAdvanceHours} 小时预约`;
+        } else if (slot.status === 'resting') {
+          message = '教练已设置该时段休息，暂不可约';
         } else if (slot.status === 'groupBooked') {
           message = '该时段已有活动';
         } else if (slot.status === 'booked' && this.properties.type === 'groupCourses') {
@@ -1044,6 +1073,44 @@ Component({
         slot: slot,
         date: this.data.currentDate
       });
+    },
+
+    /**
+     * 切换时间段休息状态（教练专用）
+     * @param {Object} e - 事件对象，dataset.slot 为当前时间段数据
+     */
+    async onToggleRest(e) {
+      const { slot } = e.currentTarget.dataset;
+      const { currentDate } = this.data;
+
+      if (!slot || !currentDate) return;
+
+      const isCurrentlyBlocked = slot.isBlocked;
+      const actionText = isCurrentlyBlocked ? '取消休息' : '设置休息';
+
+      try {
+        wx.showLoading({ title: `${actionText}中...`, mask: true });
+
+        if (isCurrentlyBlocked) {
+          await api.blockedSlot.delete(slot.blockedSlotId);
+        } else {
+          await api.blockedSlot.create({
+            slot_date: currentDate,
+            start_time: slot.startTime,
+            end_time: slot.endTime
+          });
+        }
+
+        wx.hideLoading();
+        wx.showToast({ title: `${actionText}成功`, icon: 'success' });
+
+        // 重新加载当前日期时间段
+        this.loadTimeSlots(currentDate);
+      } catch (error) {
+        wx.hideLoading();
+        console.error('切换休息状态失败:', error);
+        wx.showToast({ title: error.message || '操作失败，请重试', icon: 'none' });
+      }
     },
 
     onCourseTap(e){
