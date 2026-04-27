@@ -33,7 +33,34 @@
       <view class="loading-text">加载中...</view>
     </view>
 
-    <!-- 自由时间选择（timeType = 2 且 mode = select） -->
+    <!-- 结构化自由日程网格（配置了课程时长+步长，两种 mode 共用） -->
+    <view wx:elif="{{timeType === 2 && lessonDuration > 0 && slotInterval > 0}}" class="structured-free-wrapper">
+      <view wx:if="{{structuredFreeSlots.length === 0}}" class="empty-state">
+        <text>暂无时间安排</text>
+      </view>
+      <block wx:else>
+        <view class="structured-hint">
+          <text class="structured-hint-text">{{mode === 'select' ? '课程时长' + lessonDuration + '分钟（点击选择开始时间）' : '课程时长' + lessonDuration + '分钟（点击查看详情）'}}</text>
+        </view>
+        <view class="slots-grid">
+          <view
+            wx:for="{{structuredFreeSlots}}"
+            wx:key="id"
+            class="grid-slot {{item.status}} {{selectedGridStart && item.startTime >= selectedGridStart && item.startTime < selectedGridEnd ? 'grid-selected' : ''}}"
+            data-slot="{{item}}"
+            bindtap="onGridSlotTap"
+          >
+            <text class="grid-slot-time">{{item.startTime}}</text>
+            <!-- 状态角标（非空闲时显示） -->
+            <view wx:if="{{item.statusLabel}}" class="grid-badge-wrap {{item.status}}">
+              <text class="grid-badge-label">{{item.statusLabel}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 自由时间选择（timeType = 2 且 mode = select，未配置步长） -->
     <view wx:elif="{{timeType === 2 && mode === 'select'}}" class="free-time-selector-wrapper">
       <view class="free-time-hint" wx:if="{{freeTimeRange}}">
         <text class="hint-text">可预约时间段：{{freeTimeRange.startTime}} - {{freeTimeRange.endTime}}</text>
@@ -133,13 +160,13 @@
             <view class="slot-time-actions">
               <!-- 名额统计 -->
               <text class="quota-statistics" wx:if="{{mode === 'view' && showBookingDetails}}">{{slot.bookedCount}}/{{slot.maxAdvanceNums}} 已预约</text>
-              <!-- 休息按钮（仅教练视角、view 模式、未过期、固定时间段模板、无待确认/已确认课程） -->
+              <!-- 休息按钮（仅教练视角、view 模式、未过期、不在提前预约限制内、固定时间段模板、无待确认/已确认课程） -->
               <text
-                wx:if="{{userRole === 'coach' && mode === 'view' && !slot.isExpired && timeType !== 2 && !slot.hasActiveBookings}}"
+                wx:if="{{userRole === 'coach' && mode === 'view' && !slot.isExpired && !slot.isTooSoon && timeType !== 2 && !slot.hasActiveBookings}}"
                 class="rest-btn {{slot.isBlocked ? 'rest-btn-cancel' : ''}}"
                 catchtap="onToggleRest"
                 data-slot="{{slot}}"
-              >{{slot.isBlocked ? '取消休息' : '休息'}}</text>
+              >{{slot.isBlocked ? '取消休息' : '设为休息'}}</text>
             </view>
           </view>
           
@@ -250,4 +277,79 @@
       </view>
     </view>
   </view>
+
+  <!-- 网格时间段详情面板（点击格子后弹出，使用通用 modal 组件） -->
+  <modal
+    show="{{showGridSlotDetail}}"
+    title="{{currentGridSlot.startTime ? currentGridSlot.startTime + ' - ' + currentGridSlot.endTime : ''}}"
+    position="bottom"
+    bind:close="onCloseGridSlotDetail"
+  >
+    <view wx:if="{{currentGridSlot}}" class="gd-body">
+      <!-- 顶部信息行：休息中标记、名额、休息切换按钮 -->
+      <view class="gd-info-bar">
+        <view class="gd-info-left">
+          <text wx:if="{{currentGridSlot.isBlocked}}" class="gd-rest-badge">休息中</text>
+          <text class="gd-quota">{{currentGridSlot.bookedCount}}/{{currentGridSlot.maxAdvanceNums}} 已预约</text>
+        </view>
+        <view
+          wx:if="{{userRole === 'coach' && !currentGridSlot.isExpired && !currentGridSlot.isTooSoon && !currentGridSlot.hasActiveBookings && currentGridSlot.status !== 'groupBooked'}}"
+          class="gd-rest-btn {{currentGridSlot.isBlocked ? 'gd-rest-btn-cancel' : ''}}"
+          bindtap="onGridDetailToggleRest"
+        >{{currentGridSlot.isBlocked ? '取消休息' : '设为休息'}}</view>
+      </view>
+
+      <!-- 课程列表 -->
+      <view wx:if="{{currentGridSlot.courses.length > 0}}" class="gd-courses">
+        <view
+          class="gd-course-item {{course.type === 'group' ? 'group-course' : 'personal-course'}}"
+          wx:for="{{currentGridSlot.courses}}"
+          wx:for-item="course"
+          wx:key="id"
+          data-course="{{course}}"
+          bindtap="onCourseTap"
+        >
+          <!-- 个人课程 -->
+          <view wx:if="{{course.type === 'personal'}}" class="gd-personal-info">
+            <view class="gd-student-row">
+              <text class="gd-student-name">{{course.studentName}}</text>
+              <view class="status-badge status-{{course.booking_status}}">
+                <text class="status-text">{{
+                  course.booking_status === 'pending' ? '待确认' :
+                  course.booking_status === 'confirmed' ? '已确认' :
+                  course.booking_status === 'completed' ? '已完成' :
+                  course.booking_status === 'cancelled' ? '已取消' : '未知'
+                }}</text>
+              </view>
+            </view>
+            <view class="gd-location">
+              <text class="iconfont icon-locationfill gd-location-icon"></text>
+              <text class="gd-location-text">{{course.location}}</text>
+            </view>
+          </view>
+          <!-- 活动 -->
+          <view wx:elif="{{course.type === 'group'}}" class="gd-group-info">
+            <view class="gd-student-row">
+              <text class="gd-student-name">{{course.title}}</text>
+              <view class="group-badge"><text class="badge-text">活动</text></view>
+            </view>
+            <view class="gd-group-meta">
+              <view class="gd-location">
+                <text class="iconfont icon-locationfill gd-location-icon"></text>
+                <text class="gd-location-text">{{course.location}}</text>
+              </view>
+              <view class="gd-group-stats">
+                <text class="gd-group-participants">{{course.currentParticipants}}/{{course.maxParticipants}}人</text>
+                <text class="gd-group-price">{{course.price}}</text>
+              </view>
+            </view>
+          </view>
+          <text class="iconfont icon-rightarrow gd-arrow"></text>
+        </view>
+      </view>
+      <view wx:else class="gd-empty">
+        <text class="gd-empty-text">暂无预约</text>
+      </view>
+    </view>
+  </modal>
 </view> 

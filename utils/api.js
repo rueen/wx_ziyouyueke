@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000',
-  // baseUrl: 'https://api.rueen.cn',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -1629,7 +1629,7 @@ module.exports = {
     },
 
     /**
-     * 取消休息（删除休息时段）
+     * 取消休息（删除单条休息时段）
      * @param {number} id - blocked_slots 记录ID
      * @returns {Promise}
      */
@@ -1637,6 +1637,19 @@ module.exports = {
       return request({
         url: `/api/h5/blocked-slots/${id}`,
         method: 'DELETE'
+      });
+    },
+
+    /**
+     * 批量取消休息（删除多条休息时段）
+     * @param {number[]} ids - blocked_slots 记录ID 数组
+     * @returns {Promise}
+     */
+    deleteBatch: function(ids) {
+      return request({
+        url: '/api/h5/blocked-slots/batch',
+        method: 'DELETE',
+        data: { ids }
       });
     }
   },

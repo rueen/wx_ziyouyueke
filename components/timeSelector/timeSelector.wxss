@@ -728,7 +728,7 @@
 .rest-badge {
   font-size: 18rpx;
   color: #fff;
-  background-color: #ff9500;
+  background-color: #ff9c9c;
   padding: 2rpx 8rpx;
   border-radius: 20rpx;
   font-weight: 400;
@@ -738,16 +738,23 @@
 /* 休息按钮（view 模式教练操作） */
 .rest-btn {
   font-size: 22rpx;
-  color: #007aff;
   background-color: #f0f9ff;
   height: 40rpx;
-  line-height: 40rpx;
-  padding: 0 10rpx;
-  border-radius: 6rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 12rpx;
+  border-radius: 20rpx;
+  background: #fff2f0;
+  color: #ff4d4f;
+  border: 1rpx solid #ffccc7;
+  box-sizing: border-box;
 }
 
 /* 已休息时"取消休息"按钮样式 */
 .rest-btn-cancel{
+  background: #f5f5f5;
+  color: #888;
+  border-color: #e0e0e0;
 }
 
 /* 时间段整体休息状态背景 */
@@ -765,4 +772,315 @@
   font-size: 24rpx;
   color: #ff6b6b;
   font-weight: 500;
+}
+
+/* ===== 结构化自由日程网格样式 ===== */
+
+.structured-free-wrapper {
+  padding: 0 4rpx;
+}
+
+.structured-hint {
+  padding: 0 0 12rpx;
+}
+
+.structured-hint-text {
+  font-size: 26rpx;
+  color: #888;
+}
+
+/* 5列网格 */
+.slots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14rpx;
+}
+
+.grid-slot {
+  /* 4列，减去3个间距 */
+  width: calc((100% - 42rpx) / 4);
+  aspect-ratio: 8 / 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.grid-slot-time {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
+
+/* 可选 */
+.grid-slot.free {
+  background: #0b81ff0e;
+}
+
+/* 有预约但未满 */
+.grid-slot.booked {
+  background: #fff8ee;
+}
+.grid-slot.booked .grid-slot-time {
+  color: #d46b08;
+}
+
+/* 已满 */
+.grid-slot.full {
+  background: #dadada;
+  opacity: 0.6;
+}
+.grid-slot.full .grid-slot-time {
+  color: #777;
+}
+
+/* 冲突（select 模式：本身无课程但预约会冲突） */
+.grid-slot.conflict {
+  background: #f5f5f5;
+  opacity: 0.6;
+}
+.grid-slot.conflict .grid-slot-time {
+  color: #999;
+}
+
+/* 休息 */
+.grid-slot.resting {
+  background: #dadada;
+  opacity: 0.6;
+}
+.grid-slot.resting .grid-slot-time {
+  color: #777;
+}
+
+/* 已过期 */
+.grid-slot.expired {
+  background: #dadada;
+  opacity: 0.6;
+}
+.grid-slot.expired .grid-slot-time {
+  color: #777;
+}
+
+/* 提前预约限制 */
+.grid-slot.tooSoon {
+  background: #dadada;
+  opacity: 0.6;
+}
+.grid-slot.tooSoon .grid-slot-time {
+  color: #777;
+}
+
+/* 活动占用 */
+.grid-slot.groupBooked {
+  background: #f5f5f5;
+}
+.grid-slot.groupBooked .grid-slot-time {
+  color: #aaa;
+}
+
+/* 当前选中 */
+.grid-slot.grid-selected {
+  background: #e6f0ff;
+  border-color: #4a90e2;
+  border-width: 2rpx;
+}
+.grid-slot.grid-selected .grid-slot-time {
+  color: #1565c0;
+  font-weight: 600;
+}
+
+/* ---- 右下角斜角状态徽章 ---- */
+.grid-badge-wrap {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0 8rpx;
+  height: 30rpx;
+  display: flex;
+  align-items: center;
+  background: #ddd;
+}
+
+.grid-badge-wrap.full      { background: #ff7a45; }
+.grid-badge-wrap.resting   { background: #ff9c9c; }
+.grid-badge-wrap.expired   { background: #c0c0c0; }
+.grid-badge-wrap.tooSoon   { background: #ffa940; }
+.grid-badge-wrap.groupBooked { background: #cff632; }
+.grid-badge-wrap.groupBooked .grid-badge-label { color: #000; }
+.grid-badge-wrap.booked    { background: #69b1ff; }
+
+/* 徽章文字 */
+.grid-badge-label {
+  font-size: 18rpx;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* ===== 网格时间段详情面板（modal slot 内容） ===== */
+
+.gd-body {
+  padding: 8rpx 0 16rpx;
+}
+
+/* 顶部信息栏：休息中标记 + 名额 + 休息按钮 */
+.gd-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 16rpx 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
+  gap: 16rpx;
+}
+
+.gd-info-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+.gd-rest-badge {
+  font-size: 18rpx;
+  color: #fff;
+  background-color: #ff9c9c;
+  padding: 2rpx 8rpx;
+  border-radius: 20rpx;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.gd-quota {
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.gd-rest-btn {
+  flex-shrink: 0;
+  padding: 10rpx 26rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  background: #fff2f0;
+  color: #ff4d4f;
+  border: 1rpx solid #ffccc7;
+  line-height: 1.4;
+}
+
+.gd-rest-btn-cancel {
+  background: #f5f5f5;
+  color: #888;
+  border-color: #e0e0e0;
+}
+
+/* 课程列表 */
+.gd-courses {
+  display: flex;
+  flex-direction: column;
+}
+
+.gd-course-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  gap: 16rpx;
+}
+
+.gd-course-item:last-child {
+  border-bottom: none;
+}
+
+.gd-personal-info,
+.gd-group-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.gd-group-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.gd-group-stats {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.gd-group-participants {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.gd-group-price {
+  font-size: 24rpx;
+  color: #fa8c16;
+}
+
+.gd-student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.gd-student-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #222;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gd-location {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.gd-location-icon {
+  font-size: 22rpx;
+  color: #aaa;
+}
+
+.gd-location-text {
+  font-size: 24rpx;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gd-arrow {
+  font-size: 24rpx;
+  color: #ccc;
+  flex-shrink: 0;
+}
+
+/* 无课程提示 */
+.gd-empty {
+  padding: 48rpx 0;
+  text-align: center;
+}
+
+.gd-empty-text {
+  font-size: 28rpx;
+  color: #bbb;
 }

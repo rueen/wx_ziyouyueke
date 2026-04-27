@@ -165,6 +165,54 @@
           </view>
         </view>
 
+        <!-- 快速预约配置（课程时长 + 时间步长） -->
+        <view class="template-section free-slot-config">
+          <view class="section-header">
+            <text class="section-title-small">快速预约配置（可选）</text>
+          </view>
+          <view class="free-time-hint">
+            <text class="hint-text">配置后，预约时显示可点选的时间点网格，无需手动输入时间</text>
+          </view>
+          <view class="config-row">
+            <text class="config-label">课程时长</text>
+            <picker
+              wx:if="{{isEditTimeType}}"
+              mode="selector"
+              range="{{durationLabels}}"
+              value="{{tempLessonDurationIndex}}"
+              bindchange="onLessonDurationChange"
+            >
+              <view class="picker-display">
+                <text>{{durationLabels[tempLessonDurationIndex]}}</text>
+                <text class="iconfont icon-rightarrow"></text>
+              </view>
+            </picker>
+            <text wx:else class="config-value">{{lessonDuration === 0 ? '未配置' : lessonDuration + '分钟'}}</text>
+          </view>
+          <view class="config-row">
+            <text class="config-label">时间步长</text>
+            <picker
+              wx:if="{{isEditTimeType}}"
+              mode="selector"
+              range="{{durationLabels}}"
+              value="{{tempSlotIntervalIndex}}"
+              bindchange="onSlotIntervalChange"
+            >
+              <view class="picker-display">
+                <text>{{durationLabels[tempSlotIntervalIndex]}}</text>
+                <text class="iconfont icon-rightarrow"></text>
+              </view>
+            </picker>
+            <text wx:else class="config-value">{{slotInterval === 0 ? '未配置' : slotInterval + '分钟'}}</text>
+          </view>
+          <view class="config-tip" wx:if="{{lessonDuration > 0 && slotInterval > 0}}">
+            <text class="tip-text">示例：{{freeTimeRange.startTime}} 起每 {{slotInterval}} 分钟出现一个时间点，点击后自动填入 {{lessonDuration}} 分钟课程</text>
+          </view>
+          <view class="config-tip" wx:elif="{{lessonDuration > 0 && slotInterval === 0}}">
+            <text class="tip-text">选择开始时间后将自动填入结束时间（课程时长 {{lessonDuration}} 分钟）</text>
+          </view>
+        </view>
+
         <!-- 日期模板 -->
         <view class="data-section">
           <view class="section-header">

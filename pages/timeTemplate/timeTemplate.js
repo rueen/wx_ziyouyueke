@@ -94,7 +94,14 @@ Page({
       endTime: '18:00'
     },
     tempFreeStartTime: '09:00',
-    tempFreeEndTime: '18:00'
+    tempFreeEndTime: '18:00',
+    // 自由日程 - 课程时长 & 时间步长
+    durationOptions: [0, 30, 60],
+    durationLabels: ['不配置', '30分钟', '60分钟'],
+    lessonDuration: 0,
+    slotInterval: 0,
+    tempLessonDurationIndex: 0,
+    tempSlotIntervalIndex: 0
   },
 
   /**
@@ -181,6 +188,11 @@ Page({
         }
         
         const minAdvanceHours = template.min_advance_hours || 0;
+        const lessonDuration = template.lesson_duration || 0;
+        const slotInterval = template.slot_interval || 0;
+        const { durationOptions } = this.data;
+        const tempLessonDurationIndex = Math.max(0, durationOptions.indexOf(lessonDuration));
+        const tempSlotIntervalIndex = Math.max(0, durationOptions.indexOf(slotInterval));
 
         this.setData({
           template: template,
@@ -195,11 +207,15 @@ Page({
           weekSlotTemplate: weekSlots,
           dateSlotTemplate: template.date_slots || this.data.dateSlotTemplate,
           time_type: template.time_type !== undefined ? template.time_type : 0,
-          templateId: template.id, // 保存模板ID用于更新
-          templateEnabled: template.is_active === 1, // 设置启用状态
+          templateId: template.id,
+          templateEnabled: template.is_active === 1,
           freeTimeRange: freeTimeRange,
           tempFreeStartTime: freeTimeRange.startTime,
-          tempFreeEndTime: freeTimeRange.endTime
+          tempFreeEndTime: freeTimeRange.endTime,
+          lessonDuration,
+          slotInterval,
+          tempLessonDurationIndex,
+          tempSlotIntervalIndex
         });
       }
     } catch (error) {
@@ -676,7 +692,7 @@ Page({
     });
   },
   async handleSaveTimeType() {
-    const { templateId, time_type, timeSlotTemplate, dateSlotTemplate, weekSlotTemplate, tempFreeStartTime, tempFreeEndTime } = this.data;
+    const { templateId, time_type, timeSlotTemplate, dateSlotTemplate, weekSlotTemplate, tempFreeStartTime, tempFreeEndTime, durationOptions, tempLessonDurationIndex, tempSlotIntervalIndex } = this.data;
     
     try {
       wx.showLoading({
@@ -737,6 +753,24 @@ Page({
           endTime: tempFreeEndTime
         };
         templateData.date_slots = dateSlotTemplate;
+
+        const lessonDuration = durationOptions[tempLessonDurationIndex] || 0;
+        const slotInterval = durationOptions[tempSlotIntervalIndex] || 0;
+
+        // 校验：课程时长必须是时间步长的整数倍
+        if (lessonDuration > 0 && slotInterval > 0 && lessonDuration % slotInterval !== 0) {
+          wx.hideLoading();
+          wx.showToast({
+            title: `课程时长必须是时间步长的整数倍`,
+            icon: 'none',
+            duration: 2500
+          });
+          this.setData({ isSaving: false });
+          return;
+        }
+
+        templateData.lesson_duration = lessonDuration;
+        templateData.slot_interval = slotInterval;
       }
 
       if (templateId) {
@@ -758,10 +792,14 @@ Page({
       };
       
       if (time_type === 2) {
+        const lessonDuration = durationOptions[tempLessonDurationIndex] || 0;
+        const slotInterval = durationOptions[tempSlotIntervalIndex] || 0;
         updateData.freeTimeRange = {
           startTime: tempFreeStartTime,
           endTime: tempFreeEndTime
         };
+        updateData.lessonDuration = lessonDuration;
+        updateData.slotInterval = slotInterval;
       }
       
       this.setData(updateData);
@@ -800,5 +838,21 @@ Page({
       tempFreeEndTime: e.detail.value
     });
   },
-  
+
+  /**
+   * 课程时长选择变化
+   * @param {Object} e - picker change 事件
+   */
+  onLessonDurationChange(e) {
+    this.setData({ tempLessonDurationIndex: parseInt(e.detail.value) });
+  },
+
+  /**
+   * 时间步长选择变化
+   * @param {Object} e - picker change 事件
+   */
+  onSlotIntervalChange(e) {
+    this.setData({ tempSlotIntervalIndex: parseInt(e.detail.value) });
+  },
+
 }) 
