@@ -200,11 +200,11 @@ Page({
    */
   getStatusFromApi(status) {
     const statusMap = {
-      1: 'pending',    // 待确认
-      2: 'confirmed',  // 已确认
-      3: 'completed',  // 已完成
-      4: 'cancelled',     // 已取消
-      5: 'cancelled'     // 超时已取消
+      1: 'pending',           // 待确认
+      2: 'confirmed',         // 已确认
+      3: 'completed',         // 已完成
+      4: 'cancelled',         // 已取消
+      5: 'timeout_cancelled'  // 超时已取消
     };
     return statusMap[status] || 'unknown';
   },
@@ -1598,6 +1598,42 @@ Page({
       title: '加载地址失败',
       icon: 'none'
     });
+  },
+
+  /**
+   * 补录课程为已完成（教练专用，仅限超时取消课程）
+   */
+  async onRestoreComplete() {
+    const confirmResult = await new Promise((resolve) => {
+      wx.showModal({
+        title: '确认补录',
+        content: '确认将该课程补录为已完成吗？',
+        confirmText: '确认补录',
+        cancelText: '取消',
+        success: (res) => resolve(res.confirm),
+        fail: () => resolve(false)
+      });
+    });
+
+    if (!confirmResult) {
+      return;
+    }
+
+    try {
+      wx.showLoading({ title: '补录中...', mask: true });
+      await api.course.restoreComplete(this.data.courseId);
+      wx.hideLoading();
+      wx.showToast({ title: '课程已补录为完成', icon: 'success' });
+      this.loadCourseDetail();
+    } catch (error) {
+      wx.hideLoading();
+      wx.showModal({
+        title: '补录失败',
+        content: error.message || '操作失败，请重试',
+        showCancel: false,
+        confirmText: '知道了'
+      });
+    }
   },
 
   // 修改课程

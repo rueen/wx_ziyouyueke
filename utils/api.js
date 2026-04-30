@@ -799,6 +799,18 @@ module.exports = {
         method: 'PUT',
         data: params
       });
+    },
+
+    /**
+     * 补录课程为已完成（超时取消后教练补录）
+     * @param {number} id - 课程ID
+     * @returns {Promise}
+     */
+    restoreComplete: function(id) {
+      return request({
+        url: `/api/h5/courses/${id}/restore-complete`,
+        method: 'PUT'
+      });
     }
   },
 

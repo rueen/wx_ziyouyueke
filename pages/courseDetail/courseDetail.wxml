@@ -49,7 +49,8 @@
                 ) : 
                   courseInfo.status === 'confirmed' ? '已确认' : 
                   courseInfo.status === 'completed' ? '已完成' : 
-                  courseInfo.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+                  courseInfo.status === 'cancelled' ? '已取消' :
+                  courseInfo.status === 'timeout_cancelled' ? '超时取消' : '未知状态'}}</text>
               </view>
             </view>
           </view>
@@ -229,6 +230,17 @@
   <!-- 已取消状态的按钮 -->
   <view wx:elif="{{courseInfo.status === 'cancelled'}}" class="action-buttons">
     <view class="single-button">
+      <button class="action-btn cancel-btn" bindtap="handleDel">删除课程</button>
+    </view>
+  </view>
+
+  <!-- 超时取消状态的按钮（教练可补录为已完成） -->
+  <view wx:elif="{{courseInfo.status === 'timeout_cancelled'}}" class="action-buttons">
+    <view wx:if="{{userRole === 'coach'}}" class="button-group">
+      <button class="action-btn cancel-btn" bindtap="handleDel">删除课程</button>
+      <button class="action-btn primary-btn" bindtap="onRestoreComplete">补录</button>
+    </view>
+    <view wx:else class="single-button">
       <button class="action-btn cancel-btn" bindtap="handleDel">删除课程</button>
     </view>
   </view>
