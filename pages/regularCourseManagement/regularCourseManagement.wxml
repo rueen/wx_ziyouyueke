@@ -2,6 +2,9 @@
 <navBar title="常规课管理" />
 <layout>
   <view class="container">
+    <view class="tips">
+      <text class="tips-text" wx:if="{{!bookingStatus}}">课程到期时间会在约课状态重新开启后顺延</text>
+    </view>
     <!-- 课时信息 -->
     <view class="info-section">
       <view class="section-header">
@@ -10,13 +13,11 @@
         </text>
         <text class="expire-date-title">到期时间</text>
       </view>
-      <view class="tips">
-        <text class="tips-text" wx:if="{{!bookingStatus}}">课程到期时间会在约课状态重新开启后顺延</text>
-        <text class="tips-text" wx:else>到期时间 23:59:59 过后，课程剩余课时会自动清零</text>
-      </view>
       
       <view class="info-item" wx:for="{{categoryLessons}}" wx:key="index">
-        <view class="info-label">{{item.category.name}}：</view>
+        <view class="info-label">
+          <text>{{item.category.name}}：</text>
+        </view>
         <view class="course-item">
           <view wx:if="{{!isEditing}}" class="info-value">
             <text class="lessons-count active">{{item.remaining_lessons}}节</text>
@@ -36,6 +37,7 @@
           <view wx:if="{{!isEditing}}" class="info-value">
             <text class="expire-date-text" wx:if="{{item.expire_date}}">{{item.expire_date}}</text>
             <text class="expire-date-text" wx:else>永久</text>
+            <text class="expired-text" wx:if="{{item.is_expired}}">已到期</text>
           </view>
           <view wx:else class="edit-value-container">
             <view
@@ -64,7 +66,7 @@
             </picker>
           </view>
         </view>
-        <view>
+        <view wx:if="{{!item.is_expired}}">
           <text class="available_lessons-box">
             <text>含 <text class="available_lessons">{{item.available_lessons}}节</text> 可用课时</text>
             <text wx:if="{{item.remaining_lessons - item.available_lessons > 0}}">，<text class="available_lessons">{{item.remaining_lessons - item.available_lessons}}节</text> 未核销课时</text>
