@@ -50,33 +50,11 @@ page {
   justify-content: space-between;
   align-items: center;
 }
-.nickname{
-  font-size: 28rpx;
-  color: #666;
-  display: flex;
-  gap: 16rpx;
-}
-.student-name-input{
-  height: 60rpx;
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
-  padding: 0 16rpx;
-  font-size: 28rpx;
-  color: #333;
-  border: 1rpx solid #e9ecef;
-}
-
-.student-intro {
-  font-size: 28rpx;
-  color: #666;
-  margin-top: 8rpx;
-}
 
 /* 约课状态 */
 .booking-status{
   display: flex;
   align-items: center;
-  margin-top: 8rpx;
 }
 .booking-status-text{
   color: #666;
@@ -119,44 +97,6 @@ page {
 
 .edit-btn {
   font-size: 40rpx;
-}
-
-/* 信息项 */
-.info-label {
-  font-size: 28rpx;
-  color: #000;
-  padding: 12rpx 0;
-}
-.course-item{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 80rpx;
-  background: #f5faff;
-  padding: 0 16rpx;
-}
-
-.info-value {
-  display: flex;
-  align-items: center;
-}
-
-.lessons-count {
-  font-size: 28rpx;
-  font-weight: 600;
-}
-
-.lessons-count.active {
-  color: #007aff;
-}
-
-.lessons-count.empty {
-  color: #ff3b30;
-}
-
-.expire-date-text{
-  font-size: 28rpx;
-  color: #333;
 }
 
 /* 编辑状态 */
@@ -267,15 +207,25 @@ page {
 /* 课程记录 */
 .course-list{
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   background: #fff;
-  height: 100rpx;
   padding: 0 32rpx;
+}
+.course-item{
+  height: 100rpx;
   font-size: 28rpx;
   color: #333;
-  margin: 16rpx 16rpx 0 16rpx;
-  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.course-item-left{
+  display: flex;
+  align-items: center;
+}
+.course-item-left .iconfont{
+  margin-right: 12rpx;
 }
 
 /* 编辑操作按钮 */

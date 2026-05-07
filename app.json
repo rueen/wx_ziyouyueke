@@ -10,6 +10,7 @@
     "pages/courseDetail/courseDetail",
     "pages/studentList/studentList",
     "pages/studentDetail/studentDetail",
+    "pages/studentBasicProfile/studentBasicProfile",
     "pages/timeTemplate/timeTemplate",
     "pages/bindCoach/bindCoach",
     "pages/addressList/addressList",

@@ -1,0 +1,54 @@
+<navBar title="基本资料" />
+<layout>
+  <view class="page-container">
+    <view class="form-card">
+      <view class="form-item">
+        <text class="label">头像</text>
+        <image class="avatar" src="{{studentData.student.avatar_url}}"></image>
+      </view>
+
+      <view class="form-item">
+        <text class="label">昵称</text>
+        <text class="value">{{studentData.student.nickname || '-'}}</text>
+      </view>
+
+      <view class="form-item">
+        <text class="label">手机</text>
+        <text class="value">{{studentData.student.phone || '-'}}</text>
+      </view>
+
+      <!-- <view class="form-item">
+        <text class="label">个人介绍</text>
+        <text class="value">{{studentData.student.intro || '-'}}</text>
+      </view> -->
+
+      <view class="form-item">
+        <text class="label">姓名</text>
+        <input
+          class="input-value"
+          type="text"
+          maxlength="50"
+          placeholder="请输入学员姓名"
+          value="{{studentName}}"
+          bindinput="onStudentNameInput"
+        />
+      </view>
+
+      <view class="form-item remark-item">
+        <textarea
+          class="remark-textarea"
+          maxlength="200"
+          placeholder="这里填写对学员的备注，例如：仅工作日中午有时间上课"
+          value="{{studentRemark}}"
+          bindinput="onRemarkInput"
+        />
+      </view>
+    </view>
+  </view>
+</layout>
+
+<view class="submit-container">
+  <button class="submit-btn" bindtap="onSubmit" loading="{{isSaving}}">
+    <text>{{isSaving ? '提交中...' : '提交'}}</text>
+  </button>
+</view>

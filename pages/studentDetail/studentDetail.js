@@ -15,10 +15,6 @@ Page({
     studentData: {},
     relationId: null,
     studentId: null,
-    studentName: '', // 学员姓名（教练备注姓名）
-    studentRemark: '',   // 学员备注
-    isEditing: false,    // 是否处于编辑状态
-    isSaving: false,     // 是否正在保存
     showUnbindModal: false, // 是否显示解除绑定确认弹窗
     isUnbinding: false,   // 是否正在解除绑定
     bookingStatus: true
@@ -42,7 +38,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    const { relationId } = this.data;
+    if (relationId) {
+      this.loadStudentDetail();
+    }
   },
 
   async loadStudentDetail() {
@@ -60,8 +59,6 @@ Page({
         const studentData = result.data || {};
         this.setData({
           studentData: studentData,
-          studentName: studentData.student_name || studentData.student.nickname || '',
-          studentRemark: studentData.coach_remark || '',
           bookingStatus: studentData.booking_status
         });
       }
@@ -130,108 +127,6 @@ Page({
       this.setData({
         bookingStatus: !value
       })
-    }
-  },
-
-  /**
-   * 开始编辑
-   */
-  onStartEdit() {
-    this.setData({
-      isEditing: true
-    });
-  },
-
-  /**
-   * 取消编辑
-   */
-  onCancelEdit() {
-    const { studentData } = this.data;
-    this.setData({
-      isEditing: false,
-      studentName: studentData.student_name || '',
-      studentRemark: studentData.coach_remark || ''
-    });
-  },
-
-  // 输入学员名称
-  onStudentNameInput(e) {
-    this.setData({
-      studentName: e.detail.value
-    });
-  },
-
-  /**
-   * 输入备注
-   */
-  onRemarkInput(e) {
-    this.setData({
-      studentRemark: e.detail.value
-    });
-  },
-
-  /**
-   * 保存修改
-   */
-  async onSave() {
-    const { studentRemark, studentName, studentData, isSaving } = this.data;
-
-    if (isSaving) {
-      return; // 防止重复提交
-    }
-
-    try {
-      this.setData({
-        isSaving: true
-      });
-
-      wx.showLoading({
-        title: '保存中...'
-      });
-
-      // 调用API更新师生关系（仅更新学员姓名和备注）
-      const updateData = {
-        student_name: studentName.trim(),
-        coach_remark: studentRemark.trim()
-      };
-
-      const result = await api.relation.update(studentData.id, updateData);
-      
-      wx.hideLoading();
-
-      if (result && result.success) {
-        this.setData({
-          isEditing: false,
-          isSaving: false
-        });
-
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success',
-          duration: 1500
-        });
-        setTimeout(() => {
-          this.loadStudentDetail();
-        }, 1500)
-      } else {
-        throw new Error(result.message || '保存失败');
-      }
-      
-    } catch (error) {
-      wx.hideLoading();
-      console.error('保存师生关系失败:', error);
-      
-      this.setData({
-        isSaving: false
-      });
-
-      const errorMessage = error.message || '保存失败，请重试';
-      
-      wx.showToast({
-        title: errorMessage,
-        icon: 'none',
-        duration: 3000
-      });
     }
   },
 
@@ -382,6 +277,13 @@ Page({
     
     wx.navigateTo({
       url: `/pages/studentCards/studentCards?studentId=${studentId}&relationId=${relationId}&studentName=${encodeURIComponent(studentName)}`
+    });
+  },
+
+  handleEdit() {
+    const { relationId, studentId } = this.data;
+    wx.navigateTo({
+      url: `/pages/studentBasicProfile/studentBasicProfile?relationId=${relationId}&studentId=${studentId}`
     });
   },
 
