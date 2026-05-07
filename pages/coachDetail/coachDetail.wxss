@@ -158,6 +158,11 @@ page {
   margin-right: 8rpx;
 }
 
+.expired-text{
+  font-size: 26rpx;
+  color: #f00;
+}
+
 /* 约课按钮 */
 .book-button-container {
   position: fixed;

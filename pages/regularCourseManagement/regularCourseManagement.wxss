@@ -99,7 +99,7 @@ page {
 .expired-text{
   font-size: 26rpx;
   color: #f00;
-  margin-left: 10rpx;
+  margin-left: 8rpx;
 }
 
 /* 编辑状态 */
