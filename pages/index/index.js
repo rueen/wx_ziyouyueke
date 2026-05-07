@@ -267,44 +267,6 @@ Page({
     }
   },
 
-  /**
-   * 我的教练/我的学员点击事件
-   */
-  onMyCoachOrStudentClick: function() {
-    // 检查是否需要登录
-    if (!this.checkLoginRequired()) {
-      return;
-    }
-    
-    const { userRole } = this.data;
-    
-    if (userRole === 'student') {
-      // 学员身份：我的教练
-      wx.navigateTo({
-        url: '/pages/coachList/coachList'
-      });
-    } else {
-      // 教练身份：我的学员
-      wx.navigateTo({
-        url: '/pages/studentList/studentList'
-      });
-    }
-  },
-
-  /**
-   * 上课记录点击事件
-   */
-  onPendingCoursesClick: function() {
-    // 检查是否需要登录
-    if (!this.checkLoginRequired()) {
-      return;
-    }
-    
-    wx.navigateTo({
-      url: '/pages/courseList/courseList?tab=0'
-    });
-  },
-
   // 消息订阅
   openSubscribeMessage() {
     // 检查是否需要登录

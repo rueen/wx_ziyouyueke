@@ -18,18 +18,6 @@
           </view>
         </view>
       </view>
-
-      <!-- <view class="stats-row">
-        <view class="stat-item" bindtap="onMyCoachOrStudentClick">
-          <text class="stat-label">{{userRole === 'student' ? '我的教练' : '我的学员'}}</text>
-          <text class="iconfont icon-arrow-r stat-arrow"></text>
-        </view>
-        
-        <view class="stat-item" bindtap="onPendingCoursesClick">
-          <text class="stat-label">上课记录</text>
-          <text class="iconfont icon-arrow-r stat-arrow"></text>
-        </view>
-      </view> -->
       <!-- 公共菜单 -->
       <view class="menu-section">
         <view class="menu-item subscribe" bind:tap="openSubscribeMessage">
