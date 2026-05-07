@@ -2,8 +2,8 @@
 <navBar title="常规课管理" />
 <layout>
   <view class="container">
-    <view class="tips">
-      <text class="tips-text" wx:if="{{!bookingStatus}}">课程到期时间会在约课状态重新开启后顺延</text>
+    <view class="tips" wx:if="{{!bookingStatus}}">
+      <text class="tips-text">课程到期时间会在约课状态重新开启后顺延</text>
     </view>
     <!-- 课时信息 -->
     <view class="info-section">
