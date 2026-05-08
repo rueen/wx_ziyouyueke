@@ -46,11 +46,26 @@ function request(options) {
       header,
       timeout: options.timeout || API_CONFIG.timeout,
       success(res) {
-        
         // 检查HTTP状态码
         if (res.statusCode !== 200) {
-          // 处理HTTP层面的认证失败
-          if (res.statusCode === 401 || res.statusCode === 403) {
+          if(res.statusCode === 403) {
+            // 权限不足
+            wx.showToast({
+              title: res.data.message,
+              icon: 'none',
+              duration: 2000,
+              success() {
+                // 延迟跳转到首页
+                setTimeout(() => {
+                  wx.reLaunch({
+                    url: '/pages/index/index',
+                  });
+                }, 1500);
+              }
+            });
+            return; // 直接返回，不再reject，因为已经处理跳转
+          } else if (res.statusCode === 401) {
+            // 未登录
             handleTokenExpired();
             return; // 直接返回，不再reject，因为已经处理跳转
           }
