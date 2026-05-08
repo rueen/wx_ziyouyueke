@@ -53,6 +53,13 @@ Page({
     // 表单数据
     remark: '', // 备注
     
+    // 补录模式
+    isSupplementary: false,  // 是否为补录模式
+    retroDate: '',           // 补录日期
+    retroStartTime: '',      // 补录开始时间
+    retroEndTime: '',        // 补录结束时间
+    today: '',               // 今天日期（补录日期上限，不限制下限）
+
     // 状态
     isLoading: false,
     canSubmit: false, // 是否可以提交
@@ -63,7 +70,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    
     const { 
       type, 
       from,
@@ -71,19 +77,26 @@ Page({
       coachId, 
       coachName, 
       studentId, 
-      studentName 
+      studentName,
+      isSupplementary: isSupplementaryParam
     } = options;
+
+    const isSupplementary = isSupplementaryParam === 'true';
+
+    // 计算今天日期作为补录日期上限（不限制下限）
+    const pad = n => String(n).padStart(2, '0');
+    const now = new Date();
+    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
     
     // 设置约课类型
     let bookingType = type;
     if (!bookingType) {
-      // 根据参数推断约课类型
       if (coachId || coachName) {
         bookingType = 'student-book-coach';
       } else if (studentId || studentName) {
         bookingType = 'coach-book-student';
       } else {
-        bookingType = 'coach-book-student'; // 默认
+        bookingType = 'coach-book-student';
       }
     }
     
@@ -91,21 +104,20 @@ Page({
       bookingType,
       from: from || 'home',
       presetId: coachId || studentId || '',
-      presetName: decodeURIComponent(coachName || studentName || '')
+      presetName: decodeURIComponent(coachName || studentName || ''),
+      isSupplementary,
+      today
     });
 
-    if(currentDate){
-      this.setData({
-        currentDate
-      })
+    if (currentDate) {
+      this.setData({ currentDate });
     }
     
     // 设置页面标题
     wx.setNavigationBarTitle({
-      title: bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课'
+      title: isSupplementary ? '课程补录' : (bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课')
     });
     
-    // 加载数据
     this.loadInitialData();
   },
 
@@ -291,17 +303,18 @@ Page({
       }
     }
     
-    // 没有预设或找不到预设，选择第一个课时>0的选项
+    // 没有预设或找不到预设
     if (availableOptions.length > 0) {
-      const firstValidOption = availableOptions.find(option => option.remainingLessons > 0);
-      if (firstValidOption) {
-        this.selectOption(firstValidOption);
+      if (this.data.isSupplementary) {
+        // 补录模式：直接选第一个学员，不限制课时
+        this.selectOption(availableOptions[0]);
       } else {
-        // 所有选项的课时都为0，显示提示但不自动选择
-        wx.showToast({
-          title: '暂无可用课时',
-          icon: 'none'
-        });
+        const firstValidOption = availableOptions.find(option => option.remainingLessons > 0);
+        if (firstValidOption) {
+          this.selectOption(firstValidOption);
+        } else {
+          wx.showToast({ title: '暂无可用课时', icon: 'none' });
+        }
       }
     }
   },
@@ -310,7 +323,7 @@ Page({
    * 选择教练或学员
    */
   async selectOption(option) {
-    const { bookingType } = this.data;
+    const { bookingType, isSupplementary } = this.data;
     
     // 检查课时是否充足
     // if (option.remainingLessons <= 0) {
@@ -349,10 +362,10 @@ Page({
     }
     
     // 获取课程类型列表
-    if(option.originalData){
+    if (option.originalData) {
       const originalData = option.originalData || {};
       const category_lessons = originalData.category_lessons || [];
-      const _categoryLessons = category_lessons.filter(item => item.remaining_lessons > 0);
+      const _categoryLessons = category_lessons.filter(item => isSupplementary ? item.remaining_lessons > 0 : item.available_lessons > 0);
 
       updateData.categoriesList = _categoryLessons;
       updateData.selectedCategorie = _categoryLessons.length ? _categoryLessons[0] : null;
@@ -361,7 +374,7 @@ Page({
     this.setData(updateData);
 
     // 加载卡片列表
-    await this.loadAvailableCards(option.student_id, option.coach_id);
+    await this.loadAvailableCards(option.student_id, option.coach_id, this.data.isSupplementary);
     
     // 如果是学员约教练，选择教练后加载该教练的地址并自动选择默认地址
     if (bookingType === 'student-book-coach') {
@@ -475,9 +488,16 @@ Page({
   /**
    * 加载可用卡片列表
    */
-  async loadAvailableCards(studentId, coachId) {
+  /**
+   * 加载可用卡片列表
+   * @param {number} studentId 学员ID
+   * @param {number} coachId 教练ID
+   * @param {boolean} isSupplementary 是否为补录模式
+   */
+  async loadAvailableCards(studentId, coachId, isSupplementary = false) {
     try {
-      const result = await api.card.getAvailableCards(studentId, coachId);
+      const extraParams = isSupplementary ? { is_supplementary: true } : {};
+      const result = await api.card.getAvailableCards(studentId, coachId, extraParams);
       
       if (result && result.data) {
         const cardsList = result.data.list || [];
@@ -644,32 +664,69 @@ Page({
    * 检查是否可以提交
    */
   checkCanSubmit() {
-    const { selectedOption, selectedDate, selectedTimeSlot, selectedAddress, selectedCategorie, selectedCard, bookingType_ } = this.data;
-    
+    const {
+      isSupplementary,
+      selectedOption, selectedDate, selectedTimeSlot, selectedAddress,
+      selectedCategorie, selectedCard, bookingType_,
+      retroDate, retroStartTime, retroEndTime
+    } = this.data;
+
     // 必须选择课程类型或卡片之一
     let hasValidBookingType = false;
     if (bookingType_ === 1 && selectedCategorie && selectedCategorie.remaining_lessons > 0) {
-      hasValidBookingType = true; // 使用普通课程且有剩余课时
+      hasValidBookingType = true;
     } else if (bookingType_ === 2 && selectedCard) {
-      hasValidBookingType = true; // 使用卡片
+      hasValidBookingType = true;
     }
-    
-    const canSubmit = !!(selectedOption && hasValidBookingType && selectedDate && selectedTimeSlot && selectedAddress);
-    this.setData({
-      canSubmit: canSubmit
-    });
+
+    let canSubmit;
+    if (isSupplementary) {
+      canSubmit = !!(selectedOption && hasValidBookingType && retroDate && retroStartTime && retroEndTime && selectedAddress);
+    } else {
+      canSubmit = !!(selectedOption && hasValidBookingType && selectedDate && selectedTimeSlot && selectedAddress);
+    }
+
+    this.setData({ canSubmit });
   },
 
   /**
-   * 提交约课
+   * 补录日期变更
+   * @param {Object} e 事件对象
+   */
+  onRetroDateChange(e) {
+    this.setData({ retroDate: e.detail.value });
+    this.checkCanSubmit();
+  },
+
+  /**
+   * 补录开始时间变更（同步清除结束时间以强制重新选择）
+   * @param {Object} e 事件对象
+   */
+  onRetroStartTimeChange(e) {
+    this.setData({ retroStartTime: e.detail.value, retroEndTime: '' });
+    this.checkCanSubmit();
+  },
+
+  /**
+   * 补录结束时间变更
+   * @param {Object} e 事件对象
+   */
+  onRetroEndTimeChange(e) {
+    this.setData({ retroEndTime: e.detail.value });
+    this.checkCanSubmit();
+  },
+
+  /**
+   * 提交约课 / 补录
    */
   async onSubmitBooking() {
-    const { 
-      bookingType, 
-      selectedOption, 
-      selectedDate, 
-      selectedTimeSlot, 
-      selectedAddress, 
+    const {
+      isSupplementary,
+      bookingType,
+      selectedOption,
+      selectedDate, selectedTimeSlot,
+      retroDate, retroStartTime, retroEndTime, today,
+      selectedAddress,
       remark,
       isSubmitting,
       selectedCategorie,
@@ -677,110 +734,111 @@ Page({
       bookingType_
     } = this.data;
     
-    if (isSubmitting) {
-      return; // 防止重复提交
-    }
+    if (isSubmitting) return;
     
     if (!this.data.canSubmit) {
-      wx.showToast({
-        title: '请完善约课信息',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请完善信息', icon: 'none' });
+      return;
+    }
+
+    // 补录模式：校验时间合法性
+    if (isSupplementary) {
+      const pad = n => String(n).padStart(2, '0');
+      const now = new Date();
+      const currentTime = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+      if (retroEndTime <= retroStartTime) {
+        wx.showToast({ title: '结束时间必须晚于开始时间', icon: 'none' });
+        return;
+      }
+      if (retroDate === today && retroStartTime >= currentTime) {
+        wx.showToast({ title: '补录时间必须早于当前时间', icon: 'none' });
+        return;
+      }
+    } else {
+      if (!selectedTimeSlot || !selectedTimeSlot.startTime || !selectedTimeSlot.endTime) {
+        wx.showToast({ title: '时间信息不完整，请重新选择', icon: 'none' });
+        return;
+      }
+    }
+
+    if (!selectedOption.coach_id || !selectedOption.student_id) {
+      wx.showToast({ title: '师生关系数据不完整，请重新选择', icon: 'none' });
       return;
     }
     
     try {
       this.setData({ isSubmitting: true });
-      
-      wx.showLoading({
-        title: '提交中...'
-      });
-      
-      // 检查必要的数据
-      if (!selectedTimeSlot || !selectedTimeSlot.startTime || !selectedTimeSlot.endTime) {
-        throw new Error('时间信息不完整，请重新选择时间');
-      }
-      
-      if (!selectedOption.coach_id || !selectedOption.student_id) {
-        throw new Error('师生关系数据不完整，请重新选择');
-      }
+      wx.showLoading({ title: '提交中...' });
 
       // 构建提交数据
       const bookingData = {
-        course_date: selectedDate,
-        start_time: selectedTimeSlot.startTime,
-        end_time: selectedTimeSlot.endTime,
         address_id: selectedAddress.id,
         relation_id: selectedOption.id,
-        booking_type: bookingType_ // 1-普通课程，2-卡片课程
+        booking_type: bookingType_,
+        coach_id: selectedOption.coach_id,
+        student_id: selectedOption.student_id
       };
-      
-      // 添加课程类型或卡片ID
+
+      // 时间字段
+      if (isSupplementary) {
+        bookingData.course_date = retroDate;
+        bookingData.start_time = retroStartTime;
+        bookingData.end_time = retroEndTime;
+        bookingData.is_supplementary = true;
+        bookingData.booking_status = 3; // 直接标记为已完成
+      } else {
+        bookingData.course_date = selectedDate;
+        bookingData.start_time = selectedTimeSlot.startTime;
+        bookingData.end_time = selectedTimeSlot.endTime;
+      }
+
+      // 课程类型或卡片
       if (bookingType_ === 1) {
-        // 普通课程
         bookingData.category_id = selectedCategorie.category.id;
       } else if (bookingType_ === 2) {
-        // 卡片课程
         bookingData.card_instance_id = selectedCard.id;
       }
-      
-      // 添加备注
+
+      // 备注
       if (remark && remark.trim()) {
         if (bookingType === 'coach-book-student') {
-          // 教练约学员，备注作为教练备注
           bookingData.coach_remark = remark.trim();
         } else {
-          // 学员约教练，备注作为学员备注
           bookingData.student_remark = remark.trim();
         }
       }
       
-      // 直接从师生关系数据中获取coach_id和student_id
-      if (bookingType === 'coach-book-student') {
-        // 教练约学员
-        bookingData.coach_id = selectedOption.coach_id;
-        bookingData.student_id = selectedOption.student_id;
-      } else {
-        // 学员约教练  
-        bookingData.student_id = selectedOption.student_id;
-        bookingData.coach_id = selectedOption.coach_id;
-      }
-      
-      // 调用API提交约课
       const result = await api.course.create(bookingData);
-      
       wx.hideLoading();
       
       if (result && result.success) {
-        wx.showModal({
-          title: '约课成功',
-          content: '为避免遗漏重要通知，需要手动增加消息提醒次数',
-          complete: (res) => {
-            if (res.cancel) {
-              wx.navigateBack({
-                delta: 1
-              });
+        if (isSupplementary) {
+          wx.showToast({ title: '补录成功', icon: 'success' });
+          setTimeout(() => { wx.navigateBack({ delta: 1 }); }, 1200);
+        } else {
+          wx.showModal({
+            title: '约课成功',
+            content: '为避免遗漏重要通知，需要手动增加消息提醒次数',
+            complete: (res) => {
+              if (res.cancel) {
+                wx.navigateBack({ delta: 1 });
+              }
+              if (res.confirm) {
+                wx.redirectTo({ url: '/pages/subscribeMessage/subscribeMessage' });
+              }
             }
-        
-            if (res.confirm) {
-              wx.redirectTo({
-                url: '/pages/subscribeMessage/subscribeMessage'
-              });
-            }
-          }
-        })
-        
+          });
+        }
       } else {
-        throw new Error(result.message || '约课失败');
+        throw new Error(result.message || (isSupplementary ? '补录失败' : '约课失败'));
       }
       
     } catch (error) {
       wx.hideLoading();
-      console.error('提交约课失败:', error);
-      
-      const errorMessage = error.message || '约课失败，请重试';
+      console.error('提交失败:', error);
       wx.showToast({
-        title: errorMessage,
+        title: error.message || (isSupplementary ? '补录失败，请重试' : '约课失败，请重试'),
         icon: 'none',
         duration: 3000
       });

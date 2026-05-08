@@ -171,3 +171,52 @@ page {
 .categoryName{
   color: #f2652e;
 }
+
+/* 补录悬浮按钮 */
+.suppl-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 120rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+  z-index: 99;
+}
+
+.suppl-fab:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+.suppl-fab-text {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 课程列表状态徽章组 */
+.badge-group {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 补录标签 */
+.suppl-badge {
+  background-color: #ff9500;
+  border-radius: 8rpx;
+  padding: 4rpx 10rpx;
+}
+
+.suppl-text {
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: 600;
+}

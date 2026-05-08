@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  baseUrl: 'http://localhost:3000',
-  // baseUrl: 'https://api.rueen.cn',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -1101,9 +1101,13 @@ module.exports = {
         method: 'GET'
       });
     },
-    getAvailableCards: function(studentId, coachId) {
+    getAvailableCards: function(studentId, coachId, params = {}) {
+      const extra = Object.keys(params)
+        .map(k => `${k}=${encodeURIComponent(params[k])}`)
+        .join('&');
+      const query = `student_id=${studentId}&coach_id=${coachId}${extra ? '&' + extra : ''}`;
       return request({
-        url: `/api/h5/card-instances/available?student_id=${studentId}&coach_id=${coachId}`,
+        url: `/api/h5/card-instances/available?${query}`,
         method: 'GET'
       });
     },

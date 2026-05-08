@@ -268,6 +268,19 @@ Page({
   },
 
   /**
+   * 跳转至补录页面
+   * 若当前页面带有学员信息（从学员详情进入），则预填该学员
+   */
+  handleSupplementary() {
+    const { student, pageFrom } = this.data;
+    let url = '/pages/bookCourse/bookCourse?type=coach-book-student&isSupplementary=true';
+    if (pageFrom === 'studentDetail' && student && student.student_id) {
+      url += `&studentId=${student.student_id}&studentName=${encodeURIComponent(student.nickname || '')}`;
+    }
+    wx.navigateTo({ url });
+  },
+
+  /**
    * 点击课程项跳转到详情页
    */
   onCourseItemTap(e) {

@@ -1,5 +1,5 @@
 <!--pages/bookCourse/bookCourse.wxml-->
-<navBar title="{{bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课'}}" />
+<navBar title="{{isSupplementary ? '课程补录' : (bookingType === 'coach-book-student' ? '约学员上课' : '约教练上课')}}" />
 <layout>
   <!-- 加载状态 -->
   <view class="loading-container" wx:if="{{isLoading}}">
@@ -48,7 +48,8 @@
       <view class="selected-address" wx:if="{{selectedCategorie}}" bindtap="onShowCategorieSelection">
         <view class="categorie-info">
           <text>{{selectedCategorie.category.name}}</text>
-          <text class="option-lessons">剩余课时：{{ selectedCategorie.available_lessons }}节</text>
+          <text class="option-lessons" wx:if="{{!selectedCategorie.is_expired}}">剩余课时：{{ selectedCategorie.available_lessons }}节</text>
+          <text class="option-lessons" wx:if="{{selectedCategorie.is_expired}}">已过期：{{ selectedCategorie.remaining_lessons }}节</text>
         </view>
         <text class="iconfont icon-arrow-r change-icon"></text>
       </view>
@@ -75,9 +76,41 @@
       <view class="section-header">
         <text class="section-title">选择时间</text>
       </view>
-      
-      <!-- 时间选择器组件 -->
-      <timeSelector 
+
+      <!-- 补录模式：手动选择历史日期和时间 -->
+      <view wx:if="{{isSupplementary}}" class="retro-time-wrap">
+        <picker mode="date" value="{{retroDate}}" end="{{today}}" bindchange="onRetroDateChange">
+          <view class="retro-row">
+            <text class="retro-label">上课日期</text>
+            <view class="retro-value-wrap">
+              <text class="retro-value {{retroDate ? '' : 'retro-placeholder'}}">{{retroDate || '请选择日期'}}</text>
+              <text class="iconfont icon-arrow-r retro-arrow"></text>
+            </view>
+          </view>
+        </picker>
+        <picker mode="time" value="{{retroStartTime}}" bindchange="onRetroStartTimeChange">
+          <view class="retro-row">
+            <text class="retro-label">开始时间</text>
+            <view class="retro-value-wrap">
+              <text class="retro-value {{retroStartTime ? '' : 'retro-placeholder'}}">{{retroStartTime || '请选择开始时间'}}</text>
+              <text class="iconfont icon-arrow-r retro-arrow"></text>
+            </view>
+          </view>
+        </picker>
+        <picker mode="time" value="{{retroEndTime}}" bindchange="onRetroEndTimeChange">
+          <view class="retro-row retro-row-last">
+            <text class="retro-label">结束时间</text>
+            <view class="retro-value-wrap">
+              <text class="retro-value {{retroEndTime ? '' : 'retro-placeholder'}}">{{retroEndTime || '请选择结束时间'}}</text>
+              <text class="iconfont icon-arrow-r retro-arrow"></text>
+            </view>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 正常约课模式：使用时间选择器组件 -->
+      <timeSelector
+        wx:else
         coachId="{{selectedOption.coach_id}}"
         mode="select"
         currentDate="{{currentDate}}"
@@ -116,9 +149,7 @@
     <!-- 备注区域 -->
     <view class="section remark-section" wx:if="{{selectedOption}}">
       <view class="section-header">
-        <text class="section-title">
-          {{bookingType === 'coach-book-student' ? '教练备注' : '学员备注'}}
-        </text>
+        <text class="section-title">{{bookingType === 'coach-book-student' ? '教练备注' : '学员备注'}}</text>
       </view>
       
       <textarea 
@@ -135,7 +166,7 @@
       <button class="submit-btn {{canSubmit ? 'active' : 'disabled'}}" 
               bindtap="onSubmitBooking" 
               disabled="{{!canSubmit || isSubmitting}}">
-        {{isSubmitting ? '提交中...' : '确认约课'}}
+        {{isSubmitting ? '提交中...' : (isSupplementary ? '确认补录' : '确认约课')}}
       </button>
     </view>
   </view>

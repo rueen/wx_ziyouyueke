@@ -37,6 +37,9 @@
             <text class="info-label">课程状态</text>
             <view class="status-badge-box">
               <!-- 课程状态 -->
+              <view class="status-badge yellow" wx:if="{{courseInfo.is_supplementary}}">
+                <text class="status-text">补录</text>
+              </view>
               <view class="status-badge status-{{courseInfo.status}}">
                 <text class="status-text">{{courseInfo.status === 'pending' ? (
                   courseInfo.isCreatedByCurrentUser ? (

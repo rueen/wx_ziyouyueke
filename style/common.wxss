@@ -18,6 +18,7 @@
   border: 1rpx solid #007aff;
   border-radius: 10rpx;
   padding: 6rpx 12rpx;
+  white-space: nowrap;
 }
 
 .status-badge.status-pending,
@@ -45,6 +46,11 @@
   border: 1rpx solid #f5c6cb;
 }
 
+.status-badge.yellow {
+  background-color: #ff9500;
+  border-color: #ff9500;
+}
+
 .status-text {
   font-size: 22rpx;
   color: #333;
@@ -69,6 +75,10 @@
 .status-4 .status-text,
 .status-5 .status-text {
   color: #721c24;
+}
+
+.status-badge.yellow .status-text{
+  color: #fff;
 }
 
 .icon-locationfill{

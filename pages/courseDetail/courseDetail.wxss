@@ -86,6 +86,8 @@ page {
 /* 状态标签 */
 .status-badge-box {
   display: flex;
+  align-items: center;
+  gap: 10rpx;
 }
 
 /* 课程信息区域 */

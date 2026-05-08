@@ -32,7 +32,7 @@
         <text class="categorie-name">{{item.category.name}}</text>
         <view class="remaining-lessons-wrap">
           <text class="expire-date">
-            <text class="expired-text" wx:if="{{item.is_expired}}">已到期</text>
+            <text class="expired-text" wx:if="{{item.is_expired}}">已过期</text>
             <text wx:elif="{{item.expire_date}}">{{item.expire_date}}到期</text>
             <text wx:else>永久有效</text>
           </text>

@@ -28,15 +28,20 @@
             <text class="person-role">{{item.displayRole}}</text>
           </view>
           <!-- 课程状态 -->
-          <view class="status-badge status-{{item.status}}">
-            <text class="status-text">{{item.status === 'pending' ? (
-              item.isCreatedByCurrentUser ? (
-                userRole === 'coach' ? '待学员确认' : '待教练确认'
-              ) : '待确认'
-            ) : 
-            item.status === 'confirmed' ? '已确认' : 
-            item.status === 'completed' ? '已完成' : 
-            item.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+          <view class="badge-group">
+            <view class="suppl-badge" wx:if="{{item.is_supplementary}}">
+              <text class="suppl-text">补录</text>
+            </view>
+            <view class="status-badge status-{{item.status}}">
+              <text class="status-text">{{item.status === 'pending' ? (
+                item.isCreatedByCurrentUser ? (
+                  userRole === 'coach' ? '待学员确认' : '待教练确认'
+                ) : '待确认'
+              ) : 
+              item.status === 'confirmed' ? '已确认' : 
+              item.status === 'completed' ? '已完成' : 
+              item.status === 'cancelled' ? '已取消' : '未知状态'}}</text>
+            </view>
           </view>
         </view>
 
@@ -87,5 +92,10 @@
     description="{{currentTab === 0 ? '您还没有待确认的课程' : '暂时没有相关课程记录'}}">
   </emptyState>
 </layout>
+
+<!-- 补录悬浮按钮（仅教练可见） -->
+<view class="suppl-fab" wx:if="{{userRole === 'coach'}}" bindtap="handleSupplementary">
+  <text class="suppl-fab-text">补录</text>
+</view>
 
  
