@@ -3,30 +3,27 @@
 <layout>
   <view class="container" wx:if="{{!loading}}">
 
-    <!-- 取消次数限制 -->
-    <view class="section">
-      <view class="section-title">学员取消课程限制</view>
-      <view class="section-desc">开启后，学员取消「已确认」课程时将计入次数；取消「待确认」课程不受限制。超出限制后无法继续取消已确认的课程</view>
-
-      <view class="card">
-        <!-- 开关 -->
-        <view class="setting-row">
-          <view class="row-left">
-            <text class="row-label">开启取消次数限制</text>
-          </view>
+    <!-- 学员取消课程限制 -->
+    <view class="settings-section">
+      <view class="section-header">
+        <text class="section-title">学员取消课程限制</text>
+      </view>
+      <view class="hint-box">
+        <text class="hint-text">开启后，学员取消「已确认」课程时将计入次数；取消「待确认」课程不受限制。超出限制后无法继续取消已确认的课程</text>
+      </view>
+      <view class="settings-content">
+        <view class="setting-item">
+          <text class="setting-label">开启取消次数限制</text>
           <switch
             checked="{{isEnabled}}"
             bindchange="onToggleEnabled"
           />
         </view>
 
-        <!-- 详细配置（仅启用时显示） -->
         <block wx:if="{{isEnabled}}">
-          <view class="divider"></view>
-
           <!-- 统计周期 -->
-          <view class="setting-row">
-            <text class="row-label">统计周期</text>
+          <view class="setting-item">
+            <text class="setting-label">统计周期</text>
             <picker
               mode="selector"
               range="{{timeWindowLabels}}"
@@ -40,11 +37,9 @@
             </picker>
           </view>
 
-          <view class="divider"></view>
-
           <!-- 最大取消次数 -->
-          <view class="setting-row">
-            <text class="row-label">最多可取消次数</text>
+          <view class="setting-item">
+            <text class="setting-label">最多可取消次数</text>
             <view class="row-right">
               <input
                 class="count-input"
@@ -59,11 +54,37 @@
           </view>
 
           <!-- 说明 -->
-          <view class="tip-box">
+          <view class="config-tip">
             <text class="tip-text">示例：设置为「{{timeWindowLabels[timeWindowIndex]}}最多取消 {{maxCount || '--'}} 次」后，学员取消「已确认」课程超过 {{maxCount || '--'}} 次将被禁止继续取消，次数在自然周期结束后自动重置；取消「待确认」课程不计入次数</text>
           </view>
         </block>
       </view>
+    </view>
+
+    <!-- 课程完成方式 -->
+    <view class="settings-section">
+      <view class="section-header">
+        <text class="section-title">课程完成方式</text>
+      </view>
+      <view class="hint-box">
+        <text class="hint-text">选择核销课程的方式，适用于该账号名下所有学员的课程</text>
+      </view>
+      <radio-group class="settings-content" bindchange="onCompletionMethodChange">
+        <label class="setting-item option-item">
+          <view class="option-info">
+            <text class="option-label">扫码核销（默认）</text>
+            <text class="option-desc">学员出示课程码，教练扫码完成核销</text>
+          </view>
+          <radio value="scan" checked="{{completionMethod === 'scan'}}" color="#007aff" />
+        </label>
+        <label class="setting-item option-item">
+          <view class="option-info">
+            <text class="option-label">点击完成按钮</text>
+            <text class="option-desc">教练在课程详情页直接点击「完成课程」按钮</text>
+          </view>
+          <radio value="manual" checked="{{completionMethod === 'manual'}}" color="#007aff" />
+        </label>
+      </radio-group>
     </view>
 
   </view>

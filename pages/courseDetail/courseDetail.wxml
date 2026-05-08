@@ -221,12 +221,18 @@
               bindtap="onViewCourseCode">查看课程码</button>
     </view>
     
-    <!-- 教练视角：取消和核销按钮 -->
+    <!-- 教练视角：取消 + 核销/完成 按钮 -->
     <view wx:if="{{userRole === 'coach'}}" class="button-group">
       <button class="action-btn cancel-btn" 
               bindtap="onShowCancelModal">取消课程</button>
-      <button class="action-btn verify-btn" 
+      <!-- 扫码核销模式 -->
+      <button wx:if="{{completionMethod !== 'manual'}}"
+              class="action-btn verify-btn" 
               bindtap="onScanVerify">扫码核销</button>
+      <!-- 点击完成模式 -->
+      <button wx:else
+              class="action-btn primary-btn"
+              bindtap="onClickComplete">完成课程</button>
     </view>
   </view>
 

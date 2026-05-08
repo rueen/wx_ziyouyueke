@@ -1,8 +1,33 @@
 // app.js
+const api = require('./utils/api.js');
+
 App({
   onLaunch() {
     // 初始化导航栏高度
     this.getNavBarInfo();
+    // 仅教练身份且已登录时，预加载教练通用设置
+    this.loadCoachSettings();
+  },
+
+  /**
+   * 加载教练通用设置并写入 globalData
+   * 仅在已登录且角色为 coach 时执行，失败时使用默认值
+   */
+  async loadCoachSettings() {
+    try {
+      const token = wx.getStorageSync('token');
+      const userRole = wx.getStorageSync('userRole');
+      if (!token || userRole !== 'coach') return;
+
+      const result = await api.coachSettings.get();
+      if (result && result.data) {
+        this.globalData.coachSettings = {
+          completion_method: result.data.completion_method || 'scan'
+        };
+      }
+    } catch (error) {
+      console.warn('[app] 加载教练通用设置失败，使用默认值', error);
+    }
   },
 
   /**
@@ -57,7 +82,11 @@ App({
   globalData: {
     userInfo: null,
     defaultAvatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
-    navBarHeight: 0, // 导航栏高度（单位：px）
-    contentHeight: 0 // 导航栏内容高度（单位：px）
+    navBarHeight: 0,
+    contentHeight: 0,
+    /** 教练通用设置，仅教练登录后有效 */
+    coachSettings: {
+      completion_method: 'scan' // 默认扫码核销
+    }
   }
 })

@@ -1,70 +1,82 @@
 /* pages/coachSettings/coachSettings.wxss */
+@import '/style/iconfont.wxss';
+
+page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
 
 .container {
-  padding: 24rpx 24rpx 160rpx;
+  padding: 16rpx;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
-/* 分组 */
-.section {
-  margin-bottom: 32rpx;
-}
-
-.section-title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #1d1d1f;
-  padding: 0 8rpx 12rpx;
-}
-
-.section-desc {
-  font-size: 22rpx;
-  color: #86868b;
-  padding: 0 8rpx 16rpx;
-  line-height: 1.6;
-}
-
-/* 卡片 */
-.card {
-  background: #fff;
+/* ── 分组卡片 ── */
+.settings-section {
+  background-color: #fff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
   border-radius: 16rpx;
-  overflow: hidden;
 }
 
-/* 行 */
-.setting-row {
+.section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16rpx 8rpx;
+  margin-bottom: 16rpx;
+  height: 50rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+/* ── 说明提示框（蓝色左边框） ── */
+.hint-box {
+  padding: 18rpx 20rpx;
+  background-color: #e7f3ff;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.hint-text {
+  font-size: 24rpx;
+  color: #007aff;
+}
+
+/* ── 设置项列表 ── */
+.settings-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-item {
   min-height: 80rpx;
-}
-
-.row-label {
-  font-size: 28rpx;
-  color: #1d1d1f;
-  flex: 1;
-}
-
-.row-right {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
-/* 分割线 */
-.divider {
-  height: 1rpx;
-  background: #f2f2f7;
-  margin: 0 28rpx;
+.setting-item:last-child {
+  border-bottom: none;
 }
 
-/* Picker */
+.setting-label {
+  font-size: 30rpx;
+  color: #333;
+}
+
+/* ── Picker ── */
 .picker-val {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  font-size: 28rpx;
-  color: #333;
+  font-size: 30rpx;
+  color: #666;
 }
 
 .picker-arrow {
@@ -72,7 +84,13 @@
   color: #c7c7cc;
 }
 
-/* 次数输入框 */
+/* ── 次数输入 ── */
+.row-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
 .count-input {
   width: 80rpx;
   height: 56rpx;
@@ -81,6 +99,7 @@
   text-align: center;
   font-size: 28rpx;
   color: #333;
+  background: #fafafa;
 }
 
 .unit {
@@ -88,21 +107,52 @@
   color: #666;
 }
 
-/* 说明文字 */
-.tip-box {
-  background: #f9f9f9;
-  border-radius: 0 0 16rpx 16rpx;
-  padding: 16rpx;
+/* ── 说明文字（蓝底提示卡） ── */
+.config-tip {
   margin-top: 4rpx;
+  padding: 16rpx 20rpx;
+  background: #f0f7ff;
+  border-radius: 12rpx;
 }
 
 .tip-text {
   font-size: 22rpx;
-  color: #86868b;
+  color: #4a90e2;
   line-height: 1.7;
 }
 
-/* 加载 */
+/* ── 完成方式选项行 ── */
+.option-item {
+  align-items: center;
+  padding: 24rpx 0;
+}
+
+.option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.option-label {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.option-desc {
+  font-size: 24rpx;
+  color: #86868b;
+  line-height: 1.5;
+}
+
+.check-icon {
+  font-size: 36rpx;
+  color: #007aff;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+/* ── 加载 ── */
 .loading-wrap {
   display: flex;
   justify-content: center;
@@ -114,7 +164,7 @@
   color: #999;
 }
 
-/* 底部保存按钮 */
+/* ── 底部保存按钮 ── */
 .save-button-container {
   position: fixed;
   bottom: 60rpx;
@@ -137,10 +187,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
 }
 
-.save-btn.disabled {
+.save-button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.save-button::after {
+  border: none;
+}
+
+.save-button.disabled {
   opacity: 0.6;
 }

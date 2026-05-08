@@ -1625,6 +1625,36 @@ module.exports = {
   },
 
   /**
+   * 教练通用设置模块（教练专用）
+   */
+  coachSettings: {
+    /**
+     * 获取教练通用设置
+     * @returns {Promise}
+     */
+    get: function() {
+      return request({
+        url: '/api/h5/coach-settings',
+        method: 'GET'
+      });
+    },
+
+    /**
+     * 保存教练通用设置（upsert）
+     * @param {Object} params
+     * @param {string} params.completion_method - 课程完成方式：scan（扫码核销）/ button（点击完成）
+     * @returns {Promise}
+     */
+    save: function(params = {}) {
+      return request({
+        url: '/api/h5/coach-settings',
+        method: 'PUT',
+        data: params
+      });
+    }
+  },
+
+  /**
    * 休息时段模块（教练专用）
    */
   blockedSlot: {

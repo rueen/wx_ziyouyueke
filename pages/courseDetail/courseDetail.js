@@ -18,6 +18,9 @@ Page({
     userRole: '',
     currentUserId: null,
     loading: true,
+
+    /** 教练课程完成方式：scan（扫码核销）| button（点击完成） */
+    completionMethod: 'scan',
     
     // 取消课程相关
     showCancelModal: false,
@@ -79,7 +82,7 @@ Page({
   },
 
   /**
-   * 获取用户角色
+   * 获取用户角色，教练身份时同步读取完成方式配置
    */
   getUserRole(callback) {
     try {
@@ -87,10 +90,18 @@ Page({
       const userInfo = wx.getStorageSync('userInfo');
       
       if (userRole && userInfo) {
-        this.setData({
+        const update = {
           userRole: userRole,
           currentUserId: userInfo.id
-        });
+        };
+
+        // 教练视角：从 globalData 读取课程完成方式配置
+        if (userRole === 'coach') {
+          const app = getApp();
+          update.completionMethod = app.globalData.coachSettings.completion_method || 'scan';
+        }
+
+        this.setData(update);
         
         // 执行回调函数
         if (callback && typeof callback === 'function') {
@@ -487,6 +498,24 @@ Page({
       showCourseCodeModal: false,
       currentCourseCode: '',
       qrCodeImagePath: '' // 清除二维码图片路径
+    });
+  },
+
+  /**
+   * 点击完成课程（completionMethod === 'manual' 时使用）
+   * 二次确认后直接完成课程
+   */
+  onClickComplete() {
+    wx.showModal({
+      title: '完成课程',
+      content: '确认要将此课程标记为已完成吗？此操作不可撤销。',
+      confirmText: '确认完成',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.completeCourse(this.data.courseId);
+        }
+      }
     });
   },
 
