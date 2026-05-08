@@ -1,0 +1,14 @@
+<navBar title="预约成功" />
+<layout>
+  <view class="book-success-page">
+    <view class="success-card">
+      <icon class="success-icon" type="success" size="50"></icon>
+      <text class="success-title">预约成功</text>
+      <text class="success-subtitle">为避免遗漏重要通知，需要手动增加消息提醒次数</text>
+      <button class="guide-btn btn-subscribe" bindtap="handleSubscribeMessage">去增加提醒次数</button>
+      <button class="guide-btn" bindtap="handleBackHome">返回首页</button>
+      <button class="guide-btn" bindtap="handleViewCourseDetail">查看课程详情</button>
+      <button class="guide-btn share" open-type="share">微信通知学员</button>
+    </view>
+  </view>
+</layout>

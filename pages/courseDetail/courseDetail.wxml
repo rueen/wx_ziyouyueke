@@ -166,6 +166,10 @@
           </view>
         </view>
       </view>
+
+      <button open-type="share" class="share-guide">
+        <text class="iconfont icon-share-line"></text>
+      </button>
     </view>
 
     <!-- 上课内容展示组件 -->

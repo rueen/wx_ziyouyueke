@@ -1,0 +1,58 @@
+page {
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.success-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.success-title {
+  font-size: 40rpx;
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+.success-subtitle {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #7a7a7a;
+}
+
+button.guide-btn {
+  margin-top: 24rpx;
+  height: 90rpx;
+  font-size: 28rpx;
+  border-radius: 45rpx;
+  border: 1rpx solid #333;
+  color: #333;
+  font-weight: normal;
+  background: #fff;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide-btn::after {
+  border: none;
+}
+
+.guide-btn.btn-subscribe {
+  background: #333;
+  color: #fff;
+  border-color: #333;
+  margin-top: 100rpx;
+}
+
+.guide-btn.share {
+  background: #34c759;
+  color: #fff;
+  border-color: #34c759;
+}

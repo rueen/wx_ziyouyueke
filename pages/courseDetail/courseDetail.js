@@ -1630,6 +1630,18 @@ Page({
         icon: 'error'
       });
     }
+  },
+
+  /**
+   * 页面分享配置
+   * @returns {Object} 分享配置
+   */
+  onShareAppMessage() {
+    const { courseId, courseInfo } = this.data;
+    return {
+      title: courseInfo && courseInfo.time ? `课程安排：${courseInfo.time}` : '课程详情',
+      path: courseId ? `/pages/courseDetail/courseDetail?id=${courseId}` : '/pages/index/index'
+    };
   }
   
 }); 

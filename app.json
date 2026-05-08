@@ -16,6 +16,7 @@
     "pages/addressList/addressList",
     "pages/addressEdit/addressEdit",
     "pages/bookCourse/bookCourse",
+    "pages/bookSuccess/bookSuccess",
     "pages/agreement/agreement",
     "pages/categoriesList/categoriesList",
     "pages/categoriesDetail/categoriesDetail",

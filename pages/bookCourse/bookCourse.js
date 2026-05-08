@@ -817,17 +817,9 @@ Page({
           wx.showToast({ title: '补录成功', icon: 'success' });
           setTimeout(() => { wx.navigateBack({ delta: 1 }); }, 1200);
         } else {
-          wx.showModal({
-            title: '约课成功',
-            content: '为避免遗漏重要通知，需要手动增加消息提醒次数',
-            complete: (res) => {
-              if (res.cancel) {
-                wx.navigateBack({ delta: 1 });
-              }
-              if (res.confirm) {
-                wx.redirectTo({ url: '/pages/subscribeMessage/subscribeMessage' });
-              }
-            }
+          const createdCourseId = result.data && result.data.booking_id ? result.data.booking_id : '';
+          wx.redirectTo({
+            url: `/pages/bookSuccess/bookSuccess?courseId=${createdCourseId}`
           });
         }
       } else {

@@ -464,6 +464,26 @@ page {
   margin: 16rpx;
 }
 
+button.share-guide {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(150rpx + env(safe-area-inset-bottom));
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #29c445;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
+  z-index: 99;
+  padding: 0;
+}
+.share-guide .iconfont{
+  color: #fff;
+  font-weight: normal;
+}
+
 /* 时间选择弹窗样式 */
 .time-selection-modal {
   position: fixed;
