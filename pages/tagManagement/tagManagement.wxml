@@ -1,6 +1,9 @@
 <!--pages/tagManagement/tagManagement.wxml-->
 <navBar title="标签管理" />
 <layout>
+  <view class="tips">
+    <text class="tips-text">可根据学员特点归类，方便分类管理</text>
+  </view>
   <view class="container">
     <!-- 标签列表 -->
     <view class="tag-list" wx:if="{{tags.length > 0}}">
