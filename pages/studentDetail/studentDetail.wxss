@@ -47,18 +47,7 @@ page {
   color: #333;
   font-weight: 500;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-
-/* 约课状态 */
-.booking-status{
-  display: flex;
-  align-items: center;
-}
-.booking-status-text{
-  color: #666;
-  font-size: 28rpx;
 }
 
 /* 信息区块 */
@@ -452,4 +441,83 @@ page {
 .modal-footer .cancel-btn::after,
 .modal-footer .confirm-btn::after {
   border: none;
+}
+/* ── 学员标签 ── */
+.student-tags {
+  margin-top: 12rpx;
+  margin-bottom: 4rpx;
+}
+
+.tag-edit-icon {
+  font-size: 28rpx;
+  color: #86868b;
+}
+
+.add-tag-hint {
+  display: inline-flex;
+  align-items: center;
+}
+
+.add-tag-text {
+  font-size: 26rpx;
+  color: #007aff;
+}
+
+/* ── 标签选择弹窗内容 ── */
+.tag-select-body {
+  padding: 24rpx 28rpx 8rpx;
+  min-height: 120rpx;
+}
+
+.tag-select-empty {
+  padding: 20rpx 0;
+}
+
+.tag-select-empty-text {
+  font-size: 26rpx;
+  color: #86868b;
+}
+
+.tag-manage-entry {
+  margin-top: 40rpx;
+  text-align: center;
+}
+
+.tag-manage-text {
+  font-size: 26rpx;
+  color: #007aff;
+}
+
+.tag-select-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 28rpx 32rpx;
+  border-top: 1rpx solid #f2f2f7;
+  margin-top: 16rpx;
+}
+
+.tag-select-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-select-btn.cancel {
+  background: #f2f2f7;
+  color: #1d1d1f;
+}
+
+.tag-select-btn.confirm {
+  background: #1d1d1f;
+  color: #fff;
+}
+
+/* ── 解除绑定弹窗适配 modal 组件 ── */
+.unbind-modal-body {
+  padding: 24rpx 30rpx;
 }

@@ -1,0 +1,44 @@
+<!--pages/tagManagement/tagManagement.wxml-->
+<navBar title="标签管理" />
+<layout>
+  <view class="container">
+    <!-- 标签列表 -->
+    <view class="tag-list" wx:if="{{tags.length > 0}}">
+      <view class="tag-item" wx:for="{{tags}}" wx:key="id">
+        <text class="tag-name">{{item.name}}</text>
+        <view class="tag-actions">
+          <text class="action-btn edit-btn" bindtap="onEditTag" data-tag="{{item}}">编辑</text>
+          <text class="action-btn delete-btn" bindtap="onDeleteTag" data-tag="{{item}}">删除</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-wrap" wx:elif="{{!loading}}">
+      <text class="empty-text">暂无标签，点击下方按钮添加</text>
+    </view>
+  </view>
+
+  <!-- 新增按钮 -->
+  <view class="add-button-container">
+    <button class="add-button" bindtap="onShowAddModal">添加标签</button>
+  </view>
+</layout>
+
+<!-- 新增 / 编辑标签弹窗 -->
+<modal show="{{showTagModal}}" title="{{editingTag ? '编辑标签' : '新增标签'}}" bind:close="onHideTagModal" maskClosable="{{false}}">
+  <view class="tag-form">
+    <input
+      class="tag-input"
+      placeholder="请输入标签名称（最多 10 字）"
+      value="{{tagName}}"
+      bindinput="onTagNameInput"
+      maxlength="10"
+      focus="{{showTagModal}}"
+    />
+  </view>
+  <view class="modal-actions">
+    <text class="modal-btn cancel" bindtap="onHideTagModal">取消</text>
+    <text class="modal-btn confirm" bindtap="onConfirmTag">确认</text>
+  </view>
+</modal>

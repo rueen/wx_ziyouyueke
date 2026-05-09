@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -1712,6 +1712,56 @@ module.exports = {
         method: 'DELETE',
         data: { ids }
       });
+    }
+  },
+
+  /**
+   * 标签模块（教练专用）
+   */
+  tags: {
+    /**
+     * 获取教练标签列表
+     * @returns {Promise}
+     */
+    getList: function() {
+      return request({ url: '/api/h5/tags', method: 'GET' });
+    },
+    /**
+     * 创建标签
+     * @param {Object} params
+     * @param {string} params.name - 标签名称
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({ url: '/api/h5/tags', method: 'POST', data: params });
+    },
+    /**
+     * 更新标签名
+     * @param {number} id - 标签ID
+     * @param {Object} params
+     * @param {string} params.name - 标签名称
+     * @returns {Promise}
+     */
+    update: function(id, params = {}) {
+      return request({ url: `/api/h5/tags/${id}`, method: 'PUT', data: params });
+    },
+    /**
+     * 删除标签
+     * @param {number} id - 标签ID
+     * @returns {Promise}
+     */
+    delete: function(id) {
+      return request({ url: `/api/h5/tags/${id}`, method: 'DELETE' });
+    },
+    /**
+     * 设置学员标签（全量替换）
+     * @param {number} relationId - 师生关系ID
+     * @param {Object} params
+     * @param {number[]} params.tag_ids - 标签ID数组
+     * @returns {Promise}
+     */
+    setRelationTags: function(relationId, params = {}) {
+      return request({ url: `/api/h5/tags/relation/${relationId}`, method: 'PUT', data: params });
     }
   },
 

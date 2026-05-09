@@ -3,8 +3,9 @@
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
     "emptyState": "/components/emptyState/emptyState",
-    "shareModal": "/components/shareModal/shareModal"
+    "shareModal": "/components/shareModal/shareModal",
+    "modal": "/components/modal/modal"
   },
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"
-} 
+}

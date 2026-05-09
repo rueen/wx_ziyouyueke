@@ -15,10 +15,21 @@ Page({
     studentData: {},
     relationId: null,
     studentId: null,
-    showUnbindModal: false, // 是否显示解除绑定确认弹窗
-    isUnbinding: false,   // 是否正在解除绑定
-    bookingStatus: true
+    showUnbindModal: false,
+    isUnbinding: false,
+    bookingStatus: true,
+
+    // 标签相关
+    allTags: [],
+    studentTags: [],
+    selectedTagIds: [],
+    showTagModal: false,
+    isSavingTags: false,
+    tagRefreshMode: false
   },
+
+  /** 标记是否首次加载，避免 onLoad + onShow 双重触发接口 */
+  _isFirstLoad: true,
 
   /**
    * 生命周期函数--监听页面加载
@@ -36,11 +47,91 @@ Page({
 
   /**
    * 生命周期函数--监听页面显示
+   * 首次进入时跳过（onLoad 已触发），从子页面返回时刷新数据
    */
   onShow() {
+    if (this._isFirstLoad) {
+      this._isFirstLoad = false;
+      return;
+    }
     const { relationId } = this.data;
     if (relationId) {
       this.loadStudentDetail();
+    }
+  },
+
+  /** 加载教练全量标签 */
+  async loadAllTags() {
+    try {
+      const result = await api.tags.getList();
+      this.setData({ allTags: (result && result.data) ? result.data : [] });
+    } catch (e) {
+      console.warn('加载标签失败', e);
+    }
+  },
+
+  /** 打开标签选择弹窗，懒加载全量标签 */
+  async onShowTagModal() {
+    this.setData({
+      showTagModal: true,
+      selectedTagIds: this.data.studentTags.map(t => t.id)
+    });
+    // allTags 未加载时才请求，避免重复调用
+    if (this.data.allTags.length === 0) {
+      await this.loadAllTags();
+    }
+  },
+
+  /** 关闭标签选择弹窗，重置刷新模式 */
+  onHideTagModal() {
+    this.setData({ showTagModal: false, tagRefreshMode: false });
+  },
+
+  /**
+   * 管理标签 / 刷新标签
+   * - tagRefreshMode 为 false：跳转至标签管理页，并切换为刷新模式
+   * - tagRefreshMode 为 true：重新拉取全量标签，并还原为管理模式
+   */
+  async onManageOrRefreshTags() {
+    if (this.data.tagRefreshMode) {
+      // 刷新标签数据
+      wx.showLoading({ title: '刷新中...' });
+      await this.loadAllTags();
+      wx.hideLoading();
+      this.setData({ tagRefreshMode: false });
+    } else {
+      // 跳转至标签管理页，切换为刷新模式
+      this.setData({ tagRefreshMode: true });
+      wx.navigateTo({ url: '/pages/tagManagement/tagManagement' });
+    }
+  },
+
+  /** 切换标签选中状态 */
+  onToggleTag(e) {
+    const id = e.currentTarget.dataset.id;
+    const ids = [...this.data.selectedTagIds];
+    const idx = ids.indexOf(id);
+    if (idx === -1) { ids.push(id); } else { ids.splice(idx, 1); }
+    this.setData({ selectedTagIds: ids });
+  },
+
+  /** 保存标签 */
+  async onSaveTags() {
+    const { selectedTagIds, relationId, isSavingTags } = this.data;
+    if (isSavingTags) return;
+    try {
+      this.setData({ isSavingTags: true });
+      wx.showLoading({ title: '保存中...' });
+      await api.tags.setRelationTags(relationId, { tag_ids: selectedTagIds });
+      wx.hideLoading();
+      wx.showToast({ title: '保存成功', icon: 'success' });
+      this.onHideTagModal();
+      await this.loadStudentDetail();
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({ title: error.message || '保存失败', icon: 'none' });
+    } finally {
+      this.setData({ isSavingTags: false });
     }
   },
 
@@ -57,9 +148,12 @@ Page({
 
       if (result && result.data) {
         const studentData = result.data || {};
+        const studentTags = studentData.tags || [];
+        // 不在此处写 selectedTagIds，避免 loadStudentDetail 异步返回时覆盖弹窗中用户正在编辑的选中状态
         this.setData({
           studentData: studentData,
-          bookingStatus: studentData.booking_status
+          bookingStatus: studentData.booking_status,
+          studentTags: studentTags
         });
       }
     } catch (error) {

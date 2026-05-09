@@ -1,4 +1,12 @@
 <!--pages/studentList/studentList.wxml-->
+<wxs module="_filters">
+  module.exports = {
+    isTagActive: function(item, filterTagIds) {
+      return filterTagIds.indexOf(item.id) !== -1;
+    }
+  };
+</wxs>
+
 <navBar title="我的学员" />
 <layout>
   <!-- 搜索框 -->
@@ -16,6 +24,10 @@
       <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">
         <text class="iconfont icon-close"></text>
       </view>
+    </view>
+    <view class="search-right" bindtap="onShowFilter">
+      <view class="filter-active-dot" wx:if="{{filterTagIds.length > 0}}"></view>
+      <text class="iconfont icon-shaixuan {{filterTagIds.length > 0 ? 'filter-active' : ''}}"></text>
     </view>
   </view>
 
@@ -51,6 +63,10 @@
         <!-- 待激活学员显示录入的手机号 -->
         <view class="pending-phone-hint" wx:if="{{item.relation_status === 2}}">
           <text>{{item.pending_phone}}</text>
+        </view>
+        <!-- 标签 -->
+        <view wx:if="{{item.tags.length > 0}}" class="tag-chips">
+          <view class="tag-chip tag-chip-min" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="id">{{tag.name}}</view>
         </view>
       </view>
 
@@ -93,6 +109,33 @@
     <button class="add-button" bindtap="onAddStudent">添加学员</button>
   </view>
 </layout>
+
+<!-- 标签筛选面板 -->
+<modal show="{{showFilterPanel}}" title="筛选条件" position="top" bind:close="onHideFilter">
+  <view class="filter-body">
+    <view class="filter-section-header">
+      <text class="filter-section-title">标签筛选</text>
+      <text class="filter-refresh-btn" bindtap="onRefreshFilterTags">刷新</text>
+    </view>
+    <view class="tag-chips" wx:if="{{allTags.length > 0}}">
+      <view
+        class="tag-chip {{_filters.isTagActive(item, filterTagIds) ? 'active' : ''}}"
+        wx:for="{{allTags}}"
+        wx:key="id"
+        bindtap="onToggleFilterTag"
+        data-id="{{item.id}}"
+      >{{item.name}}</view>
+    </view>
+    <view class="filter-empty" wx:else>
+      <text class="filter-empty-text">暂无标签，请先在「标签管理」中添加</text>
+    </view>
+  </view>
+  <view class="filter-footer">
+    <view class="filter-footer-btn clear" bindtap="onClearFilter">清除</view>
+    <view class="filter-footer-btn search" bindtap="onApplyFilter">搜索</view>
+  </view>
+</modal>
+
 
 <!-- 分享弹窗 -->
 <shareModal 

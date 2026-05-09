@@ -26,6 +26,7 @@
 /* 模态框内容 */
 .modal-content {
   position: relative;
+  z-index: 1; /* 确保内容区始终在遮罩层之上，避免点击事件被遮罩拦截 */
   background-color: #ffffff;
   border-radius: 16rpx;
   max-width: 90%;
@@ -109,4 +110,21 @@
   to {
     transform: translateY(0);
   }
+}
+
+/* 顶部滑出 */
+.modal-content.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 0 0 32rpx 32rpx;
+  animation: modalSlideDown 0.3s ease-out;
+}
+
+@keyframes modalSlideDown {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
 }

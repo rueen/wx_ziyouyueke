@@ -1,4 +1,12 @@
 <!--pages/studentDetail/studentDetail.wxml-->
+<wxs module="_filters">
+  module.exports = {
+    isTagActive: function(item, selectedTagIds) {
+      return selectedTagIds.indexOf(item.id) !== -1;
+    }
+  };
+</wxs>
+
 <navBar title="学员详情" />
 <layout>
   <view class="container">
@@ -9,13 +17,16 @@
       </view>
       <view class="student-info">
         <view class="student-name">
-          <view>
-            <text>{{studentData.student_name}}</text>
-          </view>
-        </view>
-        <view class="booking-status">
-          <text class="booking-status-text">约课状态：</text>
+          <text>{{studentData.student_name}}</text>
           <switch checked="{{bookingStatus}}" bindchange="bookingStatusSwitchChange"/>
+        </view>
+        <view class="student-tags" bindtap="onShowTagModal">
+          <view wx:if="{{studentTags.length > 0}}" class="tag-chips">
+            <view class="tag-chip tag-chip-min" wx:for="{{studentTags}}" wx:key="id">{{item.name}}</view>
+          </view>
+          <view wx:else class="add-tag-hint">
+            <text class="add-tag-text">+ 添加标签</text>
+          </view>
         </view>
       </view>
     </view>
@@ -90,27 +101,47 @@
   </view>
 </layout>
 
-<!-- 解除绑定确认弹窗 -->
-<view class="modal-mask" wx:if="{{showUnbindModal}}" bindtap="onHideUnbindModal">
-  <view class="modal-container" catchtap="onPreventClose">
-    <view class="modal-header">
-      <text class="modal-title">解除绑定</text>
-      <text class="modal-close" bindtap="onHideUnbindModal">×</text>
+<!-- 标签选择弹窗 -->
+<modal show="{{showTagModal}}" title="设置标签" position="bottom" bind:close="onHideTagModal">
+  <view class="tag-select-body">
+    <view wx:if="{{allTags.length > 0}}" class="tag-chips">
+      <view
+        class="tag-chip {{_filters.isTagActive(item, selectedTagIds) ? 'active' : ''}}"
+        wx:for="{{allTags}}"
+        wx:key="id"
+        bindtap="onToggleTag"
+        data-id="{{item.id}}"
+      >{{item.name}}</view>
     </view>
-    <view class="modal-content">
-      <view class="confirm-text">
-        <text class="warning-icon">⚠️</text>
-        <text class="confirm-message">确定要解除与"{{studentData.student.nickname}}"的师生关系吗？</text>
-      </view>
-      <view class="confirm-tips">
-        <text class="tips-text">解除后将无法查看该学员信息，且无法恢复</text>
-      </view>
+    <view wx:else class="tag-select-empty">
+      <text class="tag-select-empty-text">暂无标签，请先在「标签管理」中添加</text>
     </view>
-    <view class="modal-footer">
-      <button class="cancel-btn" bindtap="onHideUnbindModal">取消</button>
-      <button class="confirm-btn" bindtap="onConfirmUnbind" loading="{{isUnbinding}}">
-        {{isUnbinding ? '解除中...' : '确认解除'}}
-      </button>
+    <view class="tag-manage-entry" bindtap="onManageOrRefreshTags">
+      <text class="tag-manage-text">{{tagRefreshMode ? '刷新标签' : '管理标签'}}</text>
     </view>
   </view>
-</view>
+  <view class="tag-select-footer">
+    <view class="tag-select-btn cancel" bindtap="onHideTagModal">取消</view>
+    <view class="tag-select-btn confirm" bindtap="onSaveTags">保存</view>
+  </view>
+</modal>
+
+
+<!-- 解除绑定确认弹窗 -->
+<modal show="{{showUnbindModal}}" title="解除绑定" bind:close="onHideUnbindModal" maskClosable="{{false}}">
+  <view class="unbind-modal-body">
+    <view class="confirm-text">
+      <text class="warning-icon">⚠️</text>
+      <text class="confirm-message">确定要解除与"{{studentData.student.nickname}}"的师生关系吗？</text>
+    </view>
+    <view class="confirm-tips">
+      <text class="tips-text">解除后将无法查看该学员信息，且无法恢复</text>
+    </view>
+  </view>
+  <view class="modal-footer">
+    <button class="cancel-btn" bindtap="onHideUnbindModal">取消</button>
+    <button class="confirm-btn" bindtap="onConfirmUnbind" loading="{{isUnbinding}}">
+      {{isUnbinding ? '解除中...' : '确认解除'}}
+    </button>
+  </view>
+</modal>

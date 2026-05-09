@@ -28,6 +28,7 @@
     "pages/poster/poster",
     "pages/allCoachList/allCoachList",
     "pages/allGroupCourses/allGroupCourses",
+    "pages/tagManagement/tagManagement",
     "pages/subscribeMessage/subscribeMessage",
     "pages/cardManagement/cardManagement",
     "pages/studentCards/studentCards",

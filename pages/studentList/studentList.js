@@ -45,7 +45,63 @@ Page({
       student_name: '',
       coach_remark: ''
     },
-    isSubmittingByPhone: false
+    isSubmittingByPhone: false,
+
+    // 标签筛选
+    showFilterPanel: false,
+    allTags: [],
+    filterTagIds: []
+  },
+
+  /**
+   * 加载教练标签列表
+   */
+  async loadAllTags() {
+    try {
+      const result = await api.tags.getList();
+      this.setData({ allTags: (result && result.data) ? result.data : [] });
+    } catch (e) {
+      console.warn('加载标签失败', e);
+    }
+  },
+
+  /** 打开筛选面板 */
+  onShowFilter() {
+    this.setData({ showFilterPanel: true });
+  },
+
+  /** 关闭筛选面板 */
+  onHideFilter() {
+    this.setData({ showFilterPanel: false });
+  },
+
+  /** 刷新标签数据 */
+  async onRefreshFilterTags() {
+    wx.showLoading({ title: '刷新中...' });
+    await this.loadAllTags();
+    wx.hideLoading();
+  },
+
+  /**
+   * 切换标签选中状态
+   */
+  onToggleFilterTag(e) {
+    const id = Number(e.currentTarget.dataset.id); // 转为数字
+    const ids = [...this.data.filterTagIds];
+    const idx = ids.indexOf(id);
+    if (idx === -1) { ids.push(id); } else { ids.splice(idx, 1); }
+    this.setData({ filterTagIds: ids });
+  },
+
+  /** 清除标签筛选 */
+  onClearFilter() {
+    this.setData({ filterTagIds: [] });
+  },
+
+  /** 应用筛选并重新加载 */
+  onApplyFilter() {
+    this.setData({ showFilterPanel: false });
+    this.loadStudents(true);
   },
 
   /**
@@ -105,6 +161,7 @@ Page({
   onLoad(options) {
     this.loadStudents(true);
     this.loadCoachInfo();
+    this.loadAllTags();
     this.setData({
       isFirstLoad: false
     });
@@ -163,6 +220,12 @@ Page({
       // 如果有搜索关键词，添加到参数中
       if (keyword && keyword.trim()) {
         params.keyword = keyword.trim();
+      }
+
+      // 标签筛选
+      const { filterTagIds } = this.data;
+      if (filterTagIds && filterTagIds.length > 0) {
+        params.tag_ids = filterTagIds.join(',');
       }
 
       // 调用API获取我的学员列表

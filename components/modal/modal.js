@@ -29,13 +29,28 @@ Component({
    * 组件的初始数据
    */
   data: {
+    statusBarHeight: 0
+  },
 
+  lifetimes: {
+    attached() {
+      this.getStatusBarHeight();
+    },
   },
 
   /**
    * 组件的方法列表
    */
   methods: {
+    /**
+     * 获取导航栏高度（使用全局方法）
+     */
+    getStatusBarHeight() {
+      const app = getApp();
+      this.setData({
+        statusBarHeight: app.globalData.statusBarHeight
+      });
+    },
     /**
      * 点击遮罩层
      */

@@ -38,6 +38,7 @@ App({
     // 如果已经计算过（值大于0），直接返回缓存值
     if (this.globalData.navBarHeight > 0 && this.globalData.contentHeight > 0) {
       return {
+        statusBarHeight: this.globalData.statusBarHeight,
         navBarHeight: this.globalData.navBarHeight,
         contentHeight: this.globalData.contentHeight
       };
@@ -50,20 +51,25 @@ App({
       const contentHeight = menuButtonInfo.height + (menuButtonInfo.top - systemInfo.statusBarHeight) * 2;
       
       // 缓存到 globalData
+      this.globalData.statusBarHeight = systemInfo.statusBarHeight;
       this.globalData.navBarHeight = navBarHeight;
       this.globalData.contentHeight = contentHeight;
       
       return {
+        statusBarHeight: systemInfo.statusBarHeight,
         navBarHeight,
         contentHeight
       };
     } catch (error) {
       console.warn('获取系统信息失败，使用默认高度', error);
+      const defaultStatusBarHeight = 20;
       const defaultNavBarHeight = 88;
       const defaultContentHeight = 44;
+      this.globalData.defaultStatusBarHeight = defaultStatusBarHeight;
       this.globalData.navBarHeight = defaultNavBarHeight;
       this.globalData.contentHeight = defaultContentHeight;
       return {
+        statusBarHeight: defaultStatusBarHeight,
         navBarHeight: defaultNavBarHeight,
         contentHeight: defaultContentHeight
       };
@@ -82,6 +88,7 @@ App({
   globalData: {
     userInfo: null,
     defaultAvatar: 'https://ziyouyueke.oss-cn-hangzhou.aliyuncs.com/avatar/defaultAvatar.png',
+    statusBarHeight: 0,
     navBarHeight: 0,
     contentHeight: 0,
     /** 教练通用设置，仅教练登录后有效 */

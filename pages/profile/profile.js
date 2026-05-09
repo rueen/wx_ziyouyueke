@@ -336,6 +336,14 @@ Page({
   },
 
   /**
+   * 打开标签管理页面
+   */
+  onTags() {
+    if (!this.checkLoginRequired()) return;
+    wx.navigateTo({ url: '/pages/tagManagement/tagManagement' });
+  },
+
+  /**
    * 更多设置（教练专用）
    */
   onCoachSettings() {

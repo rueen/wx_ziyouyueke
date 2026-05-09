@@ -1,6 +1,6 @@
 <view class="modal-container" wx:if="{{show}}">
   <view class="modal-mask" bindtap="onMaskTap"></view>
-  <view class="modal-content {{position}}">
+  <view class="modal-content {{position}}" style="padding-top: {{ position === 'top' ? statusBarHeight + 'px' : 0}};">
     <view class="modal-header" wx:if="{{title}}">
       <text class="modal-title">{{title}}</text>
       <view class="modal-close" bindtap="onClose">
