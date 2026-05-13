@@ -1,0 +1,28 @@
+@import '/style/iconfont.wxss';
+
+.form-container { margin: 24rpx; background: #fff; border-radius: 16rpx; overflow: hidden; }
+
+/* 类型字段 */
+.field-item {}
+.field-input-row { display: flex; align-items: center; gap: 12rpx; }
+.field-input { flex: 1; height: 64rpx; font-size: 30rpx; color: #1d1d1f; }
+.field-unit { font-size: 26rpx; color: #86868b; flex-shrink: 0; }
+.form-item { padding: 28rpx 24rpx; border-bottom: 1rpx solid #f2f2f7; }
+.form-item:last-child { border-bottom: none; }
+.form-label { font-size: 26rpx; color: #86868b; margin-bottom: 12rpx; display: block; }
+.form-row { display: flex; align-items: center; justify-content: space-between; }
+.form-value { font-size: 30rpx; color: #1d1d1f; }
+.form-value.placeholder { color: #c7c7cc; }
+.form-arrow { font-size: 28rpx; color: #c7c7cc; }
+.form-textarea { width: 100%; font-size: 30rpx; color: #1d1d1f; min-height: 120rpx; }
+.image-grid { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 12rpx; }
+.image-item { position: relative; width: 200rpx; height: 200rpx; }
+.upload-img { width: 200rpx; height: 200rpx; border-radius: 8rpx; }
+.delete-img-btn { position: absolute; top: -16rpx; right: -16rpx; width: 40rpx; height: 40rpx; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; font-size: 28rpx; display: flex; align-items: center; justify-content: center; z-index: 2; }
+.delete-img-btn .iconfont{
+  font-size: 20rpx;
+}
+.add-image-btn { width: 200rpx; height: 200rpx; background: #f2f2f7; border-radius: 8rpx; display: flex; align-items: center; justify-content: center; }
+.add-image-icon { font-size: 60rpx; color: #c7c7cc; }
+.save-btn-wrap { padding: 32rpx 24rpx; }
+.save-btn { width: 100%; height: 88rpx; background: #1d1d1f; color: #fff; font-size: 30rpx; font-weight: 600; border-radius: 44rpx; }

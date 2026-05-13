@@ -89,6 +89,12 @@
       <text class="menu-item-text">我参加的活动</text>
     </view>
 
+    <view class="menu-item" bindtap="onTrainingRecords">
+      <view class="new-tag">NEW</view>
+      <text class="iconfont icon-chengchang"></text>
+      <text class="menu-item-text">训练记录</text>
+    </view>
+
     <!-- <view class="menu-item support" bind:tap="handleSupport">
       <text class="iconfont icon-coffee"></text>
       <text class="menu-item-text">友情赞助</text>

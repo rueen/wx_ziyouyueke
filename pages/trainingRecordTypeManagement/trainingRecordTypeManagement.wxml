@@ -1,0 +1,21 @@
+<!--pages/trainingRecordTypeManagement/trainingRecordTypeManagement.wxml-->
+<navBar title="训练记录类型管理" />
+<layout>
+  <view class="container">
+    <view class="type-list" wx:if="{{types.length > 0}}">
+      <view class="type-item" wx:for="{{types}}" wx:key="id">
+        <text class="type-name">{{item.name}}</text>
+        <view class="type-actions">
+          <text class="action-btn edit-btn" bindtap="onEditType" data-type="{{item}}">编辑</text>
+          <text class="action-btn delete-btn" bindtap="onDeleteType" data-type="{{item}}">删除</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-wrap" wx:elif="{{!loading}}">
+      <text class="empty-text">暂无类型，点击下方按钮添加</text>
+    </view>
+  </view>
+  <view class="add-button-container">
+    <button class="add-button" bindtap="onAddType">添加类型</button>
+  </view>
+</layout>

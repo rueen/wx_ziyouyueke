@@ -374,10 +374,35 @@ Page({
     });
   },
 
+  /**
+   * 训练记录
+   */
+  handleTrainingRecordList() {
+    const { studentId, studentData } = this.data;
+    const userInfo = wx.getStorageSync('userInfo');
+    const coachId = userInfo && userInfo.id ? userInfo.id : '';
+    const studentName = studentData.student_name || (studentData.student && studentData.student.nickname) || '';
+    wx.navigateTo({
+      url: `/pages/trainingRecordList/trainingRecordList?studentId=${studentId}&coachId=${coachId}&studentName=${encodeURIComponent(studentName)}&isStudent=false`
+    });
+  },
+
   handleEdit() {
     const { relationId, studentId } = this.data;
     wx.navigateTo({
       url: `/pages/studentBasicProfile/studentBasicProfile?relationId=${relationId}&studentId=${studentId}`
+    });
+  },
+
+  /**
+   * 训练记录
+   */
+  handleTrainingRecordList() {
+    const { studentId, studentData } = this.data;
+    const userInfo = wx.getStorageSync('userInfo');
+    const studentName = studentData.student_name || (studentData.student && studentData.student.nickname) || '';
+    wx.navigateTo({
+      url: `/pages/trainingRecordList/trainingRecordList?studentId=${studentId}&coachId=${userInfo.id}&studentName=${encodeURIComponent(studentName)}&isStudent=false`
     });
   },
 

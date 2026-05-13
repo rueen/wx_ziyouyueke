@@ -1,0 +1,127 @@
+<!--pages/trainingRecordList/trainingRecordList.wxml-->
+<navBar title="训练记录" />
+<layout>
+  <!-- 仅教练可见：管理训练记录类型入口 -->
+  <view class="manage-types-entry" wx:if="{{!isStudent}}" bindtap="onManageTypes">
+    <text class="manage-types-text">管理训练记录类型</text>
+    <text class="iconfont icon-arrow-r manage-types-arrow"></text>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <!-- 教练筛选（学员从个人中心进入时展示） -->
+    <block wx:if="{{showCoachFilter}}">
+      <view class="filter-btn" bindtap="onFilterCoach">
+        <text class="filter-label">教练：{{selectedCoachName}}</text>
+        <text class="iconfont icon-arrow-d"></text>
+      </view>
+      <view class="filter-divider"></view>
+    </block>
+    <!-- 类型筛选 -->
+    <view class="filter-btn" bindtap="onFilterType">
+      <text class="filter-label">类型：{{selectedTypeName}}</text>
+      <text class="iconfont icon-arrow-d"></text>
+    </view>
+    <view class="filter-divider"></view>
+    <!-- 时间筛选 -->
+    <view class="filter-btn" bindtap="onFilterTime">
+      <text class="filter-label">时间：{{selectedTimeLabel}}</text>
+      <text class="iconfont icon-arrow-d"></text>
+    </view>
+  </view>
+
+  <!-- 训练记录时间轴列表 -->
+  <view class="timeline" wx:if="{{records.length > 0}}">
+    <view class="timeline-item" wx:for="{{records}}" wx:key="id">
+      <view class="timeline-dot"></view>
+      <view class="timeline-line" wx:if="{{index < records.length - 1}}"></view>
+      <view class="timeline-content">
+        <view class="record-header">
+          <view class="record-meta">
+            <text class="record-type" wx:if="{{item.typeObj}}">{{item.typeObj.name}}</text>
+            <text class="record-time">{{item.created_at}}</text>
+          </view>
+          <!-- 仅教练可操作 -->
+          <view class="record-more" wx:if="{{!isStudent}}" bindtap="onMoreAction" data-record="{{item}}">···</view>
+        </view>
+        <!-- 类型字段值 -->
+        <view class="record-fields" wx:if="{{item.fieldValueList.length > 0}}">
+          <view class="record-field-item" wx:for="{{item.fieldValueList}}" wx:key="label" wx:for-item="fv">
+            <text class="field-label">{{fv.label}}</text>
+            <text class="field-value">{{fv.value}}</text>
+          </view>
+        </view>
+        <text class="record-content" wx:if="{{item.content}}">{{item.content}}</text>
+        <!-- 图片网格 -->
+        <view class="record-images" wx:if="{{item.images && item.images.length > 0}}">
+          <view wx:if="{{item.images.length === 1}}" class="img-single">
+            <image src="{{item.images[0]}}" mode="aspectFill" class="img-single-img" bindtap="onPreviewImage" data-images="{{item.images}}" data-index="0" />
+          </view>
+          <view wx:else class="img-grid">
+            <block wx:for="{{item.images}}" wx:key="index" wx:for-item="img" wx:for-index="imgIdx">
+              <image src="{{img}}" mode="aspectFill" class="img-grid-item img-grid-item-{{item.images.length}}" bindtap="onPreviewImage" data-images="{{item.images}}" data-index="{{imgIdx}}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-wrap" wx:elif="{{!loading}}">
+    <text class="empty-text">暂无训练记录</text>
+  </view>
+
+  <!-- 仅教练可新增 -->
+  <view class="btn-fixed" bindtap="onAddRecord" wx:if="{{!isStudent}}">
+    <text class="iconfont icon-add"></text>
+  </view>
+</layout>
+
+<!-- 时间筛选弹窗（底部弹出） -->
+<modal show="{{showTimeModal}}" bind:close="onCloseTimeModal" position="bottom">
+  <!-- 自定义头部：关闭 / 选择日期 / 确认 -->
+  <view class="time-modal-header">
+    <text class="time-modal-close" bindtap="onCloseTimeModal">关闭</text>
+    <text class="time-modal-title">选择日期</text>
+    <text class="time-modal-confirm" bindtap="onConfirmTime">确认</text>
+  </view>
+
+  <!-- 时间选项：4列网格 -->
+  <view class="time-options">
+    <view class="time-option {{selectedTimeKey === 'all' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="all" data-label="全部">全部</view>
+    <view class="time-option {{selectedTimeKey === 'last3days' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="last3days" data-label="近3天">近3天</view>
+    <view class="time-option {{selectedTimeKey === 'today' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="today" data-label="今天">今天</view>
+    <view class="time-option {{selectedTimeKey === 'yesterday' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="yesterday" data-label="昨天">昨天</view>
+    <view class="time-option {{selectedTimeKey === 'lastWeek' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="lastWeek" data-label="上周">上周</view>
+    <view class="time-option {{selectedTimeKey === 'thisWeek' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="thisWeek" data-label="本周">本周</view>
+    <view class="time-option {{selectedTimeKey === 'lastMonth' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="lastMonth" data-label="上月">上月</view>
+    <view class="time-option {{selectedTimeKey === 'thisMonth' ? 'active' : ''}}"
+      bindtap="onSelectTime" data-key="thisMonth" data-label="本月">本月</view>
+  </view>
+
+  <!-- 自定义日期（常驻） -->
+  <view class="custom-date-section">
+    <text class="custom-date-label">自定义日期</text>
+    <view class="custom-date-row">
+      <picker class="date-picker" mode="date" value="{{customStart}}" bindchange="onCustomStartChange">
+        <view class="date-picker-btn {{customStart ? 'has-value' : ''}}">
+          {{customStart || '开始时间'}}
+        </view>
+      </picker>
+      <text class="date-sep">~</text>
+      <picker class="date-picker" mode="date" value="{{customEnd}}" bindchange="onCustomEndChange">
+        <view class="date-picker-btn {{customEnd ? 'has-value' : ''}}">
+          {{customEnd || '结束时间'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+</modal>

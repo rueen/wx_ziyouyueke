@@ -224,4 +224,16 @@ Page({
       url: `/pages/planList/planList?studentId=${studentId}&coachId=${coachId}&isStudent=true`
     });
   },
+
+  /**
+   * 训练记录（学员视角，仅可查看）
+   */
+  handleTrainingRecordList() {
+    const { coachId } = this.data;
+    const userInfo = wx.getStorageSync('userInfo');
+    const studentId = userInfo && userInfo.id ? userInfo.id : '';
+    wx.navigateTo({
+      url: `/pages/trainingRecordList/trainingRecordList?studentId=${studentId}&coachId=${coachId}&isStudent=true`
+    });
+  },
 }) 

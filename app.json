@@ -39,7 +39,11 @@
     "pages/coachSettings/coachSettings",
     "pages/tools-bmi/bmi",
     "pages/tools-thr/thr",
-    "pages/tools-rm/rm"
+    "pages/tools-rm/rm",
+    "pages/trainingRecordList/trainingRecordList",
+    "pages/trainingRecordAdd/trainingRecordAdd",
+    "pages/trainingRecordTypeManagement/trainingRecordTypeManagement",
+    "pages/trainingRecordTypeEdit/trainingRecordTypeEdit"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

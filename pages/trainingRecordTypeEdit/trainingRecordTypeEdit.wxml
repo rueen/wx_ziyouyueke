@@ -1,0 +1,42 @@
+<!--pages/trainingRecordTypeEdit/trainingRecordTypeEdit.wxml-->
+<navBar title="{{typeId ? '编辑类型' : '新增类型'}}" />
+<layout>
+  <view class="form-container">
+    <!-- 类型名称 -->
+    <view class="form-item">
+      <text class="form-label">类型名称</text>
+      <input class="form-input" placeholder="请输入类型名称（最多20字）" value="{{typeName}}" bindinput="onNameInput" maxlength="20" focus="{{!typeId}}" />
+    </view>
+
+    <!-- 字段列表 -->
+    <view class="form-item fields-section">
+      <view class="fields-header">
+        <text class="form-label" style="margin-bottom:0">记录字段</text>
+        <text class="fields-hint">（可选，用于记录具体数据）</text>
+      </view>
+      <view class="field-list">
+        <view class="field-row" wx:for="{{fields}}" wx:key="index">
+          <input
+            class="field-input"
+            placeholder="字段名称，如：腰围"
+            value="{{item}}"
+            bindinput="onFieldInput"
+            data-index="{{index}}"
+            maxlength="20"
+          />
+          <view class="field-delete-btn" bindtap="onDeleteField" data-index="{{index}}">
+            <text class="field-delete-icon">−</text>
+          </view>
+        </view>
+        <view class="field-add-btn" bindtap="onAddField" wx:if="{{fields.length < 20}}">
+          <text class="field-add-icon">+</text>
+          <text class="field-add-text">添加字段</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="add-button-container">
+    <button class="add-button" bindtap="onSave" loading="{{isSaving}}">保存</button>
+  </view>
+</layout>

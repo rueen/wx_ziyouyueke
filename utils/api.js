@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -1762,6 +1762,109 @@ module.exports = {
      */
     setRelationTags: function(relationId, params = {}) {
       return request({ url: `/api/h5/tags/relation/${relationId}`, method: 'PUT', data: params });
+    }
+  },
+
+  /**
+   * 训练记录类型模块（教练专用）
+   */
+  trainingRecordType: {
+    /**
+     * 获取训练记录类型列表
+     * @returns {Promise}
+     */
+    getList: function() {
+      return request({ url: '/api/h5/training-record-types', method: 'GET' });
+    },
+    /**
+     * 新增训练记录类型
+     * @param {Object} params
+     * @param {string} params.name - 类型名称（必填，最多20字）
+     * @param {string[]} [params.fields] - 字段列表（选填）
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({ url: '/api/h5/training-record-types', method: 'POST', data: params });
+    },
+    /**
+     * 编辑训练记录类型
+     * @param {number} id - 类型ID
+     * @param {Object} params
+     * @param {string} params.name - 类型名称
+     * @returns {Promise}
+     */
+    update: function(id, params = {}) {
+      return request({ url: `/api/h5/training-record-types/${id}`, method: 'PUT', data: params });
+    },
+    /**
+     * 删除训练记录类型
+     * @param {number} id - 类型ID
+     * @returns {Promise}
+     */
+    delete: function(id) {
+      return request({ url: `/api/h5/training-record-types/${id}`, method: 'DELETE' });
+    }
+  },
+
+  /**
+   * 训练记录模块
+   */
+  trainingRecord: {
+    /**
+     * 获取训练记录列表
+     * @param {Object} params
+     * @param {number} params.student_id - 学员ID（必填）
+     * @param {number} params.coach_id - 教练ID（必填）
+     * @param {number} [params.type_id] - 类型筛选
+     * @param {string} [params.start_date] - 开始日期 YYYY-MM-DD
+     * @param {string} [params.end_date] - 结束日期 YYYY-MM-DD
+     * @param {number} [params.page] - 页码，默认1
+     * @param {number} [params.page_size] - 每页数量，默认20
+     * @returns {Promise}
+     */
+    getList: function(params = {}) {
+      return request({ url: '/api/h5/training-records', method: 'GET', data: params });
+    },
+    /**
+     * 获取学员记录中出现的所有类型（去重）
+     * @param {number} studentId - 学员ID（必填）
+     * @param {number} [coachId] - 教练ID（选填）
+     * @returns {Promise}
+     */
+    getTypesByStudent: function(studentId, coachId) {
+      const data = { student_id: studentId };
+      if (coachId) data.coach_id = coachId;
+      return request({ url: '/api/h5/training-records/types', method: 'GET', data });
+    },
+    /**
+     * 新增训练记录
+     * @param {Object} params
+     * @param {number} params.student_id - 学员ID（必填）
+     * @param {number} [params.type_id] - 类型ID
+     * @param {Object} [params.type_values] - 类型字段值
+     * @param {string} [params.content] - 记录内容（最多500字）
+     * @param {string[]} [params.images] - 图片URL数组（最多9张）
+     * @returns {Promise}
+     */
+    create: function(params = {}) {
+      return request({ url: '/api/h5/training-records', method: 'POST', data: params });
+    },
+    /**
+     * 编辑训练记录
+     * @param {number} id - 记录ID
+     * @param {Object} params
+     * @returns {Promise}
+     */
+    update: function(id, params = {}) {
+      return request({ url: `/api/h5/training-records/${id}`, method: 'PUT', data: params });
+    },
+    /**
+     * 删除训练记录
+     * @param {number} id - 记录ID
+     * @returns {Promise}
+     */
+    delete: function(id) {
+      return request({ url: `/api/h5/training-records/${id}`, method: 'DELETE' });
     }
   },
 

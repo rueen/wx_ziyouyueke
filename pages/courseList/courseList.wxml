@@ -94,8 +94,8 @@
 </layout>
 
 <!-- 补录悬浮按钮（仅教练可见） -->
-<view class="suppl-fab" wx:if="{{userRole === 'coach'}}" bindtap="handleSupplementary">
-  <text class="suppl-fab-text">补录</text>
+<view class="btn-fixed" wx:if="{{userRole === 'coach'}}" bindtap="handleSupplementary">
+  <text class="btn-fixed-text">补录</text>
 </view>
 
  

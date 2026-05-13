@@ -1,0 +1,58 @@
+<!--pages/trainingRecordAdd/trainingRecordAdd.wxml-->
+<navBar title="{{recordId ? '编辑训练记录' : '新增训练记录'}}" />
+<layout>
+  <view class="form-container">
+    <!-- 记录类型 -->
+    <view class="form-item" bindtap="onPickType">
+      <text class="form-label">记录类型</text>
+      <view class="form-row">
+        <text class="form-value {{selectedType ? '' : 'placeholder'}}">{{selectedType ? selectedType.name : '选填'}}</text>
+        <text class="iconfont icon-arrow-r form-arrow"></text>
+      </view>
+    </view>
+
+    <!-- 类型字段（选中有字段的类型后展示） -->
+    <block wx:if="{{selectedType && typeFields.length > 0}}">
+      <view class="form-item field-item" wx:for="{{typeFields}}" wx:key="index">
+        <text class="form-label">{{item.label}}</text>
+        <view class="field-input-row">
+          <input
+            class="field-input"
+            placeholder="请输入{{item.label}}"
+            value="{{item.value}}"
+            bindinput="onFieldValueInput"
+            data-index="{{index}}"
+            type="digit"
+          />
+          <text class="field-unit" wx:if="{{item.unit}}">{{item.unit}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 记录内容 -->
+    <view class="form-item">
+      <text class="form-label">记录内容</text>
+      <textarea class="form-textarea" placeholder="选填，最多500字" value="{{content}}" bindinput="onContentInput" maxlength="500" auto-height />
+    </view>
+
+    <!-- 图片上传 -->
+    <view class="form-item">
+      <text class="form-label">图片（最多9张）</text>
+      <view class="image-grid">
+        <view class="image-item" wx:for="{{images}}" wx:key="index">
+          <image src="{{item}}" class="upload-img" mode="aspectFill" bindtap="onPreviewImage" data-index="{{index}}" />
+          <view class="delete-img-btn" bindtap="onDeleteImage" data-index="{{index}}">
+            <text class="iconfont icon-close"></text>
+          </view>
+        </view>
+        <view class="add-image-btn" wx:if="{{images.length < 9}}" bindtap="onChooseImage">
+          <text class="add-image-icon">+</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="save-btn-wrap">
+    <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">保存</button>
+  </view>
+</layout>

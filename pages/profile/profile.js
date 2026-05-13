@@ -336,6 +336,17 @@ Page({
   },
 
   /**
+   * 训练记录（学员查看全部记录）
+   */
+  onTrainingRecords() {
+    if (!this.checkLoginRequired()) return;
+    const { userInfo } = this.data;
+    wx.navigateTo({
+      url: `/pages/trainingRecordList/trainingRecordList?studentId=${userInfo.id}&isStudent=true`
+    });
+  },
+
+  /**
    * 打开标签管理页面
    */
   onTags() {
