@@ -2,13 +2,22 @@
 <navBar title="{{recordId ? '编辑训练记录' : '新增训练记录'}}" />
 <layout>
   <view class="form-container">
-    <!-- 记录类型 -->
-    <view class="form-item" bindtap="onPickType">
+    <!-- 记录类型：selector picker -->
+    <view class="form-item">
       <text class="form-label">记录类型</text>
-      <view class="form-row">
-        <text class="form-value {{selectedType ? '' : 'placeholder'}}">{{selectedType ? selectedType.name : '选填'}}</text>
-        <text class="iconfont icon-arrow-r form-arrow"></text>
-      </view>
+      <picker
+        class="type-picker"
+        mode="selector"
+        range="{{typePickerRange}}"
+        range-key="name"
+        value="{{typePickerIndex}}"
+        bindchange="onTypePickerChange"
+      >
+        <view class="form-row">
+          <text class="form-value {{selectedType ? '' : 'placeholder'}}">{{selectedType ? selectedType.name : '选填'}}</text>
+          <text class="iconfont icon-arrow-r form-arrow"></text>
+        </view>
+      </picker>
     </view>
 
     <!-- 类型字段（选中有字段的类型后展示） -->
@@ -52,7 +61,7 @@
     </view>
   </view>
 
-  <view class="save-btn-wrap">
-    <button class="save-btn" bindtap="onSave" loading="{{isSaving}}">保存</button>
+  <view class="add-button-container">
+    <button class="add-button" bindtap="onSave" loading="{{isSaving}}">保存</button>
   </view>
 </layout>

@@ -9,11 +9,18 @@
     "miniprogram": {
       "list": [
         {
+          "name": "绑定教练",
+          "pathName": "/pages/bindCoach/bindCoach",
+          "query": "coachId=36",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "教练大厅",
           "pathName": "pages/allCoachList/allCoachList",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "时间模板",
@@ -40,13 +47,6 @@
           "name": "活动详情",
           "pathName": "pages/groupCourseDetail/groupCourseDetail",
           "query": "courseId=1",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "绑定教练",
-          "pathName": "/pages/bindCoach/bindCoach",
-          "query": "coachId=27",
           "launchMode": "default",
           "scene": null
         },

@@ -26,6 +26,9 @@ Page({
     studentId: null,
     coachId: null,
     types: [],
+    /** selector picker：首项为「不选择」，id 为 null */
+    typePickerRange: [{ id: null, name: '不选择' }],
+    typePickerIndex: 0,
     selectedType: null,
     /** @type {{ label: string, unit: string, value: string }[]} 当前类型的字段列表 */
     typeFields: [],
@@ -54,6 +57,8 @@ Page({
             typeFields,
             content: record.content || '',
             images: record.images || []
+          }, () => {
+            this.refreshTypePickerRange();
           });
         } catch (e) {}
       }
@@ -63,29 +68,42 @@ Page({
   async loadTypes() {
     try {
       const result = await api.trainingRecordType.getList();
-      this.setData({ types: (result && result.data) ? result.data : [] });
+      const d = result && result.data;
+      const types = Array.isArray(d) ? d : (d && Array.isArray(d.list) ? d.list : []);
+      this.setData({ types }, () => {
+        this.refreshTypePickerRange();
+      });
     } catch (e) {}
   },
 
-  onPickType() {
-    const { types } = this.data;
-    if (!types.length) {
-      wx.showToast({ title: '暂无类型', icon: 'none' });
+  /** 根据 types、selectedType 刷新类型 picker 的 range 与 index */
+  refreshTypePickerRange() {
+    const { types, selectedType } = this.data;
+    const typePickerRange = [{ id: null, name: '不选择' }, ...types.map(t => ({ id: t.id, name: t.name }))];
+    let typePickerIndex = 0;
+    if (selectedType && selectedType.id != null) {
+      const found = typePickerRange.findIndex((row) => String(row.id) === String(selectedType.id));
+      typePickerIndex = found >= 0 ? found : 0;
+    }
+    this.setData({ typePickerRange, typePickerIndex });
+  },
+
+  /**
+   * 记录类型 picker 变更（mode=selector）
+   * @param {{ detail: { value: string } }} e
+   */
+  onTypePickerChange(e) {
+    const idx = Number(e.detail.value);
+    const row = this.data.typePickerRange[idx];
+    if (!row) return;
+    if (row.id == null) {
+      this.setData({ selectedType: null, typeFields: [], typePickerIndex: idx });
       return;
     }
-    const itemList = ['不选择', ...types.map(t => t.name)];
-    wx.showActionSheet({
-      itemList,
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          this.setData({ selectedType: null, typeFields: [] });
-        } else {
-          const type = types[res.tapIndex - 1];
-          const typeFields = buildTypeFields(type.fields);
-          this.setData({ selectedType: type, typeFields });
-        }
-      }
-    });
+    const type = this.data.types.find((t) => String(t.id) === String(row.id));
+    if (!type) return;
+    const typeFields = buildTypeFields(type.fields);
+    this.setData({ selectedType: type, typeFields, typePickerIndex: idx });
   },
 
   /** 字段值输入 */

@@ -71,6 +71,12 @@ Page({
     selectedCoachName: '全部',
     /** 是否展示教练筛选栏（学员从profile入口且coachId为null时展示） */
     showCoachFilter: false,
+    /** 教练 selector picker：range 为 { id, name }，id 为 null 表示全部 */
+    coachPickerRange: [{ id: null, name: '全部' }],
+    coachPickerIndex: 0,
+    /** 类型 selector picker */
+    typePickerRange: [{ id: null, name: '全部' }],
+    typePickerIndex: 0,
     selectedTypeId: null,
     selectedTypeName: '全部',
     selectedTimeKey: 'all',
@@ -95,12 +101,13 @@ Page({
 
   /** 加载类型列表（按角色分支） */
   async loadTypes() {
-    const { isStudent, studentId, coachId } = this.data;
+    const { isStudent, studentId, coachId, selectedCoachId } = this.data;
     try {
       let types = [];
       if (isStudent) {
-        // 学员视角：获取该学员所有记录中出现的类型（去重）
-        const result = await api.trainingRecord.getTypesByStudent(studentId, coachId || undefined);
+        // 学员视角：获取该学员记录中出现的类型（去重），教练与列表筛选一致
+        const effectiveCoachId = selectedCoachId || coachId;
+        const result = await api.trainingRecord.getTypesByStudent(studentId, effectiveCoachId || undefined);
         const d = result && result.data;
         types = Array.isArray(d) ? d : (d && Array.isArray(d.list) ? d.list : []);
       } else {
@@ -110,7 +117,54 @@ Page({
         types = Array.isArray(d) ? d : (d && Array.isArray(d.list) ? d.list : []);
       }
       this.setData({ types });
+      this.refreshTypePickerRange();
     } catch (e) {}
+  },
+
+  /**
+   * 教练展示名（my-coaches 关系对象）
+   * @param {Object} c
+   * @returns {string}
+   */
+  _coachDisplayName(c) {
+    const id = this._coachUserId(c);
+    return (c.coach && c.coach.nickname) || c.nickname || c.name || `教练${id}`;
+  },
+
+  /**
+   * 教练用户 id
+   * @param {Object} c
+   * @returns {number|string}
+   */
+  _coachUserId(c) {
+    return (c.coach && c.coach.id) || c.coach_id || c.id;
+  },
+
+  /** 根据当前 coaches、selectedCoachId 刷新教练 picker 的 range 与 index */
+  refreshCoachPickerRange() {
+    const { coaches, selectedCoachId } = this.data;
+    const coachPickerRange = [{ id: null, name: '全部' }, ...coaches.map(c => ({
+      id: this._coachUserId(c),
+      name: this._coachDisplayName(c)
+    }))];
+    let coachPickerIndex = 0;
+    if (selectedCoachId != null && selectedCoachId !== '') {
+      const found = coachPickerRange.findIndex((row) => String(row.id) === String(selectedCoachId));
+      coachPickerIndex = found >= 0 ? found : 0;
+    }
+    this.setData({ coachPickerRange, coachPickerIndex });
+  },
+
+  /** 根据当前 types、selectedTypeId 刷新类型 picker */
+  refreshTypePickerRange() {
+    const { types, selectedTypeId } = this.data;
+    const typePickerRange = [{ id: null, name: '全部' }, ...types.map(t => ({ id: t.id, name: t.name }))];
+    let typePickerIndex = 0;
+    if (selectedTypeId != null && selectedTypeId !== '') {
+      const found = typePickerRange.findIndex((row) => String(row.id) === String(selectedTypeId));
+      typePickerIndex = found >= 0 ? found : 0;
+    }
+    this.setData({ typePickerRange, typePickerIndex });
   },
 
   /** 加载学员的教练列表（用于教练筛选） */
@@ -121,6 +175,7 @@ Page({
       // 兼容 data 直接为数组 或 data.list 结构
       const coaches = Array.isArray(d) ? d : (d && Array.isArray(d.list) ? d.list : []);
       this.setData({ coaches });
+      this.refreshCoachPickerRange();
     } catch (e) {}
   },
 
@@ -163,43 +218,37 @@ Page({
     wx.navigateTo({ url: '/pages/trainingRecordTypeManagement/trainingRecordTypeManagement' });
   },
 
-  /** 教练筛选（my-coaches 接口返回关系对象，教练信息在 coach 子字段内） */
-  onFilterCoach() {
-    const { coaches } = this.data;
-    const getName = (c) => (c.coach && c.coach.nickname) || c.nickname || c.name || `教练${c.id}`;
-    const getId = (c) => (c.coach && c.coach.id) || c.coach_id || c.id;
-    const itemList = ['全部', ...coaches.map(getName)];
-    wx.showActionSheet({
-      itemList,
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          this.setData({ selectedCoachId: null, selectedCoachName: '全部' });
-        } else {
-          const c = coaches[res.tapIndex - 1];
-          this.setData({ selectedCoachId: getId(c), selectedCoachName: getName(c) });
-        }
-        // 切换教练后重新拉取类型和记录
-        this.loadTypes();
-        this.loadRecords();
-      }
+  /**
+   * 教练 picker 变更（mode=selector）
+   * @param {{ detail: { value: string } }} e
+   */
+  onCoachPickerChange(e) {
+    const idx = Number(e.detail.value);
+    const row = this.data.coachPickerRange[idx];
+    if (!row) return;
+    this.setData({
+      selectedCoachId: row.id,
+      selectedCoachName: row.name,
+      coachPickerIndex: idx
     });
+    this.loadTypes();
+    this.loadRecords();
   },
 
-  onFilterType() {
-    const { types } = this.data;
-    const itemList = ['全部', ...types.map(t => t.name)];
-    wx.showActionSheet({
-      itemList,
-      success: (res) => {
-        if (res.tapIndex === 0) {
-          this.setData({ selectedTypeId: null, selectedTypeName: '全部' });
-        } else {
-          const t = types[res.tapIndex - 1];
-          this.setData({ selectedTypeId: t.id, selectedTypeName: t.name });
-        }
-        this.loadRecords();
-      }
+  /**
+   * 类型 picker 变更
+   * @param {{ detail: { value: string } }} e
+   */
+  onTypePickerChange(e) {
+    const idx = Number(e.detail.value);
+    const row = this.data.typePickerRange[idx];
+    if (!row) return;
+    this.setData({
+      selectedTypeId: row.id,
+      selectedTypeName: row.name,
+      typePickerIndex: idx
     });
+    this.loadRecords();
   },
 
   onFilterTime() { this.setData({ showTimeModal: true }); },

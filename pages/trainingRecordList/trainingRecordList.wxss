@@ -28,9 +28,11 @@ page {
   display: flex;
   align-items: center;
   background: #fff;
-  padding: 0 24rpx;
   margin-bottom: 16rpx;
-  height: 88rpx;
+}
+.filter-picker {
+  flex: 1;
+  min-width: 0;
 }
 .filter-btn {
   flex: 1;
@@ -38,6 +40,7 @@ page {
   align-items: center;
   justify-content: center;
   gap: 8rpx;
+  height: 88rpx;
 }
 .filter-label {
   font-size: 28rpx;

@@ -9,19 +9,37 @@
 
   <!-- 筛选栏 -->
   <view class="filter-bar">
-    <!-- 教练筛选（学员从个人中心进入时展示） -->
+    <!-- 教练筛选：selector picker -->
     <block wx:if="{{showCoachFilter}}">
-      <view class="filter-btn" bindtap="onFilterCoach">
-        <text class="filter-label">教练：{{selectedCoachName}}</text>
-        <text class="iconfont icon-arrow-d"></text>
-      </view>
+      <picker
+        class="filter-picker"
+        mode="selector"
+        range="{{coachPickerRange}}"
+        range-key="name"
+        value="{{coachPickerIndex}}"
+        bindchange="onCoachPickerChange"
+      >
+        <view class="filter-btn">
+          <text class="filter-label">教练：{{selectedCoachName}}</text>
+          <text class="iconfont icon-arrow-d"></text>
+        </view>
+      </picker>
       <view class="filter-divider"></view>
     </block>
-    <!-- 类型筛选 -->
-    <view class="filter-btn" bindtap="onFilterType">
-      <text class="filter-label">类型：{{selectedTypeName}}</text>
-      <text class="iconfont icon-arrow-d"></text>
-    </view>
+    <!-- 类型筛选：selector picker -->
+    <picker
+      class="filter-picker"
+      mode="selector"
+      range="{{typePickerRange}}"
+      range-key="name"
+      value="{{typePickerIndex}}"
+      bindchange="onTypePickerChange"
+    >
+      <view class="filter-btn">
+        <text class="filter-label">类型：{{selectedTypeName}}</text>
+        <text class="iconfont icon-arrow-d"></text>
+      </view>
+    </picker>
     <view class="filter-divider"></view>
     <!-- 时间筛选 -->
     <view class="filter-btn" bindtap="onFilterTime">
