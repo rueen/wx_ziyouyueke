@@ -115,6 +115,11 @@
                 data-course="{{item}}"
                 catch:tap="onDeleteCourse"
               >删除</button>
+              <button
+                class="action-btn cancel"
+                data-course="{{item}}"
+                catch:tap="onCopyCourse"
+              >复制</button>
             </view>
             <!-- 非课程所有者操作按钮 -->
             <view class="action-buttons" data-course="{{item}}" bindtap="onCourseTap" wx:else>

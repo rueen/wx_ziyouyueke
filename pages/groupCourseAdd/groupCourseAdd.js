@@ -7,9 +7,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    // 页面模式：add-新增，edit-编辑
+    // 页面模式：add-新增，edit-编辑，copy-复制
     mode: 'add',
     courseId: null,
+    /** 是否为复制模式，复制模式下时间字段需清空 */
+    isCopy: false,
     
     // 表单数据
     formData: {
@@ -72,8 +74,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 判断是新增还是编辑模式
-    if (options.id) {
+    // 判断是新增、编辑还是复制模式
+    if (options.id && options.type === 'copy') {
+      this.setData({
+        mode: 'add',
+        courseId: parseInt(options.id),
+        isCopy: true
+      })
+      this.loadCardsList()
+      this.loadCourseDetail()
+    } else if (options.id) {
       this.setData({
         mode: 'edit',
         courseId: parseInt(options.id)
@@ -207,6 +217,17 @@ Page({
                 start_time: course.start_time,
                 end_time: course.end_time
               }
+            })
+          }
+
+          // 复制模式：清空时间相关字段，作为全新课程保存
+          if (this.data.isCopy) {
+            this.setData({
+              courseId: null,
+              'formData.course_date': '',
+              'formData.start_time': '',
+              'formData.end_time': '',
+              selectedTimeSlot: null
             })
           }
         }

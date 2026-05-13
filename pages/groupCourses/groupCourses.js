@@ -208,7 +208,7 @@ Page({
           time: this.getTime(item),
           price: this.getCoursePrice(item),
           isCanCancel: item.status === 1 && !item.registrations.filter(reg => reg.check_in_status ===1).length,
-          registrations: item.registrations.filter(reg => reg.registration_status === 1).splice(0,6)
+          registrations: item.registrations.filter(reg => reg.registration_status === 1).splice(0,3)
         }))
         this.setData({
           courses: this.data.currentPage === 1 ? courses : [...this.data.courses, ...courses],
@@ -408,6 +408,17 @@ Page({
     // 跳转到新增活动页面
     wx.navigateTo({
       url: `/pages/groupCourseAdd/groupCourseAdd?type=add`
+    });
+  },
+
+  /**
+   * 复制活动，跳转到新增页并预填除时间外的所有数据
+   * @param {Object} e 事件对象
+   */
+  onCopyCourse(e) {
+    const { course } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/groupCourseAdd/groupCourseAdd?type=copy&id=${course.id}`
     });
   },
 
