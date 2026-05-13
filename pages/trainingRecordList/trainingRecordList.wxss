@@ -174,3 +174,13 @@ page {
   color: #86868b;
   flex-shrink: 0;
 }
+
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 24rpx 0 40rpx;
+}
+.load-more-text {
+  font-size: 24rpx;
+  color: #c7c7cc;
+}

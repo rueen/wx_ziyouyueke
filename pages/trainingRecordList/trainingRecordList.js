@@ -83,7 +83,12 @@ Page({
     selectedTimeLabel: '全部',
     customStart: '',
     customEnd: '',
-    showTimeModal: false
+    showTimeModal: false,
+    /** 分页 */
+    page: 1,
+    pageSize: 20,
+    hasMore: false,
+    loadingMore: false
   },
 
   onLoad(options) {
@@ -179,12 +184,27 @@ Page({
     } catch (e) {}
   },
 
-  async loadRecords() {
-    const { studentId, coachId, selectedCoachId, selectedTypeId, selectedTimeKey, customStart, customEnd } = this.data;
-    this.setData({ loading: true });
+  /**
+   * 加载记录列表
+   * @param {boolean} [reset=true] - true：重置到第1页并覆盖列表；false：追加下一页
+   */
+  async loadRecords(reset = true) {
+    const { studentId, coachId, selectedCoachId, selectedTypeId, selectedTimeKey,
+      customStart, customEnd, pageSize, records: existingRecords, loadingMore } = this.data;
+
+    // 追加模式下若已在加载中则跳过
+    if (!reset && loadingMore) return;
+
+    const page = reset ? 1 : this.data.page + 1;
+
+    if (reset) {
+      this.setData({ loading: true, page: 1 });
+    } else {
+      this.setData({ loadingMore: true });
+    }
+
     try {
-      const params = { student_id: studentId };
-      // 优先使用教练筛选选中值，其次使用固定coachId
+      const params = { student_id: studentId, page, page_size: pageSize };
       const effectiveCoachId = selectedCoachId || coachId;
       if (effectiveCoachId) params.coach_id = effectiveCoachId;
       if (selectedTypeId) params.type_id = selectedTypeId;
@@ -196,20 +216,30 @@ Page({
         if (customStart) params.start_date = customStart;
         if (customEnd) params.end_date = customEnd;
       }
+
       const result = await api.trainingRecord.getList(params);
-      const list = (result && result.data && result.data.list) ? result.data.list : [];
-      // 规范化：统一类型字段名，将 type_values 转为数组
-      const records = list.map(item => {
+      const data = result && result.data;
+      const list = (data && data.list) ? data.list : [];
+      const pagination = (data && data.pagination) ? data.pagination : {};
+      const total = pagination.total || 0;
+
+      /** 规范化单条记录 */
+      const normalize = (item) => {
         const typeObj = item.trainingType || item.type || null;
-        const fv = item.type_values || item.type_values || {};
+        const fv = item.type_values || {};
         const fieldValueList = (fv && typeof fv === 'object')
           ? Object.keys(fv).map(k => ({ label: k, value: fv[k] }))
           : [];
         return { ...item, typeObj, fieldValueList };
-      });
-      this.setData({ records, loading: false });
+      };
+
+      const normalized = list.map(normalize);
+      const records = reset ? normalized : [...existingRecords, ...normalized];
+      const hasMore = records.length < total;
+
+      this.setData({ records, hasMore, page, loading: false, loadingMore: false });
     } catch (e) {
-      this.setData({ loading: false });
+      this.setData({ loading: false, loadingMore: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
   },
@@ -232,7 +262,7 @@ Page({
       coachPickerIndex: idx
     });
     this.loadTypes();
-    this.loadRecords();
+    this.loadRecords(true);
   },
 
   /**
@@ -248,7 +278,7 @@ Page({
       selectedTypeName: row.name,
       typePickerIndex: idx
     });
-    this.loadRecords();
+    this.loadRecords(true);
   },
 
   onFilterTime() { this.setData({ showTimeModal: true }); },
@@ -279,7 +309,7 @@ Page({
     } else {
       this.setData({ showTimeModal: false });
     }
-    this.loadRecords();
+    this.loadRecords(true);
   },
 
   onCustomStartChange(e) { this.setData({ customStart: e.detail.value }); },
@@ -315,7 +345,7 @@ Page({
           await api.trainingRecord.delete(record.id);
           wx.hideLoading();
           wx.showToast({ title: '删除成功', icon: 'success' });
-          this.loadRecords();
+          this.loadRecords(true);
         } catch (error) {
           wx.hideLoading();
           wx.showToast({ title: error.message || '删除失败', icon: 'none' });
@@ -336,7 +366,15 @@ Page({
     wx.previewImage({ current: images[index], urls: images });
   },
 
+  /** 上拉触底：加载下一页 */
+  onReachBottom() {
+    const { hasMore, loadingMore, loading } = this.data;
+    if (hasMore && !loadingMore && !loading) {
+      this.loadRecords(false);
+    }
+  },
+
   onShow() {
-    if (!this.data.loading) this.loadRecords();
+    if (!this.data.loading) this.loadRecords(true);
   }
 });

@@ -85,6 +85,12 @@
     </view>
   </view>
 
+  <!-- 分页底部提示 -->
+  <view class="load-more-wrap" wx:if="{{records.length > 0}}">
+    <text wx:if="{{loadingMore}}" class="load-more-text">加载中...</text>
+    <text wx:elif="{{!hasMore}}" class="load-more-text">没有更多了</text>
+  </view>
+
   <!-- 空状态 -->
   <view class="empty-wrap" wx:elif="{{!loading}}">
     <text class="empty-text">暂无训练记录</text>
