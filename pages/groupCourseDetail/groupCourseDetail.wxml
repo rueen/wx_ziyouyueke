@@ -166,9 +166,9 @@ module.exports = {
   </view>
 
   <!-- 课程详情 -->
-  <view wx:if="{{courseDetail.content}}" class="content-section">
+  <view wx:if="{{courseDetail.content || courseDetail.images.length}}" class="content-section">
     <view class="section-title">课程详情</view>
-    <view class="course-content">
+    <view class="course-content" wx:if="{{courseDetail.content}}">
       <text>{{courseDetail.content}}</text>
     </view>
     <view class="images-section">
