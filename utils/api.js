@@ -8,8 +8,8 @@ const { compressImage } = require('./util.js');
 
 // API基础配置
 const API_CONFIG = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.rueen.cn',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.rueen.cn',
   timeout: 10000
 };
 
@@ -950,12 +950,25 @@ module.exports = {
       });
     },
     
-    // 签到活动
+    // 签到活动（教练扫码后调用）
     checkIn: function(courseId, registrationId, params = {}) {
       return request({
         url: `/api/h5/group-courses/${courseId}/registrations/${registrationId}/check-in`,
         method: 'POST',
         data: params
+      });
+    },
+
+    /**
+     * 学员自主签到（按钮签到模式）
+     * 后端从 token 识别当前学员，查找其对应的 registration 记录并完成签到
+     * @param {number} courseId 活动 ID
+     * @returns {Promise}
+     */
+    selfCheckIn: function(courseId) {
+      return request({
+        url: `/api/h5/group-courses/${courseId}/self-check-in`,
+        method: 'POST'
       });
     },
 

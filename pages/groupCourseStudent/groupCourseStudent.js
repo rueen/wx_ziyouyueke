@@ -128,7 +128,8 @@ Page({
             price: this.getCoursePrice(item),
             check_in_status: _item.check_in_status - 0,
             registrationId: _item.id,
-            relationId: _item.relation_id
+            relationId: _item.relation_id,
+            checkin_method: (item.checkin_method) || 'scan'
           }
         })
         this.setData({
@@ -287,16 +288,40 @@ Page({
   },
   handleCheckIn(e) {
     const { course } = e.currentTarget.dataset;
-    const { courseId, relationId, registrationId } = course;
+    const { courseId, relationId, registrationId, checkin_method } = course;
 
-    this.setData({
-      showQrcodeModal: true
-    })
-    // 生成二维码
-    this.generateQRCode(JSON.stringify({
-      courseId,
-      registrationId
-    }));
+    if (checkin_method === 'button') {
+      // 按钮签到模式：二次确认后直接调用自主签到接口
+      wx.showModal({
+        title: '确认签到',
+        content: '确定要为本次活动签到吗？',
+        confirmText: '确认签到',
+        complete: async (res) => {
+          if (res.confirm) {
+            try {
+              wx.showLoading({ title: '签到中...' });
+              const result = await api.groupCourse.selfCheckIn(courseId);
+              wx.hideLoading();
+              if (result && result.success) {
+                wx.showToast({ title: '签到成功', icon: 'success' });
+                this.loadData(true);
+              }
+            } catch (error) {
+              wx.hideLoading();
+              wx.showToast({
+                title: error.message || '签到失败，请重试',
+                icon: 'none'
+              });
+            }
+          }
+        }
+      });
+      return;
+    }
+
+    // 扫码签到模式：弹出二维码 + 轮询
+    this.setData({ showQrcodeModal: true });
+    this.generateQRCode(JSON.stringify({ courseId, registrationId }));
     this.startPollingCourseStatus(registrationId);
   },
   /**

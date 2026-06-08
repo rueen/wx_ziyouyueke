@@ -64,7 +64,7 @@
     <!-- 课程完成方式 -->
     <view class="settings-section">
       <view class="section-header">
-        <text class="section-title">课程完成方式</text>
+        <text class="section-title">销课方式</text>
       </view>
       <view class="hint-box">
         <text class="hint-text">选择核销课程的方式，适用于该账号名下所有学员的课程</text>
@@ -83,6 +83,32 @@
             <text class="option-desc">教练在课程详情页直接点击「完成课程」按钮</text>
           </view>
           <radio value="manual" checked="{{completionMethod === 'manual'}}" color="#007aff" />
+        </label>
+      </radio-group>
+    </view>
+
+    <!-- 活动签到方式 -->
+    <view class="settings-section">
+      <view class="section-header">
+        <text class="section-title">活动签到方式</text>
+      </view>
+      <view class="hint-box">
+        <text class="hint-text">选择活动签到的方式，适用于该账号名下所有活动</text>
+      </view>
+      <radio-group class="settings-content" bindchange="onGroupCheckinMethodChange">
+        <label class="setting-item option-item">
+          <view class="option-info">
+            <text class="option-label">扫码签到（默认）</text>
+            <text class="option-desc">学员出示签到码，教练扫码完成签到</text>
+          </view>
+          <radio value="scan" checked="{{groupCheckinMethod === 'scan'}}" color="#007aff" />
+        </label>
+        <label class="setting-item option-item">
+          <view class="option-info">
+            <text class="option-label">点击按钮签到</text>
+            <text class="option-desc">教练在报名列表点击签到，或学员自主点击确认签到</text>
+          </view>
+          <radio value="button" checked="{{groupCheckinMethod === 'button'}}" color="#007aff" />
         </label>
       </radio-group>
     </view>

@@ -11,7 +11,7 @@
         {
           "name": "绑定教练",
           "pathName": "/pages/bindCoach/bindCoach",
-          "query": "coachId=36",
+          "query": "coachId=27",
           "scene": null,
           "launchMode": "default"
         },

@@ -27,6 +27,9 @@ Page({
     // 课程完成方式
     completionMethod: 'scan', // scan | manual
 
+    // 活动签到方式
+    groupCheckinMethod: 'scan', // scan | button
+
     // 选项数据
     timeWindowOptions: TIME_WINDOW_OPTIONS,
     timeWindowLabels: TIME_WINDOW_OPTIONS.map(o => o.label)
@@ -60,6 +63,7 @@ Page({
 
       if (coachSettingsRes && coachSettingsRes.data) {
         update.completionMethod = coachSettingsRes.data.completion_method || 'scan';
+        update.groupCheckinMethod = coachSettingsRes.data.group_checkin_method || 'scan';
       }
 
       this.setData(update);
@@ -101,10 +105,18 @@ Page({
   },
 
   /**
+   * 活动签到方式变更
+   * @param {Object} e radio-group change 事件
+   */
+  onGroupCheckinMethodChange(e) {
+    this.setData({ groupCheckinMethod: e.detail.value });
+  },
+
+  /**
    * 保存所有设置（取消次数限制 + 课程完成方式并行保存）
    */
   async onSave() {
-    const { isEnabled, timeWindowIndex, maxCount, timeWindowOptions, completionMethod, saving } = this.data;
+    const { isEnabled, timeWindowIndex, maxCount, timeWindowOptions, completionMethod, groupCheckinMethod, saving } = this.data;
     if (saving) return;
 
     if (isEnabled) {
@@ -124,12 +136,16 @@ Page({
           time_window: timeWindowOptions[timeWindowIndex].value,
           max_count: maxCount || 3
         }),
-        api.coachSettings.save({ completion_method: completionMethod })
+        api.coachSettings.save({
+          completion_method: completionMethod,
+          group_checkin_method: groupCheckinMethod
+        })
       ]);
 
       // 同步更新 globalData，使修改立即生效
       const app = getApp();
       app.globalData.coachSettings.completion_method = completionMethod;
+      app.globalData.coachSettings.group_checkin_method = groupCheckinMethod;
 
       wx.hideLoading();
       wx.showToast({ title: '保存成功', icon: 'success' });

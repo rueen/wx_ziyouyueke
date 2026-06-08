@@ -22,7 +22,8 @@ App({
       const result = await api.coachSettings.get();
       if (result && result.data) {
         this.globalData.coachSettings = {
-          completion_method: result.data.completion_method || 'scan'
+          completion_method: result.data.completion_method || 'scan',
+          group_checkin_method: result.data.group_checkin_method || 'scan'
         };
       }
     } catch (error) {
@@ -93,7 +94,8 @@ App({
     contentHeight: 0,
     /** 教练通用设置，仅教练登录后有效 */
     coachSettings: {
-      completion_method: 'scan' // 默认扫码核销
+      completion_method: 'scan',     // 默认扫码核销
+      group_checkin_method: 'scan'   // 默认扫码签到
     }
   }
 })

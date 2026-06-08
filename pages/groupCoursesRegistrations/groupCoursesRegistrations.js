@@ -10,7 +10,8 @@ Page({
     courseId: null,
     list: [],
     price_type: 1,
-    status: null
+    status: null,
+    groupCheckinMethod: 'scan'
   },
 
   /**
@@ -19,10 +20,13 @@ Page({
   onLoad(options) {
     const { courseId, price_type, status } = options;
     if(courseId != null) {
+      const app = getApp();
+      const groupCheckinMethod = (app.globalData.coachSettings && app.globalData.coachSettings.group_checkin_method) || 'scan';
       this.setData({
         courseId,
         price_type: price_type - 0,
-        status: status - 0
+        status: status - 0,
+        groupCheckinMethod
       }, () => {
         this.loadList()
       })
@@ -187,6 +191,44 @@ Page({
       }
     })
   },
+  /**
+   * 按钮签到模式：点击单个报名者的签到按钮
+   * @param {Object} e 事件对象，dataset.item 为报名者记录
+   */
+  handleItemCheckIn(e) {
+    const { item } = e.currentTarget.dataset;
+    const { courseId } = this.data;
+
+    let tips = '';
+    if (item.payment_type === 1) {
+      tips = '签到后会扣除相应课时，';
+    }
+
+    wx.showModal({
+      title: `确定为 [${item.student.nickname}] 签到吗？`,
+      content: `${tips}此操作不可撤销`,
+      complete: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '签到中...' });
+            const result = await api.groupCourse.checkIn(courseId, item.id);
+            if (result.success) {
+              wx.hideLoading();
+              wx.showToast({ title: '签到成功', icon: 'success' });
+              this.loadList();
+            }
+          } catch (error) {
+            wx.hideLoading();
+            wx.showToast({
+              title: error.message || '签到失败，请重试',
+              icon: 'none'
+            });
+          }
+        }
+      }
+    });
+  },
+
   handleCall(e) {
     const { currentTarget: { dataset: { phone } } } = e;
     wx.makePhoneCall({
