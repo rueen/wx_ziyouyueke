@@ -114,7 +114,7 @@
           <view class="time-picker-item">
             <picker 
               mode="time" 
-              value="{{selectedStartTime}}"
+              value="{{selectedStartTime || minSelectableStartTime}}"
               start="{{minSelectableStartTime}}"
               end="{{userRole === 'coach' ? '23:59' : freeTimeRange.endTime}}"
               bindchange="onSelectStartTime"
@@ -133,7 +133,7 @@
           <view class="time-picker-item">
             <picker 
               mode="time" 
-              value="{{selectedEndTime}}"
+              value="{{selectedEndTime || minSelectableEndTime}}"
               start="{{minSelectableEndTime || (userRole === 'coach' ? '00:01' : freeTimeRange.startTime)}}"
               end="{{userRole === 'coach' ? '23:59' : freeTimeRange.endTime}}"
               bindchange="onSelectEndTime"
