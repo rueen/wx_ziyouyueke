@@ -82,7 +82,10 @@ Component({
     selectedGridStart: '',    // 当前选中课程的开始时间（HH:MM）
     selectedGridEnd: '',      // 当前选中课程的结束时间（HH:MM）
     showGridSlotDetail: false, // 是否显示网格时间段详情面板（view 模式）
-    currentGridSlot: null      // 当前查看的时间段数据
+    currentGridSlot: null,     // 当前查看的时间段数据
+    showLocationModal: false,  // 是否显示已预约地址弹窗
+    locationModalTitle: '',    // 地址弹窗标题（显示时间段）
+    locationModalCourses: []   // 地址弹窗中的课程列表
   },
 
   /**
@@ -1423,6 +1426,27 @@ Component({
      */
     onCloseGridSlotDetail() {
       this.setData({ showGridSlotDetail: false, currentGridSlot: null });
+    },
+
+    /**
+     * 点击时间段地址图标，弹出已预约地址弹窗（网格格子、固定时间段均适用）
+     * @param {Object} e 事件对象，dataset.slot 为当前时间段数据
+     */
+    onSlotLocationTap(e) {
+      const { slot } = e.currentTarget.dataset;
+      if (!slot || !slot.courses || slot.courses.length === 0) return;
+      this.setData({
+        showLocationModal: true,
+        locationModalTitle: `${slot.startTime} - ${slot.endTime} 已预约地址`,
+        locationModalCourses: slot.courses
+      });
+    },
+
+    /**
+     * 关闭已预约地址弹窗
+     */
+    onCloseLocationModal() {
+      this.setData({ showLocationModal: false, locationModalCourses: [] });
     },
 
     /**

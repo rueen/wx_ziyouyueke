@@ -51,6 +51,13 @@
             bindtap="onGridSlotTap"
           >
             <text class="grid-slot-time">{{item.startTime}}</text>
+            <!-- 已预约地址图标（右上角，点击查看地址信息） -->
+            <text
+              wx:if="{{item.courses.length > 0}}"
+              class="iconfont icon-locationfill grid-location-icon"
+              data-slot="{{item}}"
+              catchtap="onSlotLocationTap"
+            ></text>
             <!-- 状态角标（非空闲时显示） -->
             <view wx:if="{{item.statusLabel}}" class="grid-badge-wrap {{item.status}}">
               <text class="grid-badge-label">{{item.statusLabel}}</text>
@@ -167,6 +174,13 @@
                 catchtap="onToggleRest"
                 data-slot="{{slot}}"
               >{{slot.isBlocked ? '取消休息' : '设为休息'}}</text>
+              <!-- 已预约地址图标（select 模式，有课程时显示） -->
+              <text
+                wx:if="{{mode === 'select' && slot.courses.length > 0}}"
+                class="iconfont icon-locationfill slot-location-icon"
+                data-slot="{{slot}}"
+                catchtap="onSlotLocationTap"
+              ></text>
             </view>
           </view>
           
@@ -277,6 +291,34 @@
       </view>
     </view>
   </view>
+
+  <!-- 已预约地址弹窗（点击网格格子右上角地址图标后弹出） -->
+  <modal
+    show="{{showLocationModal}}"
+    title="{{locationModalTitle}}"
+    position="bottom"
+    bind:close="onCloseLocationModal"
+  >
+    <view class="location-modal-body">
+      <view
+        class="location-modal-item"
+        wx:for="{{locationModalCourses}}"
+        wx:key="id"
+      >
+        <view class="location-modal-name">
+          <text wx:if="{{item.type === 'personal'}}">{{item.studentName}}</text>
+          <text wx:elif="{{item.type === 'group'}}">{{item.title}}</text>
+          <view class="location-modal-badge location-modal-badge-group" wx:if="{{item.type === 'group'}}">
+            <text>活动</text>
+          </view>
+        </view>
+        <view class="location-modal-addr">
+          <text class="iconfont icon-locationfill location-modal-icon"></text>
+          <text class="location-modal-addr-text">{{item.location || '暂无地址'}}</text>
+        </view>
+      </view>
+    </view>
+  </modal>
 
   <!-- 网格时间段详情面板（点击格子后弹出，使用通用 modal 组件） -->
   <modal
