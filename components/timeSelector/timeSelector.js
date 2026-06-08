@@ -1585,26 +1585,29 @@ Component({
      */
     onSelectStartTime(e) {
       const time = e.detail.value;
-      const { freeTimeRange, selectedEndTime, minSelectableStartTime, currentDate } = this.data;
+      const { freeTimeRange, selectedEndTime, minSelectableStartTime, currentDate, userRole } = this.data;
+      const isCoach = userRole === 'coach';
 
-      // 验证时间是否在范围内
-      if (freeTimeRange && time < freeTimeRange.startTime) {
-        wx.showToast({
-          title: `开始时间不能早于${freeTimeRange.startTime}`,
-          icon: 'none'
-        });
-        return;
+      // 学员预约：校验时间是否在可预约范围内；教练预约跳过此校验
+      if (!isCoach) {
+        if (freeTimeRange && time < freeTimeRange.startTime) {
+          wx.showToast({
+            title: `开始时间不能早于${freeTimeRange.startTime}`,
+            icon: 'none'
+          });
+          return;
+        }
+
+        if (freeTimeRange && time > freeTimeRange.endTime) {
+          wx.showToast({
+            title: `开始时间不能晚于${freeTimeRange.endTime}`,
+            icon: 'none'
+          });
+          return;
+        }
       }
 
-      if (freeTimeRange && time > freeTimeRange.endTime) {
-        wx.showToast({
-          title: `开始时间不能晚于${freeTimeRange.endTime}`,
-          icon: 'none'
-        });
-        return;
-      }
-
-      // 如果是今天，验证开始时间必须大于当前时间
+      // 如果是今天，验证开始时间必须大于当前时间（教练和学员均需校验）
       if (this.isToday(currentDate) && time < minSelectableStartTime) {
         wx.showToast({
           title: '开始时间必须晚于当前时间',
@@ -1632,8 +1635,8 @@ Component({
       if (lessonDuration > 0 && slotInterval === 0) {
         const endMin = this.timeToMinutes(time) + lessonDuration;
         const autoEnd = this.minutesToTime(endMin);
-        // 不超出模板范围才填入
-        if (!freeTimeRange || autoEnd <= freeTimeRange.endTime) {
+        // 学员：不超出模板范围才填入；教练：不受范围限制
+        if (isCoach || !freeTimeRange || autoEnd <= freeTimeRange.endTime) {
           updateObj.selectedEndTime = autoEnd;
         }
       }
@@ -1651,23 +1654,26 @@ Component({
      */
     onSelectEndTime(e) {
       const time = e.detail.value;
-      const { freeTimeRange, selectedStartTime, minSelectableEndTime } = this.data;
+      const { freeTimeRange, selectedStartTime, minSelectableEndTime, userRole } = this.data;
+      const isCoach = userRole === 'coach';
 
-      // 验证时间是否在范围内
-      if (freeTimeRange && time < freeTimeRange.startTime) {
-        wx.showToast({
-          title: `结束时间不能早于${freeTimeRange.startTime}`,
-          icon: 'none'
-        });
-        return;
-      }
+      // 学员预约：校验时间是否在可预约范围内；教练预约跳过此校验
+      if (!isCoach) {
+        if (freeTimeRange && time < freeTimeRange.startTime) {
+          wx.showToast({
+            title: `结束时间不能早于${freeTimeRange.startTime}`,
+            icon: 'none'
+          });
+          return;
+        }
 
-      if (freeTimeRange && time > freeTimeRange.endTime) {
-        wx.showToast({
-          title: `结束时间不能晚于${freeTimeRange.endTime}`,
-          icon: 'none'
-        });
-        return;
+        if (freeTimeRange && time > freeTimeRange.endTime) {
+          wx.showToast({
+            title: `结束时间不能晚于${freeTimeRange.endTime}`,
+            icon: 'none'
+          });
+          return;
+        }
       }
 
       // 如果已选择开始时间，验证结束时间必须大于开始时间
@@ -1740,10 +1746,32 @@ Component({
 
     /**
      * 更新时间限制（针对今天的情况）
+     * 教练主动预约时：仅约束大于当前时间，不受可预约时间范围限制
+     * 学员预约时：同时受可预约时间范围约束
      */
     updateTimeConstraints(date) {
-      const { freeTimeRange } = this.data;
-      
+      const { freeTimeRange, userRole } = this.data;
+      const isCoach = userRole === 'coach';
+
+      if (isCoach) {
+        // 教练：仅限未来时间，不叠加 freeTimeRange 边界
+        if (this.isToday(date)) {
+          const now = new Date();
+          const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes() + 1).padStart(2, '0')}`;
+          this.setData({
+            minSelectableStartTime: currentTime,
+            minSelectableEndTime: this.getNextMinuteTime(currentTime)
+          });
+        } else {
+          this.setData({
+            minSelectableStartTime: '00:00',
+            minSelectableEndTime: '00:01'
+          });
+        }
+        return;
+      }
+
+      // 学员：保持原有逻辑，受可预约时间范围约束
       if (!freeTimeRange) {
         return;
       }

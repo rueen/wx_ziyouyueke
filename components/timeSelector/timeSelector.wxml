@@ -69,8 +69,13 @@
 
     <!-- 自由时间选择（timeType = 2 且 mode = select，未配置步长） -->
     <view wx:elif="{{timeType === 2 && mode === 'select'}}" class="free-time-selector-wrapper">
-      <view class="free-time-hint" wx:if="{{freeTimeRange}}">
+      <!-- 学员预约：显示教练配置的可预约时间范围 -->
+      <view class="free-time-hint" wx:if="{{freeTimeRange && userRole !== 'coach'}}">
         <text class="hint-text">可预约时间段：{{freeTimeRange.startTime}} - {{freeTimeRange.endTime}}</text>
+      </view>
+      <!-- 教练主动预约：不受可预约时间范围限制，仅需大于当前时间 -->
+      <view class="free-time-hint" wx:if="{{userRole === 'coach'}}">
+        <text class="hint-text">可预约当日任意未来时段</text>
       </view>
 
       <!-- 已预约时间段展示（放在选择时间上方） -->
@@ -111,7 +116,7 @@
               mode="time" 
               value="{{selectedStartTime}}"
               start="{{minSelectableStartTime}}"
-              end="{{freeTimeRange.endTime}}"
+              end="{{userRole === 'coach' ? '23:59' : freeTimeRange.endTime}}"
               bindchange="onSelectStartTime"
             >
               <view class="picker-view">
@@ -129,8 +134,8 @@
             <picker 
               mode="time" 
               value="{{selectedEndTime}}"
-              start="{{minSelectableEndTime || freeTimeRange.startTime}}"
-              end="{{freeTimeRange.endTime}}"
+              start="{{minSelectableEndTime || (userRole === 'coach' ? '00:01' : freeTimeRange.startTime)}}"
+              end="{{userRole === 'coach' ? '23:59' : freeTimeRange.endTime}}"
               bindchange="onSelectEndTime"
             >
               <view class="picker-view">
