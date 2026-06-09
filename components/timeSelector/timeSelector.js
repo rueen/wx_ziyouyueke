@@ -1713,7 +1713,8 @@ Component({
       }
 
       // 提前预约限制校验（非团课）
-      if (minAdvanceHours > 0 && this.properties.type !== 'groupCourses') {
+      // 教练主动预约时不校验提前预约限制
+      if (minAdvanceHours > 0 && this.properties.type !== 'groupCourses' && this.data.userRole !== 'coach') {
         if (this.isTimeSlotTooSoon(currentDate, selectedStartTime)) {
           wx.showToast({
             title: `需提前 ${minAdvanceHours} 小时预约，请重新选择开始时间`,
