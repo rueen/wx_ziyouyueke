@@ -81,15 +81,15 @@ Page({
         courseId: parseInt(options.id),
         isCopy: true
       })
-      this.loadCardsList()
-      this.loadCourseDetail()
+      // 先加载卡片列表，再加载课程详情，确保 card_id 过滤时 cardsList 已就绪
+      this.loadCardsList().then(() => this.loadCourseDetail())
     } else if (options.id) {
       this.setData({
         mode: 'edit',
         courseId: parseInt(options.id)
       })
-      this.loadCardsList()
-      this.loadCourseDetail()
+      // 先加载卡片列表，再加载课程详情，确保 card_id 过滤时 cardsList 已就绪
+      this.loadCardsList().then(() => this.loadCourseDetail())
     } else {
       this.setData({
         mode: 'add'
@@ -197,7 +197,12 @@ Page({
               min_participants: course.min_participants,
               price_type: course.price_type, // 1-扣课时，2-金额展示，3-免费
               category_id: course.category_id, // 课程类型ID
-              card_id: Array.isArray(course.card_id) ? course.card_id : (course.card_id ? [course.card_id] : []), // 课程卡ID列表
+              card_id: (() => {
+                // 过滤掉 cardsList 中已不存在的卡片 ID，避免编辑/复制时因卡片被删除导致接口报错
+                const rawIds = Array.isArray(course.card_id) ? course.card_id : (course.card_id ? [course.card_id] : []);
+                const validIds = new Set((this.data.cardsList || []).map(c => c.id));
+                return rawIds.filter(id => validIds.has(id));
+              })(),
               lesson_cost: course.lesson_cost,
               price_amount: course.price_amount,
               enrollment_scope: course.enrollment_scope, // 1-仅学员，2-所有人
@@ -671,7 +676,7 @@ Page({
     const apiCall = mode === 'add' 
       ? api.groupCourse.create(params)
       : api.groupCourse.update(courseId, params)
-    
+
     apiCall
       .then(res => {
         if (res.success) {
@@ -705,8 +710,8 @@ Page({
       .catch(err => {
         console.error('保存失败:', err)
         wx.showToast({
-          title: '保存失败',
-          icon: 'error'
+          title: err.message || '保存失败',
+          icon: 'none'
         })
       })
       .finally(() => {
