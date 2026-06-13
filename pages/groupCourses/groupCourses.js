@@ -212,6 +212,7 @@ Page({
         }))
         this.setData({
           courses: this.data.currentPage === 1 ? courses : [...this.data.courses, ...courses],
+          currentPage: this.data.currentPage + 1,
           isLoading: false,
           hasMore: res.data.page < res.data.totalPages
         });
