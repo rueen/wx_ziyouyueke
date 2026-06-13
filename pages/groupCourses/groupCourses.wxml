@@ -110,7 +110,7 @@
                 catch:tap="onCancelCourse"
               >取消</button>
               <button
-                wx:if="{{item.status === 0 || (item.status === 2 && item.current_participants === 0)}}"
+                wx:if="{{item.status === 0 || item.status === 2}}"
                 class="action-btn cancel"
                 data-course="{{item}}"
                 catch:tap="onDeleteCourse"
