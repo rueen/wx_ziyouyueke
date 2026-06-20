@@ -152,7 +152,7 @@
     <!-- 单次销课扣减课时（所有状态均可编辑） -->
     <view class="edit-form-item">
       <view class="edit-form-label">单次销课扣减课时</view>
-      <view class="edit-form-tip">每次预约完成或团课签到时从卡内扣除的课时数，最小值为 1。适用于「一张卡多人同时使用」场景。</view>
+      <view class="edit-form-tip">每次销课或活动签到时从卡内扣除的课时数，最小值为 1。适用于「一张卡多人同时使用」场景。</view>
       <view class="edit-number-input">
         <view class="number-btn" catchtap="onDeductLessonsDecrement">－</view>
         <input
