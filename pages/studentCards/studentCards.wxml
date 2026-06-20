@@ -45,8 +45,11 @@
 
         <!-- 操作按钮 -->
         <view class="card-actions" catchtap="onPreventClose">
-          <!-- 未开启状态：显示开卡、删除 -->
+          <!-- 未开启状态：显示编辑、开卡、删除 -->
           <block wx:if="{{item.card_status === 0 && !item.is_expired}}">
+            <view class="action-btn" catchtap="onEditCard" data-card="{{item}}">
+              <text>编辑</text>
+            </view>
             <view class="action-btn" catchtap="onActivateCard" data-card="{{item}}">
               <text>开卡</text>
             </view>
@@ -65,8 +68,11 @@
             </view>
           </block>
 
-          <!-- 已停用状态：显示重新开启、删除 -->
+          <!-- 已停用状态：显示编辑、重新开启、删除 -->
           <block wx:if="{{item.card_status === 2 && !item.is_expired}}">
+            <view class="action-btn" catchtap="onEditCard" data-card="{{item}}">
+              <text>编辑</text>
+            </view>
             <view class="action-btn" catchtap="onReactivateCard" data-card="{{item}}">
               <text>重新开启</text>
             </view>
@@ -138,19 +144,37 @@
 <!-- 编辑卡片实例 -->
 <modal 
   show="{{showModal}}" 
-  title="调整卡片有效期" 
+  title="编辑卡片实例" 
   position="center"
   bind:close="onModalClose"
 >
   <view class="edit-form">
-    <view class="edit-form-label">到期时间</view>
-    <view class="edit-form-tip">仅修改卡片有效期，不影响其他卡片信息</view>
-    <picker mode="date" value="{{editExpireDate}}" bindchange="onEditExpireDateChange">
-      <view class="edit-date-picker">
-        <text>{{editExpireDate || '请选择到期时间'}}</text>
-        <text class="iconfont icon-arrow-r"></text>
+    <!-- 单次销课扣减课时（所有状态均可编辑） -->
+    <view class="edit-form-item">
+      <view class="edit-form-label">单次销课扣减课时</view>
+      <view class="edit-form-tip">每次预约完成或团课签到时从卡内扣除的课时数，最小值为 1。适用于「一张卡多人同时使用」场景。</view>
+      <view class="edit-number-input">
+        <view class="number-btn" catchtap="onDeductLessonsDecrement">－</view>
+        <input
+          class="number-value"
+          type="number"
+          value="{{editDeductLessons}}"
+          bindinput="onDeductLessonsInput"
+        />
+        <view class="number-btn" catchtap="onDeductLessonsIncrement">＋</view>
       </view>
-    </picker>
+    </view>
+
+    <!-- 到期时间：未开卡（card_status === 0）不允许修改 -->
+    <view class="edit-form-item" wx:if="{{editingCardStatus !== 0}}">
+      <view class="edit-form-label">到期时间</view>
+      <picker mode="date" value="{{editExpireDate}}" bindchange="onEditExpireDateChange">
+        <view class="edit-date-picker">
+          <text>{{editExpireDate || '请选择到期时间'}}</text>
+          <text class="iconfont icon-arrow-r"></text>
+        </view>
+      </picker>
+    </view>
   </view>
   <view class="edit-modal-footer">
     <view class="btn btn-cancel" bindtap="onModalClose">取消</view>

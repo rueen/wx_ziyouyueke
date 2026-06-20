@@ -22,7 +22,9 @@ Page({
     selectedTemplateId: null,
     showModal: false, // 显示编辑弹窗
     editingCardId: null, // 当前编辑的卡片ID
-    editExpireDate: '' // 编辑中的到期日期
+    editingCardStatus: null, // 当前编辑卡片的状态（0-未开卡 1-已开卡 2-已停用）
+    editExpireDate: '', // 编辑中的到期日期
+    editDeductLessons: 1 // 编辑中的单次销课扣减课时
   },
 
   /**
@@ -198,14 +200,17 @@ Page({
   },
 
   /**
-   * 编辑
+   * 编辑卡片实例
+   * @param {Object} e 事件对象
    */
   onEditCard(e) {
     const { card } = e.currentTarget.dataset;
     this.setData({
       showModal: true,
       editingCardId: card.id,
-      editExpireDate: card.expire_date || ''
+      editingCardStatus: card.card_status,
+      editExpireDate: card.expire_date || '',
+      editDeductLessons: card.deduct_lessons_per_use || 1
     });
   },
 
@@ -216,7 +221,9 @@ Page({
     this.setData({
       showModal: false,
       editingCardId: null,
-      editExpireDate: ''
+      editingCardStatus: null,
+      editExpireDate: '',
+      editDeductLessons: 1
     });
   },
 
@@ -231,15 +238,44 @@ Page({
   },
 
   /**
-   * 保存编辑（仅更新 expire_date）
+   * 单次销课扣减课时 - 减
+   */
+  onDeductLessonsDecrement() {
+    const val = this.data.editDeductLessons;
+    if (val > 1) {
+      this.setData({ editDeductLessons: val - 1 });
+    }
+  },
+
+  /**
+   * 单次销课扣减课时 - 加
+   */
+  onDeductLessonsIncrement() {
+    this.setData({ editDeductLessons: this.data.editDeductLessons + 1 });
+  },
+
+  /**
+   * 单次销课扣减课时 - 手动输入
+   * @param {Object} e 事件对象
+   */
+  onDeductLessonsInput(e) {
+    const val = parseInt(e.detail.value, 10);
+    this.setData({ editDeductLessons: isNaN(val) || val < 1 ? 1 : val });
+  },
+
+  /**
+   * 保存编辑卡片实例（deduct_lessons_per_use 始终更新；
+   * expire_date 仅在非未开卡状态下更新）
    */
   async onConfirmEditCard() {
-    const { editingCardId, editExpireDate } = this.data;
+    const { editingCardId, editingCardStatus, editExpireDate, editDeductLessons } = this.data;
 
     if (!editingCardId) {
       return;
     }
-    if (!editExpireDate) {
+
+    // 已开卡/已停用/已过期时，到期时间为必填
+    if (editingCardStatus !== 0 && !editExpireDate) {
       wx.showToast({
         title: '请选择到期时间',
         icon: 'none'
@@ -247,12 +283,17 @@ Page({
       return;
     }
 
+    const payload = {
+      deduct_lessons_per_use: editDeductLessons
+    };
+    if (editingCardStatus !== 0) {
+      payload.expire_date = editExpireDate;
+    }
+
     try {
       wx.showLoading({ title: '保存中...' });
 
-      const result = await api.card.updateCard(editingCardId, {
-        expire_date: editExpireDate
-      });
+      const result = await api.card.updateCard(editingCardId, payload);
 
       wx.hideLoading();
 
@@ -266,7 +307,7 @@ Page({
       }
     } catch (error) {
       wx.hideLoading();
-      console.error('更新卡片到期时间失败:', error);
+      console.error('更新卡片实例失败:', error);
       wx.showToast({
         title: error.message || '保存失败',
         icon: 'none'

@@ -316,6 +316,45 @@
   color: #86868b;
 }
 
+.edit-form-item {
+  margin-bottom: 24rpx;
+}
+
+/* 数字步进器 */
+.edit-number-input {
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  border-radius: 12rpx;
+  background: #f8f9fa;
+  border: 1rpx solid #e9ecef;
+  overflow: hidden;
+}
+
+.number-btn {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #007aff;
+  flex-shrink: 0;
+}
+
+.number-btn:active {
+  background: #e9ecef;
+}
+
+.number-value {
+  flex: 1;
+  text-align: center;
+  font-size: 30rpx;
+  color: #1d1d1f;
+  height: 88rpx;
+  line-height: 88rpx;
+}
+
 .edit-modal-footer {
   display: flex;
   gap: 24rpx;
