@@ -13,7 +13,11 @@
     <!-- 学员信息 -->
     <view class="student-header">
       <view class="student-avatar">
-        <image src="{{studentData.student.avatar_url}}" class="avatar-img"></image>
+        <studentAvatar
+          avatarUrl="{{studentData.student.avatar_url}}"
+          studentName="{{studentData.student_name}}"
+          size="{{120}}"
+        />
       </view>
       <view class="student-info">
         <view class="student-name">

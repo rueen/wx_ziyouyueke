@@ -2,6 +2,7 @@
   "usingComponents": {
     "navBar": "/components/navBar/navbar",
     "layout": "/components/layout/layout",
-    "modal": "/components/modal/modal"
+    "modal": "/components/modal/modal",
+    "studentAvatar": "/components/studentAvatar/studentAvatar"
   }
 }

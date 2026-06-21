@@ -1,0 +1,11 @@
+<view class="student-avatar" style="{{containerStyle}}">
+  <image
+    wx:if="{{mode === 'image' || mode === 'default'}}"
+    src="{{imageUrl}}"
+    class="avatar-img"
+    mode="aspectFill"
+  />
+  <view wx:else class="avatar-text" style="background-color: {{bgColor}};">
+    <text class="avatar-text-content" style="font-size: {{fontSize}}rpx;">{{text}}</text>
+  </view>
+</view>

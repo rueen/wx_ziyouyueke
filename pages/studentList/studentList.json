@@ -4,7 +4,8 @@
     "layout": "/components/layout/layout",
     "emptyState": "/components/emptyState/emptyState",
     "shareModal": "/components/shareModal/shareModal",
-    "modal": "/components/modal/modal"
+    "modal": "/components/modal/modal",
+    "studentAvatar": "/components/studentAvatar/studentAvatar"
   },
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"

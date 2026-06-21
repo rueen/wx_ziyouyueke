@@ -40,12 +40,13 @@
       bindtap="onStudentDetail"
       data-student="{{item}}"
     >
-      <!-- 头像：待激活学员无 student 对象，显示占位图 -->
+      <!-- 头像 -->
       <view class="student-avatar">
-        <image wx:if="{{item.student}}" src="{{item.student.avatar_url}}" class="avatar-img"></image>
-        <view wx:else class="avatar-placeholder">
-          <text class="iconfont icon-user placeholder-icon"></text>
-        </view>
+        <studentAvatar
+          avatarUrl="{{item.student ? item.student.avatar_url : ''}}"
+          studentName="{{item.student_name}}"
+          size="{{100}}"
+        />
       </view>
 
       <view class="student-info">
