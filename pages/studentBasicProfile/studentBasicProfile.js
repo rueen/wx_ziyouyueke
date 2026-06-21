@@ -17,7 +17,28 @@ Page({
     },
     studentName: '',
     studentRemark: '',
+    gender: 0, // 0:未知 1:男 2:女
+    genderText: '未设置',
+    studentHeight: '',
+    studentWeight: '',
+    studentBirthday: '',
     isSaving: false
+  },
+
+  /**
+   * 获取性别文本
+   * @param {number} gender 性别值
+   * @returns {string}
+   */
+  getGenderText(gender) {
+    switch (gender) {
+      case 1:
+        return '男';
+      case 2:
+        return '女';
+      default:
+        return '未设置';
+    }
   },
 
   /**
@@ -56,11 +77,18 @@ Page({
 
       if (result && result.data) {
         const studentData = result.data;
+        const student = studentData.student || {};
+        const gender = studentData.gender ?? student.gender ?? 0;
         this.setData({
           relationRecordId: studentData.id,
           studentData,
-          studentName: (studentData.student_name || studentData.student.nickname || '').trim(),
-          studentRemark: studentData.coach_remark || ''
+          studentName: (studentData.student_name || student.nickname || '').trim(),
+          studentRemark: studentData.coach_remark || '',
+          gender,
+          genderText: this.getGenderText(gender),
+          studentHeight: studentData.height ?? student.height ?? '',
+          studentWeight: studentData.weight ?? student.weight ?? '',
+          studentBirthday: studentData.birthday ?? student.birthday ?? ''
         });
       }
     } catch (error) {
@@ -93,11 +121,68 @@ Page({
   },
 
   /**
+   * 选择性别
+   */
+  onChooseGender() {
+    wx.showActionSheet({
+      itemList: ['男', '女'],
+      success: (res) => {
+        const gender = res.tapIndex === 0 ? 1 : 2;
+        this.setData({
+          gender,
+          genderText: this.getGenderText(gender)
+        });
+      }
+    });
+  },
+
+  /**
+   * 身高输入
+   * @param {Object} e 输入事件
+   */
+  onHeightInput(e) {
+    this.setData({
+      studentHeight: e.detail.value
+    });
+  },
+
+  /**
+   * 体重输入
+   * @param {Object} e 输入事件
+   */
+  onWeightInput(e) {
+    this.setData({
+      studentWeight: e.detail.value
+    });
+  },
+
+  /**
+   * 生日选择
+   * @param {Object} e 选择事件
+   */
+  onBirthdayChange(e) {
+    this.setData({
+      studentBirthday: e.detail.value
+    });
+  },
+
+  /**
    * 提交基本资料
    */
   async onSubmit() {
-    const { isSaving, relationRecordId, studentName, studentRemark } = this.data;
+    const {
+      isSaving,
+      relationRecordId,
+      studentName,
+      studentRemark,
+      gender,
+      studentHeight,
+      studentWeight,
+      studentBirthday
+    } = this.data;
     const trimmedName = (studentName || '').trim();
+    const trimmedHeight = (studentHeight || '').trim();
+    const trimmedWeight = (studentWeight || '').trim();
 
     if (isSaving) {
       return;
@@ -111,13 +196,39 @@ Page({
       return;
     }
 
+    if (trimmedHeight) {
+      const heightNum = parseFloat(trimmedHeight);
+      if (Number.isNaN(heightNum) || heightNum <= 0 || heightNum > 300) {
+        wx.showToast({
+          title: '请输入有效的身高（1-300cm）',
+          icon: 'none'
+        });
+        return;
+      }
+    }
+
+    if (trimmedWeight) {
+      const weightNum = parseFloat(trimmedWeight);
+      if (Number.isNaN(weightNum) || weightNum <= 0 || weightNum > 500) {
+        wx.showToast({
+          title: '请输入有效的体重（1-500kg）',
+          icon: 'none'
+        });
+        return;
+      }
+    }
+
     try {
       this.setData({ isSaving: true });
       wx.showLoading({ title: '提交中...' });
 
       const result = await api.relation.update(relationRecordId, {
         student_name: trimmedName,
-        coach_remark: (studentRemark || '').trim()
+        coach_remark: (studentRemark || '').trim(),
+        gender,
+        height: trimmedHeight ? parseFloat(trimmedHeight) : null,
+        weight: trimmedWeight ? parseFloat(trimmedWeight) : null,
+        birthday: (studentBirthday || '').trim() || null
       });
 
       wx.hideLoading();

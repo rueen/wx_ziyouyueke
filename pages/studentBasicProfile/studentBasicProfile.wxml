@@ -2,25 +2,11 @@
 <layout>
   <view class="page-container">
     <view class="form-card">
-      <view class="form-item">
-        <text class="label">头像</text>
-        <image class="avatar" src="{{studentData.student.avatar_url}}"></image>
-      </view>
-
-      <view class="form-item">
-        <text class="label">昵称</text>
-        <text class="value">{{studentData.student.nickname || '-'}}</text>
-      </view>
 
       <view class="form-item">
         <text class="label">手机</text>
         <text class="value">{{studentData.student.phone || '-'}}</text>
       </view>
-
-      <!-- <view class="form-item">
-        <text class="label">个人介绍</text>
-        <text class="value">{{studentData.student.intro || '-'}}</text>
-      </view> -->
 
       <view class="form-item">
         <text class="label">姓名</text>
@@ -32,6 +18,46 @@
           value="{{studentName}}"
           bindinput="onStudentNameInput"
         />
+      </view>
+
+      <view class="form-item" bindtap="onChooseGender">
+        <text class="label">性别</text>
+        <view class="value-container">
+          <text class="value">{{genderText}}</text>
+          <text class="iconfont icon-arrow-r"></text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">身高（cm）</text>
+        <input
+          class="input-value"
+          type="digit"
+          placeholder="请输入身高"
+          value="{{studentHeight}}"
+          bindinput="onHeightInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="label">体重（kg）</text>
+        <input
+          class="input-value"
+          type="digit"
+          placeholder="请输入体重"
+          value="{{studentWeight}}"
+          bindinput="onWeightInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="label">生日</text>
+        <picker mode="date" value="{{studentBirthday}}" bindchange="onBirthdayChange">
+          <view class="value-container">
+            <text class="value">{{studentBirthday || '请选择生日'}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
       </view>
 
       <view class="form-item remark-item">

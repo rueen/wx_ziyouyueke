@@ -40,6 +40,19 @@ page {
   text-align: right;
 }
 
+.value-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.value-container .iconfont {
+  font-size: 24rpx;
+  color: #999999;
+}
+
 .avatar {
   width: 72rpx;
   height: 72rpx;
