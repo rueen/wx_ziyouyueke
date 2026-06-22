@@ -6,12 +6,42 @@ const api = require('../../utils/api.js');
 const { createCompatibleDate } = require('../../utils/util.js');
 const { formatUnitPrice } = require('../../utils/unitPrice.js');
 
+/**
+ * 格式化今日日期为中文展示
+ * @returns {string}
+ */
+function formatTodayDateText() {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = today.getMonth() + 1;
+  const d = today.getDate();
+  return `${y}年${m}月${d}日`;
+}
+
 Page({
   data: {
     relationId: null,
     studentId: null,
+    logStartDateText: formatTodayDateText(),
     logs: [],
     categoryMap: {},
+    categoryPickerRange: [{ id: null, name: '全部分类' }],
+    categoryPickerIndex: 0,
+    selectedCategoryId: null,
+    selectedCategoryName: '全部分类',
+    changeTypeOptions: [
+      { value: null, label: '全部类型' },
+      { value: 1, label: '增加' },
+      { value: 2, label: '减少' },
+      { value: 3, label: '清零' }
+    ],
+    changeTypePickerIndex: 0,
+    selectedChangeType: null,
+    selectedChangeTypeName: '全部类型',
+    filterStartDate: '',
+    filterEndDate: '',
+    showFilterPanel: false,
+    hasActiveFilter: false,
     loading: false,
     loadingMore: false,
     page: 1,
@@ -64,7 +94,7 @@ Page({
   },
 
   /**
-   * 加载课程分类映射
+   * 加载课程分类列表
    */
   async loadCategories() {
     try {
@@ -74,10 +104,164 @@ Page({
       list.forEach(item => {
         categoryMap[item.id] = item.name;
       });
-      this.setData({ categoryMap });
+      this.setData({
+        categoryMap,
+        categoryPickerRange: [
+          { id: null, name: '全部分类' },
+          ...list.map(item => ({ id: item.id, name: item.name }))
+        ]
+      });
     } catch (error) {
       console.warn('加载课程分类失败:', error);
     }
+  },
+
+  /**
+   * 更新筛选激活状态
+   */
+  updateFilterActiveState() {
+    const { selectedCategoryId, selectedChangeType, filterStartDate, filterEndDate } = this.data;
+    const hasActiveFilter = selectedCategoryId != null
+      || selectedChangeType != null
+      || !!filterStartDate
+      || !!filterEndDate;
+    this.setData({ hasActiveFilter });
+  },
+
+  /**
+   * 展开/收起筛选面板
+   */
+  onToggleFilter() {
+    this.setData({
+      showFilterPanel: !this.data.showFilterPanel
+    });
+  },
+
+  /**
+   * 构建筛选查询参数
+   * @returns {Object}
+   */
+  buildFilterParams() {
+    const {
+      relationId,
+      studentId,
+      selectedCategoryId,
+      selectedChangeType,
+      filterStartDate,
+      filterEndDate
+    } = this.data;
+
+    const params = {
+      relation_id: relationId
+    };
+
+    if (studentId) {
+      params.student_id = studentId;
+    }
+    if (selectedCategoryId != null) {
+      params.category_id = selectedCategoryId;
+    }
+    if (selectedChangeType != null) {
+      params.change_type = selectedChangeType;
+    }
+    if (filterStartDate) {
+      params.start_date = filterStartDate;
+    }
+    if (filterEndDate) {
+      params.end_date = filterEndDate;
+    }
+
+    return params;
+  },
+
+  /**
+   * 课程分类筛选变更
+   * @param {Object} e 事件对象
+   */
+  onCategoryPickerChange(e) {
+    const index = Number(e.detail.value);
+    const selected = this.data.categoryPickerRange[index] || { id: null, name: '全部分类' };
+    this.setData({
+      categoryPickerIndex: index,
+      selectedCategoryId: selected.id,
+      selectedCategoryName: selected.name
+    }, () => {
+      this.updateFilterActiveState();
+    });
+  },
+
+  /**
+   * 变动类型筛选变更
+   * @param {Object} e 事件对象
+   */
+  onChangeTypePickerChange(e) {
+    const index = Number(e.detail.value);
+    const selected = this.data.changeTypeOptions[index] || { value: null, label: '全部类型' };
+    this.setData({
+      changeTypePickerIndex: index,
+      selectedChangeType: selected.value,
+      selectedChangeTypeName: selected.label
+    }, () => {
+      this.updateFilterActiveState();
+    });
+  },
+
+  /**
+   * 开始日期筛选变更
+   * @param {Object} e 事件对象
+   */
+  onFilterStartDateChange(e) {
+    this.setData({
+      filterStartDate: e.detail.value
+    }, () => {
+      this.updateFilterActiveState();
+    });
+  },
+
+  /**
+   * 结束日期筛选变更
+   * @param {Object} e 事件对象
+   */
+  onFilterEndDateChange(e) {
+    this.setData({
+      filterEndDate: e.detail.value
+    }, () => {
+      this.updateFilterActiveState();
+    });
+  },
+
+  /**
+   * 清除筛选条件
+   */
+  onClearFilter() {
+    this.setData({
+      categoryPickerIndex: 0,
+      selectedCategoryId: null,
+      selectedCategoryName: '全部分类',
+      changeTypePickerIndex: 0,
+      selectedChangeType: null,
+      selectedChangeTypeName: '全部类型',
+      filterStartDate: '',
+      filterEndDate: '',
+      hasActiveFilter: false
+    }, () => {
+      this.loadLogs(true);
+    });
+  },
+
+  /**
+   * 应用筛选
+   */
+  onApplyFilter() {
+    const { filterStartDate, filterEndDate } = this.data;
+    if (filterStartDate && filterEndDate && filterStartDate > filterEndDate) {
+      wx.showToast({
+        title: '开始日期不能晚于结束日期',
+        icon: 'none'
+      });
+      return;
+    }
+    this.loadLogs(true);
   },
 
   /**
@@ -103,7 +287,7 @@ Page({
    * @param {boolean} refresh 是否刷新
    */
   async loadLogs(refresh = false) {
-    const { relationId, studentId, pageSize, categoryMap } = this.data;
+    const { pageSize, categoryMap } = this.data;
     const page = refresh ? 1 : this.data.page + 1;
 
     this.setData({
@@ -113,13 +297,10 @@ Page({
 
     try {
       const params = {
-        relation_id: relationId,
+        ...this.buildFilterParams(),
         page,
         limit: pageSize
       };
-      if (studentId) {
-        params.student_id = studentId;
-      }
 
       const result = await api.lessonChangeLog.getList(params);
       const list = (result && result.data && result.data.list) ? result.data.list : [];

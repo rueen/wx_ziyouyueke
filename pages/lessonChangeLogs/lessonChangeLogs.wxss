@@ -20,6 +20,107 @@ page {
   line-height: 1.5;
 }
 
+.filter-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+}
+
+.filter-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.filter-header-title {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.filter-active-tag {
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+  background: #e8f2ff;
+  color: #007aff;
+  font-size: 22rpx;
+}
+
+.filter-toggle-icon {
+  font-size: 24rpx;
+  color: #999999;
+  transition: transform 0.2s ease;
+}
+
+.filter-toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.filter-body {
+  padding-bottom: 24rpx;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f2f2f2;
+}
+
+.filter-label {
+  font-size: 28rpx;
+  color: #333333;
+  flex-shrink: 0;
+}
+
+.filter-value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: #666666;
+  max-width: 420rpx;
+}
+
+.filter-value .iconfont {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 16rpx;
+  padding-top: 24rpx;
+}
+
+.filter-btn {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: #f2f2f7;
+  color: #333333;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-btn.primary {
+  background: #007aff;
+  color: #ffffff;
+}
+
 .log-list {
   display: flex;
   flex-direction: column;
