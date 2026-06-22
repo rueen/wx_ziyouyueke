@@ -60,25 +60,6 @@
       </view>
     </view>
 
-    <!-- 新增统计 -->
-    <view class="section-card">
-      <view class="section-title">新增统计</view>
-      <view class="growth-list">
-        <view class="growth-item">
-          <text class="growth-label">新增学员</text>
-          <text class="growth-value">{{growth.new_students}}</text>
-        </view>
-        <view class="growth-item">
-          <text class="growth-label">新增卡片课时</text>
-          <text class="growth-value">{{growth.new_card_lessons}}</text>
-        </view>
-        <view class="growth-item">
-          <text class="growth-label">新增常规课时</text>
-          <text class="growth-value">{{growth.new_regular_lessons}}</text>
-        </view>
-      </view>
-    </view>
-
     <!-- 消课排行榜 -->
     <view class="section-card">
       <view class="section-title">消课排行榜</view>

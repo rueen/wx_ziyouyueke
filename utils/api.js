@@ -1906,18 +1906,6 @@ module.exports = {
         method: 'GET',
         data: params
       });
-    },
-    /**
-     * 获取新增统计
-     * @param {Object} params 查询参数
-     * @returns {Promise}
-     */
-    getGrowth: function(params = {}) {
-      return request({
-        url: '/api/h5/stats/growth',
-        method: 'GET',
-        data: params
-      });
     }
   },
 

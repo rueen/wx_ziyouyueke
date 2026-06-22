@@ -59,11 +59,6 @@ Page({
       remaining_lessons: 0,
       remaining_revenue: 0
     },
-    growth: {
-      new_students: 0,
-      new_card_lessons: 0,
-      new_regular_lessons: 0,
-    },
     ranking: []
   },
 
@@ -108,15 +103,13 @@ Page({
 
     try {
       wx.showLoading({ title: '加载中...' });
-      const [overviewRes, growthRes, rankingRes] = await Promise.all([
+      const [overviewRes, rankingRes] = await Promise.all([
         api.stats.getOverview(params),
-        api.stats.getGrowth(params),
         api.stats.getCompletionRanking({ ...params, limit: 20 })
       ]);
       wx.hideLoading();
 
       const overview = (overviewRes && overviewRes.data) ? overviewRes.data : {};
-      const growth = (growthRes && growthRes.data) ? growthRes.data : {};
       const ranking = (rankingRes && rankingRes.data && rankingRes.data.list) ? rankingRes.data.list : [];
 
       this.setData({
@@ -125,11 +118,6 @@ Page({
           completed_revenue: overview.completed_revenue || 0,
           remaining_lessons: overview.remaining_lessons || 0,
           remaining_revenue: overview.remaining_revenue || 0
-        },
-        growth: {
-          new_students: growth.new_students || 0,
-          new_card_lessons: growth.new_card_lessons || 0,
-          new_regular_lessons: growth.new_regular_lessons || 0,
         },
         ranking,
         loading: false
