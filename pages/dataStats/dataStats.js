@@ -59,16 +59,33 @@ Page({
       remaining_lessons: 0,
       remaining_revenue: 0
     },
-    ranking: []
+    ranking: [],
+    students: [],
+    studentPickerRange: [{ student_id: null, name: '全部学员' }],
+    studentPickerIndex: 0,
+    selectedStudentId: null,
+    selectedStudentName: '全部学员'
   },
 
-  onLoad() {
+  /**
+   * @param {Object} options 页面参数
+   */
+  onLoad(options) {
+    const presetStudentId = options.studentId ? Number(options.studentId) : null;
+    const presetStudentName = options.studentName ? decodeURIComponent(options.studentName) : '';
     const range = getDateRangeByKey('thisMonth');
     this.setData({
       startDate: range.startDate,
-      endDate: range.endDate
+      endDate: range.endDate,
+      presetStudentId,
+      presetStudentName
     }, () => {
-      this.loadStats();
+      this.loadStudents().then(() => {
+        if (presetStudentId) {
+          this.applyPresetStudent(presetStudentId, presetStudentName);
+        }
+        this.loadStats();
+      });
     });
   },
 
@@ -79,17 +96,85 @@ Page({
   },
 
   /**
+   * 加载学员列表
+   * @returns {Promise<void>}
+   */
+  async loadStudents() {
+    try {
+      const result = await api.relation.getMyStudents({ page: 1, limit: 100 });
+      const list = (result && result.data && result.data.list) ? result.data.list : [];
+      const students = list
+        .filter(item => item.student_id)
+        .map(item => ({
+          student_id: item.student_id,
+          name: item.student_name || (item.student && item.student.nickname) || '未命名学员'
+        }));
+      this.setData({
+        students,
+        studentPickerRange: [{ student_id: null, name: '全部学员' }, ...students]
+      });
+    } catch (error) {
+      console.warn('加载学员列表失败:', error);
+    }
+  },
+
+  /**
+   * 应用预设学员筛选
+   * @param {number} studentId 学员ID
+   * @param {string} studentName 学员姓名
+   */
+  applyPresetStudent(studentId, studentName) {
+    let { studentPickerRange } = this.data;
+    let index = studentPickerRange.findIndex(item => item.student_id === studentId);
+
+    if (index === -1) {
+      studentPickerRange = [
+        ...studentPickerRange,
+        { student_id: studentId, name: studentName || '当前学员' }
+      ];
+      index = studentPickerRange.length - 1;
+    }
+
+    const selected = studentPickerRange[index];
+    this.setData({
+      studentPickerRange,
+      studentPickerIndex: index,
+      selectedStudentId: studentId,
+      selectedStudentName: selected.name
+    });
+  },
+
+  /**
+   * 学员筛选变更
+   * @param {Object} e 事件对象
+   */
+  onStudentPickerChange(e) {
+    const index = Number(e.detail.value);
+    const selected = this.data.studentPickerRange[index] || { student_id: null, name: '全部学员' };
+    this.setData({
+      studentPickerIndex: index,
+      selectedStudentId: selected.student_id,
+      selectedStudentName: selected.name
+    }, () => {
+      this.loadStats();
+    });
+  },
+
+  /**
    * 构建查询参数
    * @returns {Object}
    */
   buildQueryParams() {
-    const { startDate, endDate } = this.data;
+    const { startDate, endDate, selectedStudentId } = this.data;
     const params = {};
     if (startDate) {
       params.start_date = startDate;
     }
     if (endDate) {
       params.end_date = endDate;
+    }
+    if (selectedStudentId) {
+      params.student_ids = String(selectedStudentId);
     }
     return params;
   },

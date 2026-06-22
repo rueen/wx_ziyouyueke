@@ -62,12 +62,12 @@
     </view>
 
     <view class="menu-item" bindtap="onTags">
-      <view class="new-tag">NEW</view>
       <text class="iconfont icon-biaoqian"></text>
       <text class="menu-item-text">标签管理</text>
     </view>
 
     <view class="menu-item" bindtap="onDataStats">
+      <view class="new-tag">NEW</view>
       <text class="iconfont icon-statistics"></text>
       <text class="menu-item-text">数据统计</text>
     </view>

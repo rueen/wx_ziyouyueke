@@ -88,6 +88,15 @@
         </view>
         <text class="iconfont icon-arrow-r arrow"></text>
       </view>
+
+      <!-- 数据统计 -->
+      <view class="course-item active" bind:tap="handleDataStats">
+        <view class="course-item-left">
+          <text class="iconfont icon-statistics"></text>
+          <text>数据统计</text>
+        </view>
+        <text class="iconfont icon-arrow-r arrow"></text>
+      </view>
     </view>
 
     <!-- 教练权限 -->

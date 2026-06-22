@@ -407,6 +407,17 @@ Page({
   },
 
   /**
+   * 数据统计
+   */
+  handleDataStats() {
+    const { studentId, studentData } = this.data;
+    const studentName = studentData.student_name || (studentData.student && studentData.student.nickname) || '';
+    wx.navigateTo({
+      url: `/pages/dataStats/dataStats?studentId=${studentId}&studentName=${encodeURIComponent(studentName)}`
+    });
+  },
+
+  /**
    * 常规课管理
    */
   handleRegularCourseManagement() {

@@ -4,6 +4,21 @@
   <view class="page-container">
     <!-- 时间筛选 -->
     <view class="filter-card">
+      <view class="filter-row">
+        <text class="filter-label">学员</text>
+        <picker
+          mode="selector"
+          range="{{studentPickerRange}}"
+          range-key="name"
+          value="{{studentPickerIndex}}"
+          bindchange="onStudentPickerChange"
+        >
+          <view class="filter-value">
+            <text>{{selectedStudentName}}</text>
+            <text class="iconfont icon-arrow-r"></text>
+          </view>
+        </picker>
+      </view>
       <view class="filter-row" wx:if="{{selectedRangeKey === 'custom'}}">
         <text class="filter-label">开始日期</text>
         <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
@@ -61,7 +76,7 @@
     </view>
 
     <!-- 消课排行榜 -->
-    <view class="section-card">
+    <view class="section-card" wx:if="{{!selectedStudentId}}">
       <view class="section-title">消课排行榜</view>
       <view wx:if="{{ranking.length > 0}}" class="ranking-list">
         <view class="ranking-item" wx:for="{{ranking}}" wx:key="student_id">
