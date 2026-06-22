@@ -211,6 +211,16 @@ Page({
   },
 
   /**
+   * 查看课时变更明细
+   */
+  handleLessonChangeLogs() {
+    const { relationId } = this.data;
+    wx.navigateTo({
+      url: `/pages/lessonChangeLogs/lessonChangeLogs?relationId=${relationId}`
+    });
+  },
+
+  /**
    * 训练计划
    */
   handlePlanManagement() {

@@ -41,6 +41,12 @@
       </view>
     </view>
 
+    <!-- 课时变更明细 -->
+    <view class="groupCourse-section" bind:tap="handleLessonChangeLogs">
+      <text>课时变更明细</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
     <!-- 卡片信息 -->
     <view class="intro-section" wx:if="{{myCards.length > 0}}">
       <text class="section-title">我的卡片</text>
