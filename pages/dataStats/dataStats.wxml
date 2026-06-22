@@ -55,6 +55,9 @@
     <!-- 数据总览 -->
     <view class="section-card">
       <view class="section-title">数据总览</view>
+      <view class="section-tip">
+        <text>消课收入、未消课金额按课单价统计。未设置课单价的课程按 0 元计入，建议在课程分类、卡片模板或常规课管理中配置。</text>
+      </view>
       <view class="stats-grid">
         <view class="stats-item">
           <text class="stats-value">{{overview.completed_lessons}}</text>

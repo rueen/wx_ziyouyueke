@@ -93,6 +93,16 @@ page {
   margin-bottom: 20rpx;
 }
 
+.section-tip {
+  margin-bottom: 20rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  background: #fff8e6;
+  font-size: 24rpx;
+  color: #996600;
+  line-height: 1.5;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
