@@ -50,7 +50,7 @@
             <text class="edit-unit">元</text>
           </view>
           <!-- 到期时间 -->
-          <view wx:if="{{!isEditing}}" class="info-value">
+          <view wx:if="{{!isEditing}}" class="info-value expire-date">
             <text class="expire-date-text" wx:if="{{item.expire_date}}">{{item.expire_date}}</text>
             <text class="expire-date-text" wx:else>永久</text>
             <text class="expired-text" wx:if="{{item.is_expired}}">已过期</text>
