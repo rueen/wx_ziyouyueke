@@ -2,6 +2,9 @@
 <navBar title="课时变更明细" />
 <layout>
   <view class="page-container">
+    <view class="page-tip">
+      <text>课时变动记录仅包含 2026年6月22日 之后的数据</text>
+    </view>
     <view class="log-list" wx:if="{{logs.length > 0}}">
       <view class="log-item" wx:for="{{logs}}" wx:key="id">
         <view class="log-header">
