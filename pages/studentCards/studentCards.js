@@ -4,6 +4,7 @@
  */
 
 const api = require('../../utils/api.js');
+const { parseUnitPriceInput, formatUnitPrice } = require('../../utils/unitPrice.js');
 
 Page({
 
@@ -24,7 +25,9 @@ Page({
     editingCardId: null, // 当前编辑的卡片ID
     editingCardStatus: null, // 当前编辑卡片的状态（0-未开卡 1-已开卡 2-已停用）
     editExpireDate: '', // 编辑中的到期日期
-    editDeductLessons: 1 // 编辑中的单次销课扣减课时
+    editDeductLessons: 1, // 编辑中的单次销课扣减课时
+    editUnitPrice: '', // 编辑中的课单价
+    editingTemplateUnitPriceText: '' // 模板单价提示
   },
 
   /**
@@ -205,12 +208,15 @@ Page({
    */
   onEditCard(e) {
     const { card } = e.currentTarget.dataset;
+    const templatePrice = card.template_unit_price ?? card.coach_card?.unit_price ?? card.unit_price_template;
     this.setData({
       showModal: true,
       editingCardId: card.id,
       editingCardStatus: card.card_status,
       editExpireDate: card.expire_date || '',
-      editDeductLessons: card.deduct_lessons_per_use || 1
+      editDeductLessons: card.deduct_lessons_per_use || 1,
+      editUnitPrice: card.unit_price != null ? String(card.unit_price) : '',
+      editingTemplateUnitPriceText: templatePrice != null ? `（${formatUnitPrice(templatePrice)}）` : ''
     });
   },
 
@@ -223,7 +229,9 @@ Page({
       editingCardId: null,
       editingCardStatus: null,
       editExpireDate: '',
-      editDeductLessons: 1
+      editDeductLessons: 1,
+      editUnitPrice: '',
+      editingTemplateUnitPriceText: ''
     });
   },
 
@@ -264,11 +272,27 @@ Page({
   },
 
   /**
+   * 课单价输入
+   * @param {Object} e 输入事件
+   */
+  onUnitPriceInput(e) {
+    this.setData({
+      editUnitPrice: e.detail.value
+    });
+  },
+
+  /**
    * 保存编辑卡片实例（deduct_lessons_per_use 始终更新；
    * expire_date 仅在非未开卡状态下更新）
    */
   async onConfirmEditCard() {
-    const { editingCardId, editingCardStatus, editExpireDate, editDeductLessons } = this.data;
+    const {
+      editingCardId,
+      editingCardStatus,
+      editExpireDate,
+      editDeductLessons,
+      editUnitPrice
+    } = this.data;
 
     if (!editingCardId) {
       return;
@@ -283,8 +307,18 @@ Page({
       return;
     }
 
+    const unit_price = parseUnitPriceInput(editUnitPrice);
+    if (Number.isNaN(unit_price)) {
+      wx.showToast({
+        title: '请输入有效的课单价',
+        icon: 'none'
+      });
+      return;
+    }
+
     const payload = {
-      deduct_lessons_per_use: editDeductLessons
+      deduct_lessons_per_use: editDeductLessons,
+      unit_price
     };
     if (editingCardStatus !== 0) {
       payload.expire_date = editExpireDate;

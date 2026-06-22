@@ -58,6 +58,18 @@ page {
   color: #333;
   border: 1rpx solid #e9ecef;
 }
+.unit-price-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.unit-price-tip {
+  font-size: 24rpx;
+  color: #86868b;
+  line-height: 1.5;
+}
+
 /* 备注区域 */
 .remark-container {
   width: 100%;

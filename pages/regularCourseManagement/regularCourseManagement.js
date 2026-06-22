@@ -5,6 +5,7 @@
 
 // 引入API工具类
 const api = require('../../utils/api.js');
+const { parseUnitPriceInput, formatUnitPrice, getEffectiveUnitPrice } = require('../../utils/unitPrice.js');
 
 Page({
 
@@ -65,9 +66,20 @@ Page({
 
       if (result && result.data) {
         const studentData = result.data || {};
+        const lessons = studentData.lessons || []
+        const categoryLessons = (studentData.category_lessons || []).map(item => {
+          const category = item.category || {};
+          const lessonItem = lessons.find(i => i.category_id === category.id) || {};
+          const unit_price = lessonItem.unit_price ? lessonItem.unit_price : (category.unit_price ?? null);
+          item.unit_price = unit_price;
+          return {
+            ...item,
+            unitPriceDisplay: this.buildUnitPriceDisplay(item)
+          }
+        });
         this.setData({
-          categoryLessons: studentData.category_lessons || [],
-          lessons: studentData.lessons || [],
+          categoryLessons,
+          lessons: lessons,
           bookingStatus: studentData.booking_status
         });
       }
@@ -83,21 +95,51 @@ Page({
   },
 
   /**
+   * 构建课单价展示文案
+   * @param {Object} item 分类课时项
+   * @returns {string}
+   */
+  buildUnitPriceDisplay(item) {
+    const effectivePrice = getEffectiveUnitPrice(item.unit_price, item.category && item.category.unit_price);
+    if (item.unit_price != null) {
+      return formatUnitPrice(item.unit_price);
+    }
+    if (item.category && item.category.unit_price != null) {
+      return `${formatUnitPrice(item.category.unit_price)}`;
+    }
+    return formatUnitPrice(effectivePrice);
+  },
+
+  /**
+   * 构建编辑态课时数据
+   * @param {Array} categoryLessons 分类课时列表
+   * @returns {Array}
+   */
+  buildEditableLessons(categoryLessons) {
+    const { lessons } = this.data;
+    return categoryLessons.map(item => {
+      const category = item.category || {};
+      const lessonItem = lessons.find(i => i.category_id === category.id) || {};
+      const unit_price = lessonItem.unit_price ? lessonItem.unit_price : (category.unit_price ?? null);
+
+      return {
+        category_id: item.category.id,
+        remaining_lessons: item.remaining_lessons || 0,
+        expire_date: item.expire_date || null,
+        unit_price: unit_price,
+        unit_price_input: unit_price != null ? String(unit_price) : ''
+      }
+    });
+  },
+
+  /**
    * 开始编辑
    */
   onStartEdit() {
     const { categoryLessons } = this.data;
-    // 将category_lessons转换为lessons格式用于编辑
-    // 确保顺序一致，通过category_id建立映射关系
-    const lessons = categoryLessons.map(item => ({
-      category_id: item.category.id,
-      remaining_lessons: item.remaining_lessons || 0,
-      expire_date: item.expire_date || null
-    }));
-    
     this.setData({
       isEditing: true,
-      lessons: lessons
+      lessons: this.buildEditableLessons(categoryLessons)
     });
   },
 
@@ -106,16 +148,9 @@ Page({
    */
   onCancelEdit() {
     const { categoryLessons } = this.data;
-    // 恢复原始数据
-    const lessons = categoryLessons.map(item => ({
-      category_id: item.category.id,
-      remaining_lessons: item.remaining_lessons,
-      expire_date: item.expire_date
-    }));
-    
     this.setData({
       isEditing: false,
-      lessons: lessons
+      lessons: this.buildEditableLessons(categoryLessons)
     });
   },
 
@@ -138,6 +173,19 @@ Page({
     this.setData({
       lessons: lessons
     });
+  },
+
+  /**
+   * 输入课单价
+   * @param {Object} e 输入事件
+   */
+  onUnitPriceInput(e) {
+    const { index } = e.currentTarget.dataset;
+    const lessons = [...this.data.lessons];
+    if (index !== undefined && lessons[index]) {
+      lessons[index].unit_price_input = e.detail.value;
+    }
+    this.setData({ lessons });
   },
 
   /**
@@ -201,12 +249,26 @@ Page({
         title: '保存中...'
       });
 
-      // 调用API更新师生关系的课时信息
+      for (const lesson of lessons) {
+        const unit_price = parseUnitPriceInput(lesson.unit_price_input);
+        if (Number.isNaN(unit_price)) {
+          wx.hideLoading();
+          this.setData({ isSaving: false });
+          wx.showToast({
+            title: '请输入有效的课单价',
+            icon: 'none'
+          });
+          return;
+        }
+        lesson.unit_price = unit_price;
+      }
+
       const updateData = {
         category_lessons: lessons.map(lesson => ({
           category_id: lesson.category_id,
           expire_date: lesson.expire_date,
-          remaining_lessons: lesson.remaining_lessons
+          remaining_lessons: lesson.remaining_lessons,
+          unit_price: lesson.unit_price
         }))
       };
 
@@ -257,6 +319,16 @@ Page({
   handleCategoriesList() {
     wx.navigateTo({
       url: '/pages/categoriesList/categoriesList'
+    });
+  },
+
+  /**
+   * 跳转到课时变更明细
+   */
+  handleLessonChangeLogs() {
+    const { relationId, studentId } = this.data;
+    wx.navigateTo({
+      url: `/pages/lessonChangeLogs/lessonChangeLogs?relationId=${relationId}&studentId=${studentId}`
     });
   }
 });

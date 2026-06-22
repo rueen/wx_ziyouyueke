@@ -34,6 +34,22 @@
           maxlength="200"></textarea>
       </view>
     </view>
+    <view class="info-section">
+      <view class="section-header">
+        <text class="section-title">课单价</text>
+      </view>
+      <text wx:if="{{!isEditing}}" class="name">{{unitPriceDisplay}}</text>
+      <view wx:else class="unit-price-edit">
+        <input
+          type="digit"
+          placeholder="请输入课单价（元/课时，选填）"
+          class="edit-input"
+          value="{{unitPrice}}"
+          bindinput="onUnitPriceInput"
+        />
+        <text class="unit-price-tip">未设置时统计按 0 元/课时统计数据</text>
+      </view>
+    </view>
     <view class="info-section" wx:if="{{!isEditing}}">
       <view class="section-header">
         <text class="section-title">学员</text>

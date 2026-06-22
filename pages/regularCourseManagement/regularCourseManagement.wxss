@@ -26,15 +26,26 @@ page {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24rpx;
+  gap: 12rpx;
 }
 
 .section-title {
+  flex: 1;
   font-size: 32rpx;
   color: #333;
   font-weight: 600;
 }
 
+.unit-price-title {
+  width: 160rpx;
+  text-align: center;
+  color: #333;
+  font-size: 28rpx;
+}
+
 .expire-date-title {
+  width: 180rpx;
+  text-align: right;
   color: #333;
   font-size: 28rpx;
 }
@@ -62,7 +73,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80rpx;
+  min-height: 80rpx;
   background: #f5faff;
   padding: 0 16rpx;
 }
@@ -70,6 +81,26 @@ page {
 .info-value {
   display: flex;
   align-items: center;
+  flex: 1;
+}
+
+.unit-price-value {
+  width: 180rpx;
+  justify-content: center;
+}
+
+.unit-price-text {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.unit-price-edit {
+  width: 180rpx;
+  justify-content: center;
+}
+
+.edit-input-wide {
+  width: 100rpx;
 }
 
 .lessons-count {

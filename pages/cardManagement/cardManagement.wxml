@@ -113,6 +113,19 @@
             />
           </view>
 
+          <!-- 课单价 -->
+          <view class="form-item">
+            <view class="form-label">课单价（元/课时）</view>
+            <input
+              class="form-input"
+              type="digit"
+              placeholder="请输入课单价，默认 0"
+              value="{{formData.unit_price}}"
+              bindinput="onFormInput"
+              data-field="unit_price"
+            />
+          </view>
+
           <!-- 卡片颜色 -->
           <view class="form-item">
             <view class="form-label">卡片颜色</view>

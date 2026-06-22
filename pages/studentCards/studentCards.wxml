@@ -175,6 +175,19 @@
         </view>
       </picker>
     </view>
+
+    <!-- 课单价 -->
+    <view class="edit-form-item">
+      <view class="edit-form-label">课单价（元/课时）</view>
+      <view class="edit-form-tip">留空则继承卡片模板单价{{editingTemplateUnitPriceText}}</view>
+      <input
+        class="edit-price-input"
+        type="digit"
+        placeholder="请输入课单价"
+        value="{{editUnitPrice}}"
+        bindinput="onUnitPriceInput"
+      />
+    </view>
   </view>
   <view class="edit-modal-footer">
     <view class="btn btn-cancel" bindtap="onModalClose">取消</view>

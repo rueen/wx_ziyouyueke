@@ -330,7 +330,7 @@
     <view class="modal-body">
       <view class="confirm-content">
         <text class="confirm-text">确认要核销这节课程吗？</text>
-        <text class="confirm-tips">核销后课程状态将变为"已完成"，此操作不可撤销。</text>
+        <text class="confirm-tips">核销后会扣除{{courseInfo.deduct_lessons_per_use || 1}}课时，课程状态将变为"已完成"{{'\n'}}此操作不可撤销。</text>
       </view>
     </view>
     <view class="modal-footer">

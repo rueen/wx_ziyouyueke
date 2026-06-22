@@ -79,6 +79,8 @@ Page({
             let tips = '';
             if(item.payment_type === 1) {
               tips = '签到后会扣除相应课时，'
+            } else if (item.payment_type === 4) {
+              tips = `签到后会扣除${item.deduct_lessons_per_use || 1}课时，`;
             }
             wx.showModal({
               title: `确定为 [${item.student.nickname}] 签到吗？`,
@@ -203,7 +205,7 @@ Page({
     if (item.payment_type === 1) {
       tips = '签到后会扣除相应课时，';
     } else if (item.payment_type === 4) {
-      tips = `签到后会扣除${item.deduct_lessons_per_use}课时，`;
+      tips = `签到后会扣除${item.deduct_lessons_per_use || 1}课时，`;
     }
 
     wx.showModal({

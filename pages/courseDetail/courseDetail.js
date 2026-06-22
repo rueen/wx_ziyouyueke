@@ -506,9 +506,10 @@ Page({
    * 二次确认后直接完成课程
    */
   onClickComplete() {
+    const { courseInfo } = this.data;
     wx.showModal({
       title: '完成课程',
-      content: '确认要将此课程标记为已完成吗？此操作不可撤销。',
+      content: `确认完成后会扣除${courseInfo.deduct_lessons_per_use || 1}课时，此操作不可撤销。`,
       confirmText: '确认完成',
       cancelText: '取消',
       success: (res) => {

@@ -355,6 +355,16 @@ Page({
   },
 
   /**
+   * 数据统计（教练专用）
+   */
+  onDataStats() {
+    if (!this.checkLoginRequired()) return;
+    wx.navigateTo({
+      url: '/pages/dataStats/dataStats'
+    });
+  },
+
+  /**
    * 更多设置（教练专用）
    */
   onCoachSettings() {

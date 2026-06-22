@@ -11,6 +11,7 @@
         <text class="section-title">
           <text>剩余课时</text>
         </text>
+        <text class="unit-price-title">课单价</text>
         <text class="expire-date-title">到期时间</text>
       </view>
       
@@ -32,6 +33,21 @@
               data-index="{{index}}"
               placeholder="请输入课时数"></input>
             <text class="edit-unit">节</text>
+          </view>
+          <!-- 课单价 -->
+          <view wx:if="{{!isEditing}}" class="info-value unit-price-value">
+            <text class="unit-price-text">{{item.unitPriceDisplay}}</text>
+          </view>
+          <view wx:else class="edit-value-container unit-price-edit">
+            <input
+              class="edit-input unit-price-input"
+              type="digit"
+              value="{{lessons[index].unit_price_input}}"
+              bindinput="onUnitPriceInput"
+              data-index="{{index}}"
+              placeholder="默认"
+            />
+            <text class="edit-unit">元</text>
           </view>
           <!-- 到期时间 -->
           <view wx:if="{{!isEditing}}" class="info-value">
@@ -78,6 +94,12 @@
     <!-- 课程设置入口 -->
     <view class="course-list active" bind:tap="handleCategoriesList" wx:if="{{!isEditing}}">
       <text>课程设置</text>
+      <text class="iconfont icon-arrow-r arrow"></text>
+    </view>
+
+    <!-- 课时变更明细 -->
+    <view class="course-list active" bind:tap="handleLessonChangeLogs" wx:if="{{!isEditing}}">
+      <text>课时变更明细</text>
       <text class="iconfont icon-arrow-r arrow"></text>
     </view>
 

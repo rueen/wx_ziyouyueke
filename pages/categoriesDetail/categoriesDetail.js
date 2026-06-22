@@ -1,5 +1,6 @@
 // pages/categoriesDetail/categoriesDetail.js
 const api = require('../../utils/api.js');
+const { parseUnitPriceInput, formatUnitPrice } = require('../../utils/unitPrice.js');
 
 Page({
 
@@ -12,6 +13,8 @@ Page({
     category: {},
     name: '',
     desc: '',
+    unitPrice: '',
+    unitPriceDisplay: '未设置',
     studentLessons: [],
     isFirstLoad: true, // 标记是否首次加载
     isLoading: false, // 加载状态
@@ -65,6 +68,8 @@ Page({
           category: category,
           name: category.name,
           desc: category.desc,
+          unitPrice: category.unit_price != null ? String(category.unit_price) : '',
+          unitPriceDisplay: formatUnitPrice(category.unit_price),
           studentLessons: studentLessons.filter(item => item.remainingLessons > 0),
           isLoading: false
         });
@@ -118,7 +123,8 @@ Page({
     this.setData({
       isEditing: false,
       name: category.name,
-      desc: category.desc
+      desc: category.desc,
+      unitPrice: category.unit_price != null ? String(category.unit_price) : ''
     });
   },
   onNameInput(e){
@@ -130,6 +136,30 @@ Page({
     this.setData({
       desc: e.detail.value
     });
+  },
+  /**
+   * 课单价输入
+   * @param {Object} e 输入事件
+   */
+  onUnitPriceInput(e) {
+    this.setData({
+      unitPrice: e.detail.value
+    });
+  },
+  /**
+   * 校验并解析课单价
+   * @returns {number|null|undefined} undefined 表示校验失败
+   */
+  buildUnitPricePayload() {
+    const parsed = parseUnitPriceInput(this.data.unitPrice);
+    if (Number.isNaN(parsed)) {
+      wx.showToast({
+        title: '请输入有效的课单价',
+        icon: 'none'
+      });
+      return undefined;
+    }
+    return parsed;
   },
   async onDel() {
     const { id, isSaving } = this.data;
@@ -181,6 +211,10 @@ Page({
   },
   async onAdd() {
     const { name, desc, isSaving } = this.data;
+    const unit_price = this.buildUnitPricePayload();
+    if (unit_price === undefined) {
+      return;
+    }
 
     if (isSaving) {
       return; // 防止重复提交
@@ -197,7 +231,8 @@ Page({
 
       const result = await api.categories.add({
         name: name,
-        desc: desc
+        desc: desc,
+        unit_price
       });
       
       if (result && result.success) {
@@ -232,6 +267,10 @@ Page({
   },
   async onEdit() {
     const { name, desc, isSaving, id } = this.data;
+    const unit_price = this.buildUnitPricePayload();
+    if (unit_price === undefined) {
+      return;
+    }
 
     if (isSaving) {
       return; // 防止重复提交
@@ -248,7 +287,8 @@ Page({
 
       const result = await api.categories.edit(id, {
         name: name,
-        desc: desc
+        desc: desc,
+        unit_price
       });
       
       wx.hideLoading();

@@ -1881,6 +1881,62 @@ module.exports = {
     }
   },
 
+  // 数据统计模块
+  stats: {
+    /**
+     * 获取数据总览
+     * @param {Object} params 查询参数
+     * @returns {Promise}
+     */
+    getOverview: function(params = {}) {
+      return request({
+        url: '/api/h5/stats/overview',
+        method: 'GET',
+        data: params
+      });
+    },
+    /**
+     * 获取消课排行榜
+     * @param {Object} params 查询参数
+     * @returns {Promise}
+     */
+    getCompletionRanking: function(params = {}) {
+      return request({
+        url: '/api/h5/stats/completion-ranking',
+        method: 'GET',
+        data: params
+      });
+    },
+    /**
+     * 获取新增统计
+     * @param {Object} params 查询参数
+     * @returns {Promise}
+     */
+    getGrowth: function(params = {}) {
+      return request({
+        url: '/api/h5/stats/growth',
+        method: 'GET',
+        data: params
+      });
+    }
+  },
+
+  // 课时变动日志
+  lessonChangeLog: {
+    /**
+     * 获取课时变动日志列表
+     * @param {Object} params 查询参数
+     * @returns {Promise}
+     */
+    getList: function(params = {}) {
+      return request({
+        url: '/api/h5/lesson-change-logs',
+        method: 'GET',
+        data: params
+      });
+    }
+  },
+
   // 其他
   healthCheck
 }; 

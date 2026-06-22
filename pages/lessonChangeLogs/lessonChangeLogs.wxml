@@ -1,0 +1,45 @@
+<!--pages/lessonChangeLogs/lessonChangeLogs.wxml-->
+<navBar title="课时变更明细" />
+<layout>
+  <view class="page-container">
+    <view class="log-list" wx:if="{{logs.length > 0}}">
+      <view class="log-item" wx:for="{{logs}}" wx:key="id">
+        <view class="log-header">
+          <view class="log-type log-type-{{item.change_type}}">{{item.change_type_text}} {{item.remark || ''}}</view>
+          <text class="log-time">{{item.displayTime}}</text>
+        </view>
+        <view class="log-body">
+          <view class="log-row">
+            <text class="log-label">课程分类</text>
+            <text class="log-value">{{item.categoryName}}</text>
+          </view>
+          <view class="log-row">
+            <text class="log-label">变动数量</text>
+            <text class="log-value">{{item.change_amount}} 节</text>
+          </view>
+          <view class="log-row">
+            <text class="log-label">剩余课时</text>
+            <text class="log-value">{{item.before_lessons}} → {{item.after_lessons}}</text>
+          </view>
+          <view class="log-row">
+            <text class="log-label">课单价</text>
+            <text class="log-value">{{item.unitPriceDisplay}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <emptyState
+      wx:elif="{{!loading}}"
+      type="no-data"
+      title="暂无变更记录"
+      description="常规课课时调整或消课后会自动生成记录"
+    />
+
+    <view class="load-more-container" wx:if="{{logs.length > 0}}">
+      <text wx:if="{{loadingMore}}" class="load-more-text">加载中...</text>
+      <text wx:elif="{{hasMore}}" class="load-more-text">上拉加载更多</text>
+      <text wx:else class="load-more-text">已加载全部记录</text>
+    </view>
+  </view>
+</layout>

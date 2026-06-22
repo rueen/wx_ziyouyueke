@@ -43,7 +43,9 @@
     "pages/trainingRecordList/trainingRecordList",
     "pages/trainingRecordAdd/trainingRecordAdd",
     "pages/trainingRecordTypeManagement/trainingRecordTypeManagement",
-    "pages/trainingRecordTypeEdit/trainingRecordTypeEdit"
+    "pages/trainingRecordTypeEdit/trainingRecordTypeEdit",
+    "pages/lessonChangeLogs/lessonChangeLogs",
+    "pages/dataStats/dataStats"
   ],
   "requiredPrivateInfos": [
     "chooseLocation",

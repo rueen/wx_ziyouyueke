@@ -67,6 +67,11 @@
       <text class="menu-item-text">标签管理</text>
     </view>
 
+    <view class="menu-item" bindtap="onDataStats">
+      <text class="iconfont icon-statistics"></text>
+      <text class="menu-item-text">数据统计</text>
+    </view>
+
     <view class="menu-item" bindtap="onCoachSettings">
       <text class="iconfont icon-setting"></text>
       <text class="menu-item-text">更多设置</text>

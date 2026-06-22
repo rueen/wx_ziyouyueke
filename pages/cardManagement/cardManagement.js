@@ -4,6 +4,7 @@
  */
 
 const api = require('../../utils/api.js');
+const { parseUnitPriceInput } = require('../../utils/unitPrice.js');
 
 Page({
 
@@ -23,7 +24,8 @@ Page({
       card_lessons: '',
       valid_days: '',
       card_desc: '',
-      is_unlimited: false // 是否无限次数
+      is_unlimited: false, // 是否无限次数
+      unit_price: ''
     },
     
     // 可选颜色列表
@@ -83,7 +85,8 @@ Page({
         card_lessons: '',
         valid_days: '',
         card_desc: '',
-        is_unlimited: false
+        is_unlimited: false,
+        unit_price: ''
       }
     });
   },
@@ -102,7 +105,8 @@ Page({
         card_lessons: card.is_unlimited ? '' : String(card.card_lessons || ''),
         valid_days: String(card.valid_days),
         card_desc: card.card_desc || '',
-        is_unlimited: card.is_unlimited
+        is_unlimited: card.is_unlimited,
+        unit_price: card.unit_price != null ? String(card.unit_price) : '0'
       }
     });
   },
@@ -185,6 +189,15 @@ Page({
       });
       return;
     }
+
+    const unit_price = parseUnitPriceInput(formData.unit_price);
+    if (Number.isNaN(unit_price)) {
+      wx.showToast({
+        title: '请输入有效的课单价',
+        icon: 'none'
+      });
+      return;
+    }
     
     try {
       wx.showLoading({ title: '保存中...' });
@@ -194,7 +207,8 @@ Page({
         card_color: formData.card_color,
         card_lessons: formData.is_unlimited ? null : parseInt(formData.card_lessons),
         valid_days: parseInt(formData.valid_days),
-        card_desc: formData.card_desc.trim()
+        card_desc: formData.card_desc.trim(),
+        unit_price: unit_price == null ? 0 : unit_price
       };
       
       let result;
